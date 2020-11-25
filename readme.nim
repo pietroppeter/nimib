@@ -19,7 +19,7 @@ nim :crown: driven :red_car: documents :memo:
 
 ## :wave: :earth_africa: Example Usage
 
-[examples/hello_nimib.nim]({repo}/examples/hello_nimib.nim)
+[examples/hello_nimib.nim]({repo}/blob/main/examples/hello_nimib.nim)
 
 ```nim
 {hello}
@@ -32,7 +32,7 @@ nim c examples/hello_nimib
 examples/hello_nimib docs/hello_nimib.html > examples/hello_nimib.md
 ```
 
-* [markdown]({repo}/examples/hello_nimib.md) output
+* [markdown]({repo}/blob/main/examples/hello_nimib.md) output
 * [html]({docs}/hello_nimib.html) output.
 
 ## :question: Q & A
@@ -60,7 +60,7 @@ and why [Saturn is the best planet](https://www.theatlantic.com/science/archive/
 why do you need a logo when you have emojis?
 
 no particular meaning about the whale apart the fact that I like the emoji and this project is something I have been [chasing](https://en.wikipedia.org/wiki/Captain_Ahab) for a while
-and I expect to be chasing it indefintely.
+and I expect to be chasing it indefinitely.
 
 also googling `nimib whale` you might learn about [Skeleton Coast](https://en.wikipedia.org/wiki/Skeleton_Coast) which is definitely a plus.
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <title></title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/' type='text/css'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+</head>
+<body>
+<h1>nimib 🐳</h1>
+<p>nim 👑 driven 🚗 documents 📝</p>
+<p><strong>status</strong>: <em>in flux, not officially released a 0.1</em></p>
+<ul>
+<li><a href="https://github.com/pietroppeter/nimib">repository</a></li>
+<li><a href="https://pietroppeter.github.io/nimib/">documentation</a></li>
+</ul>
+<h2>👋 🌍 Example Usage</h2>
+<p><a href="https://github.com/pietroppeter/nimib/examples/hello_nimib.nim">examples/hello_nimib.nim</a></p>
+<pre><code class="language-nim">import strformat, strutils
+import nimib
+
+nbInit
+
+nbText: &quot;&quot;&quot;
+## Secret talk with a computer
+Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
+and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
+### A secret message
+Inside this document is hidden a secret message. I will ask the computer to spit it out:
+&quot;&quot;&quot;
+
+let secret = [104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
+
+nbCode:
+  echo secret
+
+nbText: fmt&quot;&quot;&quot;
+what does this integer sequence mean?
+Am I supposed to [recognize it](https://oeis.org/search?q={secret.join(&quot;%2C+&quot;)}&amp;language=english&amp;go=Search)?
+
+### A cryptoanalytic weapon
+Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
+a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;
+
+nbCode:
+  func decode(secret: openArray[int]): string =
+    ## classified by NSA as &lt;a href=&quot;https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf&quot;&gt;TOP SECRET&lt;/a&gt;
+    # so secret that they do not want me to tell you and they will remove this message!
+    for c in secret:
+      result.add char(c)
+
+nbText: &quot;&quot;&quot;
+  ### The great revelation
+  Now I can just apply it to my secret message and
+  finally decrypt what the computer wants to tell me:&quot;&quot;&quot;
+
+nbCode:
+  let msg = decode secret
+  echo msg
+
+nbText:
+  fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;
+
+nbShow
+</code></pre>
+<p>compile and run:</p>
+<pre><code>nim c examples/hello_nimib
+examples/hello_nimib docs/hello_nimib.html &gt; examples/hello_nimib.md
+</code></pre>
+<ul>
+<li><a href="https://github.com/pietroppeter/nimib/examples/hello_nimib.md">markdown</a> output</li>
+<li><a href="https://pietroppeter.github.io/nimib//hello_nimib.html">html</a> output.</li>
+</ul>
+<h2>❓ Q &amp; A</h2>
+<h3>why the name?</h3>
+<p>corruption of <a href="https://www.vocabulary.com/dictionary/Ninib">ninib</a>:</p>
+<blockquote>
+<p>a solar deity; firstborn of Bel and consort was Gula;
+god of war and the <em>chase</em> and agriculture; sometimes identified with biblical <em>Nimrod</em></p>
+</blockquote>
+<p>also:</p>
+<blockquote>
+<p>He explains that the seven directions were interpreted by the Babylonian theologians
+as a reference to the seven great celestial bodies, the sun and moon, Ishtar, Marduk, Ninib, Nergal and Nabu.</p>
+<p>This process, which reached its culmination in the post-Khammurabic period, led to identifying
+the planet Jupiter with Marduk, Venus with Ishtar, Mars with Nergal, Mercury with Nebo, and Saturn with Ninib.</p>
+</blockquote>
+<p>and I should not need to tell you what <a href="https://jupyter.org/">Marduk</a> is
+and why <a href="https://www.theatlantic.com/science/archive/2016/01/a-major-correction/422514/">Saturn is the best planet</a>.</p>
+<h3>why the whale 🐳?</h3>
+<p>why do you need a logo when you have emojis?</p>
+<p>no particular meaning about the whale apart the fact that I like the emoji and this project is something I have been <a href="https://en.wikipedia.org/wiki/Captain_Ahab">chasing</a> for a while
+and I expect to be chasing it indefintely.</p>
+<p>also googling <code>nimib whale</code> you might learn about <a href="https://en.wikipedia.org/wiki/Skeleton_Coast">Skeleton Coast</a> which is definitely a plus.</p>
+<h3>why the emojis?</h3>
+<p>because I made a <a href="https://github.com/pietroppeter/nimoji">package</a> for that and someone has to use it</p>
+<h3>why the Q &amp; A?</h3>
+<p>because <a href="https://github.com/oakes/vim_cubed#q--a">someone made it an art</a>
+and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can">imitation is the sincerest form of flattery</a></p>
+</body>
+</html>

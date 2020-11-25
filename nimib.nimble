@@ -14,6 +14,10 @@ requires "nim >= 1.0.0"
 requires "tempfile >= 0.1.6"
 requires "markdown >= 0.8.1"
 
-task hello, "generate hello world example":
-  exec "nim c examples\\hello\\world"
-  "examples\\hello\\world.md".writeFile(staticExec("examples\\hello\\world docs\\hello_nimib.html"))
+task hello, "generate hello nimib example":
+  exec "nim c examples\\hello_nimib"
+  "examples\\hello_nimib.md".writeFile(staticExec("examples\\hello_nimib docs\\hello_nimib.html"))
+
+task readme, "generate readme and docs index":
+  exec "nim c readme"
+  "README.md".writeFile(staticExec("readme docs\\index.html"))

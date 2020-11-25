@@ -42,4 +42,3 @@ hello, world
 ```
 
 _Hey_, there must be a bug somewhere, the message (`hello, world`) is not even addressed to me!
-[19308:ShellIpcClient] simple_message_loop.cc:120:Run Run called on MessageLoop that's already been Quit!

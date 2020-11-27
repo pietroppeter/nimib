@@ -43,4 +43,4 @@ nbCode:
 nbText:
   fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
 
-nbShow
+nbSave # use nbShow to automatically open a browser tab with html output

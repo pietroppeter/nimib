@@ -30,7 +30,8 @@ template nbTextBlock*(identBlock, identContainer, body: untyped) =
 proc echoCodeBlock(b: NbBlock) =
   when not defined(nimibQuiet):
     echo "```nim" & b.body & "\n```\n"
-    echo "```\n" & b.output & "```\n"
+    if b.output != "":
+      echo "```\n" & b.output & "```\n"
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))

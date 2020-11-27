@@ -1,11 +1,11 @@
 # nimib 🐳
 
-nim 👑 driven 🚗 documents 📝
+nim 👑 driven ⛵ publishing ✍
 
 **status**: *in flux, not officially released a 0.1*
 
 * [repository](https://github.com/pietroppeter/nimib)
-* [documentation](https://pietroppeter.github.io/nimib/)
+* [documentation](https://pietroppeter.github.io/nimib)
 
 ## 👋 🌍 Example Usage
 
@@ -57,7 +57,7 @@ nbCode:
 nbText:
   fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
 
-nbShow
+nbSave # use nbShow to automatically open a browser tab with html output
 ```
 
 compile and run:
@@ -67,8 +67,10 @@ nim c examples/hello_nimib
 examples/hello_nimib docs/hello_nimib.html > examples/hello_nimib.md
 ```
 
-* [markdown](https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md) output
-* [html](https://pietroppeter.github.io/nimib//hello_nimib.html) output.
+output:
+
+* [html](https://pietroppeter.github.io/nimib/hello_nimib.html)
+* [markdown](https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md)
 
 ## ❓ Q & A
 
@@ -105,5 +107,6 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 ### why the Q & A?
 
-because [someone made it an art](https://github.com/oakes/vim_cubed#q--a)
+because [someone made it an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
+

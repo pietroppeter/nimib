@@ -14,7 +14,10 @@ template nbInit* =
 
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
-  
+
+  template nbSave =
+    write nbDoc
+
   template nbShow =
     write nbDoc
     open nbDoc

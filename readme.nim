@@ -2,7 +2,7 @@ import src/nimib, strformat, nimoji
 
 let
   repo = "https://github.com/pietroppeter/nimib"
-  docs = "https://pietroppeter.github.io/nimib/"
+  docs = "https://pietroppeter.github.io/nimib"
   hello = readFile("examples/hello_nimib.nim")
 
 nbInit
@@ -10,14 +10,14 @@ nbInit
 nbText: fmt"""
 # nimib :whale:
 
-nim :crown: driven :red_car: documents :memo:
+nim :crown: driven :sailboat: publishing :writingHand:
 
-**status**: *in flux, not officially released a 0.1*
+:construction: working towards a 0.1 release :construction:
 
 * [repository]({repo})
 * [documentation]({docs})
 
-## :wave: :earth_africa: Example Usage
+## :wave: :earthAfrica: Example Usage
 
 [examples/hello_nimib.nim]({repo}/blob/main/examples/hello_nimib.nim)
 
@@ -32,10 +32,12 @@ nim c examples/hello_nimib
 examples/hello_nimib docs/hello_nimib.html > examples/hello_nimib.md
 ```
 
-* [markdown]({repo}/blob/main/examples/hello_nimib.md) output
-* [html]({docs}/hello_nimib.html) output.
+output:
 
-## :question: Q & A
+* [html]({docs}/hello_nimib.html)
+* [markdown]({repo}/blob/main/examples/hello_nimib.md)
+
+## :question: :exclamation: Q & A
 
 ### why the name?
 
@@ -60,9 +62,9 @@ and why [Saturn is the best planet](https://www.theatlantic.com/science/archive/
 why do you need a logo when you have emojis?
 
 no particular meaning about the whale apart the fact that I like the emoji and this project is something I have been [chasing](https://en.wikipedia.org/wiki/Captain_Ahab) for a while
-and I expect to be chasing it indefinitely.
+(and I expect to be chasing it indefinitely).
 
-also googling `nimib whale` you might learn about [Skeleton Coast](https://en.wikipedia.org/wiki/Skeleton_Coast) which is definitely a plus.
+also googling `nimib whale` you might discover the existence of a cool place: [Skeleton Coast](https://en.wikipedia.org/wiki/Skeleton_Coast).
 
 ### why the emojis?
 
@@ -70,8 +72,8 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 ### why the Q & A?
 
-because [someone made it an art](https://github.com/oakes/vim_cubed#q--a)
+because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
 """.emojize
 
-nbShow
+nbSave

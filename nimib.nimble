@@ -1,8 +1,8 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.0.1"
 author        = "Pietro Peterlongo"
-description   = "nimib 🐳 - nim 👑 driven 🚗 documents 📝"
+description   = "nimib 🐳 - nim 👑 driven ⛵ publishing ✍"
 license       = "MIT"
 srcDir        = "src"
 

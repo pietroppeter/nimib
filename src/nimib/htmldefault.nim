@@ -1,4 +1,4 @@
-import types, strformat, strutils, markdown
+import types, strformat, strutils, markdown, mustache
 
 proc render*(blk: NbBlock): string =
   case blk.kind
@@ -10,20 +10,10 @@ proc render*(blk: NbBlock): string =
       result.add fmt"<pre><samp>{blk.output.strip}</samp></pre>" & "\n"
 
 proc renderHtml*(doc: NbDoc): string =
-  var body: string
+  var blocks: string
   for blk in doc.data:
-    body.add blk.render
-  result = fmt"""<!DOCTYPE html>
-<html>
-<head>
-  <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  <title>{doc.sourceFilename}</title>
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <link rel='stylesheet' href='https://unpkg.com/normalize.css/' type='text/css'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
-</head>
-<body>
-{body.strip}
-</body>
-</html>
-"""
+    blocks.add blk.render
+  let c = newContext(searchDirs=doc.searchDirs)
+  c["blocks"] = blocks
+  c["filename"] = doc.filename
+  return "{{> doc}}".render(c)

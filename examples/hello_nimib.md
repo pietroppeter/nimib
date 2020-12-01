@@ -26,9 +26,6 @@ func decode(secret: openArray[int]): string =
 
 ```
 
-```
-```
-
   ### The great revelation
   Now I can just apply it to my secret message and
   finally decrypt what the computer wants to tell me:

@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
+  <title>docs\index.html</title>
+  <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  <title></title>
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <link rel='stylesheet' href='https://unpkg.com/normalize.css/' type='text/css'>
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
 </head>
 <body>
+<main>
 <h1>nimib 🐳</h1>
 <p>nim 👑 driven ⛵ publishing ✍</p>
-<p><strong>status</strong>: <em>in flux, not officially released a 0.1</em></p>
+<p>🚧 working towards a 0.1 release 🚧</p>
 <ul>
 <li><a href="https://github.com/pietroppeter/nimib">repository</a></li>
 <li><a href="https://pietroppeter.github.io/nimib">documentation</a></li>
@@ -42,7 +45,6 @@ Am I supposed to [recognize it](https://oeis.org/search?q={secret.join(&quot;%2C
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
 a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;
-
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as &lt;a href=&quot;https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf&quot;&gt;TOP SECRET&lt;/a&gt;
@@ -63,6 +65,7 @@ nbText:
   fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;
 
 nbSave # use nbShow to automatically open a browser tab with html output
+
 </code></pre>
 <p>compile and run:</p>
 <pre><code>nim c examples/hello_nimib
@@ -73,7 +76,7 @@ examples/hello_nimib docs/hello_nimib.html &gt; examples/hello_nimib.md
 <li><a href="https://pietroppeter.github.io/nimib/hello_nimib.html">html</a></li>
 <li><a href="https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md">markdown</a></li>
 </ul>
-<h2>❓ Q &amp; A</h2>
+<h2>❓ ❗ Q &amp; A</h2>
 <h3>why the name?</h3>
 <p>corruption of <a href="https://www.vocabulary.com/dictionary/Ninib">ninib</a>:</p>
 <blockquote>
@@ -92,12 +95,14 @@ and why <a href="https://www.theatlantic.com/science/archive/2016/01/a-major-cor
 <h3>why the whale 🐳?</h3>
 <p>why do you need a logo when you have emojis?</p>
 <p>no particular meaning about the whale apart the fact that I like the emoji and this project is something I have been <a href="https://en.wikipedia.org/wiki/Captain_Ahab">chasing</a> for a while
-and I expect to be chasing it indefinitely.</p>
-<p>also googling <code>nimib whale</code> you might learn about <a href="https://en.wikipedia.org/wiki/Skeleton_Coast">Skeleton Coast</a> which is definitely a plus.</p>
+(and I expect to be chasing it indefinitely).</p>
+<p>also googling <code>nimib whale</code> you might discover the existence of a cool place: <a href="https://en.wikipedia.org/wiki/Skeleton_Coast">Skeleton Coast</a>.</p>
 <h3>why the emojis?</h3>
 <p>because I made a <a href="https://github.com/pietroppeter/nimoji">package</a> for that and someone has to use it</p>
 <h3>why the Q &amp; A?</h3>
-<p>because <a href="https://github.com/oakes/vim_cubed#q--a">someone made it an art form</a>
+<p>because <a href="https://github.com/oakes/vim_cubed#q--a">someone made it into an art form</a>
 and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can">imitation is the sincerest form of flattery</a></p>
+
+</main>
 </body>
 </html>

@@ -9,5 +9,6 @@ type
   Renderer* = proc (doc: NbDoc): string {.closure.}
   NbDoc* = object
     sourceFilename*, source*, filename*: string
+    searchDirs*: seq[string]
     data*: seq[NbBlock]
     renderer*: Renderer

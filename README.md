@@ -2,7 +2,7 @@
 
 nim 👑 driven ⛵ publishing ✍
 
-**status**: *in flux, not officially released a 0.1*
+🚧 working towards a 0.1 release 🚧
 
 * [repository](https://github.com/pietroppeter/nimib)
 * [documentation](https://pietroppeter.github.io/nimib)
@@ -37,7 +37,6 @@ Am I supposed to [recognize it](https://oeis.org/search?q={secret.join("%2C+")}&
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
 a recently declassified top-secret cryptoanalytic weapon:"""
-
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as <a href="https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf">TOP SECRET</a>
@@ -58,6 +57,7 @@ nbText:
   fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
 
 nbSave # use nbShow to automatically open a browser tab with html output
+
 ```
 
 compile and run:
@@ -72,7 +72,7 @@ output:
 * [html](https://pietroppeter.github.io/nimib/hello_nimib.html)
 * [markdown](https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md)
 
-## ❓ Q & A
+## ❓ ❗ Q & A
 
 ### why the name?
 
@@ -97,9 +97,9 @@ and why [Saturn is the best planet](https://www.theatlantic.com/science/archive/
 why do you need a logo when you have emojis?
 
 no particular meaning about the whale apart the fact that I like the emoji and this project is something I have been [chasing](https://en.wikipedia.org/wiki/Captain_Ahab) for a while
-and I expect to be chasing it indefinitely.
+(and I expect to be chasing it indefinitely).
 
-also googling `nimib whale` you might learn about [Skeleton Coast](https://en.wikipedia.org/wiki/Skeleton_Coast) which is definitely a plus.
+also googling `nimib whale` you might discover the existence of a cool place: [Skeleton Coast](https://en.wikipedia.org/wiki/Skeleton_Coast).
 
 ### why the emojis?
 
@@ -107,6 +107,6 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 ### why the Q & A?
 
-because [someone made it an art form](https://github.com/oakes/vim_cubed#q--a)
+because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
 

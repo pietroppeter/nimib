@@ -4,7 +4,7 @@ export types, blocks, docs
 import nimib / htmldefault
 import os
 
-template nbInit* =
+template nbInit*(templateDirs= @["./", "./templates/"]) =
   var
     nbDoc: NbDoc
     nbBlock: NbBlock
@@ -23,14 +23,9 @@ template nbInit* =
     open nbDoc
 
   nbDoc.renderer = renderHtml
+  nbDoc.searchDirs = templateDirs # error in template if name of field is templateDirs? how to fix this?
+  nbDoc.sourceFilename = instantiationInfo(fullpaths=true).filename
 
-  when false:  # not working
-    nbDoc.sourceFilename = instantiationInfo().filename
-    try:
-      nbDoc.source = readFile(nbDoc.sourceFilename)
-    except:
-      echo "ERROR while reading source from: " & nbDoc.sourceFilename
-  
   let params = commandLineParams()
   if params.len > 0:
     nbDoc.filename = changeFileExt(params[0], "html")

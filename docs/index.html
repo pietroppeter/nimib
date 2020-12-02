@@ -8,6 +8,9 @@
   <meta content="width=device-width, initial-scale=1" name="viewport">
   <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 <main>
@@ -45,6 +48,7 @@ Am I supposed to [recognize it](https://oeis.org/search?q={secret.join(&quot;%2C
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
 a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;
+
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as &lt;a href=&quot;https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf&quot;&gt;TOP SECRET&lt;/a&gt;
@@ -76,6 +80,13 @@ examples/hello_nimib docs/hello_nimib.html &gt; examples/hello_nimib.md
 <li><a href="https://pietroppeter.github.io/nimib/hello_nimib.html">html</a></li>
 <li><a href="https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md">markdown</a></li>
 </ul>
+<h2>Advanced usage</h2>
+<h3>highlighting code</h3>
+<p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
+The script <code>docs/static/highlight.nim.js</code> contains highlighting only for nim language.
+The default css style is <code>docs/static/atom-one-light.css</code>.
+If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
+(select all languages to find Nim) and make the appropriate change in <code>templates/head.mustache</code>.</p>
 <h2>❓ ❗ Q &amp; A</h2>
 <h3>why the name?</h3>
 <p>corruption of <a href="https://www.vocabulary.com/dictionary/Ninib">ninib</a>:</p>

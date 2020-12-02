@@ -23,6 +23,7 @@ Am I supposed to [recognize it](https://oeis.org/search?q={secret.join("%2C+")}&
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
 a recently declassified top-secret cryptoanalytic weapon:"""
+
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as <a href="https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf">TOP SECRET</a>

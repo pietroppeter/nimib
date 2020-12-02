@@ -4,6 +4,9 @@ let
   repo = "https://github.com/pietroppeter/nimib"
   docs = "https://pietroppeter.github.io/nimib"
   hello = readFile("examples/hello_nimib.nim")
+  assets = "docs/static"
+  highlight = "highlight.nim.js"
+  defaultcss = "atom-one-light.css"
 
 nbInit
 
@@ -36,6 +39,16 @@ output:
 
 * [html]({docs}/hello_nimib.html)
 * [markdown]({repo}/blob/main/examples/hello_nimib.md)
+
+## Advanced usage
+
+### highlighting code
+
+Code highlighting is provided by [highlight.js](https://highlightjs.org/).
+The script `{assets}/{highlight}` contains highlighting only for nim language.
+The default css style is `{assets}/{defaultcss}`.
+If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
+(select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.
 
 ## :question: :exclamation: Q & A
 

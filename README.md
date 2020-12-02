@@ -37,6 +37,7 @@ Am I supposed to [recognize it](https://oeis.org/search?q={secret.join("%2C+")}&
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
 a recently declassified top-secret cryptoanalytic weapon:"""
+
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as <a href="https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf">TOP SECRET</a>
@@ -71,6 +72,16 @@ output:
 
 * [html](https://pietroppeter.github.io/nimib/hello_nimib.html)
 * [markdown](https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md)
+
+## Advanced usage
+
+### highlighting code
+
+Code highlighting is provided by [highlight.js](https://highlightjs.org/).
+The script `docs/static/highlight.nim.js` contains highlighting only for nim language.
+The default css style is `docs/static/atom-one-light.css`.
+If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
+(select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.
 
 ## ❓ ❗ Q & A
 

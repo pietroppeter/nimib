@@ -46,7 +46,7 @@ At every block of code or text `nbBlock` is updated and appended to `nbDoc`.
 Here are two examples that show how to abuse the internal api:
 
 * [nolan]({docs}/nolan.html)
-* [python]({docs}/python.html)
+* [pythno]({docs}/pythno.html)
 
 *Note*: the internal api is not stable and it will likely change but the
 general idea above is likely to stick

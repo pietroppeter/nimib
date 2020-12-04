@@ -79,7 +79,7 @@ At every block of code or text `nbBlock` is updated and appended to `nbDoc`.
 Here are two examples that show how to abuse the internal api:
 
 * [nolan](https://pietroppeter.github.io/nimib/nolan.html)
-* [python](https://pietroppeter.github.io/nimib/python.html)
+* [pythno](https://pietroppeter.github.io/nimib/pythno.html)
 
 *Note*: the internal api is not stable and it will likely change but the
 general idea above is likely to stick

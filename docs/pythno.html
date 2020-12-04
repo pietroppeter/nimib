@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>docs\pythno.html</title>
+  <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<article class="nb-doc">
+<h1>Pythno</h1>
+<pre><code class="nim">def repeat(text: str, num: int) -> str:
+  result = ''
+  for i in range(num):
+    result += text
+  return result
+  
+print(repeat("_this_is_not_python", 6))</code></pre>
+<pre><samp>_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python</samp></pre>
+
+</article>
+</body>
+</html>

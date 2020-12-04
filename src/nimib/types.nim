@@ -10,5 +10,5 @@ type
   NbDoc* = object
     sourceFilename*, source*, filename*: string
     searchDirs*: seq[string]
-    data*: seq[NbBlock]
+    blocks*: seq[NbBlock]
     renderer*: Renderer

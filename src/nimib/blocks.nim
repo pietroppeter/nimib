@@ -25,7 +25,7 @@ template nbTextBlock*(identBlock, identContainer, body: untyped) =
     body
   when not defined(nimibQuiet):
     echo identBlock.output
-  identContainer.data.add identBlock
+  identContainer.blocks.add identBlock
 
 proc echoCodeBlock(b: NbBlock) =
   when not defined(nimibQuiet):
@@ -38,4 +38,4 @@ template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   captureStdout(identBlock.output):
     body
   echoCodeBlock identBlock
-  identContainer.data.add identBlock
+  identContainer.blocks.add identBlock

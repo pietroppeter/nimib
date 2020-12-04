@@ -6,8 +6,8 @@ import os
 
 template nbInit*(templateDirs= @["./", "./templates/"]) =
   var
-    nbDoc: NbDoc
-    nbBlock: NbBlock
+    nbDoc {.inject.}: NbDoc
+    nbBlock {.inject.}: NbBlock
 
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)

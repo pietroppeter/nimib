@@ -11,7 +11,7 @@ proc render*(blk: NbBlock): string =
 
 proc renderHtml*(doc: NbDoc): string =
   var blocks: string
-  for blk in doc.data:
+  for blk in doc.blocks:
     blocks.add blk.render
   let c = newContext(searchDirs=doc.searchDirs)
   c["blocks"] = blocks

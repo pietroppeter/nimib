@@ -13,7 +13,7 @@
   <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-<main>
+<article class="nb-doc">
 <h1>nimib 🐳</h1>
 <p>nim 👑 driven ⛵ publishing ✍</p>
 <p>🚧 working towards a 0.1 release 🚧</p>
@@ -80,8 +80,16 @@ examples/hello_nimib docs/hello_nimib.html &gt; examples/hello_nimib.md
 <li><a href="https://pietroppeter.github.io/nimib/hello_nimib.html">html</a></li>
 <li><a href="https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md">markdown</a></li>
 </ul>
-<h2>Advanced usage</h2>
-<h3>highlighting code</h3>
+<p>the internal api creates with <code>nbInit</code> two (ref) objects <code>nbDoc</code> and <code>nbBlock</code>.
+At every block of code or text <code>nbBlock</code> is updated and appended to <code>nbDoc</code>.</p>
+<p>Here are two examples that show how to abuse the internal api:</p>
+<ul>
+<li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a></li>
+<li><a href="https://pietroppeter.github.io/nimib/python.html">python</a></li>
+</ul>
+<p><em>Note</em>: the internal api is not stable and it will likely change but the
+general idea above is likely to stick</p>
+<h2>code highlighting</h2>
 <p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
 The script <code>docs/static/highlight.nim.js</code> contains highlighting only for nim language.
 The default css style is <code>docs/static/atom-one-light.css</code>.
@@ -114,6 +122,6 @@ and why <a href="https://www.theatlantic.com/science/archive/2016/01/a-major-cor
 <p>because <a href="https://github.com/oakes/vim_cubed#q--a">someone made it into an art form</a>
 and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can">imitation is the sincerest form of flattery</a></p>
 
-</main>
+</article>
 </body>
 </html>

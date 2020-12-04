@@ -73,9 +73,18 @@ output:
 * [html](https://pietroppeter.github.io/nimib/hello_nimib.html)
 * [markdown](https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md)
 
-## Advanced usage
+the internal api creates with `nbInit` two (ref) objects `nbDoc` and `nbBlock`.
+At every block of code or text `nbBlock` is updated and appended to `nbDoc`.
 
-### highlighting code
+Here are two examples that show how to abuse the internal api:
+
+* [nolan](https://pietroppeter.github.io/nimib/nolan.html)
+* [python](https://pietroppeter.github.io/nimib/python.html)
+
+*Note*: the internal api is not stable and it will likely change but the
+general idea above is likely to stick
+
+## code highlighting
 
 Code highlighting is provided by [highlight.js](https://highlightjs.org/).
 The script `docs/static/highlight.nim.js` contains highlighting only for nim language.

@@ -24,6 +24,11 @@ template nbInit*() =
   if dirExists(nbProjDir / "docs".RelativeDir):
     nbProjDir = nbProjDir / "docs".RelativeDir
   setCurrentDir nbProjDir
+  when defined(nbVerbose):
+    echo "nbThisFile: ", nbThisFile.string
+    echo "nbInitDir : ", nbInitDir.string
+    echo "nbUser    : ", nbUser
+    echo "nbProjDir : ", nbProjDir
 
   var
     nbDoc {.inject.}: NbDoc

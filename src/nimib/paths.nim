@@ -2,12 +2,12 @@ import "$nim/compiler/pathutils"
 export pathutils
 import os
 
-proc findNimbleDir*(dir: AbsoluteDir): AbsoluteDir = # not a func, walkFiles has ReadDirEffect
+proc findNimbleDir*(dir: AbsoluteDir): AbsoluteDir =
   ## finds a directory containing a .nimble file starting from `dir` and looking in parent directories.
   ## if no .nimble file is found it will return `dir`.
   result = dir
   for d in parentDirs(dir.string):
-    for f in walkFiles("*.nimble"):
+    for f in walkFiles( d / "*.nimble"):
       # stops at first nimble files it finds
       return d.AbsoluteDir
 

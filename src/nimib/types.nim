@@ -1,3 +1,5 @@
+import mustache
+
 type
   NbBlockKind* = enum
     nbkText = "nbText", nbkCode = "nbCode"
@@ -6,9 +8,8 @@ type
     body*: string
     output*: string
     error*: string
-  Renderer* = proc (doc: NbDoc): string {.closure.}
   NbDoc* = object
-    sourceFilename*, source*, filename*: string
-    searchDirs*: seq[string]
+    filename*, title*, author*: string
     blocks*: seq[NbBlock]
-    renderer*: Renderer
+    render*: proc (doc: NbDoc): string {.closure.}
+    context*: Context

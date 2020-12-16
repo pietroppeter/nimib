@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-  <title>docs\index.html</title>
+  <title>Nimib Docs</title>
   <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
@@ -22,7 +22,8 @@
 <li><a href="https://pietroppeter.github.io/nimib">documentation</a></li>
 </ul>
 <h2>👋 🌍 Example Usage</h2>
-<p><a href="https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.nim">examples/hello_nimib.nim</a></p>
+<p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello</a></p>
+<p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
 <pre><code class="language-nim">import strformat, strutils
 import nimib
 
@@ -71,30 +72,130 @@ nbText:
 nbSave # use nbShow to automatically open a browser tab with html output
 
 </code></pre>
-<p>compile and run:</p>
-<pre><code>nim c examples/hello_nimib
-examples/hello_nimib docs/hello_nimib.html &gt; examples/hello_nimib.md
-</code></pre>
-<p>output:</p>
+<!--TODO
+Note the following:
+
+  * the code that appears in the
+
+### Try it!
+
+*TODO*
+-->
+<h2>API</h2>
+<h3>external API</h3>
+<p>By external API we mean the following templates:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/hello_nimib.html">html</a></li>
-<li><a href="https://github.com/pietroppeter/nimib/blob/main/examples/hello_nimib.md">markdown</a></li>
+<li><code>nbInit</code> (<em>always required</em>): it initializes the notebook,
+the other templates are not accessible if nbInit is not called.</li>
+<li><code>nbText</code>: it is followed by any expression that evaluates to a string.
+this text is by default assumed to be markdown and it will be rendered as html
+thanks to <a href="https://github.com/soasme/nim-markdown">nim-markdown</a>.</li>
+<li><code>nbCode</code>: followed by a block of code, it will execute the code,
+and capture the output. It will be rendered in the final html document
+as a block of nim code followed by preformatted text.</li>
+<li><code>nbSave</code>: it is required to save the document to a file.
+Rendering takes place at this moment.
+By default the document will be save as an html (templated with <a href="https://github.com/soasme/nim-mustache">nim-mustache</a>)</li>
 </ul>
-<p>the internal api creates with <code>nbInit</code> two (ref) objects <code>nbDoc</code> and <code>nbBlock</code>.
-At every block of code or text <code>nbBlock</code> is updated and appended to <code>nbDoc</code>.</p>
+<p>other templates on top of the four basic ones will likely be added.</p>
+<h3>internal api</h3>
+<p><code>nbInit</code> creates two variables <code>nbDoc</code> and <code>nbBlock</code>, which are injected in the scope.
+At every block of code or text (or else) <code>nbBlock</code> is updated and added to <code>nbDoc</code>.
+<code>nbBlock</code> is a ref object, so changes done to it after a block will be reflected in
+the content of <code>nbDoc</code>.</p>
+<p>The specific types <code>NbDoc</code> and <code>NbBlock</code> are unstable and they will likely change,
+but it is likely that access the following elements will be guaranteed:</p>
+<ul>
+<li><code>nbDoc.blocks</code>: container of all the blocks</li>
+<li><code>nbDoc.render</code>: a closure from NbDoc to string that produces the rendered document</li>
+<li><code>nbBlock.output</code>: string with the output of a nbCode/nbText block (not yet rendered)</li>
+<li><code>nbBlock.code</code>: stringification of the code block through AST.
+if it appears different than what you typed it is because nim likes it better that way.
+In particular only documentation comments survive this process and normal comments will
+not appear.</li>
+</ul>
 <p>Here are two examples that show how to abuse the internal api:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a></li>
-<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a></li>
+<li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
+<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: finally the long awaited python-skin for nim! 😜</li>
 </ul>
-<p><em>Note</em>: the internal api is not stable and it will likely change but the
-general idea above is likely to stick</p>
-<h2>code highlighting</h2>
+<!--
+### extending the api
+
+*TODO*
+
+-->
+<h2>Rendering</h2>
+<h3>html rendering</h3>
+<p>There are two levels of html rendering.</p>
+<ol>
+<li><strong>render-in-the-small</strong>: rendering html fragments. This is mostly taken care by nim-markdown
+and by appropriate semantic tagging in render functions (this can be overriden).</li>
+<li><strong>render-in-the-large</strong>*: putting together html fragments and other elements to publish one or more documents.
+this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.</li>
+</ol>
+<h3>markdown rendering</h3>
+<p>For an example on how to output Markdown see <a href="https://github.com/pietroppeter/nimib/blob/main/docs/index.nim">docs/index.nim</a>,
+which automatically renders the <code>README.md</code> in the repo.</p>
+<h3>code highlighting</h3>
 <p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
-The script <code>docs/static/highlight.nim.js</code> contains highlighting only for nim language.
-The default css style is <code>docs/static/atom-one-light.css</code>.
-If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
+The script <code>docs/static/highlight.nim.js</code> contains highlighting assets only for nim language.
+The default css style for highlighting is <code>docs/static/atom-one-light.css</code>.</p>
+<p>If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
 (select all languages to find Nim) and make the appropriate change in <code>templates/head.mustache</code>.</p>
+<!--
+## static assets
+
+*TODO*
+
+## paths
+
+*TODO*
+
+default situation for single article that does not access filesystem:
+
+* you do not have to worry about nothing.
+  the new html will appear next to your nim file with same name and html extension
+
+if you need to change name or location of html output, or if you need to access
+filesystem (in particular if you need it for your web assets), this is what you need to know:
+
+* with nbInit a number of paths are initialized
+* we follow compiler/pathutils which is available (exported) from nim paths.
+  (along with os stuff also exported)
+* nbThisFilename (string): name of this file (with nim extension).
+* nbThisDir (RelativeDir): directory where this nim file resides
+* nbThisFile (RelativeFile): this should be a template that gives nbThisDir + nbThisFilename
+* npProjectDir (AbsoluteDir): the reference directory for the project.
+  looks for a nimble file starting from nbThisDir in parent dirs.
+  This should be the only Absolute path,
+  all other paths should be relative to this path.
+* nbProjectFile (RelativeFile): path (and also name since it is
+  relative to the nbProjectDir) of the nimble file found as reference for the project.
+  (what happens if multiple nimble files are found?)
+* nbCurDir (RelativeDir): template that returns current directory.
+  it should be set at the beginning as equal to nbProjectDir (with change of directory).
+* nbDoc.dir (RelativeDir): this is directory where the specific nbDoc
+  (there can be more than on) will be written to. Defaults to nbThisDir.
+* nbDoc.filename (string): name of the output document *without extension*
+  (default: nbThisFilename removing nim extension). or maybe with extension??
+  should I add some magic in order to have a change of filename to check
+  if it has extension and add it automatically?
+* nbDoc.ext (string): extension (default: html)
+* nbDoc.file (RelativeFile): nbDoc.dir + nbDoc.filename + nbDoc.ext
+* the above fields of nbDoc become then an API that should be guaranteed for NbDoc object.
+
+other thoughts
+
+- should I add a Filename and Ext distinct string to pathutils?
+- since I never remember which slash should I use maybe I could introduce
+a +/- operator that work on this distinct strings
+- also I should introduce readfile, writefile for this type of objects.
+
+## Future directions / Todos / Roadmap / The long run
+
+*TODO*
+-->
 <h2>❓ ❗ Q &amp; A</h2>
 <h3>why the name?</h3>
 <p>corruption of <a href="https://www.vocabulary.com/dictionary/Ninib">ninib</a>:</p>

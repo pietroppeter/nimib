@@ -6,6 +6,7 @@ nim 👑 driven ⛵ publishing ✍
 
 * [repository](https://github.com/pietroppeter/nimib)
 * [documentation](https://pietroppeter.github.io/nimib)
+* [ptest](https://pietroppeter.github.io/nimib/ptest.html)
 
 ## 👋 🌍 Example Usage
 

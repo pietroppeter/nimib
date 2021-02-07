@@ -20,6 +20,7 @@ nim :crown: driven :sailboat: publishing :writingHand:
 
 * [repository]({repo})
 * [documentation]({docs})
+* [ptest]({docs}/ptest.html)
 
 ## :wave: :earthAfrica: Example Usage
 

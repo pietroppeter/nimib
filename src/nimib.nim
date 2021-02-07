@@ -15,16 +15,20 @@ template nbInit*() =
     nbThisFile {.inject.} = instantiationInfo(-1, true).filename.AbsoluteFile
     thisTuple = nbThisFile.splitFile
     nbThisDir {.inject.}: AbsoluteDir = thisTuple.dir
-    nbThisName {.inject.}: string = thisTuple.name
-    nbThisExt {.inject.}: string = thisTuple.ext
-    nbInitDir {.inject.} = getCurrentDir().AbsoluteDir # current directory at initialization
+    nbThisName {.inject, used.}: string = thisTuple.name
+    nbThisExt {.inject, used.}: string = thisTuple.ext
+    nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
   var
     nbUser {.inject.}: string = getUser()
     nbProjDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
   if dirExists(nbProjDir / "docs".RelativeDir):
     nbProjDir = nbProjDir / "docs".RelativeDir
   setCurrentDir nbProjDir
-  when defined(nbVerbose):
+
+  proc relPath(path: AbsoluteFile | AbsoluteDir): string =
+    (path.relativeTo nbProjDir).string
+    
+  when defined(nbDebug):
     echo "nbThisFile: ", nbThisFile.string
     echo "nbInitDir : ", nbInitDir.string
     echo "nbUser    : ", nbUser

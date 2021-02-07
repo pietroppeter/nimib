@@ -1,13 +1,31 @@
 import types, strformat, strutils, markdown, mustache
 
+let mdCfg = initGfmConfig()
+
+proc renderMarkdown*(text: string): string =
+  markdown(text, config=mdCfg)
+
+proc renderHtmlTextOutput*(output: string): string =
+  # why complain if func? because I am using mdCfg?
+  renderMarkdown(output.strip)
+
+func renderHtmlCodeBodyEscapeTag*(body: string): string =
+  fmt"""<pre><code class="nim">{body.strip.escapeTag}</code></pre>""" & "\n"
+
+func renderHtmlCodeBody*(body: string): string =
+  fmt"""<pre><code class="nim">{body.strip}</code></pre>""" & "\n"
+
+func renderHtmlCodeOutput*(output: string): string =
+  fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
+
 proc renderHtmlBlock*(blk: NbBlock): string =
   case blk.kind
   of nbkText:
-    result = markdown(blk.output.strip)
+    result = blk.output.renderHtmlTextOutput
   of nbkCode:
-    result = fmt"""<pre><code class="nim">{blk.body.strip}</code></pre>""" & "\n"
+    result = blk.body.renderHtmlCodeBody
     if blk.output != "":
-      result.add fmt"<pre><samp>{blk.output.strip}</samp></pre>" & "\n"
+      result.add blk.output.renderHtmlCodeOutput
 
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>ptest.nim</title>
+  <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<main>
+<h1>Print-testing for nimib</h1>
+<p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
+<h2>Test Results ✅</h2>
+<table>
+<thead>
+<tr>
+<th><span style="color:blue">skip</span></th>
+<th><span style="color:red">fail</span></th>
+<th><span style="color:green">pass</span></th>
+<th>total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>4</td>
+</tr></tbody></table>
+<pre><samp><span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
+<hr />
+<h1>Implementation</h1>
+<p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
+taking into account specifics of nimib files: they already produce an output (html file).</p>
+<p>Imports and global variables:</p>
+<pre><code class="nim">var
+  test: TestCase
+  tests: seq[TestCase]</code></pre>
+<h3>test cases</h3>
+<p>for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)</p>
+<ul>
+<li>a test case will be skipped if it is not tracked in git</li>
+<li>a test case will be skipped if it does not have a corresponding html</li>
+<li>a test case will be skipped if it is modified/added in git</li>
+</ul>
+<pre><code class="nim">for file in walkDirRec(nbProjDir):
+  ## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)
+  if file.endsWith(".nim") and not file.name.startsWith("ptest"):
+    test = TestCase(file: file)
+    stdout.write "added test candidate: ", file.relPath
+  else:
+    continue
+  let html = changeFileExt(file, ".html")
+  if not file.isGitTracked:
+    test.skip = true
+    test.skipReason = srNotTrackedInGit
+    echo " -> skipped since it is not tracked in git"
+  elif not html.fileExists or not html.isGitTracked:
+    test.skip = true
+    test.skipReason = srNoHtmlFound
+    echo " -> skipped since it does not have a corresponding (git tracked) html file"
+  elif file.isGitChanged:
+    test.skip = true
+    test.skipReason = srChangedInGit
+    echo " -> skipped since it is changed in git"
+  else:
+    echo ""
+  tests.add test</code></pre>
+<pre><samp>added test candidate: hello.nim
+added test candidate: index.nim
+added test candidate: nolan.nim
+added test candidate: pythno.nim</samp></pre>
+<h3>performing test</h3>
+<p>for every non-skipped test case:</p>
+<ul>
+<li>if the corresponding html output is changed in git the test is failed</li>
+<li>copy the corresponding html to a tmp file</li>
+<li>find and execute the corresponding nim file</li>
+<li>if an error is found while compiling/executing, report a failure</li>
+<li>if a difference is reported between the corresponding html file and the temporary copy a failure is reported</li>
+<li>if no failure has been reported the test is reported as passed (and the temporary file is cleaned up)</li>
+</ul>
+<pre><code class="nim">for test in tests:
+  var
+    output: string
+    err: int
+  let
+    html = test.file.changeFileExt(".html")
+    tmp = test.file.changeFileExt(".tmp.html")
+    fileWithLink = test.file.relPath.aLink html.relPath
+  if test.skip:
+    stdout.write "[SKIP]".spanColor "blue"
+    echo " " & fileWithLink
+    continue
+  if html.isGitChanged:
+    test.fail = true
+    stdout.write "[FAIL]".spanColor "red"
+    echo " " & fileWithLink
+    echo "html file is changed in git. commit or revert and rerun test"
+    continue
+  copyFile(source = html, dest = tmp)
+  (output, err) = execCmdEx &"nim --verbosity:0 --hints:off r {test.file}"
+  if err != 0:
+    test.fail = true
+    stdout.write "[FAIL]".spanColor "red"
+    echo " " & fileWithLink
+    echo "Error during compile/run"
+    echo "output\n:", output
+    echo "err\n:", err
+    continue
+  (output, err) = execCmdEx(&"git diff --no-index {html} {tmp}")
+  if err != 0:
+    test.fail = true
+    stdout.write "[FAIL]".spanColor "red"
+    echo " " & fileWithLink
+    echo "Differences found in html file"
+    echo "output\n:", output
+    echo "err\n:", err
+    continue
+  stdout.write "[OK]".spanColor "green"
+  echo "   " & fileWithLink
+  removeFile(tmp)</code></pre>
+<pre><samp><span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
+<p>results are appended to previously save resultsBlock</p>
+<pre><code class="nim">let (skip, fail, pass) = tests.stats
+if fail > 0:
+  resultsBlock.output.add " ❌"
+else:
+  resultsBlock.output.add " ✅"
+let
+  skipHeader = "skip".spanColor "blue"
+  failHeader = "fail".spanColor "red"
+  passHeader = "pass".spanColor "green"
+resultsBlock.output.add &"\n|{skipHeader}|{failHeader}|{passHeader}|total|"
+resultsBlock.output.add &"\n|---|---|---|---|"
+resultsBlock.output.add &"\n|{skip}|{fail}|{pass}|{skip + fail + pass}|"
+resultsBlock.output.add &"\n\n{details.renderHtmlCodeOutput}"</code></pre>
+
+</main>
+</body>
+</html>

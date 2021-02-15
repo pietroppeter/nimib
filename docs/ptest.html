@@ -30,12 +30,13 @@
 <tr>
 <td>0</td>
 <td>0</td>
-<td>4</td>
-<td>4</td>
+<td>5</td>
+<td>5</td>
 </tr></tbody></table>
 <pre><samp><span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
 <span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
 <span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <hr />
 <h1>Implementation</h1>
@@ -78,6 +79,7 @@ taking into account specifics of nimib files: they already produce an output (ht
 <pre><samp>added test candidate: hello.nim
 added test candidate: index.nim
 added test candidate: nolan.nim
+added test candidate: penguins.nim
 added test candidate: pythno.nim</samp></pre>
 <h3>performing test</h3>
 <p>for every non-skipped test case:</p>
@@ -132,6 +134,7 @@ added test candidate: pythno.nim</samp></pre>
 <pre><samp><span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
 <span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
 <span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim">let (skip, fail, pass) = tests.stats

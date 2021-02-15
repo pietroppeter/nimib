@@ -53,6 +53,12 @@ template nbInit*() =
 
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
+  
+  template nbImage(url: string, caption = "") =
+    # TODO: fix this workaround with refactoring of NbBlock
+    nbBlock = NbBlock(kind: nbkImage, body: url)
+    nbBlock.output = caption
+    nbDoc.blocks.add nbBlock
 
   template nbSave =
     withDir(nbProjDir):

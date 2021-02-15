@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>penguins.nim</title>
+  <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<main>
+<h1>🐧 Exploring penguins with ggplotnim</h1>
+<p>We will explore the <a href="https://github.com/allisonhorst/palmerpenguins">palmer penguins dataset</a>
+with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></p>
+<pre><code class="nim">import
+  ggplotnim</code></pre>
+<p>we read penguins csv in ggplotnim <code>DataFrame</code></p>
+<pre><code class="nim">let df = toDf(readCsv("data/penguins.csv"))</code></pre>
+<p>let us see how it looks</p>
+<pre><code class="nim">echo df</code></pre>
+<pre><samp>Dataframe with 7 columns and 344 rows:
+                  Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
+               dtype:               string               string               object               object               object               object               string
+                    0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
+                    1               Adelie            Torgersen                 39.5                 17.4                  186                 3800               FEMALE
+                    2               Adelie            Torgersen                 40.3                   18                  195                 3250               FEMALE
+                    3               Adelie            Torgersen                   NA                   NA                   NA                   NA                   NA
+                    4               Adelie            Torgersen                 36.7                 19.3                  193                 3450               FEMALE
+                    5               Adelie            Torgersen                 39.3                 20.6                  190                 3650                 MALE
+                    6               Adelie            Torgersen                 38.9                 17.8                  181                 3625               FEMALE
+                    7               Adelie            Torgersen                 39.2                 19.6                  195                 4675                 MALE
+                    8               Adelie            Torgersen                 34.1                 18.1                  193                 3475                   NA
+                    9               Adelie            Torgersen                   42                 20.2                  190                 4250                   NA
+                   10               Adelie            Torgersen                 37.8                 17.1                  186                 3300                   NA
+                   11               Adelie            Torgersen                 37.8                 17.3                  180                 3700                   NA
+                   12               Adelie            Torgersen                 41.1                 17.6                  182                 3200               FEMALE
+                   13               Adelie            Torgersen                 38.6                 21.2                  191                 3800                 MALE
+                   14               Adelie            Torgersen                 34.6                 21.1                  198                 4400                 MALE
+                   15               Adelie            Torgersen                 36.6                 17.8                  185                 3700               FEMALE
+                   16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
+                   17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
+                   18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
+                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+<p>Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+The remaining 4 are numeric but they have datatype object. Why?</p>
+<p>Because that there are null values in those columns (interpreted as strings):</p>
+<pre><code class="nim">echo df["culmen_depth_mm", 1].kind
+echo df["culmen_depth_mm", 2].kind
+echo df["culmen_depth_mm", 3].kind
+echo df["flipper_length_mm", 2].kind
+echo df["flipper_length_mm", 3].kind</code></pre>
+<pre><samp>VFloat
+VFloat
+VString
+VInt
+VString</samp></pre>
+<p>Let's see how many penguins by species we have (and how do they relate to islands).</p>
+<pre><code class="nim">ggplot(df, aes("species", fill = "island")) + geom_bar() +
+    ggsave("images/penguins_count_species.png")</code></pre>
+<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="images/penguins_count_species.png" alt="Count of penguins by species">
+<figcaption>Count of penguins by species</figcaption>
+</figure>
+
+<p>We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
+are reported living on 3 islands (Biscoe, Dream, Torgersen).
+The majority of penguins are Adelie and they are distributed over the 3 islands.
+Gentoo penguins (second most common) almost all live on Biscoe,
+and Chinstrap penguins almost all live on Dream.</p>
+<p>We can confirm this with the following  image taken from the
+<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081">article</a>
+from where this dataset comes from:</p>
+<figure>
+<img src="https://storage.googleapis.com/plos-corpus-prod/10.1371/journal.pone.0090081/1/pone.0090081.g001.PNG_L?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=wombat-sa%40plos-prod.iam.gserviceaccount.com%2F20210215%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20210215T135054Z&X-Goog-Expires=3600&X-Goog-SignedHeaders=host&X-Goog-Signature=6855d7a3169bd8f37b9775e8ccad98064e1d0a3291de04d4938b1d317c20db9e5e0a067decf25a9e975d431ac6a2dae35ac3ead1f59de90f7b1c1773f26647d55e214ec41a62bd1669c286958154188ca06dd9f60010b58283036df06aa26943891f302c38f13347d0f0f41a3ac97b1ac0a5c92263dedc3b1fb105fa94f5a1ccc5ae1cf12877cb518d8c42cd5d1e24b9e18e8df746256d0f96113387dddbf845752c5b5cc74c371b18f29109c98796bee01bffcda200d50c717bd497734c9ce4e5355255a0dc448e0ec3b2214095881db82529419c185bb8280174edf6e418193ee529cc470c5f099256d42d9225c3475ea96ee217b1b5e8fec02716b341c436" alt="Penguins by Location">
+<figcaption>Penguins by Location</figcaption>
+</figure>
+
+<p>We do expect weight being correlated to some of the length measures
+(e.g. flipper length) with males being bigger than females.</p>
+<p>To plot this we need to remove all <code>NA</code>s:</p>
+<pre><code class="nim">let df1 = df.filter(f{c"body_mass_g" != "NA"})
+ggplot(df1, aes(x = "body_mass_g", y = "flipper_length_mm", color = "sex")) +
+    geom_point() +
+    ggsave("images/penguins_mass_vs_length_with_sex.png")</code></pre>
+<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
+<figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
+</figure>
+
+<p>A few things to remark:</p>
+<ul>
+<li>as expected body mass and flipper length are linearly correlated</li>
+<li>males are in general bigger than females but there appear 2 groups, possibly related to species</li>
+<li>we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)</li>
+</ul>
+<p>Let's now look at the same chart coloring by species instead of by sex (shape is not yet supported in ggplotnim):</p>
+<pre><code class="nim">ggplot(df1, aes(x = "body_mass_g", y = "flipper_length_mm", color = "species")) +
+    geom_point() +
+    ggsave("images/penguins_mass_vs_length_with_species.png")</code></pre>
+<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="images/penguins_mass_vs_length_with_species.png" alt="Penguins' mass vs flipper length (colored by species)">
+<figcaption>Penguins' mass vs flipper length (colored by species)</figcaption>
+</figure>
+
+<p>We can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger.</p>
+<p>As a final plot, I would like to (partly) reproduce a plot that &quot;shows&quot; the presence of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson's paradox</a> in this dataset,
+as reported by <a href="https://twitter.com/andrewheiss/status/1301166792627421186">this tweet</a>:</p>
+<pre><code class="nim">ggplot(df1, aes(x = "culmen_depth_mm", y = "body_mass_g", color = "species")) +
+    geom_point() +
+    ggsave("images/penguins_simpson.png")</code></pre>
+<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill">
+<figcaption>Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill</figcaption>
+</figure>
+
+<p>We can see that Gentoo penguins, although in general bigger, have a &quot;thinner&quot; bill (see image below for meaning of bill and culmen)!</p>
+<figure>
+<img src="https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&name=4096x4096" alt="Penguin's bill and culmen explained (Artwork by @allison_horst)">
+<figcaption>Penguin's bill and culmen explained (Artwork by @allison_horst)</figcaption>
+</figure>
+
+
+</main>
+</body>
+</html>

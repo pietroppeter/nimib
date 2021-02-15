@@ -26,6 +26,16 @@ proc renderHtmlBlock*(blk: NbBlock): string =
     result = blk.body.renderHtmlCodeBody
     if blk.output != "":
       result.add blk.output.renderHtmlCodeOutput
+  of nbkImage:
+    let
+      image_url = blk.body
+      caption = blk.output
+    result = fmt"""
+<figure>
+<img src="{image_url}" alt="{caption}">
+<figcaption>{caption}</figcaption>
+</figure>
+""" & "\n"
 
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:
@@ -47,6 +57,11 @@ proc renderMarkBlock(blk: NbBlock) : string =
         result.add "```\n" & blk.output & "```\n\n"
     of nbkText:
       result = blk.output & "\n"
+    of nbkImage:
+      let
+        image_url = blk.body
+        alt_text = blk.output
+      result = "![" & alt_text & "](" & image_url & ")"
 
 proc renderMarkBlocks(doc: NbDoc) : string =
   for blk in doc.blocks:

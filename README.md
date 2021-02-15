@@ -6,7 +6,6 @@ nim 👑 driven ⛵ publishing ✍
 
 * [repository](https://github.com/pietroppeter/nimib)
 * [documentation](https://pietroppeter.github.io/nimib)
-* [ptest](https://pietroppeter.github.io/nimib/ptest.html)
 
 ## 👋 🌍 Example Usage
 
@@ -73,6 +72,12 @@ Note the following:
 
 *TODO*
 -->
+
+### Other examples of usage
+
+* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README at the same time (you are reading one of the two)
+* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [ptest](https://pietroppeter.github.io/nimib/ptest.html): print testing for nimib
 
 ## API
 

@@ -20,7 +20,6 @@ nim :crown: driven :sailboat: publishing :writingHand:
 
 * [repository]({repo})
 * [documentation]({docs})
-* [ptest]({docs}/ptest.html)
 
 ## :wave: :earthAfrica: Example Usage
 
@@ -41,6 +40,12 @@ Note the following:
 
 *TODO*
 -->
+
+### Other examples of usage
+
+* [index]({docs}/index.html): generate an HTML and a README at the same time (you are reading one of the two)
+* [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [ptest]({docs}/ptest.html): print testing for nimib
 
 ## API
 

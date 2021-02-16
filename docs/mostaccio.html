@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>mostaccio.nim</title>
+  <!-- https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+<main>
+<h1>Example of usage of mustache</h1>
+<p>From <a href="https://github.com/soasme/nim-mustache">nim-mustache</a>.</p>
+<h2>Usage</h2>
+<p>Step 1.</p>
+<pre><code class="nim">import
+  mustache, tables</code></pre>
+<p>Step 2.</p>
+<pre><code class="nim">var c = newContext()
+c["i"] = 1
+c["f"] = 1.0
+c["s"] = "hello world"
+c["a"] = @[{"k": "v"}.toTable]
+c["t"] = {"k": "v"}.toTable
+c["l"] = proc (s: string; c: Context): string =
+  "&lt;b&gt;" & s.render(c) & "&lt;/b&gt;"</code></pre>
+<p>Step 3.</p>
+<pre><code class="nim">let s = """{{i}} {{f}} {{s}}
+{{#a}}
+  {{k}}
+{{/a}}
+
+{{#t}}
+  {{k}}
+{{/t}}
+
+{{#l}}
+  {{s}}
+{{/l}}
+"""
+echo(s.render(c))</code></pre>
+<pre><samp>1 1.0 hello world
+  v
+
+  v
+
+<b>  hello world
+</b></samp></pre>
+
+</main>
+</body>
+</html>

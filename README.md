@@ -77,6 +77,8 @@ Note the following:
 
 * [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README at the same time (you are reading one of the two)
 * [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache
 * [ptest](https://pietroppeter.github.io/nimib/ptest.html): print testing for nimib
 
 ## API

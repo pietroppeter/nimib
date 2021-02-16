@@ -45,6 +45,8 @@ Note the following:
 
 * [index]({docs}/index.html): generate an HTML and a README at the same time (you are reading one of the two)
 * [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache
 * [ptest]({docs}/ptest.html): print testing for nimib
 
 ## API

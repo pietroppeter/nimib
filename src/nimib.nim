@@ -1,6 +1,7 @@
 import nimib / [types, blocks, docs, paths, renders]
 export types, blocks, docs, renders, paths # paths exports pathutils
 import os, mustache
+export mustache
 
 # should I put used all around?
 template nbInit*() =

@@ -15,7 +15,7 @@
 <main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ❌</h2>
+<h2>Test Results ✅</h2>
 <table>
 <thead>
 <tr>
@@ -28,165 +28,18 @@
 <tbody>
 <tr>
 <td>0</td>
-<td>2</td>
-<td>6</td>
+<td>0</td>
+<td>8</td>
 <td>8</td>
 </tr></tbody></table>
-<pre><samp><span style="color:red">[FAIL]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/cheatsheet.html b/C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html
-index 1c7bc82..3f55f10 100644
---- a/C:/Users/ppeterlongo/nimib/docs/cheatsheet.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html
-@@ -9,7 +9,10 @@
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-<ul>
-<li>
-<script>hljs.initHighlightingOnLoad();</script>  </head>
-</li>
-</ul>
-<ul>
-<li>
-<script>hljs.initHighlightingOnLoad();</script><link rel='stylesheet' href='static/atom-one-light.css'>
-</li>
-<li>
-<script src="static/highlight.nim.js"></script>
-</li>
-<li>
-<script>hljs.initHighlightingOnLoad();</script>
-+</head></li>
-</ul>
- <body>
- <main>
- <h1>Markdown Cheatsheet</h1>
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/cheatsheet.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html.
-The file will have its original line endings in your working directory
-<h2>err
-:1
+<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:red">[FAIL]</span> <a href="index.html">index.nim</a>
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/index.html b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
-index 42fed5f..3cdc275 100644
---- a/C:/Users/ppeterlongo/nimib/docs/index.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
-@@ -20,10 +20,6 @@
- <li><a href="https://github.com/pietroppeter/nimib">repository</a></li>
- <li><a href="https://pietroppeter.github.io/nimib">documentation</a></li>
- </ul>
--&lt;!--brief overview mentioning
--- overview of use cases, features, workflows
--- design philosophy (simple API, sane defaults, easy customization, nim all the way)
----&gt;
- <h2>👋 🌍 Example Usage</h2>
- <p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello</a></p>
- <p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
-@@ -85,19 +81,13 @@ Note the following:
- <em>TODO</em>
- --&gt;
- <h3>Other examples of usage</h3>
--<p>in this repo:</p>
- <ul>
--<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
-+<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README at the same time (you are reading one of the two)</li>
- <li><a href="https://pietroppeter.github.io/nimib/penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
--<li><a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
- <li><a href="https://pietroppeter.github.io/nimib/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
- <li><a href="https://pietroppeter.github.io/nimib/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache</li>
- <li><a href="https://pietroppeter.github.io/nimib/ptest.html">ptest</a>: print testing for nimib</li>
- </ul>
--<p>elsewhere:</p>
--<ul>
--<li><a href="https://pietroppeter.github.io/adventofnim/index.html">adventofnim</a>: solutions for advent of code in nim</li>
--</ul>
- <h2>API</h2>
- <h3>external API</h3>
- <p>By external API we mean the following templates:</p>
-@@ -131,11 +121,10 @@ if it appears different than what you typed it is because nim likes it better th
- In particular only documentation comments survive this process and normal comments will
- not appear.</li>
- </ul>
--<!-- change nbBlock.body to nbBlock.code? -->
- <p>Here are two examples that show how to abuse the internal api:</p>
- <ul>
- <li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
--<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
-+<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: finally the long awaited python-skin for nim! 😜</li>
- </ul>
- &lt;!--
- ### extending the api
-@@ -155,26 +144,18 @@ this is delegated to nim-mustache and to manual creation and update of json and
- <h3>markdown rendering</h3>
- <p>For an example on how to output Markdown see <a href="https://github.com/pietroppeter/nimib/blob/main/docs/index.nim">docs/index.nim</a>,
- which automatically renders the <code>README.md</code> in the repo.</p>
--<h2>Other features</h2>
--<h3>styling</h3>
--<p>Default style is provided by <a href="https://watercss.kognise.dev/">water.css</a>.
--Style can be customized.</p>
- <h3>code highlighting</h3>
- <p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
- The script <code>docs/static/highlight.nim.js</code> contains highlighting assets only for nim language.
- The default css style for highlighting is <code>docs/static/atom-one-light.css</code>.</p>
- <p>If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
- (select all languages to find Nim) and make the appropriate change in <code>templates/head.mustache</code>.</p>
--<h3>latex</h3>
--<p>Rendering latex expressions is an opt-in feature provided by <a href="https://katex.org/">katex</a>.
--The delimiter supported are <code>$</code> for inline-math and <code>$$</code> for display math.
--Latex is rendered through an autodetection during document loading.</p>
- &lt;!--
- ## static assets
-
-<em>TODO</em>
-
--## filesystem
-+## paths
-
-<em>TODO</em>
-
-@@ -218,31 +199,9 @@ other thoughts
- a +/- operator that work on this distinct strings
- - also I should introduce readfile, writefile for this type of objects.
-
--## Roadmap</h2>
-<h2>-focus for 0.2:</h2>
-<h2>-- use it and fix stuff around
--- expand features for blogging use case
--- clean up API and improve implementation (especially for NbBlock and rendering)</h2>
-<h2>-later on:</h2>
-<h2>-- more features to build static sites (other than blogging, for example library documentation or mdbook)
--- interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
--- nimib executable for scaffolding and to support different publishing workflows
--- possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
--- dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)</h2>
-<ul>
-<li>-## Thanks</li>
-<li>-to:</li>
-<li>-* soasme for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
--* clonk for help in a critical piece of code early on (see SO question)
--* baf03 for tempfile, which elegantly fills a stdlib gap
-+## Future directions / Todos / Roadmap / The long run</li>
-</ul>
-<p>+<em>TODO</em>
---&gt;</p>
- <h2>❓ ❗ Q &amp; A</h2>
- <h3>why the name?</h3>
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.tmp.html.
-The file will have its original line endings in your working directory
-<p>err
-:1
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
 <span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
-<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre></p>
+<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <hr />
 <h1>Implementation</h1>
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
@@ -283,154 +136,9 @@ added test candidate: pythno.nim</samp></pre>
   stdout.write "[OK]".spanColor "green"
   echo "   " & fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp><span style="color:red">[FAIL]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/cheatsheet.html b/C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html
-index 1c7bc82..3f55f10 100644
---- a/C:/Users/ppeterlongo/nimib/docs/cheatsheet.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html
-@@ -9,7 +9,10 @@
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
--  <script>hljs.initHighlightingOnLoad();</script>  </head>
-+  <script>hljs.initHighlightingOnLoad();</script><link rel='stylesheet' href='static/atom-one-light.css'>
-+  <script src="static/highlight.nim.js"></script>
-+  <script>hljs.initHighlightingOnLoad();</script>
-+</head>
- <body>
- <main>
- <h1>Markdown Cheatsheet</h1>
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/cheatsheet.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/cheatsheet.tmp.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:red">[FAIL]</span> <a href="index.html">index.nim</a>
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/index.html b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
-index 42fed5f..3cdc275 100644
---- a/C:/Users/ppeterlongo/nimib/docs/index.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
-@@ -20,10 +20,6 @@
- <li><a href="https://github.com/pietroppeter/nimib">repository</a></li>
- <li><a href="https://pietroppeter.github.io/nimib">documentation</a></li>
- </ul>
--<!--brief overview mentioning
--- overview of use cases, features, workflows
--- design philosophy (simple API, sane defaults, easy customization, nim all the way)
---->
- <h2>👋 🌍 Example Usage</h2>
- <p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello</a></p>
- <p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
-@@ -85,19 +81,13 @@ Note the following:
- *TODO*
- -->
- <h3>Other examples of usage</h3>
--<p>in this repo:</p>
- <ul>
--<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
-+<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README at the same time (you are reading one of the two)</li>
- <li><a href="https://pietroppeter.github.io/nimib/penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
--<li><a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
- <li><a href="https://pietroppeter.github.io/nimib/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
- <li><a href="https://pietroppeter.github.io/nimib/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache</li>
- <li><a href="https://pietroppeter.github.io/nimib/ptest.html">ptest</a>: print testing for nimib</li>
- </ul>
--<p>elsewhere:</p>
--<ul>
--<li><a href="https://pietroppeter.github.io/adventofnim/index.html">adventofnim</a>: solutions for advent of code in nim</li>
--</ul>
- <h2>API</h2>
- <h3>external API</h3>
- <p>By external API we mean the following templates:</p>
-@@ -131,11 +121,10 @@ if it appears different than what you typed it is because nim likes it better th
- In particular only documentation comments survive this process and normal comments will
- not appear.</li>
- </ul>
--<!-- change nbBlock.body to nbBlock.code? -->
- <p>Here are two examples that show how to abuse the internal api:</p>
- <ul>
- <li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
--<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
-+<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: finally the long awaited python-skin for nim! 😜</li>
- </ul>
- <!--
- ### extending the api
-@@ -155,26 +144,18 @@ this is delegated to nim-mustache and to manual creation and update of json and
- <h3>markdown rendering</h3>
- <p>For an example on how to output Markdown see <a href="https://github.com/pietroppeter/nimib/blob/main/docs/index.nim">docs/index.nim</a>,
- which automatically renders the <code>README.md</code> in the repo.</p>
--<h2>Other features</h2>
--<h3>styling</h3>
--<p>Default style is provided by <a href="https://watercss.kognise.dev/">water.css</a>.
--Style can be customized.</p>
- <h3>code highlighting</h3>
- <p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
- The script <code>docs/static/highlight.nim.js</code> contains highlighting assets only for nim language.
- The default css style for highlighting is <code>docs/static/atom-one-light.css</code>.</p>
- <p>If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
- (select all languages to find Nim) and make the appropriate change in <code>templates/head.mustache</code>.</p>
--<h3>latex</h3>
--<p>Rendering latex expressions is an opt-in feature provided by <a href="https://katex.org/">katex</a>.
--The delimiter supported are <code>$</code> for inline-math and <code>$$</code> for display math.
--Latex is rendered through an autodetection during document loading.</p>
- <!--
- ## static assets
- 
- *TODO*
- 
--## filesystem
-+## paths
- 
- *TODO*
- 
-@@ -218,31 +199,9 @@ other thoughts
- a +/- operator that work on this distinct strings
- - also I should introduce readfile, writefile for this type of objects.
- 
--## Roadmap
--
--focus for 0.2:
--
--- use it and fix stuff around
--- expand features for blogging use case
--- clean up API and improve implementation (especially for NbBlock and rendering)
--
--later on:
--
--- more features to build static sites (other than blogging, for example library documentation or mdbook)
--- interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
--- nimib executable for scaffolding and to support different publishing workflows
--- possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
--- dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
--
--
--## Thanks
--
--to:
--
--* soasme for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
--* clonk for help in a critical piece of code early on (see SO question)
--* baf03 for tempfile, which elegantly fills a stdlib gap
-+## Future directions / Todos / Roadmap / The long run
- 
-+*TODO*
- -->
- <h2>❓ ❗ Q &amp; A</h2>
- <h3>why the name?</h3>
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.tmp.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>

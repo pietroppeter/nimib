@@ -15,7 +15,7 @@
 <main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ❌</h2>
+<h2>Test Results ✅</h2>
 <table>
 <thead>
 <tr>
@@ -27,25 +27,20 @@
 </thead>
 <tbody>
 <tr>
-<td>4</td>
-<td>5</td>
+<td>0</td>
 <td>0</td>
 <td>9</td>
+<td>9</td>
 </tr></tbody></table>
-<pre><samp><span style="color:blue">[SKIP]</span> <a href="assets.html">assets.nim</a>
-<span style="color:blue">[SKIP]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:red">[FAIL]</span> <a href="hello.html">hello.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
-<span style="color:red">[FAIL]</span> <a href="mostaccio.html">mostaccio.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:red">[FAIL]</span> <a href="nolan.html">nolan.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:blue">[SKIP]</span> <a href="numerical.html">numerical.nim</a>
-<span style="color:red">[FAIL]</span> <a href="penguins.html">penguins.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:red">[FAIL]</span> <a href="pythno.html">pythno.nim</a>
-html file is changed in git. commit or revert and rerun test</samp></pre>
+<pre><samp><span style="color:green">[OK]</span>   <a href="assets.html">assets.nim</a>
+<span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
+<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
+<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
+<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
+<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <hr />
 <h1>Implementation</h1>
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
@@ -84,13 +79,13 @@ taking into account specifics of nimib files: they already produce an output (ht
   else:
     echo ""
   tests.add test</code></pre>
-<pre><samp>added test candidate: assets.nim -> skipped since it is not tracked in git
-added test candidate: cheatsheet.nim -> skipped since it is changed in git
+<pre><samp>added test candidate: assets.nim
+added test candidate: cheatsheet.nim
 added test candidate: hello.nim
-added test candidate: index.nim -> skipped since it is changed in git
+added test candidate: index.nim
 added test candidate: mostaccio.nim
 added test candidate: nolan.nim
-added test candidate: numerical.nim -> skipped since it is changed in git
+added test candidate: numerical.nim
 added test candidate: penguins.nim
 added test candidate: pythno.nim</samp></pre>
 <h3>performing test</h3>
@@ -143,20 +138,15 @@ added test candidate: pythno.nim</samp></pre>
   stdout.write "[OK]".spanColor "green"
   echo "   " & fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp><span style="color:blue">[SKIP]</span> <a href="assets.html">assets.nim</a>
-<span style="color:blue">[SKIP]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:red">[FAIL]</span> <a href="hello.html">hello.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
-<span style="color:red">[FAIL]</span> <a href="mostaccio.html">mostaccio.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:red">[FAIL]</span> <a href="nolan.html">nolan.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:blue">[SKIP]</span> <a href="numerical.html">numerical.nim</a>
-<span style="color:red">[FAIL]</span> <a href="penguins.html">penguins.nim</a>
-html file is changed in git. commit or revert and rerun test
-<span style="color:red">[FAIL]</span> <a href="pythno.html">pythno.nim</a>
-html file is changed in git. commit or revert and rerun test</samp></pre>
+<pre><samp><span style="color:green">[OK]</span>   <a href="assets.html">assets.nim</a>
+<span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
+<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
+<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
+<span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
+<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
+<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim">let (skip, fail, pass) = tests.stats
 if fail > 0:

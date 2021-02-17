@@ -1,4 +1,5 @@
-import mustache
+import mustache, tables
+export mustache, tables
 
 type
   NbBlockKind* = enum
@@ -13,3 +14,5 @@ type
     blocks*: seq[NbBlock]
     render*: proc (doc: NbDoc): string {.closure.}
     context*: Context
+    partials*: Table[string, string]
+    templateDirs*: seq[string]

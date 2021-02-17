@@ -8,7 +8,7 @@ import nimib, strformat, strutils
 nbInit
 let filename_default_style = nbDoc.filename.replace(".html", "_default_style.html")
 when not defined(numericalDefaultStyle):
-  nbDoc.context.addPartial("style", """<link rel="stylesheet" href="https://latex.now.sh/style.css">""")
+  nbDoc.partials["style"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
   nbDoc.context["no_default_style"] = true
   # I should also change font size, see https://katex.org/docs/font.html
   let otherStyle = fmt"; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_"

@@ -20,7 +20,8 @@ proc getUser*: string =
 proc setCurrentDir*(dir: AbsoluteDir) =
   dir.string.setCurrentDir
 
-proc readFile*(file: AbsoluteFile | RelativeFile): string = readFile(file.string)
+proc read*(file: AbsoluteFile | RelativeFile): string = readFile(file.string)
+proc write*(file: AbsoluteFile | RelativeFile, content: string) = writeFile(file.string, content)
 
 iterator walkDirRec*(dir: AbsoluteDir): AbsoluteFile {.tags: [ReadDirEffect].} =
   for file in walkDirRec(dir.string, relative=false):

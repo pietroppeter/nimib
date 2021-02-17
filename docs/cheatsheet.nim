@@ -10,10 +10,10 @@ nbInit
 ]#
 
 # customize source highlighting:
-nbDoc.context.addPartial("highlight", """
+nbDoc.partials["highlight"] = """
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>""")
+<script>hljs.initHighlightingOnLoad();</script>"""
 nbDoc.context["no_default_highlight"] = true
 
 # how to create a custom block:

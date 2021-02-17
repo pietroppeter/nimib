@@ -1,6 +1,5 @@
 import types, strformat, strutils, markdown, mustache
 export escapeTag
-from mustachepkg/values import searchTable 
 import tables
 
 let mdCfg = initGfmConfig()
@@ -73,6 +72,3 @@ proc renderMarkBlocks(doc: NbDoc) : string =
 proc renderMark*(doc: NbDoc): string =
   # I might want to add a frontmatter later
   return doc.renderMarkBlocks
-
-proc addPartial*(c: var Context, name, value: string) =
-  c.searchTable({name: value}.toTable)

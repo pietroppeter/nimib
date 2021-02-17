@@ -1,7 +1,11 @@
-import nimib / [types, blocks, docs, paths, renders]
-export types, blocks, docs, renders, paths # paths exports pathutils
-import os, mustache
-export mustache
+import nimib / [types, blocks, docs, renders, paths]
+export types, blocks, docs, renders, paths
+# types exports mustache, tables
+# paths exports pathutils
+import os
+from mustachepkg/values import searchTable, searchDirs
+export searchTable, searchDirs
+
 
 # should I put used all around?
 template nbInit*() =
@@ -40,7 +44,9 @@ template nbInit*() =
     nbBlock {.inject.}: NbBlock
 
   nbDoc.render = renderHtml
-  nbDoc.context = newContext(searchDirs = @["./", "./templates/"])
+  nbDoc.context = newContext(searchDirs = @[])
+  nbDoc.partials = initTable[string, string]()
+  nbDoc.templateDirs = @["./", "./templates/"]
   # the rest could be actually be put directly in the context? (possibly keep the same API using dot setters and getters?)
   nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
   # probably no for all those that I need to know the exact type. Filename for example I need to be a string
@@ -62,6 +68,9 @@ template nbInit*() =
     nbDoc.blocks.add nbBlock
 
   template nbSave =
+    # order is relevant: partials has higher priority
+    nbDoc.context.searchTable(nbDoc.partials)
+    nbDoc.context.searchDirs(nbDoc.templateDirs)
     withDir(nbProjDir):
       write nbDoc
 

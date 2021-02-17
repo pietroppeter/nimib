@@ -6,7 +6,7 @@ nbDoc.title = "Nimib Docs"
 let
   repo = "https://github.com/pietroppeter/nimib"
   docs = "https://pietroppeter.github.io/nimib"
-  hello = readFile("hello.nim".RelativeFile)
+  hello = read("hello.nim".RelativeFile)
   assets = "docs/static"
   highlight = "highlight.nim.js"
   defaultHighlightCss = "atom-one-light.css"

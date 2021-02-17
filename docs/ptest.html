@@ -10,12 +10,12 @@
   <link rel='stylesheet' href='static/atom-one-light.css'>
   <script src="static/highlight.nim.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
-</head>
+  </head>
 <body>
 <main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ✅</h2>
+<h2>Test Results ❌</h2>
 <table>
 <thead>
 <tr>
@@ -27,19 +27,149 @@
 </thead>
 <tbody>
 <tr>
+<td>2</td>
+<td>6</td>
 <td>0</td>
-<td>0</td>
-<td>8</td>
 <td>8</td>
 </tr></tbody></table>
-<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
-<span style="color:green">[OK]</span>   <a href="latex.html">latex.nim</a>
-<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
-<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
-<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
-<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
+<pre><samp><span style="color:blue">[SKIP]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
+<span style="color:red">[FAIL]</span> <a href="hello.html">hello.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/hello.html b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+index 33de9ce..bdb46f1 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/hello.html
++++ b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+<ul>
+<li>
+</head>
++</head>
+</li>
+</ul>
+ <body>
+ <main>
+ <h2>Secret talk with a computer</h2>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1
+<span style="color:red">[FAIL]</span> <a href="index.html">index.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/index.html b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
+index 3cdc275..8b17491 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/index.html
++++ b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
+@@ -10,7 +10,7 @@</p>
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>nimib 🐳</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1
+<span style="color:blue">[SKIP]</span> <a href="latex.html">latex.nim</a>
+<span style="color:red">[FAIL]</span> <a href="mostaccio.html">mostaccio.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+index 3c77e28..adf6bb6 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
++++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+@@ -10,7 +10,7 @@</p>
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>Example of usage of mustache</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1
+<span style="color:red">[FAIL]</span> <a href="nolan.html">nolan.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/nolan.html b/C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html
+index d030487..6578e4a 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/nolan.html
++++ b/C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html
+@@ -10,7 +10,7 @@</p>
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>kLciimre</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/nolan.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1
+<span style="color:red">[FAIL]</span> <a href="penguins.html">penguins.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/penguins.html b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+index c97dd4c..1e70734 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/penguins.html
++++ b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+@@ -10,7 +10,7 @@</p>
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>🐧 Exploring penguins with ggplotnim</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1
+<span style="color:red">[FAIL]</span> <a href="pythno.html">pythno.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/pythno.html b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+index ba42cec..cf59d3b 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/pythno.html
++++ b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+@@ -10,7 +10,7 @@</p>
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>Pythno</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html.
+The file will have its original line endings in your working directory
+<p>err
+:1</samp></pre></p>
 <hr />
 <h1>Implementation</h1>
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
@@ -78,10 +208,10 @@ taking into account specifics of nimib files: they already produce an output (ht
   else:
     echo ""
   tests.add test</code></pre>
-<pre><samp>added test candidate: cheatsheet.nim
+<pre><samp>added test candidate: cheatsheet.nim -> skipped since it is changed in git
 added test candidate: hello.nim
 added test candidate: index.nim
-added test candidate: latex.nim
+added test candidate: latex.nim -> skipped since it is changed in git
 added test candidate: mostaccio.nim
 added test candidate: nolan.nim
 added test candidate: penguins.nim
@@ -136,14 +266,146 @@ added test candidate: pythno.nim</samp></pre>
   stdout.write "[OK]".spanColor "green"
   echo "   " & fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
-<span style="color:green">[OK]</span>   <a href="latex.html">latex.nim</a>
-<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
-<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
-<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
-<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
+<pre><samp><span style="color:blue">[SKIP]</span> <a href="cheatsheet.html">cheatsheet.nim</a>
+<span style="color:red">[FAIL]</span> <a href="hello.html">hello.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/hello.html b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+index 33de9ce..bdb46f1 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/hello.html
++++ b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h2>Secret talk with a computer</h2>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+<span style="color:red">[FAIL]</span> <a href="index.html">index.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/index.html b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
+index 3cdc275..8b17491 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/index.html
++++ b/C:/Users/ppeterlongo/nimib/docs/index.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>nimib 🐳</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/index.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+<span style="color:blue">[SKIP]</span> <a href="latex.html">latex.nim</a>
+<span style="color:red">[FAIL]</span> <a href="mostaccio.html">mostaccio.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+index 3c77e28..adf6bb6 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
++++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>Example of usage of mustache</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+<span style="color:red">[FAIL]</span> <a href="nolan.html">nolan.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/nolan.html b/C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html
+index d030487..6578e4a 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/nolan.html
++++ b/C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>kLciimre</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/nolan.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/nolan.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+<span style="color:red">[FAIL]</span> <a href="penguins.html">penguins.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/penguins.html b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+index c97dd4c..1e70734 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/penguins.html
++++ b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>🐧 Exploring penguins with ggplotnim</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+<span style="color:red">[FAIL]</span> <a href="pythno.html">pythno.nim</a>
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/pythno.html b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+index ba42cec..cf59d3b 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/pythno.html
++++ b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+@@ -10,7 +10,7 @@
+   <link rel='stylesheet' href='static/atom-one-light.css'>
+   <script src="static/highlight.nim.js"></script>
+   <script>hljs.initHighlightingOnLoad();</script>
+-  </head>
++</head>
+ <body>
+ <main>
+ <h1>Pythno</h1>
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1</samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim">let (skip, fail, pass) = tests.stats
 if fail > 0:

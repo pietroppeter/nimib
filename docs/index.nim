@@ -21,6 +21,11 @@ nim :crown: driven :sailboat: publishing :writingHand:
 * [repository]({repo})
 * [documentation]({docs})
 
+<!--brief overview mentioning
+- overview of use cases, features, workflows
+- design philosophy (simple API, sane defaults, easy customization, nim all the way)
+-->
+
 ## :wave: :earthAfrica: Example Usage
 
 First have a look at the following html document: [hello]({docs}/hello.html)
@@ -43,11 +48,18 @@ Note the following:
 
 ### Other examples of usage
 
-* [index]({docs}/index.html): generate an HTML and a README at the same time (you are reading one of the two)
+in this repo:
+
+* [index]({docs}/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
 * [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache
 * [ptest]({docs}/ptest.html): print testing for nimib
+
+elsewhere:
+
+* [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 
 ## API
 
@@ -86,11 +98,12 @@ but it is likely that access the following elements will be guaranteed:
     if it appears different than what you typed it is because nim likes it better that way.
     In particular only documentation comments survive this process and normal comments will
     not appear.
+<!-- change nbBlock.body to nbBlock.code? -->
 
 Here are two examples that show how to abuse the internal api:
 
 * [nolan]({docs}/nolan.html): how to mess up the timeline of blocks :hourglass_flowing_sand:
-* [pythno]({docs}/pythno.html): finally the long awaited python-skin for nim! :stuck_out_tongue_winking_eye:
+* [pythno]({docs}/pythno.html): a reminder that nim is not python :stuck_out_tongue_winking_eye:
 
 <!--
 ### extending the api
@@ -115,6 +128,13 @@ There are two levels of html rendering.
 For an example on how to output Markdown see [docs/index.nim]({repo}/blob/main/docs/index.nim),
 which automatically renders the `README.md` in the repo.
 
+## Other features
+
+### styling
+
+Default style is provided by [water.css](https://watercss.kognise.dev/).
+Style can be customized.
+
 ### code highlighting
 
 Code highlighting is provided by [highlight.js](https://highlightjs.org/).
@@ -124,12 +144,18 @@ The default css style for highlighting is `{assets}/{defaultHighlightCss}`.
 If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
 (select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.
 
+### latex
+
+Rendering latex expressions is an opt-in feature provided by [katex](https://katex.org/).
+The delimiter supported are `$` for inline-math and `$$` for display math.
+Latex is rendered through an autodetection during document loading.
+
 <!--
 ## static assets
 
 *TODO*
 
-## paths
+## filesystem
 
 *TODO*
 
@@ -173,9 +199,31 @@ other thoughts
 a +/- operator that work on this distinct strings
 - also I should introduce readfile, writefile for this type of objects.
 
-## Future directions / Todos / Roadmap / The long run
+## Roadmap
 
-*TODO*
+focus for 0.2:
+
+- use it and fix stuff around
+- expand features for blogging use case
+- clean up API and improve implementation (especially for NbBlock and rendering)
+
+later on:
+
+- more features to build static sites (other than blogging, for example library documentation or mdbook)
+- interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
+- nimib executable for scaffolding and to support different publishing workflows
+- possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
+- dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
+
+
+## Thanks
+
+to:
+
+* soasme for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
+* clonk for help in a critical piece of code early on (see SO question)
+* baf03 for tempfile, which elegantly fills a stdlib gap
+
 -->
 
 ## :question: :exclamation: Q & A

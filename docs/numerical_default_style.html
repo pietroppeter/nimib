@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>numerical.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='static/atom-one-light.css'>
+  <script src="static/highlight.nim.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>
+</head>
+<body>
+<main>
+<h1>Using NumericalNim</h1>
+<p>Example of usage of <a href="https://github.com/hugogranstrom/numericalnim">numericalnim</a>.</p>
+<p>This document shows how to do the following things in nimib:</p>
+<ul>
+<li>apply (or not) a custom style (<a href="https://latex.now.sh/">latex.css</a>); <em>you are looking at default style, for custom style <a href="numerical.html">click here</a></em></li>
+<li>using latex rendering of equations (thanks to <a href="https://katex.org/">katex</a>)</li>
+<li>having as output an html table (using standard markdown converter to table)</li>
+</ul>
+<pre><code class="nim">import
+  math, numericalnim</code></pre>
+<h2>ODE</h2>
+<h3>Example 3 from <a href="https://tutorial.math.lamar.edu/classes/de/eulersmethod.aspx">Paul's Online Notes</a></h3>
+<p>We want to solve the IVP (Initial Value Problem) for this linear first order differential equation:</p>
+<p>$$y' - y = - \frac{1}{2} e^{\frac{t}{2}} \sin(5t) + 5e^{\frac{t}{2}}\cos(5t) \qquad y(0) = 0$$</p>
+<p>This ODE has an analytical solution:</p>
+<p>$$y(t) = e^{\frac{t}{2}}\sin(5t)$$</p>
+<p>We want to find the approximation to the solution and compare it with the analytical solution at $t=5$.</p>
+<p>We will use two fixed timestep methods to find the solution:</p>
+<ul>
+<li>Heun's 2nd order method (<code>Heun2</code>)</li>
+<li>classic 4th order Runge-Kutta (<code>RK4</code>)</li>
+</ul>
+<p>As timestamps we will use $h=0.1, 0.05, 0.01$.</p>
+<p>First we translate the ODE as $y'=f(y,t)$ with $f$:</p>
+<pre><code class="nim">proc f(t, y: float; ctx: NumContext[float]): float =
+  y - 0.5 * exp(0.5 * t) * sin(5 * t) + 5 * exp(0.5 * t) * cos(5 * t)
+
+proc y(t: float): float =
+  ## analytical solution
+  exp(0.5 * t) * sin(5 * t)
+
+let y0 = 0.0
+## we will not be using the NumContext object
+var ctx = newNumContext[float]()
+## first derivative that will be used
+echo "y\'(0): ", f(0, y0, ctx)
+## expected solution
+let y5 = y(5)
+echo "y(5): ", y5</code></pre>
+<pre><samp>y'(0): 5.0
+y(5): -1.612374396254655</samp></pre>
+<p>We want the solution to be available for every point in $[0, 5]$ with timestep $h=0.05$</p>
+<pre><code class="nim">let tspan = arange(0.0, 5.0, 0.05, includeEnd = true)
+echo tspan[0 .. 2], " . . . ", tspan[^3 .. ^1]</code></pre>
+<pre><samp>@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]</samp></pre>
+<p>We compute the solution according to our selected 2 methods and 3 timesteps:</p>
+<pre><code class="nim">let
+  options1 = newODEoptions(dt = 0.1)
+  options2 = newODEoptions(dt = 0.05)
+  options3 = newODEoptions(dt = 0.01)
+let
+  (t1hn, y1hn) = solveODE(f, y0, tspan, options = options1, integrator = "Heun2")
+  (t2hn, y2hn) = solveODE(f, y0, tspan, options = options2, integrator = "Heun2")
+  (t3hn, y3hn) = solveODE(f, y0, tspan, options = options3, integrator = "Heun2")
+  (t1rk, y1rk) = solveODE(f, y0, tspan, options = options1, integrator = "RK4")
+  (t2rk, y2rk) = solveODE(f, y0, tspan, options = options2, integrator = "RK4")
+  (t3rk, y3rk) = solveODE(f, y0, tspan, options = options3, integrator = "RK4")
+## all returned time are the same as timespan (is this always true for fixed timestep methods?)
+assert t1hn == tspan
+assert t2hn == tspan
+assert t3hn == tspan
+assert t1rk == tspan
+assert t2rk == tspan
+assert t3rk == tspan
+## solutions
+echo "Heun2:"
+echo y1hn[^1]
+echo y2hn[^1]
+echo y3hn[^1]
+echo "RK4:"
+echo y1rk[^1]
+echo y2rk[^1]
+echo y3rk[^1]
+echo "Analytical:"
+echo y5</code></pre>
+<pre><samp>Heun2:
+-1.127319598144045
+-1.482155016263979
+-1.606852796633675
+RK4:
+-1.613192730557637
+-1.612423305325993
+-1.612374472003556
+Analytical:
+-1.612374396254655</samp></pre>
+<p>As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.</p>
+<p><strong>Table 1.</strong> Percentage errors</p>
+<table>
+<thead>
+<tr>
+<th>Timestep</th>
+<th align="right">Heun2</th>
+<th align="right">RK4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$h=0.1$</td>
+<td align="right">-30.083%</td>
+<td align="right">-0.051%</td>
+</tr>
+<tr>
+<td>$h=0.05$</td>
+<td align="right">-8.076%</td>
+<td align="right">-0.003%</td>
+</tr>
+<tr>
+<td>$h=0.01$</td>
+<td align="right">-0.342%</td>
+<td align="right">-0.000%</td>
+</tr></tbody></table>
+
+</main>
+</body>
+</html>

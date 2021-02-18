@@ -130,7 +130,6 @@ but it is likely that access the following elements will be guaranteed:
     if it appears different than what you typed it is because nim likes it better that way.
     In particular only documentation comments survive this process and normal comments will
     not appear.
-<!-- change nbBlock.body to nbBlock.code? -->
 
 Here are two examples that show how to abuse the internal api:
 
@@ -228,24 +227,44 @@ other thoughts
 
 - should I add a Filename and Ext distinct string to pathutils?
 - since I never remember which slash should I use maybe I could introduce
-a +/- operator that work on this distinct strings
+  a +/- operator that work on this distinct strings
 - also I should introduce readfile, writefile for this type of objects.
-
+-->
+<!--
 ## Roadmap
+
+remember to open issue for 1.x detailing clean ups and fixing expected before adding new features.
+
+Examples:
+  - escapeTag should be default or not (currently it is not, I think it should)
+  - improve nbImage/nbFigure
+  - possiblity to show full source (button in footer? show directly for pythno and nolan)
+  - nbHtml? integrate an html DSL?
+  - doubleDoc and better handling of Md vs Html
+  - highlight done in nim
+  - add timing data in blocks
+  - add logging block by block
+  - add error management (at least runtime, possibly also compiletime)
+  - add plots for numerical?
 
 focus for 0.2:
 
 - use it and fix stuff around
 - expand features for blogging use case
+  + frontmatter for md documents
+  + easy publication to dev.to
+  + publish date, update, categories, author
+  + a basic blogging theme
+  + investigate how established software does it (jekyll, hugo, ...)
 - clean up API and improve implementation (especially for NbBlock and rendering)
 
 later on:
 
 - more features to build static sites (other than blogging, for example library documentation or mdbook)
-- interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
+- client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
 - nimib executable for scaffolding and to support different publishing workflows
 - possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
-- dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
+- server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
 
 
 ## Thanks

@@ -195,13 +195,14 @@ other thoughts
 
 - should I add a Filename and Ext distinct string to pathutils?
 - since I never remember which slash should I use maybe I could introduce
-a +/- operator that work on this distinct strings
+  a +/- operator that work on this distinct strings
 - also I should introduce readfile, writefile for this type of objects.
-
+-->
+<!--
 ## Roadmap
 
-TODO:
-open issue for 1.x detailing clean ups and fixing expected before adding new features.
+remember to open issue for 1.x detailing clean ups and fixing expected before adding new features.
+
 Examples:
   - escapeTag should be default or not (currently it is not, I think it should)
   - improve nbImage/nbFigure

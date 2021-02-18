@@ -15,7 +15,7 @@
 <main>
 <h1>Assets</h1>
 <pre><code class="nim">import
-  strformat</code></pre>
+  strformat, strutils</code></pre>
 <p>List of assets that should be available in order to be able to create
 a working html document starting from a single nim file and nothing else:</p>
 <pre><code class="nim">let assetFiles: seq[(string, RelativeFile)] = @[
@@ -26,14 +26,20 @@ a working html document starting from a single nim file and nothing else:</p>
 <p>In order to have them available from the library I need to generate
 the <code>nimib\assets.nim</code> module reading from this files.</p>
 <pre><code class="nim">let assetModuleFile = "../src/nimib/assets.nim".RelativeFile
-let tripleQuote = "\"\"\""
-var assetContent: string
+let
+  tripleQuote = "\"\"\""
+  tripleQuoteReplacement = tripleQuote & &" & \"\\\"\\\"\\\"\" & " &
+      tripleQuote
+var assetModuleContent: string
 for (name, file) in assetFiles:
-  assetContent.add fmt"""let {name}* = {tripleQuote}
-{file.read}
-{tripleQuote}
+  let content = file.read.replace(tripleQuote, tripleQuoteReplacement)
+  if tripleQuote in content:
+    echo "ERROR tripleQuote in ", name
+  assetModuleContent.add fmt"""let {name}* = {tripleQuote}
+{content}{tripleQuote}
 """
-assetModuleFile.write assetContent</code></pre>
+assetModuleFile.write assetModuleContent</code></pre>
+<pre><samp>ERROR tripleQuote in highlightJs</samp></pre>
 
 </main>
 </body>

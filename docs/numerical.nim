@@ -3,7 +3,7 @@ import nimib, strformat, strutils
   Example of:
     - custom style
     - using latex
-    - table output
+    - table output (and another way to show nbText source)
 ]#
 nbInit
 let filename_default_style = nbDoc.filename.replace(".html", "_default_style.html")
@@ -104,8 +104,13 @@ nbCode:
   echo "Analytical:"
   echo y5
 nbText: "As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps."
-proc pe(yApprox: float): string = fmt"{(100.0*abs(yApprox - y5) / y5):.3f}%"
+nbText: "To compute percentage error of each method at $y(5)$ I will use:"
+nbCode:
+  proc pe(yApprox: float): string = fmt"{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%"
+  echo pe y1hn[^1]  ## used like this
 nbText: fmt"""
+The following table is built as a Markdown table in a `nbText` block.
+
 **Table 1.** Percentage errors
 
 Timestep | Heun2         | RK4
@@ -113,7 +118,14 @@ Timestep | Heun2         | RK4
 $h=0.1$  | {pe y1hn[^1]} | {pe y1rk[^1]}
 $h=0.05$ | {pe y2hn[^1]} | {pe y2rk[^1]}
 $h=0.01$ | {pe y3hn[^1]} | {pe y3rk[^1]}
+
+and here is the code for this Markdown block:
 """ # right alignment of numbers does not seem to work. is this an issue of latex.css?
+let mdCode = nbBlock.code
+nbCode:
+  discard
+nbBlock.code = mdCode
+# add a show Markdown source. It would be nice when hovering a code block to show (on the side? how to do it on mobile?) the call code (nbText: or other)
 when defined(numericalDefaultStyle):
   nbDoc.filename = filename_default_style
   

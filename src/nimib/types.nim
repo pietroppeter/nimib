@@ -6,7 +6,7 @@ type
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
     kind*: NbBlockKind
-    body*: string
+    code*: string
     output*: string
     #error*: string # have not used this one yet
   NbDoc* = object

@@ -285,14 +285,13 @@ var hljs=function(){"use strict";function e(t){
   built_in:"int int8 int16 int32 int64 uint uint8 uint16 uint32 uint64 float float32 float64 bool char string cstring pointer expr stmt void auto any range array openarray varargs seq set clong culong cchar cschar cshort cint csize clonglong cfloat cdouble clongdouble cuchar cushort cuint culonglong cstringarray semistatic"
   },contains:[{className:"meta",begin:/\{\./,end:/\.\}/,relevance:10},{
   className:"string",begin:/[a-zA-Z]\w*"/,end:/"/,contains:[{begin:/""/}]},{
-  className:"string",begin:/([a-zA-Z]\w*)?"""/,end:/"""/},e.QUOTE_STRING_MODE,{
+  className:"string",begin:/([a-zA-Z]\w*)?""" & "\"\"\"" & """/,end:/""" & "\"\"\"" & """/},e.QUOTE_STRING_MODE,{
   className:"type",begin:/\b[A-Z]\w+\b/,relevance:0},{className:"number",
   relevance:0,variants:[{
   begin:/\b(0[xX][0-9a-fA-F][_0-9a-fA-F]*)('?[iIuU](8|16|32|64))?/},{
   begin:/\b(0o[0-7][_0-7]*)('?[iIuUfF](8|16|32|64))?/},{
   begin:/\b(0(b|B)[01][_01]*)('?[iIuUfF](8|16|32|64))?/},{
-  begin:/\b(\d[_\d]*)('?[iIuUfF](8|16|32|64))?/}]},e.HASH_COMMENT_MODE]})})());
-"""
+  begin:/\b(\d[_\d]*)('?[iIuUfF](8|16|32|64))?/}]},e.HASH_COMMENT_MODE]})})());"""
 let highlightCss* = """
 /*
 
@@ -390,7 +389,6 @@ hue-6-2: #c18401
 .hljs-link {
   text-decoration: underline;
 }
-
 """
 let doc* = """
 <!DOCTYPE html>
@@ -407,8 +405,7 @@ let doc* = """
 {{> right }}
 {{> footer }}
 </body>
-</html>
-"""
+</html>"""
 let head* = """
 <head>
   <title>{{title}}{{^title}}nimib document{{/title}}</title>
@@ -430,5 +427,4 @@ let head* = """
   {{> head_other }}
   {{! I am not sure how to avoid the following </head> tag not to be indented }}
 </head>
-
 """

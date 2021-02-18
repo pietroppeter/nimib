@@ -4,10 +4,10 @@ import types, capture
 macro toStr*(body: untyped): string =
   (body.toStrLit)
 
-proc newBlock*(kind: NbBlockKind, body: string): NbBlock =
+proc newBlock*(kind: NbBlockKind, code: string): NbBlock =
   # I cannot use this directly in nbBlocks (nbText, nbCode, ...)
   # or it will substitute kind and body fields with their values
-  NbBlock(kind: kind, body: body)
+  NbBlock(kind: kind, code: code)
 
 template manageErrors*(identBlock, body: untyped) =
   try:
@@ -29,7 +29,7 @@ template nbTextBlock*(identBlock, identContainer, body: untyped) =
 
 proc echoCodeBlock(b: NbBlock) =
   when not defined(nimibQuiet):
-    echo "```nim" & b.body & "\n```\n"
+    echo "```nim" & b.code & "\n```\n"
     if b.output != "":
       echo "```\n" & b.output & "```\n"
 

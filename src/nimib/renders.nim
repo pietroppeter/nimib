@@ -11,11 +11,11 @@ proc renderHtmlTextOutput*(output: string): string =
   # why complain if func? because I am using mdCfg?
   renderMarkdown(output.strip)
 
-func renderHtmlCodeBodyEscapeTag*(body: string): string =
-  fmt"""<pre><code class="nim">{body.strip.escapeTag}</code></pre>""" & "\n"
+func renderHtmlCodeBodyEscapeTag*(code: string): string =
+  fmt"""<pre><code class="nim">{code.strip.escapeTag}</code></pre>""" & "\n"
 
-func renderHtmlCodeBody*(body: string): string =
-  fmt"""<pre><code class="nim">{body.strip}</code></pre>""" & "\n"
+func renderHtmlCodeBody*(code: string): string =
+  fmt"""<pre><code class="nim">{code.strip}</code></pre>""" & "\n"
 
 func renderHtmlCodeOutput*(output: string): string =
   fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
@@ -25,12 +25,12 @@ proc renderHtmlBlock*(blk: NbBlock): string =
   of nbkText:
     result = blk.output.renderHtmlTextOutput
   of nbkCode:
-    result = blk.body.renderHtmlCodeBody
+    result = blk.code.renderHtmlCodeBody
     if blk.output != "":
       result.add blk.output.renderHtmlCodeOutput
   of nbkImage:
     let
-      image_url = blk.body
+      image_url = blk.code
       caption = blk.output
     result = fmt"""
 <figure>
@@ -54,14 +54,14 @@ proc renderMarkBlock(blk: NbBlock) : string =
   case blk.kind:
     of nbkCode:
       # these two lines currently taken from blocks.nim; should be removed from there
-      result.add "```nim" & blk.body & "\n```\n\n"
+      result.add "```nim" & blk.code & "\n```\n\n"
       if blk.output != "":
         result.add "```\n" & blk.output & "```\n\n"
     of nbkText:
       result = blk.output & "\n"
     of nbkImage:
       let
-        image_url = blk.body
+        image_url = blk.code
         alt_text = blk.output
       result = "![" & alt_text & "](" & image_url & ")"
 
@@ -72,3 +72,18 @@ proc renderMarkBlocks(doc: NbDoc) : string =
 proc renderMark*(doc: NbDoc): string =
   # I might want to add a frontmatter later
   return doc.renderMarkBlocks
+
+#[
+  Notes for planned refactoring on rendering:
+    - RenderPlan complex object
+    - table of single render procs (name -> closure)
+    - list of names (e.g. code, output, block)
+    - rendering is:
+      + go through names in the list, apply closure and save result in context
+      + last context name is final output of rendering
+  Comments:
+    - table allows customizing a single step of renderPlan
+    - list allows easy skipping of plan, adding new steps to plan
+  Example:
+    - 
+]#

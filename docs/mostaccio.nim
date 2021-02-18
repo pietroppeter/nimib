@@ -22,7 +22,7 @@ block:
     c["a"] = @[{"k": "v"}.toTable]
     c["t"] = {"k": "v"}.toTable
     c["l"] = proc(s: string, c: Context): string = "<b>" & s.render(c) & "</b>"
-  nbBlock.body = nbBlock.body.escapeTag
+  nbBlock.code = nbBlock.code.escapeTag
   nbText: "Step 3."
   nbCode:
     let s = """
@@ -54,7 +54,7 @@ block:
 {{/highlight}}
 """
     echo s.render c
-  nbBlock.body = nbBlock.body.escapeTag
+  nbBlock.code = nbBlock.code.escapeTag
   nbBlock.output = nbBlock.output.escapeTag
   nbText: "In order to get the default tag probably rendered I had to escape it (both in code and output)"
   nbCode:

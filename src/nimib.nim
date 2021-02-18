@@ -63,7 +63,7 @@ template nbInit*() =
   
   template nbImage(url: string, caption = "") =
     # TODO: fix this workaround with refactoring of NbBlock
-    nbBlock = NbBlock(kind: nbkImage, body: url)
+    nbBlock = NbBlock(kind: nbkImage, code: url)
     nbBlock.output = caption
     nbDoc.blocks.add nbBlock
 

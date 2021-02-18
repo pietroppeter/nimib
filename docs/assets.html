@@ -33,13 +33,10 @@ let
 var assetModuleContent: string
 for (name, file) in assetFiles:
   let content = file.read.replace(tripleQuote, tripleQuoteReplacement)
-  if tripleQuote in content:
-    echo "ERROR tripleQuote in ", name
   assetModuleContent.add fmt"""let {name}* = {tripleQuote}
 {content}{tripleQuote}
 """
 assetModuleFile.write assetModuleContent</code></pre>
-<pre><samp>ERROR tripleQuote in highlightJs</samp></pre>
 
 </main>
 </body>

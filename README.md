@@ -236,7 +236,7 @@ other thoughts
 remember to open issue for 1.x detailing clean ups and fixing expected before adding new features.
 
 Examples:
-  - escapeTag should be default or not (currently it is not, I think it should)
+  - escapeTag should be default or not (currently it is not, I think it should) <- remember to use escapeCode instead of escapeTag: https://github.com/soasme/nim-markdown/blob/master/src/markdown.nim#L385
   - improve nbImage/nbFigure
   - possiblity to show full source (button in footer? show directly for pythno and nolan)
   - nbHtml? integrate an html DSL?

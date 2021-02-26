@@ -68,9 +68,12 @@ template nbInit*() =
     nbDoc.blocks.add nbBlock
 
   template nbSave =
-    # order is relevant: partials has higher priority
-    nbDoc.context.searchTable(nbDoc.partials)
+    # order is relevant: directories have higher priority. rationale:
+    #   - in memory partial contain default mustache assets
+    #   - to override/customize (for a nuch of documents) the best way is to modify a version on file
+    #   - in case you need to manage additional exceptions for a single document add a new set of partials before calling nbSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
+    nbDoc.context.searchTable(nbDoc.partials)
     withDir(nbProjDir):
       write nbDoc
 

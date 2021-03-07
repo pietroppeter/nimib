@@ -1,4 +1,5 @@
 import nimib / [types, blocks, docs, renders, paths]
+from nimib / assets import nil
 export types, blocks, docs, renders, paths
 # types exports mustache, tables
 # paths exports pathutils
@@ -46,7 +47,14 @@ template nbInit*() =
   nbDoc.render = renderHtml
   nbDoc.context = newContext(searchDirs = @[])
   nbDoc.partials = initTable[string, string]()
+  nbDoc.partials["doc"] = assets.doc
+  nbDoc.partials["head"] = assets.head
   nbDoc.templateDirs = @["./", "./templates/"]
+
+  # in order to have default assets in memory:
+  #   - load in partials the default mustache (doc and head)
+  #   - check for existence of static assets, if they are not present load stuff in memory (and make sure partial will load them)
+
   # the rest could be actually be put directly in the context? (possibly keep the same API using dot setters and getters?)
   nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
   # probably no for all those that I need to know the exact type. Filename for example I need to be a string

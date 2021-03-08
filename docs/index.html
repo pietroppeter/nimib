@@ -8,8 +8,6 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-  <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/highlight.nim.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
   </head>
 <body>
 <main>
@@ -27,54 +25,52 @@
 <h2>👋 🌍 Example Usage</h2>
 <p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello</a></p>
 <p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
-<pre><code class="language-nim">import strformat, strutils
-import nimib
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
+<span class="hljs-keyword">import</span> nimib
 
 nbInit
 
-nbText: &quot;&quot;&quot;
+nbText: <span class="hljs-string">&quot;&quot;&quot;
 ## Secret talk with a computer
 Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
 and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
 ### A secret message
 Inside this document is hidden a secret message. I will ask the computer to spit it out:
-&quot;&quot;&quot;
+&quot;&quot;&quot;</span>
 
-let secret = [104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
+<span class="hljs-keyword">let</span> secret = [<span class="hljs-number">104</span>, <span class="hljs-number">101</span>, <span class="hljs-number">108</span>, <span class="hljs-number">108</span>, <span class="hljs-number">111</span>, <span class="hljs-number">44</span>, <span class="hljs-number">32</span>, <span class="hljs-number">119</span>, <span class="hljs-number">111</span>, <span class="hljs-number">114</span>, <span class="hljs-number">108</span>, <span class="hljs-number">100</span>]
 
 nbCode:
-  echo secret
+  <span class="hljs-keyword">echo</span> secret
 
-nbText: fmt&quot;&quot;&quot;
+nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
 what does this integer sequence mean?
 Am I supposed to [recognize it](https://oeis.org/search?q={secret.join(&quot;%2C+&quot;)}&amp;language=english&amp;go=Search)?
 
 ### A cryptoanalytic weapon
 Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
-a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;
+a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;</span>
 
 nbCode:
-  func decode(secret: openArray[int]): string =
-    ## classified by NSA as &lt;a href=&quot;https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf&quot;&gt;TOP SECRET&lt;/a&gt;
-    # so secret that they do not want me to tell you and they will remove this message!
-    for c in secret:
-      result.add char(c)
+  <span class="hljs-keyword">func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
+    <span class="hljs-comment">## classified by NSA as &lt;a href=&quot;https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf&quot;&gt;TOP SECRET&lt;/a&gt;</span>
+    <span class="hljs-comment"># so secret that they do not want me to tell you and they will remove this message!</span>
+    <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
+      <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
 
-nbText: &quot;&quot;&quot;
+nbText: <span class="hljs-string">&quot;&quot;&quot;
   ### The great revelation
   Now I can just apply it to my secret message and
-  finally decrypt what the computer wants to tell me:&quot;&quot;&quot;
+  finally decrypt what the computer wants to tell me:&quot;&quot;&quot;</span>
 
 nbCode:
-  let msg = decode secret
-  echo msg
+  <span class="hljs-keyword">let</span> msg = decode secret
+  <span class="hljs-keyword">echo</span> msg
 
 nbText:
-  fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;
+  <span class="hljs-string">fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;</span>
 
-nbSave # use nbShow to automatically open a browser tab with html output
-
-</code></pre>
+nbSave <span class="hljs-comment"># use nbShow to automatically open a browser tab with html output</span></code></pre>
 <!--TODO
 Note the following:
 
@@ -87,12 +83,12 @@ Note the following:
 <h3>Other examples of usage</h3>
 <p>in this repo:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
-<li><a href="https://pietroppeter.github.io/nimib/penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
-<li><a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
-<li><a href="https://pietroppeter.github.io/nimib/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
-<li><a href="https://pietroppeter.github.io/nimib/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache</li>
-<li><a href="https://pietroppeter.github.io/nimib/ptest.html">ptest</a>: print testing for nimib</li>
+<li><a href="%7Bdocs%7D/index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
+<li><a href="%7Bdocs%7D/penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
+<li><a href="%7Bdocs%7D/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
+<li><a href="%7Bdocs%7D/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
+<li><a href="%7Bdocs%7D/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache</li>
+<li><a href="%7Bdocs%7D/ptest.html">ptest</a>: print testing for nimib</li>
 </ul>
 <p>elsewhere:</p>
 <ul>
@@ -133,8 +129,8 @@ not appear.</li>
 </ul>
 <p>Here are two examples that show how to abuse the internal api:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
-<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
+<li><a href="%7Bdocs%7D/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
+<li><a href="%7Bdocs%7D/pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
 </ul>
 <!--
 ### extending the api
@@ -152,7 +148,7 @@ and by appropriate semantic tagging in render functions (this can be overriden).
 this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.</li>
 </ol>
 <h3>markdown rendering</h3>
-<p>For an example on how to output Markdown see <a href="https://github.com/pietroppeter/nimib/blob/main/docs/index.nim">docs/index.nim</a>,
+<p>For an example on how to output Markdown see <a href="%7Brepo%7D/blob/main/docs/index.nim">docs/index.nim</a>,
 which automatically renders the <code>README.md</code> in the repo.</p>
 <h2>Other features</h2>
 <h3>styling</h3>
@@ -160,8 +156,8 @@ which automatically renders the <code>README.md</code> in the repo.</p>
 Style can be customized.</p>
 <h3>code highlighting</h3>
 <p>Code highlighting is provided by <a href="https://highlightjs.org/">highlight.js</a>.
-The script <code>docs/static/highlight.nim.js</code> contains highlighting assets only for nim language.
-The default css style for highlighting is <code>docs/static/atom-one-light.css</code>.</p>
+The script <code>{assets}/{highlight}</code> contains highlighting assets only for nim language.
+The default css style for highlighting is <code>{assets}/{defaultHighlightCss}</code>.</p>
 <p>If you want to change the style pick one using <a href="https://highlightjs.org/static/demo/">highlight demo page</a>
 (select all languages to find Nim) and make the appropriate change in <code>templates/head.mustache</code>.</p>
 <h3>latex</h3>

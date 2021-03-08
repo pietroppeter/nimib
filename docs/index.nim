@@ -31,11 +31,10 @@ nim :crown: driven :sailboat: publishing :writingHand:
 First have a look at the following html document: [hello]({docs}/hello.html)
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
-
-```nim
-{hello}
-```
-
+""".emojize
+nbCode: discard
+nbBlock.code = "\n" & hello
+nbText: """
 <!--TODO
 Note the following:
 

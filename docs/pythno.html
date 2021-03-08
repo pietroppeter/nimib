@@ -8,19 +8,17 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-  <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/highlight.nim.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
   </head>
 <body>
 <main>
 <h1>Pythno</h1>
-<pre><code class="nim">def repeat(text: str, num: int) -> str:
-  result = ''
-  for i in range(num):
-    result += text
-  return result
+<pre><code class="nim hljs">def repeat(text: str, num: <span class="hljs-built_in">int</span>) -&gt; str:
+  <span class="hljs-literal">result</span> = <span class="hljs-string">''</span>
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num):
+    <span class="hljs-literal">result</span> += text
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">result</span>
   
-print(repeat("_this_is_not_python", 6))</code></pre>
+print(repeat(<span class="hljs-string">&quot;_this_is_not_python&quot;</span>, <span class="hljs-number">6</span>))</code></pre>
 <pre><samp>_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python</samp></pre>
 
 </main>

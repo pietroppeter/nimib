@@ -18,6 +18,7 @@ First have a look at the following html document: [hello](https://pietroppeter.g
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
 
+
 ```nim
 import strformat, strutils
 import nimib
@@ -68,6 +69,7 @@ nbSave # use nbShow to automatically open a browser tab with html output
 
 ```
 
+
 <!--TODO
 Note the following:
 
@@ -82,12 +84,12 @@ Note the following:
 
 in this repo:
 
-* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
-* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
-* [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
-* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
-* [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache
-* [ptest](https://pietroppeter.github.io/nimib/ptest.html): print testing for nimib
+* [index]({docs}/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
+* [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
+* [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache
+* [ptest]({docs}/ptest.html): print testing for nimib
 
 elsewhere:
 
@@ -133,8 +135,8 @@ but it is likely that access the following elements will be guaranteed:
 
 Here are two examples that show how to abuse the internal api:
 
-* [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
-* [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
+* [nolan]({docs}/nolan.html): how to mess up the timeline of blocks ⏳
+* [pythno]({docs}/pythno.html): a reminder that nim is not python 😜
 
 <!--
 ### extending the api
@@ -156,7 +158,7 @@ There are two levels of html rendering.
 
 ### markdown rendering
 
-For an example on how to output Markdown see [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim),
+For an example on how to output Markdown see [docs/index.nim]({repo}/blob/main/docs/index.nim),
 which automatically renders the `README.md` in the repo.
 
 ## Other features
@@ -169,8 +171,8 @@ Style can be customized.
 ### code highlighting
 
 Code highlighting is provided by [highlight.js](https://highlightjs.org/).
-The script `docs/static/highlight.nim.js` contains highlighting assets only for nim language.
-The default css style for highlighting is `docs/static/atom-one-light.css`.
+The script `{assets}/{highlight}` contains highlighting assets only for nim language.
+The default css style for highlighting is `{assets}/{defaultHighlightCss}`.
 
 If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
 (select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.

@@ -14,7 +14,7 @@ nbDoc.partials["highlight"] = """
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>"""
-nbDoc.context["no_default_highlight"] = true
+nbDoc.context["no_default_highlight_css"] = true
 
 # how to create a custom block:
 func wrapMarkdown(code: string): string =

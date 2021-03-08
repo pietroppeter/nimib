@@ -1,6 +1,7 @@
 import types, strformat, strutils, markdown, mustache
 export escapeTag
 import tables
+import highlight
 
 let mdCfg = initGfmConfig()
 
@@ -14,8 +15,9 @@ proc renderHtmlTextOutput*(output: string): string =
 func renderHtmlCodeBodyEscapeTag*(code: string): string =
   fmt"""<pre><code class="nim">{code.strip.escapeTag}</code></pre>""" & "\n"
 
-func renderHtmlCodeBody*(code: string): string =
-  fmt"""<pre><code class="nim">{code.strip}</code></pre>""" & "\n"
+proc renderHtmlCodeBody*(code: string): string =
+  let highlit = highlightNim(code)
+  result = fmt"""<pre><code class="nim hljs">{highlit.strip}</code></pre>""" & "\n"
 
 func renderHtmlCodeOutput*(output: string): string =
   fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"

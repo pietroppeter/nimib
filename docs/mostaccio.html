@@ -8,8 +8,6 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-  <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/highlight.nim.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
   </head>
 <body>
 <main>
@@ -17,19 +15,19 @@
 <p>From <a href="https://github.com/soasme/nim-mustache">nim-mustache</a>.</p>
 <h2>Usage</h2>
 <p>Step 1.</p>
-<pre><code class="nim">import
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
   mustache, tables</code></pre>
 <p>Step 2.</p>
-<pre><code class="nim">var c = newContext()
-c["i"] = 1
-c["f"] = 1.0
-c["s"] = "hello world"
-c["a"] = @[{"k": "v"}.toTable]
-c["t"] = {"k": "v"}.toTable
-c["l"] = proc (s: string; c: Context): string =
-  "&lt;b&gt;" & s.render(c) & "&lt;/b&gt;"</code></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> c = newContext()
+c[<span class="hljs-string">&quot;i&quot;</span>] = <span class="hljs-number">1</span>
+c[<span class="hljs-string">&quot;f&quot;</span>] = <span class="hljs-number">1.0</span>
+c[<span class="hljs-string">&quot;s&quot;</span>] = <span class="hljs-string">&quot;hello world&quot;</span>
+c[<span class="hljs-string">&quot;a&quot;</span>] = @[{<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable]
+c[<span class="hljs-string">&quot;t&quot;</span>] = {<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable
+c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">proc</span> (s: <span class="hljs-built_in">string</span>; c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> =
+  <span class="hljs-string">&quot;&amp;lt;b&amp;gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&amp;lt;/b&amp;gt;&quot;</span></code></pre>
 <p>Step 3.</p>
-<pre><code class="nim">let s = """{{i}} {{f}} {{s}}
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> s = <span class="hljs-string">&quot;&quot;&quot;{{i}} {{f}} {{s}}
 {{#a}}
   {{k}}
 {{/a}}
@@ -41,8 +39,8 @@ c["l"] = proc (s: string; c: Context): string =
 {{#l}}
   {{s}}
 {{/l}}
-"""
-echo(s.render(c))</code></pre>
+&quot;&quot;&quot;</span>
+<span class="hljs-keyword">echo</span>(s.render(c))</code></pre>
 <pre><samp>1 1.0 hello world
   v
 

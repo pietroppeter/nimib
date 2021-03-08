@@ -4,7 +4,7 @@ from std/cgi import xmlEncode
 import packages/docutils/highlite
 
 func nimNormalize(s: string): string =
-  # Copied from strutils.normalize
+  # Copied from strutils.normalize (same except for branch i == 0)
   # Normalizes a Nim identifier to all lowercase:
   # - All letters except the first one are lower-cased
   # - Underscores are ignored

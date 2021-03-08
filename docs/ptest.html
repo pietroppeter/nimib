@@ -8,8 +8,6 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-  <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/highlight.nim.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
   </head>
 <body>
 <main>
@@ -45,9 +43,9 @@
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
 taking into account specifics of nimib files: they already produce an output (html file).</p>
 <p>Imports and global variables:</p>
-<pre><code class="nim">var
-  test: TestCase
-  tests: seq[TestCase]</code></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span>
+  test: <span class="hljs-type">TestCase</span>
+  tests: <span class="hljs-built_in">seq</span>[<span class="hljs-type">TestCase</span>]</code></pre>
 <h3>test cases</h3>
 <p>for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)</p>
 <ul>
@@ -55,28 +53,28 @@ taking into account specifics of nimib files: they already produce an output (ht
 <li>a test case will be skipped if it does not have a corresponding html</li>
 <li>a test case will be skipped if it is modified/added in git</li>
 </ul>
-<pre><code class="nim">for file in walkDirRec(nbProjDir):
-  ## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)
-  if file.endsWith(".nim") and not file.name.startsWith("ptest"):
-    test = TestCase(file: file)
-    stdout.write "added test candidate: ", file.relPath
-  else:
-    continue
-  let html = changeFileExt(file, ".html")
-  if not file.isGitTracked:
-    test.skip = true
+<pre><code class="nim hljs"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbProjDir):
+  <span class="hljs-comment">## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)</span>
+  <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
+    test = <span class="hljs-type">TestCase</span>(file: file)
+    <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath
+  <span class="hljs-keyword">else</span>:
+    <span class="hljs-keyword">continue</span>
+  <span class="hljs-keyword">let</span> html = changeFileExt(file, <span class="hljs-string">&quot;.html&quot;</span>)
+  <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> file.isGitTracked:
+    test.skip = <span class="hljs-literal">true</span>
     test.skipReason = srNotTrackedInGit
-    echo " -> skipped since it is not tracked in git"
-  elif not html.fileExists or not html.isGitTracked:
-    test.skip = true
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it is not tracked in git&quot;</span>
+  <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> html.fileExists <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> html.isGitTracked:
+    test.skip = <span class="hljs-literal">true</span>
     test.skipReason = srNoHtmlFound
-    echo " -> skipped since it does not have a corresponding (git tracked) html file"
-  elif file.isGitChanged:
-    test.skip = true
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it does not have a corresponding (git tracked) html file&quot;</span>
+  <span class="hljs-keyword">elif</span> file.isGitChanged:
+    test.skip = <span class="hljs-literal">true</span>
     test.skipReason = srChangedInGit
-    echo " -> skipped since it is changed in git"
-  else:
-    echo ""
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it is changed in git&quot;</span>
+  <span class="hljs-keyword">else</span>:
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&quot;</span>
   tests.add test</code></pre>
 <pre><samp>added test candidate: cheatsheet.nim
 added test candidate: hello.nim
@@ -96,45 +94,45 @@ added test candidate: pythno.nim</samp></pre>
 <li>if a difference is reported between the corresponding html file and the temporary copy a failure is reported</li>
 <li>if no failure has been reported the test is reported as passed (and the temporary file is cleaned up)</li>
 </ul>
-<pre><code class="nim">for test in tests:
-  var
-    output: string
-    err: int
-  let
-    html = test.file.changeFileExt(".html")
-    tmp = test.file.changeFileExt(".tmp.html")
+<pre><code class="nim hljs"><span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests:
+  <span class="hljs-keyword">var</span>
+    output: <span class="hljs-built_in">string</span>
+    err: <span class="hljs-built_in">int</span>
+  <span class="hljs-keyword">let</span>
+    html = test.file.changeFileExt(<span class="hljs-string">&quot;.html&quot;</span>)
+    tmp = test.file.changeFileExt(<span class="hljs-string">&quot;.tmp.html&quot;</span>)
     fileWithLink = test.file.relPath.aLink html.relPath
-  if test.skip:
-    stdout.write "[SKIP]".spanColor "blue"
-    echo " " & fileWithLink
-    continue
-  if html.isGitChanged:
-    test.fail = true
-    stdout.write "[FAIL]".spanColor "red"
-    echo " " & fileWithLink
-    echo "html file is changed in git. commit or revert and rerun test"
-    continue
+  <span class="hljs-keyword">if</span> test.skip:
+    <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[SKIP]&quot;</span>.spanColor <span class="hljs-string">&quot;blue&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+    <span class="hljs-keyword">continue</span>
+  <span class="hljs-keyword">if</span> html.isGitChanged:
+    test.fail = <span class="hljs-literal">true</span>
+    <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;html file is changed in git. commit or revert and rerun test&quot;</span>
+    <span class="hljs-keyword">continue</span>
   copyFile(source = html, dest = tmp)
-  (output, err) = execCmdEx &"nim --verbosity:0 --hints:off r {test.file}"
-  if err != 0:
-    test.fail = true
-    stdout.write "[FAIL]".spanColor "red"
-    echo " " & fileWithLink
-    echo "Error during compile/run"
-    echo "output\n:", output
-    echo "err\n:", err
-    continue
-  (output, err) = execCmdEx(&"git diff --no-index {html} {tmp}")
-  if err != 0:
-    test.fail = true
-    stdout.write "[FAIL]".spanColor "red"
-    echo " " & fileWithLink
-    echo "Differences found in html file"
-    echo "output\n:", output
-    echo "err\n:", err
-    continue
-  stdout.write "[OK]".spanColor "green"
-  echo "   " & fileWithLink
+  (output, err) = execCmdEx &amp;<span class="hljs-string">&quot;nim --verbosity:0 --hints:off r {test.file}&quot;</span>
+  <span class="hljs-keyword">if</span> err != <span class="hljs-number">0</span>:
+    test.fail = <span class="hljs-literal">true</span>
+    <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error during compile/run&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;output</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, output
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;err</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, err
+    <span class="hljs-keyword">continue</span>
+  (output, err) = execCmdEx(&amp;<span class="hljs-string">&quot;git diff --no-index {html} {tmp}&quot;</span>)
+  <span class="hljs-keyword">if</span> err != <span class="hljs-number">0</span>:
+    test.fail = <span class="hljs-literal">true</span>
+    <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Differences found in html file&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;output</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, output
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;err</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, err
+    <span class="hljs-keyword">continue</span>
+  <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[OK]&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
   removeFile(tmp)</code></pre>
 <pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
@@ -145,19 +143,19 @@ added test candidate: pythno.nim</samp></pre>
 <span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
 <span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a></samp></pre>
 <p>results are appended to previously save resultsBlock</p>
-<pre><code class="nim">let (skip, fail, pass) = tests.stats
-if fail > 0:
-  resultsBlock.output.add " ❌"
-else:
-  resultsBlock.output.add " ✅"
-let
-  skipHeader = "skip".spanColor "blue"
-  failHeader = "fail".spanColor "red"
-  passHeader = "pass".spanColor "green"
-resultsBlock.output.add &"\n|{skipHeader}|{failHeader}|{passHeader}|total|"
-resultsBlock.output.add &"\n|---|---|---|---|"
-resultsBlock.output.add &"\n|{skip}|{fail}|{pass}|{skip + fail + pass}|"
-resultsBlock.output.add &"\n\n{details.renderHtmlCodeOutput}"</code></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> (skip, fail, pass) = tests.stats
+<span class="hljs-keyword">if</span> fail &gt; <span class="hljs-number">0</span>:
+  resultsBlock.output.add <span class="hljs-string">&quot; ❌&quot;</span>
+<span class="hljs-keyword">else</span>:
+  resultsBlock.output.add <span class="hljs-string">&quot; ✅&quot;</span>
+<span class="hljs-keyword">let</span>
+  skipHeader = <span class="hljs-string">&quot;skip&quot;</span>.spanColor <span class="hljs-string">&quot;blue&quot;</span>
+  failHeader = <span class="hljs-string">&quot;fail&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+  passHeader = <span class="hljs-string">&quot;pass&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
+resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|{skipHeader}|{failHeader}|{passHeader}|total|&quot;</span>
+resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|---|---|---|---|&quot;</span>
+resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|{skip}|{fail}|{pass}|{skip + fail + pass}|&quot;</span>
+resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">{details.renderHtmlCodeOutput}&quot;</span></code></pre>
 
 </main>
 </body>

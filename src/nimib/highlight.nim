@@ -7,7 +7,7 @@ func nimNormalize(s: string): string =
   # Copied from strutils.normalize
   # Normalizes a Nim identifier to all lowercase:
   # - All letters except the first one are lower-cased
-  # - Underscores are ignores
+  # - Underscores are ignored
   result = newString(s.len)
   var j = 0
   for i in 0 .. len(s) - 1:

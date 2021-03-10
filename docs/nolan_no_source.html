@@ -12,10 +12,17 @@
 <body>
 <main>
 <blockquote>
-<p>This nimib example document shows how to use <code>nbDoc.blocks</code> api to change
-the order of presentation of blocks.</p>
+<p>This nimib example document shows:</p>
+<ul>
+<li>how to use <code>nbDoc.blocks</code> api to change the order of presentation of blocks.</li>
+<li>how to change the output of a previous block</li>
+<li>how to save a variant of a document</li>
+<li>how to opt-out of Show Source functionality</li>
+</ul>
 <p>It reorders a <strong>Limerick</strong> according to Nolan's <a href="https://en.wikipedia.org/wiki/Memento_(film)#Film_structure">Memento film structure</a>.</p>
-<p>Click on <code>Show Source</code> at the bottom to see the nim file that generates this document.</p>
+</blockquote>
+<blockquote>
+<p>To see the variant with Show Source <a href="nolan.html">click here</a></p>
 </blockquote>
 <h1>kLciimre</h1>
 <p><code>5</code> But when I get to the last line I try to fit in as many words as I can.&quot;</p>
@@ -23,84 +30,19 @@ the order of presentation of blocks.</p>
 <p><code>4</code> He said &quot;I do try!</p>
 <p><code>2</code> Whose limericks never would scan.</p>
 <p><code>3</code> And when they asked why,</p>
+<hr />
+<blockquote>
+<p>This is how we can remove the <code>Show Source</code> functionality</p>
+</blockquote>
+<pre><code class="nim hljs">nbDoc.context[<span class="hljs-string">&quot;no_source&quot;</span>] = <span class="hljs-literal">true</span></code></pre>
 
 </main>
 <footer>
 <hr>
 <span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
-<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
-<section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
-<span class="hljs-keyword">import</span> strutils, sequtils
-
-nbInit
-
-nbText: <span class="hljs-string">&quot;&quot;&quot;
-&gt; This nimib example document shows how to use `nbDoc.blocks` api to change
-&gt; the order of presentation of blocks.
-&gt;
-&gt; It reorders a **Limerick** according to Nolan's [Memento film structure](https://en.wikipedia.org/wiki/Memento_(film)#Film_structure).
-&gt;
-&gt; Click on `Show Source` at the bottom to see the nim file that generates this document.
-&quot;&quot;&quot;</span>
-
-<span class="hljs-keyword">proc</span> mix[<span class="hljs-type">T</span>](s: <span class="hljs-built_in">seq</span>[<span class="hljs-type">T</span>]): <span class="hljs-built_in">seq</span>[<span class="hljs-type">T</span>] =
-  <span class="hljs-keyword">var</span>
-    i = <span class="hljs-number">0</span>
-    j = s.len - <span class="hljs-number">1</span>
-  <span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
-    <span class="hljs-keyword">if</span> j &lt; i:
-      <span class="hljs-keyword">break</span>
-    <span class="hljs-literal">result</span>.add s[j]
-    <span class="hljs-keyword">if</span> j == i:
-      <span class="hljs-keyword">break</span>
-    <span class="hljs-literal">result</span>.add s[i]
-    inc i
-    dec j
-
-nbText: <span class="hljs-string">&quot;# &quot;</span> &amp; mix(toSeq(<span class="hljs-string">&quot;Limerick&quot;</span>)).join
-
-nbText: <span class="hljs-string">&quot;`1` There was a young man from Japan&quot;</span>
-nbText: <span class="hljs-string">&quot;`2` Whose limericks never would scan.&quot;</span>
-nbText: <span class="hljs-string">&quot;`3` And when they asked why,&quot;</span>
-nbText: <span class="hljs-string">&quot;`4` He said </span><span class="hljs-meta">\&quot;</span><span class="hljs-string">I do try!&quot;</span>
-nbtext: <span class="hljs-string">&quot;`5` But when I get to the last line I try to fit in as many words as I can.</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span>
-
-nbDoc.blocks[<span class="hljs-number">2</span> .. <span class="hljs-number">6</span>] = mix(nbDoc.blocks[<span class="hljs-number">2</span> .. <span class="hljs-number">6</span>])
-
-nbSave
-
-<span class="hljs-comment"># save another document without source to test the opt-out of Show Source feature</span>
-nbDoc.context[<span class="hljs-string">&quot;no_source&quot;</span>] = <span class="hljs-literal">true</span>
-nbDoc.filename = nbDoc.filename.replace(<span class="hljs-string">&quot;.html&quot;</span>, <span class="hljs-string">&quot;_no_source.html&quot;</span>)
-nbSave</code></pre>
-</section>
-<script>
-function toggleSourceDisplay() {
-  var btn = document.getElementById("show")
-  var source = document.getElementById("source");
-  if (btn.innerHTML=="Show Source") {
-    btn.innerHTML = "Hide Source";
-    source.style.display = "block";
-  } else {
-    btn.innerHTML = "Show Source";
-    source.style.display = "none";
-  }
-}
-</script>
 <style>
-button#show, span#made {
+span#made {
   font-size: 0.8rem;
-}
-
-button#show {
-  float: right;
-  padding: 2px;
-  padding-right: 5px;
-  padding-left: 5px;
-}
-section#source {
-  display:none
 }
 </style>
 </footer>

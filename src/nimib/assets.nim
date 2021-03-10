@@ -37,7 +37,7 @@ let footer* = """
 <footer>
 <hr>
 <span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
-<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
+{{^no_source}}<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
 <section id="source">
 <pre><code class="nim hljs">{{{source}}}</code></pre>
 </section>
@@ -54,8 +54,12 @@ function toggleSourceDisplay() {
   }
 }
 </script>
+{{/no_source}}
 <style>
-button#show, span#made {
+span#made {
+  font-size: 0.8rem;
+}
+{{^no_source}}button#show {
   font-size: 0.8rem;
 }
 
@@ -68,6 +72,7 @@ button#show {
 section#source {
   display:none
 }
+{{/no_source}}
 </style>
 </footer>
 """

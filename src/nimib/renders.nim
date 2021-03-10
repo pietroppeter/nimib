@@ -5,6 +5,19 @@ import highlight
 
 let mdCfg = initGfmConfig()
 
+proc render*(blk: var NbBlock): string =
+  for step in blk.renderPlan:
+    if step in blk.renderProc:
+      blk.renderProc[step](blk, result)
+    elif step in blk.partials:
+      result = blk.partials[result].render(blk.context)
+    else:
+      result = step
+
+proc initCodeRender(blk: var NbBlock) =
+  blk.renderPlan = @["addCode", "addOutput"]
+
+
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
 

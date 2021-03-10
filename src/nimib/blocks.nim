@@ -21,6 +21,7 @@ template manageErrors*(identBlock, body: untyped) =
 template nbTextBlock*(identBlock, identContainer, body: untyped) =
   # assume body is a string
   identBlock = newBlock(nbkText, toStr(body))  # nbDoc.flags.update(flags)
+  initTextRender(identBlock)
   identBlock.output = block:
     body
   when not defined(nimibQuiet):

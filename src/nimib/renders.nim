@@ -17,10 +17,10 @@ proc render*(blk: var NbBlock): string =
       result.add step
 
 var
-  partialCode* = """
+  partialCodeBody* = """
 {{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
 """
-  partialOutput* = """
+  partialCodeOutput* = """
 {{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
 """
 
@@ -41,11 +41,22 @@ proc initCodeRender*(blk: var NbBlock) =
   ]
   blk.renderProc["codeHighlighted"] = codeHighlighted
   blk.renderProc["outputEscaped"] = outputEscaped
-  blk.partials["addCode"] = partialCode
-  blk.partials["addOutput"] = partialOutput
+  blk.partials["addCode"] = partialCodeBody
+  blk.partials["addOutput"] = partialCodeOutput
 
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
+
+proc mdToHtml(blk: var NbBlock, res: var string) =
+  res = renderMarkdown(blk.output.strip)
+
+proc initTextRender*(blk: var NbBlock) =
+  blk.context = newContext(searchDirs = @[])
+  blk.partials = initTable[string, string]()
+  blk.renderPlan = @[
+    "mdToHtml"
+  ]
+  blk.renderProc["mdToHtml"] = mdToHtml
 
 proc renderHtmlTextOutput*(output: string): string =
   # why complain if func? because I am using global mdCfg!
@@ -65,7 +76,7 @@ proc renderHtmlBlock*(blk: NbBlock): string =
   var blk = blk
   case blk.kind
   of nbkText:
-    result = blk.output.renderHtmlTextOutput
+    result = render(blk)
   of nbkCode:
     result = render(blk)
   of nbkImage:

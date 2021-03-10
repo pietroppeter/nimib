@@ -25,14 +25,14 @@
 </thead>
 <tbody>
 <tr>
+<td>1</td>
 <td>0</td>
-<td>0</td>
-<td>8</td>
+<td>7</td>
 <td>8</td>
 </tr></tbody></table>
 <pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
@@ -78,7 +78,7 @@ taking into account specifics of nimib files: they already produce an output (ht
   tests.add test</code></pre>
 <pre><samp>added test candidate: cheatsheet.nim
 added test candidate: hello.nim
-added test candidate: index.nim
+added test candidate: index.nim -> skipped since it is changed in git
 added test candidate: mostaccio.nim
 added test candidate: nolan.nim
 added test candidate: numerical.nim
@@ -136,7 +136,7 @@ added test candidate: pythno.nim</samp></pre>
   removeFile(tmp)</code></pre>
 <pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
+<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
@@ -158,5 +158,228 @@ resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class=
 resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">{details.renderHtmlCodeOutput}&quot;</span></code></pre>
 
 </main>
+<footer>
+<hr>
+<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> os, osproc, strformat, strutils, nimib / paths
+
+<span class="hljs-keyword">proc</span> isGitTracked*(file: <span class="hljs-type">AbsoluteFile</span>): <span class="hljs-built_in">bool</span> =
+  <span class="hljs-comment"># https://stackoverflow.com/questions/2405305/how-to-tell-if-a-file-is-git-tracked-by-shell-exit-code</span>
+  <span class="hljs-keyword">let</span> (_, err) = execCmdEx(<span class="hljs-string">&quot;git ls-files --error-unmatch &quot;</span> &amp; file.<span class="hljs-built_in">string</span>)
+  err == <span class="hljs-number">0</span>
+
+<span class="hljs-keyword">proc</span> gitChangedFiles* : <span class="hljs-built_in">seq</span>[<span class="hljs-type">AbsoluteFile</span>] =
+  <span class="hljs-keyword">let</span>
+    (output, err) = execCmdEx(<span class="hljs-string">&quot;git status -s&quot;</span>)
+    dir = getCurrentDir()
+  <span class="hljs-keyword">if</span> err &gt; <span class="hljs-number">0</span>: <span class="hljs-keyword">return</span>
+  <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> output.splitlines:
+    <span class="hljs-keyword">if</span> line.len &lt; <span class="hljs-number">4</span>:
+      <span class="hljs-keyword">continue</span>
+    <span class="hljs-literal">result</span>.add (dir / line[<span class="hljs-number">3.</span>.^<span class="hljs-number">1</span>]).<span class="hljs-type">AbsoluteFile</span>
+
+<span class="hljs-keyword">proc</span> isGitChanged*(file: <span class="hljs-type">AbsoluteFile</span>): <span class="hljs-built_in">bool</span> =
+  <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> gitChangedFiles():
+    <span class="hljs-keyword">if</span> f == file: <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+
+<span class="hljs-keyword">type</span>
+  <span class="hljs-type">SkipReason</span>* = <span class="hljs-keyword">enum</span>
+    srNotSkipped, srNotTrackedInGit, srNoHtmlFound, srChangedInGit
+  <span class="hljs-type">TestCase</span>* = <span class="hljs-keyword">ref</span> <span class="hljs-keyword">object</span>  <span class="hljs-comment">## ref to make it easy to mutate while in a container</span>
+    file*: <span class="hljs-type">AbsoluteFile</span>
+    skip*: <span class="hljs-built_in">bool</span>
+    skipReason*: <span class="hljs-type">SkipReason</span>
+    fail*: <span class="hljs-built_in">bool</span>
+
+<span class="hljs-keyword">func</span> find*(s: <span class="hljs-built_in">seq</span>[<span class="hljs-type">TestCase</span>], file: <span class="hljs-type">AbsoluteFile</span>, test: <span class="hljs-keyword">var</span> <span class="hljs-type">TestCase</span>): <span class="hljs-built_in">bool</span> =
+  <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> s:
+    <span class="hljs-keyword">if</span> t.file == file:
+      test = t
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+
+<span class="hljs-keyword">func</span> spanColor*(text, color: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;span style=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">color:&quot;</span> &amp; color &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; text &amp; <span class="hljs-string">&quot;&lt;/span&gt;&quot;</span>
+<span class="hljs-keyword">func</span> aLink*(text, link: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span> &amp; link &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; text &amp; <span class="hljs-string">&quot;&lt;/a&gt;&quot;</span>
+
+<span class="hljs-keyword">func</span> stats*(tests: <span class="hljs-built_in">seq</span>[<span class="hljs-type">TestCase</span>]): <span class="hljs-keyword">tuple</span>[skip, fail, pass: <span class="hljs-built_in">int</span>] =
+  <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests:
+    <span class="hljs-keyword">if</span> test.skip:
+      inc <span class="hljs-literal">result</span>.skip
+      <span class="hljs-keyword">continue</span>
+    <span class="hljs-keyword">elif</span> test.fail:
+      inc <span class="hljs-literal">result</span>.fail
+    <span class="hljs-keyword">else</span>:
+      inc <span class="hljs-literal">result</span>.pass
+
+<span class="hljs-keyword">when</span> isMainModule:
+  <span class="hljs-keyword">import</span> nimib
+  nbInit <span class="hljs-comment"># this will also put me in docs folder</span>
+
+  nbText: <span class="hljs-string">&quot;&quot;&quot;# Print-testing for nimib
+
+What is print-testing? Testing by comparing printed output of a file with a versioned reference (see [treeform/ptest](https://github.com/treeform/ptest)). 
+&quot;&quot;&quot;</span>
+  nbText: <span class="hljs-string">&quot;&quot;&quot;## Test Results&quot;&quot;&quot;</span>
+  <span class="hljs-keyword">var</span> resultsBlock = nbBlock  <span class="hljs-comment"># I will add to it at the end</span>
+
+  nbText: <span class="hljs-string">&quot;&quot;&quot;---
+# Implementation
+
+The following is an adaption of [treeform's ptest.nim](https://github.com/treeform/ptest/blob/master/src/ptest.nim)
+taking into account specifics of nimib files: they already produce an output (html file).
+
+Imports and global variables:
+&quot;&quot;&quot;</span>
+  nbCode:
+    <span class="hljs-keyword">var</span>
+      test: <span class="hljs-type">TestCase</span>
+      tests: <span class="hljs-built_in">seq</span>[<span class="hljs-type">TestCase</span>]
+
+  <span class="hljs-keyword">when</span> <span class="hljs-keyword">defined</span>(nbDebug):
+    nbText: <span class="hljs-string">&quot;Current directory as results of calling nbInit:&quot;</span>
+    nbCode: <span class="hljs-keyword">echo</span> getCurrentDir()
+
+  nbText: <span class="hljs-string">&quot;&quot;&quot;### test cases
+for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)
+  - a test case will be skipped if it is not tracked in git
+  - a test case will be skipped if it does not have a corresponding html
+  - a test case will be skipped if it is modified/added in git
+&quot;&quot;&quot;</span>
+  nbCode:
+    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbProjDir):
+      <span class="hljs-comment">## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)</span>
+      <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
+        test = <span class="hljs-type">TestCase</span>(file: file)
+        <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath
+      <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">continue</span>
+      <span class="hljs-keyword">let</span> html = changeFileExt(file, <span class="hljs-string">&quot;.html&quot;</span>)
+      <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> file.isGitTracked:
+        test.skip = <span class="hljs-literal">true</span>
+        test.skipReason = srNotTrackedInGit
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it is not tracked in git&quot;</span>
+      <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> html.fileExists <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span> html.isGitTracked:
+        test.skip = <span class="hljs-literal">true</span>
+        test.skipReason = srNoHtmlFound
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it does not have a corresponding (git tracked) html file&quot;</span>
+      <span class="hljs-keyword">elif</span> file.isGitChanged:
+        test.skip = <span class="hljs-literal">true</span>
+        test.skipReason = srChangedInGit
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; -&gt; skipped since it is changed in git&quot;</span>
+      <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&quot;</span>
+      tests.add test
+
+    <span class="hljs-comment"># for file in gitChangedFiles():</span>
+    <span class="hljs-comment">#   if tests.find(file, test) and not test.skip:</span>
+    <span class="hljs-comment">#     test.skip = true</span>
+    <span class="hljs-comment">#     test.skipReason = srChangedInGit</span>
+    <span class="hljs-comment">#     echo &quot; -&gt; skipped since it is changed in git&quot;, file.relPath</span>
+
+  nbText: <span class="hljs-string">&quot;&quot;&quot;### performing test
+for every non-skipped test case:
+  - if the corresponding html output is changed in git the test is failed
+  - copy the corresponding html to a tmp file
+  - find and execute the corresponding nim file
+  - if an error is found while compiling/executing, report a failure
+  - if a difference is reported between the corresponding html file and the temporary copy a failure is reported
+  - if no failure has been reported the test is reported as passed (and the temporary file is cleaned up)
+&quot;&quot;&quot;</span>
+  nbCode:
+    <span class="hljs-keyword">for</span> test <span class="hljs-keyword">in</span> tests:
+      <span class="hljs-keyword">var</span>
+        output: <span class="hljs-built_in">string</span>
+        err: <span class="hljs-built_in">int</span>
+      <span class="hljs-keyword">let</span>
+        html = test.file.changeFileExt(<span class="hljs-string">&quot;.html&quot;</span>)
+        tmp = test.file.changeFileExt(<span class="hljs-string">&quot;.tmp.html&quot;</span>)
+        fileWithLink = test.file.relPath.aLink html.relPath
+      <span class="hljs-keyword">if</span> test.skip:
+        <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[SKIP]&quot;</span>.spanColor <span class="hljs-string">&quot;blue&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+        <span class="hljs-keyword">continue</span>
+      <span class="hljs-keyword">if</span> html.isGitChanged:
+        test.fail = <span class="hljs-literal">true</span>
+        <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;html file is changed in git. commit or revert and rerun test&quot;</span>
+        <span class="hljs-keyword">continue</span>
+      copyFile(source=html, dest=tmp)
+      (output, err) = execCmdEx &amp;<span class="hljs-string">&quot;nim --verbosity:0 --hints:off r {test.file}&quot;</span>
+      <span class="hljs-keyword">if</span> err != <span class="hljs-number">0</span>:
+        test.fail = <span class="hljs-literal">true</span>
+        <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Error during compile/run&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;output</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, output
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;err</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, err
+        <span class="hljs-keyword">continue</span>
+      (output, err) = execCmdEx(&amp;<span class="hljs-string">&quot;git diff --no-index {html} {tmp}&quot;</span>)
+      <span class="hljs-keyword">if</span> err != <span class="hljs-number">0</span>:
+        test.fail = <span class="hljs-literal">true</span>
+        <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[FAIL]&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot; &quot;</span> &amp; fileWithLink
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Differences found in html file&quot;</span>
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;output</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, output
+        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;err</span><span class="hljs-meta">\n</span><span class="hljs-string">:&quot;</span>, err
+        <span class="hljs-keyword">continue</span>
+      <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[OK]&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
+      <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
+      removeFile(tmp)
+    
+  <span class="hljs-keyword">let</span> details = nbBlock.output
+
+  nbText: <span class="hljs-string">&quot;results are appended to previously save resultsBlock&quot;</span>
+  nbCode:
+    <span class="hljs-keyword">let</span> (skip, fail, pass) = tests.stats
+    <span class="hljs-keyword">if</span> fail &gt; <span class="hljs-number">0</span>:
+      resultsBlock.output.add <span class="hljs-string">&quot; ❌&quot;</span> <span class="hljs-comment"># slug for this? now emoji.muan is not helpful anymore...</span>
+    <span class="hljs-keyword">else</span>:
+      resultsBlock.output.add <span class="hljs-string">&quot; ✅&quot;</span>
+    <span class="hljs-keyword">let</span>
+      skipHeader = <span class="hljs-string">&quot;skip&quot;</span>.spanColor <span class="hljs-string">&quot;blue&quot;</span>
+      failHeader = <span class="hljs-string">&quot;fail&quot;</span>.spanColor <span class="hljs-string">&quot;red&quot;</span>
+      passHeader = <span class="hljs-string">&quot;pass&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
+    resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|{skipHeader}|{failHeader}|{passHeader}|total|&quot;</span>
+    resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|---|---|---|---|&quot;</span>
+    resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">|{skip}|{fail}|{pass}|{skip + fail + pass}|&quot;</span>
+    resultsBlock.output.add &amp;<span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">{details.renderHtmlCodeOutput}&quot;</span>
+
+  nbSave
+  quit(fail)</code></pre>
+</section>
+<script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script>
+<style>
+span#made {
+  font-size: 0.8rem;
+}
+button#show {
+  font-size: 0.8rem;
+}
+
+button#show {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+</style>
+</footer>
 </body>
 </html>

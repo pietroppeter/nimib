@@ -1,13 +1,18 @@
 ## Markdown cheatsheet with nimib 
-import nimib, nimoji, std/strutils
+import nimib, std/strutils
 
 nbInit
-#[
-  This notebook shows how to:
-    - create custom blocks (a nbTextWithSource)
-    - add a Table of Contents
-    - customize source highlighting
-]#
+nbText: """
+> This nimib example document shows how to:
+>   * add a table of contents
+>   * create a custom NbBlock (a text block that shows Markdown source)
+>   * customize of code highlighting
+>
+> The document itself is a remake in nimib of a Markdown Cheatsheet
+> by [markdown-here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
+>
+> Quoted sections will be used to mention differences with the original source.
+"""
 
 # customize source highlighting:
 nbDoc.partials["highlight"] = """
@@ -44,22 +49,7 @@ template nbSection(name:string) =
 
 nbText """
 # Markdown Cheatsheet
-Quick reference for markdown.
-**Original source** (License [CC-BY](https://creativecommons.org/licenses/by/3.0/))
-is from [markdown-here wiki](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-
-Built in [nim](https://nim-lang.org/) :crown: with [nimib](https://github.com/pietroppeter/nimib) :whale:
-and [a beautiful markdown parser in the nim world](https://github.com/soasme/nim-markdown).
-
-Default styling for nimib is provided by [Water.css](https://github.com/kognise/water.css) :ocean:.
-
-> I will use quoted sections to mention differences with **original source**
->
-> This notebook also shows 3 customization techniques for nimib:
->   1. customization of code highlighting
->   2. custom NbBlock (a text block that shows Markdown source)
->   3. a table of contents
-""".emojize
+Quick reference for markdown."""
 
 addToc()
 
@@ -91,9 +81,6 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 """
-#nbText "> Strikethrough is supported only in GFM mode:"
-#nbCode:
-#  echo markdown("~~Scratch this.~~", initGfmConfig())
 
 nbSection "Lists"
 nbText "(In this example, leading and trailing spaces are shown with with dots: ⋅)"
@@ -122,7 +109,7 @@ nbText """
 > see also [GFM spec](https://github.github.com/gfm/#why-is-a-spec-needed-)"""
 
 nbSection "Links"
-nbText "There are two ways to create links, inline and reference."  # specify which two
+nbText "There are two ways to create links, inline and reference."
 nbTextWithSource """
 [I'm an inline-style link](https://www.google.com)
 
@@ -233,6 +220,7 @@ Quote break.
 
 nbSection "Inline HTML"
 nbText "You can also use raw HTML in your Markdown, and it'll mostly work pretty well."
+# todo: clarify and fix when stuff is escaped or not
 nbTextWithSource(escapeHtml=true): """<dl>
   <dt>Definition list</dt>
   <dd>Is something people use sometimes.</dd>
@@ -279,9 +267,5 @@ nbTextWithSource(escapeHtml=true): """<a href="http://www.youtube.com/watch?feat
 " target="_blank"><img src="http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 """.replace("YOUTUBE_VIDEO_ID_HERE", "xqHdUjCXizI").replace("IMAGE ALT TEXT HERE", "Nim Conf 2020 Introduction")
-
-# a simple way to add a footer (it would be probably better to add it as a partial through mustache)
-nbText: "---\n<footer>" & renderMarkdown(
-  "made with :heart: in [nim](https://nim-lang.org/) :crown: with [nimib](https://github.com/pietroppeter/nimib) :whale:".emojize) & "</footer>"
 
 nbSave

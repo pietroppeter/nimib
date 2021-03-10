@@ -1,10 +1,5 @@
+#remember to run also with -d:numericalDefaultStyle
 import nimib, strformat, strutils
-#[
-  Example of:
-    - custom style
-    - using latex
-    - table output (and another way to show nbText source)
-]#
 nbInit
 let filename_default_style = nbDoc.filename.replace(".html", "_default_style.html")
 when not defined(numericalDefaultStyle):
@@ -16,14 +11,18 @@ else:
   let otherStyle = fmt"; _you are looking at default style, for custom style [click here]({(nbDoc.filename.AbsoluteFile).relPath})_"
 
 nbUseLatex
+nbText: fmt"""
+> This nimib example document shows how to:
+>  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
+>  - using latex rendering of equations (thanks to [katex](https://katex.org/))
+>  - having as output an html table (using standard markdown converter to table) 
+>
+> The document itself shows how to use [numericalnim](https://github.com/hugogranstrom/numericalnim)
+> to integrate an ODE.
+"""
 nbText: fmt"""# Using NumericalNim
 
 Example of usage of [numericalnim](https://github.com/hugogranstrom/numericalnim).
-
-This document shows how to do the following things in nimib:
-  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
-  - using latex rendering of equations (thanks to [katex](https://katex.org/))
-  - having as output an html table (using standard markdown converter to table) 
 """
 
 nbCode:

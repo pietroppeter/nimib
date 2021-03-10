@@ -11,6 +11,11 @@
   </head>
 <body>
 <main>
+<blockquote>
+<p>This nimib example document shows how to use <code>nbBlock.code</code> and <code>nbBlock.output</code>
+to modify code and output of a block after it has run.</p>
+<p>The code looks like a repeat function written in python but it is actually written in nim.</p>
+</blockquote>
 <h1>Pythno</h1>
 <pre><code class="nim hljs">def repeat(text: str, num: <span class="hljs-built_in">int</span>) -&gt; str:
   <span class="hljs-literal">result</span> = <span class="hljs-string">''</span>
@@ -22,5 +27,86 @@ print(repeat(<span class="hljs-string">&quot;_this_is_not_python&quot;</span>, <
 <pre><samp>_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python</samp></pre>
 
 </main>
+<footer>
+<hr>
+<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+<span class="hljs-keyword">import</span> strutils
+
+<span class="hljs-keyword">proc</span> camel2snake(ident: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> =
+  <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> ident:
+    <span class="hljs-keyword">if</span> c.isUpperAscii:
+      <span class="hljs-literal">result</span>.add <span class="hljs-string">&quot;_&quot;</span>
+    <span class="hljs-literal">result</span>.add c.toLowerAscii
+
+nbInit
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; This nimib example document shows how to use `nbBlock.code` and `nbBlock.output`
+&gt; to modify code and output of a block after it has run.
+&gt;
+&gt; The code looks like a repeat function written in python but it is actually written in nim.
+&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;# Pythno&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">proc</span> repeat(text: <span class="hljs-built_in">string</span>, num: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">string</span> =
+    <span class="hljs-literal">result</span> = <span class="hljs-string">&quot;&quot;</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. num:
+      <span class="hljs-literal">result</span> &amp;= text
+    <span class="hljs-comment">## and if I forgot to return? None!</span>
+  
+  <span class="hljs-keyword">echo</span> repeat(<span class="hljs-string">&quot;ThisIsNotPython&quot;</span>, <span class="hljs-number">6</span>)
+
+nbBlock.output = camel2snake(nbBlock.output)
+nbBlock.code = nbBlock.code.multiReplace([
+  (<span class="hljs-string">&quot;proc&quot;</span>, <span class="hljs-string">&quot;def&quot;</span>),
+  (<span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;str&quot;</span>),
+  (<span class="hljs-string">&quot;;&quot;</span>, <span class="hljs-string">&quot;,&quot;</span>), <span class="hljs-comment"># tricky one</span>
+  (<span class="hljs-string">&quot;: string =&quot;</span>, <span class="hljs-string">&quot; -&gt; str:&quot;</span>),
+  (<span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span>, <span class="hljs-string">&quot;''&quot;</span>),
+  (<span class="hljs-string">&quot;1 .. num&quot;</span>, <span class="hljs-string">&quot;range(num)&quot;</span>),
+  (<span class="hljs-string">&quot;&amp;=&quot;</span>, <span class="hljs-string">&quot;+=&quot;</span>),
+  (<span class="hljs-string">&quot;## and if I forgot to return? None!&quot;</span>, <span class="hljs-string">&quot;return result&quot;</span>), <span class="hljs-comment"># needs a documentation comment</span>
+  (<span class="hljs-string">&quot;echo &quot;</span>, <span class="hljs-string">&quot;print(&quot;</span>),
+  (<span class="hljs-string">&quot;6)&quot;</span>, <span class="hljs-string">&quot;6))&quot;</span>),
+  (<span class="hljs-string">&quot;ThisIsNotPython&quot;</span>, camel2snake(<span class="hljs-string">&quot;ThisIsNotPython&quot;</span>))
+])
+
+nbSave</code></pre>
+</section>
+<script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script>
+<style>
+span#made {
+  font-size: 0.8rem;
+}
+button#show {
+  font-size: 0.8rem;
+}
+
+button#show {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+</style>
+</footer>
 </body>
 </html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>nolan.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+  </head>
+<body>
+<main>
+<blockquote>
+<p>This nimib example document shows:</p>
+<ul>
+<li>how to use <code>nbDoc.blocks</code> api to change the order of presentation of blocks.</li>
+<li>how to change the output of a previous block</li>
+<li>how to save a variant of a document</li>
+<li>how to opt-out of Show Source functionality</li>
+</ul>
+<p>It reorders a <strong>Limerick</strong> according to Nolan's <a href="https://en.wikipedia.org/wiki/Memento_(film)#Film_structure">Memento film structure</a>.</p>
+</blockquote>
+<blockquote>
+<p>To see the variant with Show Source <a href="nolan.html">click here</a></p>
+</blockquote>
+<h1>kLciimre</h1>
+<p><code>5</code> But when I get to the last line I try to fit in as many words as I can.&quot;</p>
+<p><code>1</code> There was a young man from Japan</p>
+<p><code>4</code> He said &quot;I do try!</p>
+<p><code>2</code> Whose limericks never would scan.</p>
+<p><code>3</code> And when they asked why,</p>
+<hr />
+<blockquote>
+<p>This is how we can remove the <code>Show Source</code> functionality</p>
+</blockquote>
+<pre><code class="nim hljs">nbDoc.context[<span class="hljs-string">&quot;no_source&quot;</span>] = <span class="hljs-literal">true</span></code></pre>
+
+</main>
+<footer>
+<hr>
+<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<style>
+span#made {
+  font-size: 0.8rem;
+}
+</style>
+</footer>
+</body>
+</html>

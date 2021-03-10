@@ -11,6 +11,9 @@
   </head>
 <body>
 <main>
+<blockquote>
+<p>This nimib example document shows how to insert images in nimib documents.</p>
+</blockquote>
 <h1>🐧 Exploring penguins with ggplotnim</h1>
 <p>We will explore the <a href="https://github.com/allisonhorst/palmerpenguins">palmer penguins dataset</a>
 with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></p>
@@ -129,5 +132,134 @@ but looking at all species taken together bigger mass is correlated with thinner
 
 
 </main>
+<footer>
+<hr>
+<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, nimoji
+
+nbInit
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; This nimib example document shows how to insert images in nimib documents.
+&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;# :penguin: Exploring penguins with ggplotnim
+
+We will explore the [palmer penguins dataset](https://github.com/allisonhorst/palmerpenguins)
+with [ggplotnim](https://github.com/Vindaar/ggplotnim)
+&quot;&quot;&quot;</span>.emojize
+
+nbCode:
+  <span class="hljs-keyword">import</span> ggplotnim
+nbText: <span class="hljs-string">&quot;we read penguins csv in ggplotnim `DataFrame`&quot;</span>
+nbCode:
+  <span class="hljs-keyword">let</span> df = toDf(readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>))
+nbText: <span class="hljs-string">&quot;let us see how it looks&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+The remaining 4 are numeric but they have datatype object. Why?
+
+Because that there are null values in those columns (interpreted as strings):&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">1</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind
+  
+
+
+nbText: <span class="hljs-string">&quot;Let's see how many penguins by species we have (and how do they relate to islands).&quot;</span>
+nbCode:
+  ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() + ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>, caption=<span class="hljs-string">&quot;Count of penguins by species&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
+are reported living on 3 islands (Biscoe, Dream, Torgersen).
+The majority of penguins are Adelie and they are distributed over the 3 islands.
+Gentoo penguins (second most common) almost all live on Biscoe,
+and Chinstrap penguins almost all live on Dream.
+
+We can confirm this with the following  image taken from the
+[article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081)
+from where this dataset comes from:
+&quot;&quot;&quot;</span>
+
+nbImage(url=<span class="hljs-string">&quot;images/penguins_map.png&quot;</span>,
+        caption=<span class="hljs-string">&quot;Penguins by Location&quot;</span>)
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;We do expect weight being correlated to some of the length measures
+(e.g. flipper length) with males being bigger than females.
+
+To plot this we need to remove all `NA`s:
+&quot;&quot;&quot;</span>
+<span class="hljs-comment"># manage runtime error here!</span>
+<span class="hljs-comment">#nbCode:</span>
+<span class="hljs-comment">#  ggplot(df, aes(x=&quot;body_mass_g&quot;, y=&quot;flipper_length_mm&quot;, color = &quot;sex&quot;, shape=&quot;species&quot;)) + geom_point() + ggsave(&quot;images/penguins_mass_vs_length_with_sex_and_species.png&quot;)</span>
+<span class="hljs-comment">#nbImage(url=&quot;images/penguins_mass_vs_length_with_sex_and_species.png&quot;, caption=&quot;Penguins' mass vs flipper length&quot;)</span>
+nbCode:
+  <span class="hljs-keyword">let</span> df1 = df.filter(f{<span class="hljs-string">c&quot;body_mass_g&quot;</span> != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># why c&quot;&quot;?</span>
+  ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>, caption=<span class="hljs-string">&quot;Penguins' mass vs flipper length (colored by sex)&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;A few things to remark:
+
+- as expected body mass and flipper length are linearly correlated
+- males are in general bigger than females but there appear 2 groups, possibly related to species
+- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)
+
+Let's now look at the same chart coloring by species instead of by sex (shape is not yet supported in ggplotnim):
+&quot;&quot;&quot;</span>
+nbCode:
+  ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_species.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_species.png&quot;</span>, caption=<span class="hljs-string">&quot;Penguins' mass vs flipper length (colored by species)&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;We can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger.
+
+As a final plot, I would like to (partly) reproduce a plot that &quot;shows&quot; the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
+as reported by [this tweet](https://twitter.com/andrewheiss/status/1301166792627421186):
+&quot;&quot;&quot;</span>
+nbCode:
+  ggplot(df1, aes(x=<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y=<span class="hljs-string">&quot;body_mass_g&quot;</span>, color = <span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>, caption=<span class="hljs-string">&quot;&quot;&quot;
+Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill&quot;&quot;&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+We can see that Gentoo penguins, although in general bigger, have a &quot;thinner&quot; bill (see image below for meaning of bill and culmen)!
+&quot;&quot;&quot;</span>
+nbImage(url=<span class="hljs-string">&quot;https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&amp;name=4096x4096&quot;</span>, caption=<span class="hljs-string">&quot;&quot;&quot;
+Penguin's bill and culmen explained (Artwork by @allison_horst)&quot;&quot;&quot;</span>)
+nbSave</code></pre>
+</section>
+<script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script>
+<style>
+span#made {
+  font-size: 0.8rem;
+}
+button#show {
+  font-size: 0.8rem;
+}
+
+button#show {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+</style>
+</footer>
 </body>
 </html>

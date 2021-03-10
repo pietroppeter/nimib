@@ -50,5 +50,114 @@ c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">p
 </b></samp></pre>
 
 </main>
+<footer>
+<hr>
+<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+
+nbInit
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;# Example of usage of mustache
+
+From [nim-mustache](https://github.com/soasme/nim-mustache).
+
+## Usage
+
+Step 1.
+&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">import</span> mustache, tables
+nbText: <span class="hljs-string">&quot;Step 2.&quot;</span>
+<span class="hljs-keyword">block</span>:
+  nbCode:
+    <span class="hljs-keyword">var</span> c = newContext()
+    c[<span class="hljs-string">&quot;i&quot;</span>] = <span class="hljs-number">1</span>
+    c[<span class="hljs-string">&quot;f&quot;</span>] = <span class="hljs-number">1.0</span>
+    c[<span class="hljs-string">&quot;s&quot;</span>] = <span class="hljs-string">&quot;hello world&quot;</span>
+    c[<span class="hljs-string">&quot;a&quot;</span>] = @[{<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable]
+    c[<span class="hljs-string">&quot;t&quot;</span>] = {<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable
+    c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span>
+  nbBlock.code = nbBlock.code.escapeTag
+  nbText: <span class="hljs-string">&quot;Step 3.&quot;</span>
+  nbCode:
+    <span class="hljs-keyword">let</span> s = <span class="hljs-string">&quot;&quot;&quot;
+{{i}} {{f}} {{s}}
+{{#a}}
+  {{k}}
+{{/a}}
+
+{{#t}}
+  {{k}}
+{{/t}}
+
+{{#l}}
+  {{s}}
+{{/l}}
+&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">echo</span>(s.render(c))
+
+<span class="hljs-comment">#[
+nbText: &quot;&quot;&quot;## Other examples
+
+not taken from [nim-mustache](https://github.com/soasme/nim-mustache).
+&quot;&quot;&quot;
+block:
+  nbCode:
+    var c = newContext()
+    var s = &quot;&quot;&quot;
+{{highlight}}{{^highlight}}&lt;default&gt;
+{{/highlight}}
+&quot;&quot;&quot;
+    echo s.render c
+  nbBlock.code = nbBlock.code.escapeTag
+  nbBlock.output = nbBlock.output.escapeTag
+  nbText: &quot;In order to get the default tag probably rendered I had to escape it (both in code and output)&quot;
+  nbCode:
+    c[&quot;highlight&quot;] = &quot;&lt;custom&gt;&quot;
+    echo s.render c
+  nbText: &quot;rendering in mustache does automatic escaping&quot;
+  nbCode:
+    s = &quot;{{&gt; highlight }}&quot;
+    echo s.render c
+  nbBlock.output = nbBlock.output.escapeTag
+  nbText: &quot;unless you use a partial (no escaping by mustache, I did it manually in order to have it appear here)&quot;
+]#</span>
+nbSave
+</code></pre>
+</section>
+<script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script>
+<style>
+span#made {
+  font-size: 0.8rem;
+}
+button#show {
+  font-size: 0.8rem;
+}
+
+button#show {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+</style>
+</footer>
 </body>
 </html>

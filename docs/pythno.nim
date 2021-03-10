@@ -8,7 +8,12 @@ proc camel2snake(ident: string): string =
     result.add c.toLowerAscii
 
 nbInit
-
+nbText: """
+> This nimib example document shows how to use `nbBlock.code` and `nbBlock.output`
+> to modify code and output of a block after it has run.
+>
+> The code looks like a repeat function written in python but it is actually written in nim.
+"""
 nbText: "# Pythno"
 
 nbCode:

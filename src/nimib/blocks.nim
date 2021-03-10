@@ -1,5 +1,5 @@
 import macros
-import types, capture
+import types, capture, renders
 
 macro toStr*(body: untyped): string =
   (body.toStrLit)
@@ -35,6 +35,7 @@ proc echoCodeBlock(b: NbBlock) =
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
+  initCodeRender(identBlock)
   captureStdout(identBlock.output):
     body
   echoCodeBlock identBlock

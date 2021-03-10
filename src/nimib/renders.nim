@@ -2,27 +2,53 @@ import types, strformat, strutils, markdown, mustache
 export escapeTag
 import tables
 import highlight
+from mustachepkg/values import searchTable
 
 let mdCfg = initGfmConfig()
 
 proc render*(blk: var NbBlock): string =
+  blk.context.searchTable(blk.partials)
   for step in blk.renderPlan:
     if step in blk.renderProc:
       blk.renderProc[step](blk, result)
     elif step in blk.partials:
-      result = blk.partials[result].render(blk.context)
+      result.add blk.partials[step].render(blk.context)
     else:
-      result = step
+      result.add step
 
-proc initCodeRender(blk: var NbBlock) =
-  blk.renderPlan = @["addCode", "addOutput"]
+var
+  partialCode* = """
+{{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
+"""
+  partialOutput* = """
+{{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
+"""
 
+proc codeHighlighted*(blk: var NbBlock, res: var string) =
+  blk.context["code"] = highlightNim(blk.code).strip
+
+proc outputEscaped*(blk: var NbBlock, res: var string) =
+  blk.context["output"] = blk.output.escapeCode.strip
+
+proc initCodeRender*(blk: var NbBlock) =
+  blk.context = newContext(searchDirs = @[])
+  blk.partials = initTable[string, string]()
+  blk.renderPlan = @[
+    "codeHighlighted",
+    "outputEscaped",
+    "addCode",
+    "addOutput"
+  ]
+  blk.renderProc["codeHighlighted"] = codeHighlighted
+  blk.renderProc["outputEscaped"] = outputEscaped
+  blk.partials["addCode"] = partialCode
+  blk.partials["addOutput"] = partialOutput
 
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
 
 proc renderHtmlTextOutput*(output: string): string =
-  # why complain if func? because I am using mdCfg?
+  # why complain if func? because I am using global mdCfg!
   renderMarkdown(output.strip)
 
 func renderHtmlCodeBodyEscapeTag*(code: string): string =
@@ -36,13 +62,12 @@ func renderHtmlCodeOutput*(output: string): string =
   fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
 
 proc renderHtmlBlock*(blk: NbBlock): string =
+  var blk = blk
   case blk.kind
   of nbkText:
     result = blk.output.renderHtmlTextOutput
   of nbkCode:
-    result = blk.code.renderHtmlCodeBody
-    if blk.output != "":
-      result.add blk.output.renderHtmlCodeOutput
+    result = render(blk)
   of nbkImage:
     let
       image_url = blk.code

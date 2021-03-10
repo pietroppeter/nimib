@@ -2,8 +2,8 @@ import mustache, tables
 export mustache, tables
 
 type
-  NbBlockRenderProc* = proc (b: var NbBlock, s: var string) {. closure .}
-  NbDocRenderProc* = proc (b: var NbDoc, s: var string) {. closure .}
+  NbBlockRenderProc* = proc (blk: var NbBlock, res: var string) {. nimcall .}
+  NbDocRenderProc* = proc (blk: var NbDoc, res: var string) {. nimcall .}
   NbBlockKind* = enum
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object

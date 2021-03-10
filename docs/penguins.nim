@@ -1,7 +1,9 @@
-# set PATH=%PATH%;C:\Users\ppeterlongo\scoop\apps\emacs\27.1\bin
 import nimib, nimoji
 
 nbInit
+nbText: """
+> This nimib example document shows how to insert images in nimib documents.
+"""
 nbText: """# :penguin: Exploring penguins with ggplotnim
 
 We will explore the [palmer penguins dataset](https://github.com/allisonhorst/palmerpenguins)

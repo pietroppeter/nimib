@@ -10,6 +10,7 @@ proc newBlock*(kind: NbBlockKind, code: string): NbBlock =
   NbBlock(kind: kind, code: code)
 
 template manageErrors*(identBlock, body: untyped) =
+  # not used yet!
   try:
     body
   except:
@@ -24,20 +25,11 @@ template nbTextBlock*(identBlock, identContainer, body: untyped) =
   initTextRender(identBlock)
   identBlock.output = block:
     body
-  when not defined(nimibQuiet):
-    echo identBlock.output
   identContainer.blocks.add identBlock
-
-proc echoCodeBlock(b: NbBlock) =
-  when not defined(nimibQuiet):
-    echo "```nim" & b.code & "\n```\n"
-    if b.output != "":
-      echo "```\n" & b.output & "```\n"
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   initCodeRender(identBlock)
   captureStdout(identBlock.output):
     body
-  echoCodeBlock identBlock
   identContainer.blocks.add identBlock

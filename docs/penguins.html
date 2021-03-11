@@ -47,8 +47,10 @@ section#source {
 with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
   ggplotnim</code></pre>
+
 <p>we read penguins csv in ggplotnim <code>DataFrame</code></p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = toDf(readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>))</code></pre>
+
 <p>let us see how it looks</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df</code></pre>
 <pre><samp>Dataframe with 7 columns and 344 rows:
@@ -95,7 +97,6 @@ VString</samp></pre>
 <img src="images/penguins_count_species.png" alt="Count of penguins by species">
 <figcaption>Count of penguins by species</figcaption>
 </figure>
-
 <p>We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
 are reported living on 3 islands (Biscoe, Dream, Torgersen).
 The majority of penguins are Adelie and they are distributed over the 3 islands.
@@ -108,7 +109,6 @@ from where this dataset comes from:</p>
 <img src="images/penguins_map.png" alt="Penguins by Location">
 <figcaption>Penguins by Location</figcaption>
 </figure>
-
 <p>We do expect weight being correlated to some of the length measures
 (e.g. flipper length) with males being bigger than females.</p>
 <p>To plot this we need to remove all <code>NA</code>s:</p>
@@ -121,7 +121,6 @@ ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y 
 <img src="images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
 <figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
 </figure>
-
 <p>A few things to remark:</p>
 <ul>
 <li>as expected body mass and flipper length are linearly correlated</li>
@@ -137,7 +136,6 @@ ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y 
 <img src="images/penguins_mass_vs_length_with_species.png" alt="Penguins' mass vs flipper length (colored by species)">
 <figcaption>Penguins' mass vs flipper length (colored by species)</figcaption>
 </figure>
-
 <p>We can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger.</p>
 <p>As a final plot, I would like to (partly) reproduce a plot that &quot;shows&quot; the presence of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson's paradox</a> in this dataset,
 as reported by <a href="https://twitter.com/andrewheiss/status/1301166792627421186">this tweet</a>:</p>
@@ -151,13 +149,11 @@ but looking at all species taken together bigger mass is correlated with thinner
 <figcaption>Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill</figcaption>
 </figure>
-
 <p>We can see that Gentoo penguins, although in general bigger, have a &quot;thinner&quot; bill (see image below for meaning of bill and culmen)!</p>
 <figure>
-<img src="https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&name=4096x4096" alt="Penguin's bill and culmen explained (Artwork by @allison_horst)">
+<img src="https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&amp;name=4096x4096" alt="Penguin's bill and culmen explained (Artwork by @allison_horst)">
 <figcaption>Penguin's bill and culmen explained (Artwork by @allison_horst)</figcaption>
 </figure>
-
 
 </main>
 <footer>

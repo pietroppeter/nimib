@@ -33,3 +33,9 @@ template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   captureStdout(identBlock.output):
     body
   identContainer.blocks.add identBlock
+
+template nbFreeBlock*(identBlock, identContainer, body: untyped) =
+  identBlock = newBlock(nbkCode, toStr(body))
+  initFreeRender(identBlock)
+  body
+  identContainer.blocks.add identBlock

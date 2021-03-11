@@ -23,6 +23,12 @@ var
   partialCodeOutput* = """
 {{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
 """
+  partialImageSingle* = """
+<figure>
+<img src="{{url}}" alt="{{caption}}">
+<figcaption>{{{caption}}}</figcaption>
+</figure>
+"""
 
 proc codeHighlighted*(blk: var NbBlock, res: var string) =
   blk.context["code"] = highlightNim(blk.code).strip
@@ -43,6 +49,12 @@ proc initCodeRender*(blk: var NbBlock) =
   blk.renderProc["outputEscaped"] = outputEscaped
   blk.partials["addCode"] = partialCodeBody
   blk.partials["addOutput"] = partialCodeOutput
+  # unused by default:
+  blk.partials["partialImageSingle"] = partialImageSingle
+
+proc initFreeRender*(blk: var NbBlock) =
+  blk.initCodeRender
+  blk.renderPlan = @[]
 
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
@@ -80,15 +92,7 @@ proc renderHtmlBlock*(blk: NbBlock): string =
   of nbkCode:
     result = render(blk)
   of nbkImage:
-    let
-      image_url = blk.code
-      caption = blk.output
-    result = fmt"""
-<figure>
-<img src="{image_url}" alt="{caption}">
-<figcaption>{caption}</figcaption>
-</figure>
-""" & "\n"
+    result = render(blk)
 
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:

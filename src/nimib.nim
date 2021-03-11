@@ -59,11 +59,19 @@ template nbInit*() =
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
   
+  template nbFree(body: untyped) =
+    # do I need it with a body?
+    nbFreeBlock(nbBlock, nbDoc, body)
+  
+  template nbNew =
+    nbFreeBlock(nbBlock, nbDoc): discard
+
   template nbImage(url: string, caption = "") =
-    # TODO: fix this workaround with refactoring of NbBlock
-    nbBlock = NbBlock(kind: nbkImage, code: url)
-    nbBlock.output = caption
-    nbDoc.blocks.add nbBlock
+    nbNew
+    nbBlock.context["url"] = url
+    nbBlock.context["caption"] = caption
+    nbBlock.code = "nbImage(url = \"" & url & "\", caption = \"" & caption & "\")"
+    nbBlock.renderPlan = @["partialImageSingle"]
 
   template nbSave =
     when defined(nimibCustomPreSave):

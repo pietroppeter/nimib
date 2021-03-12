@@ -4,23 +4,30 @@ export mustache, tables
 type
   NbBlockRenderProc* = proc (blk: var NbBlock, res: var string) {. nimcall .}
   NbDocRenderProc* = proc (blk: var NbDoc, res: var string) {. nimcall .}
-  NbBlockKind* = enum
+  NbBlockKind* = enum # remove this
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
-    kind*: NbBlockKind
+    command*: string
     code*: string
     output*: string
     context*: Context
+    renderPlan*: seq[string]
+    #remove the following:
+    kind*: NbBlockKind
     partials*: Table[string, string]
     renderProc*: Table[string, NbBlockRenderProc]
-    renderPlan*: seq[string]
-    #error*: string # have not used this one yet
   NbDoc* = object
-    filename*, title*, author*: string
+    filename*: string
+    title*: string
+    author*: string
     blocks*: seq[NbBlock]
-    render*: proc (doc: NbDoc): string {.closure.}
     context*: Context
+    renderPlan*: seq[string]
+    # remove the following
+    render*: proc (doc: NbDoc): string {.closure.}
     partials*: Table[string, string]
     templateDirs*: seq[string]
     renderProc*: Table[string, NbDocRenderProc]
-    renderPlan*: seq[string]
+
+  # next generalizarion would be to have a single NbUnit that can be of NbBlock type or NbContainer type.
+  # Or maybe it is the Block type that can be of kind nbkSingle (nbkItem?) or kind nbkContainer

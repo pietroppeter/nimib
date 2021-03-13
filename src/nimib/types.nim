@@ -4,6 +4,12 @@ export mustache, tables
 type
   NbBlockRenderProc* = proc (blk: var NbBlock, res: var string) {. nimcall .}
   NbDocRenderProc* = proc (blk: var NbDoc, res: var string) {. nimcall .}
+  NbBlockRenderBackend* = object
+    partials*: Table[string, string]
+    renderProc*: Table[string, NbBlockRenderProc]
+  NbDocRenderBackend* = object
+    partials*: Table[string, string]
+    renderProc*: Table[string, NbDocRenderProc]
   NbBlockKind* = enum # remove this
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object

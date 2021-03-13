@@ -3,8 +3,44 @@ export escapeTag
 import tables
 import highlight
 from mustachepkg/values import searchTable
+import std / with
 
 let mdCfg = initGfmConfig()
+
+# default is html backend
+var nbBlockRenderBackend: NbBlockRenderBackend
+with nbBlockRenderBackend:
+  partials = {
+      "addCode": """
+{{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
+""",
+      "addOutput": """
+{{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
+""",
+      # should change to addImage with image.url and image.caption
+      # also I will add an addImages (to show multiple images through a code block)
+      "partialImageSingle": """
+<figure>
+<img src="{{url}}" alt="{{caption}}">
+<figcaption>{{{caption}}}</figcaption>
+</figure>
+"""
+    }.toTable
+  renderProc = initTable[string, NbBlockRenderProc]()
+
+proc render*(blk: var NbBlock, backend: NbBlockRenderBackend): string =
+  for step in blk.renderPlan:
+    if step in backend.partials:
+      result.add backend.partials[step].render(blk.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](blk, result)
+
+proc render*(doc: var NbDoc, backend: NbDocRenderBackend): string =
+  for step in doc.renderPlan:
+    if step in backend.partials:
+      result.add backend.partials[step].render(doc.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](doc, result)
 
 proc render*(blk: var NbBlock): string =
   blk.context.searchTable(blk.partials)

@@ -22,7 +22,7 @@ proc outputEscaped*(blk: var NbBlock, res: var string) =
   blk.context["output"] = blk.output.escapeCode.strip
 
 # default is html backend
-var nbBlockRenderBackend: NbBlockRenderBackend
+var nbBlockRenderBackend = new NbBlockBackend
 with nbBlockRenderBackend:
   partials = {
       "addCode": """
@@ -46,7 +46,7 @@ with nbBlockRenderBackend:
     "mdToHtml": mdToHtml
   }.toTable
 
-proc render*(blk: var NbBlock, backend: NbBlockRenderBackend): string =
+proc render*(blk: var NbBlock, backend: NbBlockBackend): string =
   # if both partial and proc are present in backend, both are applied
   # (first the partial, then the proc)
   # if step not present in backend, nothing is done
@@ -58,7 +58,7 @@ proc render*(blk: var NbBlock, backend: NbBlockRenderBackend): string =
     if step in backend.renderProc:
       backend.renderProc[step](blk, result)
 
-proc render*(doc: var NbDoc, backend: NbDocRenderBackend): string =
+proc render*(doc: var NbDoc, backend: NbDocBackend): string =
   for step in doc.renderPlan:
     if step in backend.partials:
       result.add backend.partials[step].render(doc.context)

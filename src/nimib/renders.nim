@@ -5,7 +5,21 @@ import highlight
 from mustachepkg/values import searchTable
 import std / with
 
-let mdCfg = initGfmConfig()
+proc renderMarkdown*(text: string): string =
+  # I was not able to put mdToHtml in renderProc table
+  # unless I put mdCfg inside here
+  # (even changing type NbBlockRenderProc to closure)
+  let mdCfg = initGfmConfig()
+  markdown(text, config=mdCfg)
+
+proc mdToHtml*(blk: var NbBlock, res: var string) =
+  res = renderMarkdown(blk.output.strip)
+
+proc codeHighlighted*(blk: var NbBlock, res: var string) =
+  blk.context["code"] = highlightNim(blk.code).strip
+
+proc outputEscaped*(blk: var NbBlock, res: var string) =
+  blk.context["output"] = blk.output.escapeCode.strip
 
 # default is html backend
 var nbBlockRenderBackend: NbBlockRenderBackend
@@ -25,13 +39,22 @@ with nbBlockRenderBackend:
 <figcaption>{{{caption}}}</figcaption>
 </figure>
 """
-    }.toTable
-  renderProc = initTable[string, NbBlockRenderProc]()
+  }.toTable
+  renderProc = {
+    "codeHighlighted": codeHighlighted,
+    "outputEscaped": outputEscaped,
+    "mdToHtml": mdToHtml
+  }.toTable
 
 proc render*(blk: var NbBlock, backend: NbBlockRenderBackend): string =
+  # if both partial and proc are present in backend, both are applied
+  # (first the partial, then the proc)
+  # if step not present in backend, nothing is done
+  blk.context.searchTable(backend.partials)
   for step in blk.renderPlan:
     if step in backend.partials:
-      result.add backend.partials[step].render(blk.context)
+      let partial = "{{> " & step & " }}"
+      result.add partial.render(blk.context)
     if step in backend.renderProc:
       backend.renderProc[step](blk, result)
 
@@ -42,6 +65,7 @@ proc render*(doc: var NbDoc, backend: NbDocRenderBackend): string =
     if step in backend.renderProc:
       backend.renderProc[step](doc, result)
 
+# to remove
 proc render*(blk: var NbBlock): string =
   blk.context.searchTable(blk.partials)
   for step in blk.renderPlan:
@@ -52,6 +76,7 @@ proc render*(blk: var NbBlock): string =
     else:
       result.add step
 
+# to remove
 var
   partialCodeBody* = """
 {{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
@@ -66,69 +91,15 @@ var
 </figure>
 """
 
-proc codeHighlighted*(blk: var NbBlock, res: var string) =
-  blk.context["code"] = highlightNim(blk.code).strip
-
-proc outputEscaped*(blk: var NbBlock, res: var string) =
-  blk.context["output"] = blk.output.escapeCode.strip
-
-proc initCodeRender*(blk: var NbBlock) =
-  blk.context = newContext(searchDirs = @[])
-  blk.partials = initTable[string, string]()
-  blk.renderPlan = @[
-    "codeHighlighted",
-    "outputEscaped",
-    "addCode",
-    "addOutput"
-  ]
-  blk.renderProc["codeHighlighted"] = codeHighlighted
-  blk.renderProc["outputEscaped"] = outputEscaped
-  blk.partials["addCode"] = partialCodeBody
-  blk.partials["addOutput"] = partialCodeOutput
-  # unused by default:
-  blk.partials["partialImageSingle"] = partialImageSingle
-
-proc initFreeRender*(blk: var NbBlock) =
-  blk.initCodeRender
-  blk.renderPlan = @[]
-
-proc renderMarkdown*(text: string): string =
-  markdown(text, config=mdCfg)
-
-proc mdToHtml(blk: var NbBlock, res: var string) =
-  res = renderMarkdown(blk.output.strip)
-
-proc initTextRender*(blk: var NbBlock) =
-  blk.context = newContext(searchDirs = @[])
-  blk.partials = initTable[string, string]()
-  blk.renderPlan = @[
-    "mdToHtml"
-  ]
-  blk.renderProc["mdToHtml"] = mdToHtml
-
-proc renderHtmlTextOutput*(output: string): string =
-  # why complain if func? because I am using global mdCfg!
-  renderMarkdown(output.strip)
-
-func renderHtmlCodeBodyEscapeTag*(code: string): string =
-  fmt"""<pre><code class="nim">{code.strip.escapeTag}</code></pre>""" & "\n"
-
-proc renderHtmlCodeBody*(code: string): string =
-  let highlit = highlightNim(code)
-  result = fmt"""<pre><code class="nim hljs">{highlit.strip}</code></pre>""" & "\n"
-
-func renderHtmlCodeOutput*(output: string): string =
-  fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
-
 proc renderHtmlBlock*(blk: NbBlock): string =
   var blk = blk
   case blk.kind
   of nbkText:
-    result = render(blk)
+    result = render(blk, nbBlockRenderBackend)
   of nbkCode:
-    result = render(blk)
+    result = render(blk, nbBlockRenderBackend)
   of nbkImage:
-    result = render(blk)
+    result = render(blk, nbBlockRenderBackend)
 
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:

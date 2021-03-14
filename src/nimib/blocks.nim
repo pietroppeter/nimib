@@ -1,5 +1,5 @@
 import macros
-import types, capture, renders
+import types, capture
 
 macro toStr*(body: untyped): string =
   (body.toStrLit)
@@ -7,7 +7,8 @@ macro toStr*(body: untyped): string =
 proc newBlock*(kind: NbBlockKind, code: string): NbBlock =
   # I cannot use this directly in nbBlocks (nbText, nbCode, ...)
   # or it will substitute kind and body fields with their values
-  NbBlock(kind: kind, code: code)
+  result = NbBlock(kind: kind, code: code)
+  result.context = newContext(searchDirs = @[])  # searchDirs=@[] gives error, why?
 
 template manageErrors*(identBlock, body: untyped) =
   # not used yet!
@@ -22,20 +23,24 @@ template manageErrors*(identBlock, body: untyped) =
 template nbTextBlock*(identBlock, identContainer, body: untyped) =
   # assume body is a string
   identBlock = newBlock(nbkText, toStr(body))  # nbDoc.flags.update(flags)
-  initTextRender(identBlock)
+  identBlock.renderPlan = @["mdToHtml"]
   identBlock.output = block:
     body
   identContainer.blocks.add identBlock
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
-  initCodeRender(identBlock)
+  identBlock.renderPlan = @[
+    "codeHighlighted",
+    "outputEscaped",
+    "addCode",
+    "addOutput"
+  ]
   captureStdout(identBlock.output):
     body
   identContainer.blocks.add identBlock
 
 template nbFreeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
-  initFreeRender(identBlock)
   body
   identContainer.blocks.add identBlock

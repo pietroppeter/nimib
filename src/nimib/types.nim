@@ -2,8 +2,8 @@ import mustache, tables
 export mustache, tables
 
 type
-  NbBlockRenderProc* = proc (blk: var NbBlock, res: var string) {. nimcall .}
-  NbDocRenderProc* = proc (blk: var NbDoc, res: var string) {. nimcall .}
+  NbBlockRenderProc* = proc (blk: NbBlock, res: var string) {. nimcall .}
+  NbDocRenderProc* = proc (blk: NbDoc, res: var string) {. nimcall .}
   NbBlockBackend* = ref object
     partials*: Table[string, string]
     renderProc*: Table[string, NbBlockRenderProc]

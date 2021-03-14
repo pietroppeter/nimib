@@ -12,18 +12,18 @@ proc renderMarkdown*(text: string): string =
   let mdCfg = initGfmConfig()
   markdown(text, config=mdCfg)
 
-proc mdToHtml*(blk: var NbBlock, res: var string) =
+proc mdToHtml*(blk: NbBlock, res: var string) =
   res = renderMarkdown(blk.output.strip)
 
-proc codeHighlighted*(blk: var NbBlock, res: var string) =
+proc codeHighlighted*(blk: NbBlock, res: var string) =
   blk.context["code"] = highlightNim(blk.code).strip
 
-proc outputEscaped*(blk: var NbBlock, res: var string) =
+proc outputEscaped*(blk: NbBlock, res: var string) =
   blk.context["output"] = blk.output.escapeCode.strip
 
 # default is html backend
-var nbBlockRenderBackend = new NbBlockBackend
-with nbBlockRenderBackend:
+var nbBlockBackend = new NbBlockBackend
+with nbBlockBackend:
   partials = {
       "addCode": """
 {{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
@@ -46,7 +46,7 @@ with nbBlockRenderBackend:
     "mdToHtml": mdToHtml
   }.toTable
 
-proc render*(blk: var NbBlock, backend: NbBlockBackend): string =
+proc render*(blk: NbBlock, backend: NbBlockBackend): string =
   # if both partial and proc are present in backend, both are applied
   # (first the partial, then the proc)
   # if step not present in backend, nothing is done
@@ -58,52 +58,16 @@ proc render*(blk: var NbBlock, backend: NbBlockBackend): string =
     if step in backend.renderProc:
       backend.renderProc[step](blk, result)
 
-proc render*(doc: var NbDoc, backend: NbDocBackend): string =
+proc render*(doc: NbDoc, backend: NbDocBackend): string =
   for step in doc.renderPlan:
     if step in backend.partials:
       result.add backend.partials[step].render(doc.context)
     if step in backend.renderProc:
       backend.renderProc[step](doc, result)
 
-# to remove
-proc render*(blk: var NbBlock): string =
-  blk.context.searchTable(blk.partials)
-  for step in blk.renderPlan:
-    if step in blk.renderProc:
-      blk.renderProc[step](blk, result)
-    elif step in blk.partials:
-      result.add blk.partials[step].render(blk.context)
-    else:
-      result.add step
-
-# to remove
-var
-  partialCodeBody* = """
-{{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
-"""
-  partialCodeOutput* = """
-{{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
-"""
-  partialImageSingle* = """
-<figure>
-<img src="{{url}}" alt="{{caption}}">
-<figcaption>{{{caption}}}</figcaption>
-</figure>
-"""
-
-proc renderHtmlBlock*(blk: NbBlock): string =
-  var blk = blk
-  case blk.kind
-  of nbkText:
-    result = render(blk, nbBlockRenderBackend)
-  of nbkCode:
-    result = render(blk, nbBlockRenderBackend)
-  of nbkImage:
-    result = render(blk, nbBlockRenderBackend)
-
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:
-    result.add blk.renderHtmlBlock
+    result.add render(blk, nbBlockBackend)
 
 proc renderHtml*(doc: NbDoc): string =
   let blocks = doc.renderHtmlBlocks

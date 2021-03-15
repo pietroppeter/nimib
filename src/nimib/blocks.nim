@@ -23,19 +23,14 @@ template manageErrors*(identBlock, body: untyped) =
 template nbTextBlock*(identBlock, identContainer, body: untyped) =
   # assume body is a string
   identBlock = newBlock(nbkText, toStr(body))  # nbDoc.flags.update(flags)
-  identBlock.renderPlan = @["mdToHtml"]
+  identBlock.renderPlan = nbTextBlockDefaultSteps
   identBlock.output = block:
     body
   identContainer.blocks.add identBlock
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
-  identBlock.renderPlan = @[
-    "codeHighlighted",
-    "outputEscaped",
-    "addCode",
-    "addOutput"
-  ]
+  identBlock.renderPlan = nbCodeBlockDefaultSteps
   captureStdout(identBlock.output):
     body
   identContainer.blocks.add identBlock

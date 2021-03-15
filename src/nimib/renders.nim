@@ -1,10 +1,48 @@
-import types, strformat, strutils, markdown, mustache
+import types, strutils, markdown, mustache
 export escapeTag
 import tables
 import highlight
 from mustachepkg/values import searchTable
 import std / with
 
+# generic render functions
+proc render*(blk: NbBlock, backend: NbBlockBackend): string =
+  # if both partial and proc are present in backend, both are applied
+  # (first the partial, then the proc)
+  # if step not present in backend, nothing is done
+  blk.context.searchTable(backend.partials)
+  for step in blk.renderPlan:
+    if step in backend.partials:
+      let partial = "{{> " & step & " }}"
+      result.add partial.render(blk.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](blk, result)
+
+proc render*(doc: NbDoc, backend: NbDocBackend): string =
+  doc.context.searchTable(backend.partials)
+  for step in doc.renderPlan:
+    if step in backend.partials:
+      result.add backend.partials[step].render(doc.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](doc, result)
+
+# default is html backend
+var
+  nbBlockBackend* = new NbBlockBackend
+  nbDocBackend* = new NbDocBackend
+  nbBlockBackendMd* = new NbBlockBackend
+  nbDocBackendMd* = new NbDocBackend
+  nbCodeBlockDefaultSteps* = @[
+    "codeHighlighted",
+    "outputEscaped",
+    "addCode",
+    "addOutput"
+  ]
+  nbTextBlockDefaultSteps* = @[
+    "addOutputMdToHtml"
+  ]
+
+# procs needed for html block backend
 proc renderMarkdown*(text: string): string =
   # I was not able to put mdToHtml in renderProc table
   # unless I put mdCfg inside here
@@ -12,8 +50,8 @@ proc renderMarkdown*(text: string): string =
   let mdCfg = initGfmConfig()
   markdown(text, config=mdCfg)
 
-proc mdToHtml*(blk: NbBlock, res: var string) =
-  res = renderMarkdown(blk.output.strip)
+proc addOutputMdToHtml*(blk: NbBlock, res: var string) =
+  res.add renderMarkdown(blk.output.strip)
 
 proc codeHighlighted*(blk: NbBlock, res: var string) =
   blk.context["code"] = highlightNim(blk.code).strip
@@ -21,8 +59,6 @@ proc codeHighlighted*(blk: NbBlock, res: var string) =
 proc outputEscaped*(blk: NbBlock, res: var string) =
   blk.context["output"] = blk.output.escapeCode.strip
 
-# default is html backend
-var nbBlockBackend = new NbBlockBackend
 with nbBlockBackend:
   partials = {
       "addCode": """
@@ -43,28 +79,10 @@ with nbBlockBackend:
   renderProc = {
     "codeHighlighted": codeHighlighted,
     "outputEscaped": outputEscaped,
-    "mdToHtml": mdToHtml
+    "addOutputMdToHtml": addOutputMdToHtml
   }.toTable
 
-proc render*(blk: NbBlock, backend: NbBlockBackend): string =
-  # if both partial and proc are present in backend, both are applied
-  # (first the partial, then the proc)
-  # if step not present in backend, nothing is done
-  blk.context.searchTable(backend.partials)
-  for step in blk.renderPlan:
-    if step in backend.partials:
-      let partial = "{{> " & step & " }}"
-      result.add partial.render(blk.context)
-    if step in backend.renderProc:
-      backend.renderProc[step](blk, result)
-
-proc render*(doc: NbDoc, backend: NbDocBackend): string =
-  for step in doc.renderPlan:
-    if step in backend.partials:
-      result.add backend.partials[step].render(doc.context)
-    if step in backend.renderProc:
-      backend.renderProc[step](doc, result)
-
+# procs needed for html doc backend
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:
     result.add render(blk, nbBlockBackend)

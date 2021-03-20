@@ -11,7 +11,8 @@ proc getGitRootDirectory*: AbsoluteDir =
 
 proc getGitRemoteUrl*: string =
   # https://stackoverflow.com/a/4089452/4178189
-  execProcess("git", args=["config", "--get", "remote.origin.url"], options={}).strip
+  result = execProcess("git", args=["config", "--get", "remote.origin.url"], options={}).strip
+  result = changeFileExt(result, "")
 
 proc isOnGithub*: bool =
   getGitRemoteUrl().startsWith("https://github.com")
@@ -21,14 +22,14 @@ proc getGitRelativeUrl*(file: AbsoluteFile, branch="main"): string =
   result.add replace((file.relativeTo getGitRootDirectory()).string, "\\", "/")
 
 proc getGitRemoteUrl*(file: AbsoluteFile, branch="main"): string =
-  result = changeFileExt(getGitRemoteUrl(), "")
+  result = getGitRemoteUrl()
   result.add getGitRelativeUrl(file, branch)
 
 when isMainModule:
   import sugar
   dump getGitRootDirectory()
   dump getGitRemoteUrl()
-  assert getGitRemoteUrl() == "https://github.com/pietroppeter/nimib.git"
+  assert getGitRemoteUrl() == "https://github.com/pietroppeter/nimib"
 
   import nimib
   nbInit

@@ -1,4 +1,4 @@
-import nimib / [types, blocks, docs, renders, paths]
+import nimib / [types, blocks, docs, renders, paths, gits]
 from nimib / assets import nil
 from nimib / highlight import highlightNim
 export types, blocks, docs, renders, paths
@@ -52,6 +52,7 @@ template nbInit*() =
   nbDoc.partials["doc"] = assets.doc
   nbDoc.partials["head"] = assets.head
   nbDoc.partials["footer"] = assets.footer
+  nbDoc.partials["header"] = assets.header
   nbDoc.templateDirs = @["./", "./templates/"]
 
   # the rest could be actually be put directly in the context? (possibly keep the same API using dot setters and getters?)
@@ -60,6 +61,10 @@ template nbInit*() =
   # even so there could be workaround for this
   # for the moment anyway let's keep them here and declared in NbDoc type
   nbDoc.title = (nbThisFile.relativeTo nbProjDir).string
+  nbDoc.context["header-title"] = "<code>" & nbDoc.title & "</code>"
+  nbDoc.context["home-path"] = (nbThisDir.relativeTo nbProjDir).string
+  if isGitAvailable() and isOnGithub():
+    nbDoc.context["github-remote-url"] = getGitRemoteUrl()
   nbDoc.author = nbUser
 
   template nbText(body: untyped) =

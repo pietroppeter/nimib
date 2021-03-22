@@ -2,6 +2,9 @@ import "$nim/compiler/pathutils"
 export pathutils
 import os, strutils, hashes
 
+proc relativeTo*(dir: AbsoluteDir, base: AbsoluteDir; sep = DirSep): RelativeDir =
+  result = RelativeDir(relativePath(dir.string, base.string, sep))
+
 proc findNimbleDir*(dir: AbsoluteDir): AbsoluteDir =
   ## finds a directory containing a .nimble file starting from `dir` and looking in parent directories.
   ## if no .nimble file is found it will return `dir`.

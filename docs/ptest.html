@@ -10,6 +10,21 @@
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
   </head>
 <body>
+<header>
+<div id="header-box">
+<span id="home"><a href=".">🏡</a></span>
+<span id="header-title"><code>ptest.nim</code></span>
+<span id="github"><a href="https://github.com/pietroppeter/nimib"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+</div>
+<style>
+div#header-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+</style>
+<hr>
+</header>
 <main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
@@ -25,14 +40,14 @@
 </thead>
 <tbody>
 <tr>
-<td>1</td>
 <td>0</td>
-<td>7</td>
+<td>0</td>
+<td>8</td>
 <td>8</td>
 </tr></tbody></table>
 <pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
@@ -78,7 +93,7 @@ taking into account specifics of nimib files: they already produce an output (ht
   tests.add test</code></pre>
 <pre><samp>added test candidate: cheatsheet.nim
 added test candidate: hello.nim
-added test candidate: index.nim -> skipped since it is changed in git
+added test candidate: index.nim
 added test candidate: mostaccio.nim
 added test candidate: nolan.nim
 added test candidate: numerical.nim
@@ -136,7 +151,7 @@ added test candidate: pythno.nim</samp></pre>
   removeFile(tmp)</code></pre>
 <pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
 <span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:blue">[SKIP]</span> <a href="index.html">index.nim</a>
+<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
 <span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
 <span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
 <span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>

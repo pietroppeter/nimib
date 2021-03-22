@@ -34,7 +34,7 @@ This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/ma
 """.emojize
 nbCode: discard
 nbBlock.code = "\n" & hello
-nbText: """
+nbText: fmt"""
 <!--TODO
 Note the following:
 

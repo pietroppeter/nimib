@@ -12,6 +12,8 @@ proc getGitRootDirectory*: AbsoluteDir =
 proc getGitRemoteUrl*: string =
   # https://stackoverflow.com/a/4089452/4178189
   result = execProcess("git", args=["config", "--get", "remote.origin.url"], options={poUsePath}).strip
+  # Convert ssh GitHub origins into https ones
+  result = result.replace("git@github.com:", "https://github.com/")
   result = changeFileExt(result, "")
 
 proc isOnGithub*: bool =

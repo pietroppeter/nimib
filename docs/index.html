@@ -37,18 +37,40 @@ section#source {
   <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
 </div>
 <hr>
-</header><main>
-<h1>nimib 🐳</h1>
-<p>nim 👑 driven ⛵ publishing ✍</p>
-<p>🚧 working towards a 0.1 release 🚧</p>
+</header>
+<main>
+<h1>nimib 🐳 - nim 👑 driven ⛵ publishing ✍</h1>
+<p>Nimib provides an API to convert your Nim code and its outputs to html documents.</p>
+<p>If you have some nim code lying around that echoes stuff you can try how nimib works with these easy steps:</p>
 <ul>
-<li><a href="https://github.com/pietroppeter/nimib">repository</a></li>
-<li><a href="https://pietroppeter.github.io/nimib">documentation</a></li>
+<li><code>nimble install nimib</code></li>
+<li><code>import nimib</code> at the top</li>
+<li>add a <code>nbInit</code> command right after that</li>
+<li>split your code into one or more <code>nbCode:</code> blocks</li>
+<li>add some text commentary in markdown through <code>nbText:</code> blocks</li>
+<li>add a <code>nbSave</code> command at the end</li>
+<li>compile and run</li>
+<li>open the html file that has been generated next to your nim file (same name)
+See below for an example of this.</li>
 </ul>
-<!--brief overview mentioning
-- overview of use cases, features, workflows
-- design philosophy (simple API, sane defaults, easy customization, nim all the way)
--->
+<p>The type of html output that is obtained by default is similar to html notebooks produced by tools
+like <a href="https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb">Jupyter</a>
+or <a href="https://rmarkdown.rstudio.com/lesson-10.html">RMarkdown</a>, but nimib provides this starting
+directly from standard nim files.</p>
+<p>Nimib strives for:</p>
+<ul>
+<li>a simple API</li>
+<li>sane defaults</li>
+<li>easy customization</li>
+</ul>
+<p>The main goal of Nimib is to empower people to explore nim and its ecosystem and share with others.</p>
+<p>The target use case is blogging about nim.</p>
+<p>This document is generated though nimib both as an index.html file and as a README.md,
+you should be reading one of the two, for the other:</p>
+<ul>
+<li><a href="https://github.com/pietroppeter/nimib">README.md</a></li>
+<li><a href="https://pietroppeter.github.io/nimib">index.html</a></li>
+</ul>
 <h2>👋 🌍 Example Usage</h2>
 <p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello</a></p>
 <p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
@@ -99,13 +121,7 @@ nbText:
 
 nbSave <span class="hljs-comment"># use nbShow to automatically open a browser tab with html output</span></code></pre>
 <!--TODO
-Note the following:
-
-  * the code that appears in the
-
-### Try it!
-
-*TODO*
+Notes should be directly embedded in hello file.
 -->
 <h3>Other examples of usage</h3>
 <p>in this repo:</p>
@@ -121,7 +137,23 @@ Note the following:
 <ul>
 <li><a href="https://pietroppeter.github.io/adventofnim/index.html">adventofnim</a>: solutions for advent of code in nim</li>
 </ul>
-<h2>API</h2>
+<h2>Features</h2>
+<blockquote>
+<p>“I try all things, I achieve what I can.” ― Herman Melville, Moby-Dick or, the Whale</p>
+</blockquote>
+<h3>Defaults</h3>
+<ul>
+<li>one</li>
+<li>two</li>
+<li>three</li>
+</ul>
+<h3>Customization</h3>
+<ul>
+<li>uno</li>
+<li>due</li>
+<li>tre</li>
+</ul>
+<h2>🐝 API <!-- Api means bees in Italian --></h2>
 <h3>external API</h3>
 <p>By external API we mean the following templates:</p>
 <ul>
@@ -337,19 +369,40 @@ nbDoc.title = <span class="hljs-string">&quot;Nimib Docs&quot;</span>
   defaultHighlightCss = <span class="hljs-string">&quot;atom-one-light.css&quot;</span>
 
 nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
-# nimib :whale:
+# nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
 
-nim :crown: driven :sailboat: publishing :writingHand:
+Nimib provides an API to convert your Nim code and its outputs to html documents.
 
-:construction: working towards a 0.1 release :construction:
+If you have some nim code lying around that echoes stuff you can try how nimib works with these easy steps:
+  * `nimble install nimib`
+  * `import nimib` at the top
+  * add a `nbInit` command right after that
+  * split your code into one or more `nbCode:` blocks
+  * add some text commentary in markdown through `nbText:` blocks
+  * add a `nbSave` command at the end
+  * compile and run
+  * open the html file that has been generated next to your nim file (same name)
+See below for an example of this.
 
-* [repository]({repo})
-* [documentation]({docs})
+The type of html output that is obtained by default is similar to html notebooks produced by tools
+like [Jupyter](https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb)
+or [RMarkdown](https://rmarkdown.rstudio.com/lesson-10.html), but nimib provides this starting
+directly from standard nim files.
 
-&lt;!--brief overview mentioning
-- overview of use cases, features, workflows
-- design philosophy (simple API, sane defaults, easy customization, nim all the way)
---&gt;
+Nimib strives for:
+  * a simple API
+  * sane defaults
+  * easy customization
+
+The main goal of Nimib is to empower people to explore nim and its ecosystem and share with others.
+
+The target use case is blogging about nim.
+
+This document is generated though nimib both as an index.html file and as a README.md,
+you should be reading one of the two, for the other:
+
+* [README.md]({repo})
+* [index.html]({docs})
 
 ## :wave: :earthAfrica: Example Usage
 
@@ -358,16 +411,10 @@ First have a look at the following html document: [hello]({docs}/hello.html)
 This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
 &quot;&quot;&quot;</span>.emojize
 nbCode: <span class="hljs-keyword">discard</span>
-nbBlock.code = <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> &amp; hello
+nbBlock.code = <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> &amp; hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
 nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
 &lt;!--TODO
-Note the following:
-
-  * the code that appears in the
-
-### Try it!
-
-*TODO*
+Notes should be directly embedded in hello file.
 --&gt;
 
 ### Other examples of usage
@@ -385,7 +432,23 @@ elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 
-## API
+## Features
+
+&gt; “I try all things, I achieve what I can.” ― Herman Melville, Moby-Dick or, the Whale
+
+### Defaults
+
+* one
+* two
+* three
+
+### Customization
+
+* uno
+* due
+* tre
+
+## :honeybee: API &lt;!-- Api means bees in Italian --&gt;
 
 ### external API
 

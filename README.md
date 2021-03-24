@@ -1,16 +1,37 @@
-# nimib 🐳
+# nimib 🐳 - nim 👑 driven ⛵ publishing ✍
 
-nim 👑 driven ⛵ publishing ✍
+Nimib provides an API to convert your Nim code and its outputs to html documents.
 
-🚧 working towards a 0.1 release 🚧
+If you have some nim code lying around that echoes stuff you can try how nimib works with these easy steps:
+  * `nimble install nimib`
+  * `import nimib` at the top
+  * add a `nbInit` command right after that
+  * split your code into one or more `nbCode:` blocks
+  * add some text commentary in markdown through `nbText:` blocks
+  * add a `nbSave` command at the end
+  * compile and run
+  * open the html file that has been generated next to your nim file (same name)
+See below for an example of this.
 
-* [repository](https://github.com/pietroppeter/nimib)
-* [documentation](https://pietroppeter.github.io/nimib)
+The type of html output that is obtained by default is similar to html notebooks produced by tools
+like [Jupyter](https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb)
+or [RMarkdown](https://rmarkdown.rstudio.com/lesson-10.html), but nimib provides this starting
+directly from standard nim files.
 
-<!--brief overview mentioning
-- overview of use cases, features, workflows
-- design philosophy (simple API, sane defaults, easy customization, nim all the way)
--->
+Nimib strives for:
+  * a simple API
+  * sane defaults
+  * easy customization
+
+The main goal of Nimib is to empower people to explore nim and its ecosystem and share with others.
+
+The target use case is blogging about nim.
+
+This document is generated though nimib both as an index.html file and as a README.md,
+you should be reading one of the two, for the other:
+
+* [README.md](https://github.com/pietroppeter/nimib)
+* [index.html](https://pietroppeter.github.io/nimib)
 
 ## 👋 🌍 Example Usage
 
@@ -71,13 +92,7 @@ nbSave # use nbShow to automatically open a browser tab with html output
 
 
 <!--TODO
-Note the following:
-
-  * the code that appears in the
-
-### Try it!
-
-*TODO*
+Notes should be directly embedded in hello file.
 -->
 
 ### Other examples of usage
@@ -95,7 +110,23 @@ elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 
-## API
+## Features
+
+> “I try all things, I achieve what I can.” ― Herman Melville, Moby-Dick or, the Whale
+
+### Defaults
+
+* one
+* two
+* three
+
+### Customization
+
+* uno
+* due
+* tre
+
+## 🐝 API <!-- Api means bees in Italian -->
 
 ### external API
 

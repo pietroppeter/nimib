@@ -3,15 +3,15 @@ import std / [os, osproc, strutils]
 import nimib / paths
 
 proc isGitAvailable*: bool =
-  execCmdEx("git --version", options={}).exitcode == 0
+  execCmdEx("git --version", options={poUsePath}).exitcode == 0
 
 proc getGitRootDirectory*: AbsoluteDir =
   # https://stackoverflow.com/a/957978/4178189
-  execProcess("git", args=["rev-parse", "--show-toplevel"], options={}).strip.AbsoluteDir
+  execProcess("git", args=["rev-parse", "--show-toplevel"], options={poUsePath}).strip.AbsoluteDir
 
 proc getGitRemoteUrl*: string =
   # https://stackoverflow.com/a/4089452/4178189
-  result = execProcess("git", args=["config", "--get", "remote.origin.url"], options={}).strip
+  result = execProcess("git", args=["config", "--get", "remote.origin.url"], options={poUsePath}).strip
   result = changeFileExt(result, "")
 
 proc isOnGithub*: bool =

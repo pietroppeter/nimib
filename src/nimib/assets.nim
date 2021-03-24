@@ -1,4 +1,4 @@
-let doc* = """
+const doc* = """
 <!DOCTYPE html>
 <html lang="en-us">
 {{> head }}
@@ -14,7 +14,7 @@ let doc* = """
 {{> footer }}
 </body>
 </html>"""
-let head* = """
+const head* = """
 <head>
   <title>{{title}}{{^title}}nimib document{{/title}}</title>
   {{! https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale }} 
@@ -33,7 +33,7 @@ let head* = """
   {{! I am not sure how to avoid the following </head> tag not to be indented }}
 </head>
 """
-let footer* = """
+const footer* = """
 <footer>
 <hr>
 <span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
@@ -78,7 +78,7 @@ section#source {
 """
 
 # github svg taken from adapted from: https://iconify.design/icon-sets/octicon/mark-github.html
-let header* = """
+const header* = """
 <header>
 <div id="header-box">
 <span id="home"><a href="{{home-path}}">🏡</a></span>

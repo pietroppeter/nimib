@@ -36,7 +36,7 @@ const head* = """
 const footer* = """
 <footer>
 <hr>
-<span id="made">made with <a href="https://github.com/pietroppeter/nimib">nimib 🐳</a></span>
+<span id="made">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span>
 {{^no_source}}<button id="show" onclick="toggleSourceDisplay()">Show Source</button>
 <section id="source">
 <pre><code class="nim hljs">{{{source}}}</code></pre>

@@ -62,7 +62,8 @@ template nbInit*() =
   # for the moment anyway let's keep them here and declared in NbDoc type
   nbDoc.title = (nbThisFile.relativeTo nbProjDir).string
   nbDoc.context["header-title"] = "<code>" & nbDoc.title & "</code>"
-  nbDoc.context["home-path"] = (nbThisDir.relativeTo nbProjDir).string
+  nbDoc.context["home-path"] = (nbProjDir.relativeTo nbThisDir).string
+  nbDoc.context["here-path"] = (nbThisDir.relativeTo nbProjDir).string
   if isGitAvailable() and isOnGithub():
     nbDoc.context["github-remote-url"] = getGitRemoteUrl()
   nbDoc.author = nbUser

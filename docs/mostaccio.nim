@@ -1,7 +1,7 @@
 import nimib
 
 nbInit
-
+nbDarkMode
 nbText: """# Example of usage of mustache
 
 From [nim-mustache](https://github.com/soasme/nim-mustache).

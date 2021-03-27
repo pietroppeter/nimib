@@ -45,6 +45,7 @@ template nbInit*() =
     nbDoc {.inject.}: NbDoc
     nbBlock {.inject.}: NbBlock
 
+  nbDoc.templateDirs = @["./", "./templates/"]
   nbDoc.render = renderHtml
   nbDoc.context = newContext(searchDirs = @[])
   nbDoc.context["source"] = highlightNim(read(nbThisFile))
@@ -53,7 +54,15 @@ template nbInit*() =
   nbDoc.partials["head"] = assets.head
   nbDoc.partials["footer"] = assets.footer
   nbDoc.partials["header"] = assets.header
-  nbDoc.templateDirs = @["./", "./templates/"]
+  nbDoc.context["stylesheet"] = assets.waterLight
+  nbDoc.context["github-logo"] = assets.githubLogoLight
+  nbDoc.context["highlight_style"] = assets.atomOneLight
+  template nbDarkMode =
+    nbDoc.context["stylesheet"] = assets.waterDark
+    nbDoc.context["github-logo"] = assets.githubLogoDark
+    nbDoc.context["highlight_style"] = assets.androidStudio
+  template nbUseLatex =
+    nbDoc.context["latex"] = assets.latex
 
   # the rest could be actually be put directly in the context? (possibly keep the same API using dot setters and getters?)
   nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
@@ -90,8 +99,6 @@ template nbInit*() =
     withDir(nbProjDir):
       write nbDoc
 
-  template nbUseLatex =
-    nbDoc.context["use_latex"] = true
 
   template nbShow =
     nbSave

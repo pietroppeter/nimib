@@ -5,8 +5,8 @@ from nimib/defaults import nil
 export defaults.useLatex, defaults.darkMode
 # types exports mustache, tables
 # paths exports pathutils
-from mustachepkg/values import searchTable, searchDirs
-export searchTable, searchDirs
+from mustachepkg/values import searchTable, searchDirs, castStr
+export searchTable, searchDirs, castStr
 
 
 template nbInit*() =

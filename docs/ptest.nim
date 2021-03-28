@@ -76,14 +76,14 @@ Imports and global variables:
     nbCode: echo getCurrentDir()
 
   nbText: """### test cases
-for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)
+for every file ending in nim (and not starting with ptest) in nbHomeDir (test cases)
   - a test case will be skipped if it is not tracked in git
   - a test case will be skipped if it does not have a corresponding html
   - a test case will be skipped if it is modified/added in git
 """
   nbCode:
-    for file in walkDirRec(nbProjDir):
-      ## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)
+    for file in walkDirRec(nbHomeDir):
+      ## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)
       if file.endsWith(".nim") and not file.name.startsWith("ptest"):
         test = TestCase(file: file)
         stdout.write "added test candidate: ", file.relPath

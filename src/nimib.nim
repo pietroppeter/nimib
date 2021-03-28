@@ -5,8 +5,8 @@ from nimib/defaults import nil
 export defaults.useLatex, defaults.darkMode
 # types exports mustache, tables
 # paths exports pathutils
-from mustachepkg/values import searchTable, searchDirs
-export searchTable, searchDirs
+from mustachepkg/values import searchTable, searchDirs, castStr
+export searchTable, searchDirs, castStr
 
 
 template nbInit*() =
@@ -24,14 +24,14 @@ template nbInit*() =
     nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
   var
     nbUser {.inject.}: string = getUser()
-    nbProjDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
-  if dirExists(nbProjDir / "docs".RelativeDir):
-    nbProjDir = nbProjDir / "docs".RelativeDir
-  setCurrentDir nbProjDir
+    nbHomeDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
+  if dirExists(nbHomeDir / "docs".RelativeDir):
+    nbHomeDir = nbHomeDir / "docs".RelativeDir
+  setCurrentDir nbHomeDir
 
   # could change to nb.rel with nb global object
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
-    (path.relativeTo nbProjDir).string
+    (path.relativeTo nbHomeDir).string
     
   var
     nbDoc {.inject.}: NbDoc
@@ -44,8 +44,8 @@ template nbInit*() =
   nbDoc.templateDirs = @["./", "./templates/"]
   nbDoc.partials = initTable[string, string]()
   nbDoc.context = newContext(searchDirs = @[])
-  nbDoc.context["home_path"] = (nbProjDir.relativeTo nbThisDir).string
-  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbProjDir).string
+  nbDoc.context["home_path"] = (nbHomeDir.relativeTo nbThisDir).string
+  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbHomeDir).string
   nbDoc.context["source"] = read(nbThisFile)
 
   defaults.init(nbDoc)
@@ -69,7 +69,7 @@ template nbInit*() =
     #   - in case you need to manage additional exceptions for a single document add a new set of partials before calling nbSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
-    withDir(nbProjDir):
+    withDir(nbHomeDir):
       write nbDoc
 
   template nbShow =

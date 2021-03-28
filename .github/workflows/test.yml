@@ -1,0 +1,17 @@
+name: Run tests
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jiro4989/setup-nim-action@v1.1.4
+        with:
+          nim-version: '1.4.4'
+      - run: nimble deps
+      - run: nimble tdeps
+      - run: nimble ptest

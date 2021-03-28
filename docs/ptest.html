@@ -75,14 +75,14 @@ taking into account specifics of nimib files: they already produce an output (ht
   test: <span class="hljs-type">TestCase</span>
   tests: <span class="hljs-built_in">seq</span>[<span class="hljs-type">TestCase</span>]</code></pre>
 <h3>test cases</h3>
-<p>for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)</p>
+<p>for every file ending in nim (and not starting with ptest) in nbHomeDir (test cases)</p>
 <ul>
 <li>a test case will be skipped if it is not tracked in git</li>
 <li>a test case will be skipped if it does not have a corresponding html</li>
 <li>a test case will be skipped if it is modified/added in git</li>
 </ul>
-<pre><code class="nim hljs"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbProjDir):
-  <span class="hljs-comment">## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)</span>
+<pre><code class="nim hljs"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbHomeDir):
+  <span class="hljs-comment">## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)</span>
   <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
     test = <span class="hljs-type">TestCase</span>(file: file)
     <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath
@@ -275,14 +275,14 @@ Imports and global variables:
     nbCode: <span class="hljs-keyword">echo</span> getCurrentDir()
 
   nbText: <span class="hljs-string">&quot;&quot;&quot;### test cases
-for every file ending in nim (and not starting with ptest) in nbProjDir (test cases)
+for every file ending in nim (and not starting with ptest) in nbHomeDir (test cases)
   - a test case will be skipped if it is not tracked in git
   - a test case will be skipped if it does not have a corresponding html
   - a test case will be skipped if it is modified/added in git
 &quot;&quot;&quot;</span>
   nbCode:
-    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbProjDir):
-      <span class="hljs-comment">## note that file is an AbsoluteFile (since nbProjDir is an AbsoluteDir)</span>
+    <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbHomeDir):
+      <span class="hljs-comment">## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)</span>
       <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
         test = <span class="hljs-type">TestCase</span>(file: file)
         <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath

@@ -110,25 +110,25 @@ y(5): -1.612374396254655</samp></pre>
 <span class="hljs-keyword">assert</span> t3rk == tspan
 <span class="hljs-comment">## solutions</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Heun2:&quot;</span>
-<span class="hljs-keyword">echo</span> y1hn[^<span class="hljs-number">1</span>]
-<span class="hljs-keyword">echo</span> y2hn[^<span class="hljs-number">1</span>]
-<span class="hljs-keyword">echo</span> y3hn[^<span class="hljs-number">1</span>]
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y1hn[^1]:.7f}&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y2hn[^1]:.7f}&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y3hn[^1]:.7f}&quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;RK4:&quot;</span>
-<span class="hljs-keyword">echo</span> y1rk[^<span class="hljs-number">1</span>]
-<span class="hljs-keyword">echo</span> y2rk[^<span class="hljs-number">1</span>]
-<span class="hljs-keyword">echo</span> y3rk[^<span class="hljs-number">1</span>]
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y1rk[^1]:.7f}&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y2rk[^1]:.7f}&quot;</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y3rk[^1]:.7f}&quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Analytical:&quot;</span>
-<span class="hljs-keyword">echo</span> y5</code></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y5:.7f}&quot;</span></code></pre>
 <pre><samp>Heun2:
--1.127319598144045
--1.482155016263979
--1.606852796633675
+-1.1273196
+-1.4821550
+-1.6068528
 RK4:
--1.613192730557637
--1.612423305325993
--1.612374472003556
+-1.6131927
+-1.6124233
+-1.6123745
 Analytical:
--1.612374396254655</samp></pre>
+-1.6123744</samp></pre>
 <p>As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.</p>
 <p>To compute percentage error of each method at $y(5)$ I will use:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> pe(yApprox: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">string</span> =
@@ -279,15 +279,15 @@ nbCode:
   <span class="hljs-keyword">assert</span> t3rk == tspan
   <span class="hljs-comment">## solutions</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Heun2:&quot;</span>
-  <span class="hljs-keyword">echo</span> y1hn[^<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">echo</span> y2hn[^<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">echo</span> y3hn[^<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y1hn[^1]:.7f}&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y2hn[^1]:.7f}&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y3hn[^1]:.7f}&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;RK4:&quot;</span>
-  <span class="hljs-keyword">echo</span> y1rk[^<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">echo</span> y2rk[^<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">echo</span> y3rk[^<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y1rk[^1]:.7f}&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y2rk[^1]:.7f}&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y3rk[^1]:.7f}&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Analytical:&quot;</span>
-  <span class="hljs-keyword">echo</span> y5
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y5:.7f}&quot;</span>
 nbText: <span class="hljs-string">&quot;As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.&quot;</span>
 nbText: <span class="hljs-string">&quot;To compute percentage error of each method at $y(5)$ I will use:&quot;</span>
 nbCode:

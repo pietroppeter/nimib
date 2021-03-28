@@ -12,37 +12,51 @@ let
   defaultHighlightCss = "atom-one-light.css"
 
 nbText: fmt"""
-# nimib :whale:
+# nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
 
-nim :crown: driven :sailboat: publishing :writingHand:
+Nimib provides an API to convert your Nim code and its outputs to html documents.
 
-:construction: working towards a 0.1 release :construction:
+The type of html output that is obtained by default is similar to html notebooks produced by tools
+like [Jupyter](https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb)
+or [RMarkdown](https://rmarkdown.rstudio.com/lesson-10.html), but nimib provides this starting
+directly from standard nim files. It currently does not provide any type of interactivity or automatic reloading.
 
-* [repository]({repo})
-* [documentation]({docs})
+If you have some nim code lying around that echoes stuff you can try how nimib works with following these steps:
+  * run in shell `nimble install nimib`
+  * add `import nimib` at the top of your nim file
+  * add a `nbInit` command right after that
+  * split your code into one or more `nbCode:` blocks
+  * add some text commentary in markdown through `nbText:` blocks
+  * add a `nbSave` command at the end
+  * compile and run
+  * open the html file that has been generated next to your nim file (same name)
 
-<!--brief overview mentioning
-- overview of use cases, features, workflows
-- design philosophy (simple API, sane defaults, easy customization, nim all the way)
--->
+See below for an example of this.
+
+Nimib strives for:
+  * a simple API
+  * sane defaults
+  * easy customization
+
+The main goal of Nimib is to empower people to explore nim and its ecosystem and share with others.
+
+This document is generated though nimib both as an index.html file and as a README.md,
+you should be reading one of the two, for the other:
+
+* [README.md]({repo})
+* [index.html]({docs})
 
 ## :wave: :earthAfrica: Example Usage
 
-First have a look at the following html document: [hello]({docs}/hello.html)
+First have a look at the following html document: [hello.html]({docs}/hello.html)
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
 """.emojize
 nbCode: discard
-nbBlock.code = "\n" & hello
+nbBlock.code = "\n" & hello  # "\n" should not be needed here (fix required in rendering)
 nbText: fmt"""
 <!--TODO
-Note the following:
-
-  * the code that appears in the
-
-### Try it!
-
-*TODO*
+Notes should be directly embedded in hello file.
 -->
 
 ### Other examples of usage
@@ -53,14 +67,65 @@ in this repo:
 * [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
-* [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache
+* [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
 * [ptest]({docs}/ptest.html): print testing for nimib
 
 elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 
-## API
+## :hammer_and_wrench: Features
+
+> “I try all things, I achieve what I can.” ― Herman Melville, Moby-Dick or, the Whale
+
+The following are the main elements of a default nimib document:
+
+* `nbCode`: code blocks with automatic stdout capture
+* `nbText`: text blocks with automatic conversion from markdown to html (thanks to [nim-markdown](https://github.com/soasme/nim-markdown))
+* `nbImage`: image command to show images
+* styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nbDoc.darkMode` after `nbInit`).
+* static highlighting of nim code. Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
+  and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
+* (optional) latex rendering through [katex](https://katex.org/) (see below)
+* a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
+* a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [docs/index.nim]({repo}/blob/main/docs/index.nim))
+
+Customization over the default is mostly achieved through nim-mustache or the internal Api (see below).
+Currently most of the documentation on customization is given by the examples.
+
+### latex
+
+See [numerical]({docs}/numerical.html) for an example of latex usage.
+
+To add latex support:
+
+  * add a `nbDoc.useLatex` command somewhere between `nbInit` and `nbSave`
+  * use delimiters `$` for inline-math or `$$` for display math inside nbText blocks.
+
+Latex is rendered with [katex](https://katex.org/) through an autodetection during document loading.
+
+### interaction with filesystem
+
+The default situation for single article that does not access filesystem:
+
+* you do not have to worry about nothing.
+  the new html will appear next to your nim file with same name and html extension
+
+if you need to change name or location of html output, or if you need to access
+filesystem (in particular if you need it for your web assets), this is what you need to know:
+
+* with `nbInit` a `nbHomeDir` a number of paths are initialized
+* we follow [compiler/pathutils](https://nim-lang.org/docs/compiler/pathutils.html) which is available (exported) from `nimib/paths`.
+* `nbThisFile` is an `AbsoluteFile` path of current nim file (the one where the `nbInit` is called from). `nbThisDir` is the corresponding `AbsoluteDir`.
+* `nbHomeDir` is a "home" directory:
+  - if no nimble file is found in `nbThisDir` or a parent directory, then it is set to `nbThisDir`.
+  - if a nimble file is found and in that directory there is a `docs` folder, it is set to that `docs` folder.
+  - if a nimble file is found without a `docs` folder, it is set to the directory containing the nimble file.
+* current directory is set to `nbHomeDir` (current directory at initialization is saved in `nbInitDir` if needed)
+* a procedure `relPath(path: AbsoluteFile | AbsoluteDir): string` turns an AbsolutePath into a string path relative to `nbHomeDir`
+
+## :honeybee: API <!-- Api means bees in Italian -->
 
 ### external API
 
@@ -78,7 +143,8 @@ By external API we mean the following templates:
   Rendering takes place at this moment.
   By default the document will be save as an html (templated with [nim-mustache](https://github.com/soasme/nim-mustache))
 
-other templates on top of the four basic ones will likely be added.
+other templates on top of the four basic ones are available (e.g. `nbImage`)
+or will likely be added (see issue [#2](https://github.com/pietroppeter/nimib/issues/2)).
 
 ### internal api
 
@@ -106,11 +172,11 @@ Here are two examples that show how to abuse the internal api:
 <!--
 ### extending the api
 
-*TODO*
-
--->
+*TODO* after 0.2
 
 ## Rendering
+
+*TODO* after 0.2
 
 ### html rendering
 
@@ -120,129 +186,28 @@ There are two levels of html rendering.
    and by appropriate semantic tagging in render functions (this can be overriden).
 2. **render-in-the-large***: putting together html fragments and other elements to publish one or more documents.
    this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.
-
-### markdown rendering
-
-For an example on how to output Markdown see [docs/index.nim]({repo}/blob/main/docs/index.nim),
-which automatically renders the `README.md` in the repo.
-
-## Other features
-
-### styling
-
-Default style is provided by [water.css](https://watercss.kognise.dev/).
-Style can be customized.
-
-### code highlighting
-
-Code highlighting is provided by [highlight.js](https://highlightjs.org/).
-The script `{assets}/{highlight}` contains highlighting assets only for nim language.
-The default css style for highlighting is `{assets}/{defaultHighlightCss}`.
-
-If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
-(select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.
-
-### latex
-
-Rendering latex expressions is an opt-in feature provided by [katex](https://katex.org/).
-The delimiter supported are `$` for inline-math and `$$` for display math.
-Latex is rendered through an autodetection during document loading.
-
-<!--
-## static assets
-
-*TODO*
-
-## filesystem
-
-*TODO*
-
-default situation for single article that does not access filesystem:
-
-* you do not have to worry about nothing.
-  the new html will appear next to your nim file with same name and html extension
-
-if you need to change name or location of html output, or if you need to access
-filesystem (in particular if you need it for your web assets), this is what you need to know:
-
-* with nbInit a number of paths are initialized
-* we follow compiler/pathutils which is available (exported) from nim paths.
-  (along with os stuff also exported)
-* nbThisFilename (string): name of this file (with nim extension).
-* nbThisDir (RelativeDir): directory where this nim file resides
-* nbThisFile (RelativeFile): this should be a template that gives nbThisDir + nbThisFilename
-* npProjectDir (AbsoluteDir): the reference directory for the project.
-  looks for a nimble file starting from nbThisDir in parent dirs.
-  This should be the only Absolute path,
-  all other paths should be relative to this path.
-* nbProjectFile (RelativeFile): path (and also name since it is
-  relative to the nbProjectDir) of the nimble file found as reference for the project.
-  (what happens if multiple nimble files are found?)
-* nbCurDir (RelativeDir): template that returns current directory.
-  it should be set at the beginning as equal to nbProjectDir (with change of directory).
-* nbDoc.dir (RelativeDir): this is directory where the specific nbDoc
-  (there can be more than on) will be written to. Defaults to nbThisDir.
-* nbDoc.filename (string): name of the output document *without extension*
-  (default: nbThisFilename removing nim extension). or maybe with extension??
-  should I add some magic in order to have a change of filename to check
-  if it has extension and add it automatically?
-* nbDoc.ext (string): extension (default: html)
-* nbDoc.file (RelativeFile): nbDoc.dir + nbDoc.filename + nbDoc.ext
-* the above fields of nbDoc become then an API that should be guaranteed for NbDoc object.
-
-other thoughts
-
-- should I add a Filename and Ext distinct string to pathutils?
-- since I never remember which slash should I use maybe I could introduce
-  a +/- operator that work on this distinct strings
-- also I should introduce readfile, writefile for this type of objects.
 -->
-<!--
-## Roadmap
 
-remember to open issue for 1.x detailing clean ups and fixing expected before adding new features.
+## :sunrise: Roadmap
 
-Examples:
-  - escapeTag should be default or not (currently it is not, I think it should)
-  - improve nbImage/nbFigure
-  - possiblity to show full source (button in footer? show directly for pythno and nolan)
-  - nbHtml? integrate an html DSL?
-  - doubleDoc and better handling of Md vs Html
-  - highlight done in nim
-  - add timing data in blocks
-  - add logging block by block
-  - add error management (at least runtime, possibly also compiletime)
-  - add plots for numerical?
-
-focus for 0.2:
-
-- use it and fix stuff around
-- expand features for blogging use case
-  + frontmatter for md documents
-  + easy publication to dev.to
-  + publish date, update, categories, author
-  + a basic blogging theme
-  + investigate how established software does it (jekyll, hugo, ...)
-- clean up API and improve implementation (especially for NbBlock and rendering)
-
-later on:
-
-- more features to build static sites (other than blogging, for example library documentation or mdbook)
+- refactor rendering and simplify customization ([#24](https://github.com/pietroppeter/nimib/issues/24))
+- add additional blocks and features for blogging ([#30](https://github.com/pietroppeter/nimib/issues/30))
+- a [mdbook](https://rust-lang.github.io/mdBook/) / [bookdown](https://bookdown.org/) theme.
+- can I use nimib to build library directly from documentation?
+- client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
 - client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
 - nimib executable for scaffolding and to support different publishing workflows
-- possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
 - server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
+- possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
+- ...
 
-
-## Thanks
+## :pray: Thanks
 
 to:
 
-* soasme for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
-* clonk for help in a critical piece of code early on (see SO question)
-* baf03 for tempfile, which elegantly fills a stdlib gap
-
--->
+* [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
+* [clonk](https://github.com/clonk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
+* [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
 
 ## :question: :exclamation: Q & A
 

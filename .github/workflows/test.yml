@@ -7,6 +7,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: jiro4989/setup-nim-action@v1.1.4
         with:
-          nim-version: '1.4.x'
+          nim-version: '1.4.4'
       - run: nimble tdeps
       - run: nimble ptest

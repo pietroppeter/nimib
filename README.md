@@ -2,21 +2,22 @@
 
 Nimib provides an API to convert your Nim code and its outputs to html documents.
 
+The type of html output that is obtained by default is similar to html notebooks produced by tools
+like [Jupyter](https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb)
+or [RMarkdown](https://rmarkdown.rstudio.com/lesson-10.html), but nimib provides this starting
+directly from standard nim files. It currently does not provide any type of interactivity or automatic reloading.
+
 If you have some nim code lying around that echoes stuff you can try how nimib works with these easy steps:
-  * `nimble install nimib`
-  * `import nimib` at the top
+  * run in shell `nimble install nimib`
+  * add `import nimib` at the top of your nim file
   * add a `nbInit` command right after that
   * split your code into one or more `nbCode:` blocks
   * add some text commentary in markdown through `nbText:` blocks
   * add a `nbSave` command at the end
   * compile and run
   * open the html file that has been generated next to your nim file (same name)
-See below for an example of this.
 
-The type of html output that is obtained by default is similar to html notebooks produced by tools
-like [Jupyter](https://nbviewer.jupyter.org/url/norvig.com/ipython/Advent%20of%20Code.ipynb)
-or [RMarkdown](https://rmarkdown.rstudio.com/lesson-10.html), but nimib provides this starting
-directly from standard nim files.
+See below for an example of this.
 
 Nimib strives for:
   * a simple API
@@ -25,7 +26,7 @@ Nimib strives for:
 
 The main goal of Nimib is to empower people to explore nim and its ecosystem and share with others.
 
-The target use case is blogging about nim.
+The target use case for version 0.1 is blogging about nim.
 
 This document is generated though nimib both as an index.html file and as a README.md,
 you should be reading one of the two, for the other:
@@ -35,7 +36,7 @@ you should be reading one of the two, for the other:
 
 ## 👋 🌍 Example Usage
 
-First have a look at the following html document: [hello](https://pietroppeter.github.io/nimib/hello.html)
+First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
 
@@ -110,120 +111,39 @@ elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 
-## Features
+## 🛠 Features
 
 > “I try all things, I achieve what I can.” ― Herman Melville, Moby-Dick or, the Whale
 
-### Defaults
+The following are the main elements of a default nimib document:
 
-* one
-* two
-* three
+* code blocks with automatic stdout capture
+* text blocks with automatic conversion from markdown to html (through nim-markdown)
+* image command to show images
+* styling with [water.css](https://watercss.kognise.dev/)
+* static highlighting of nim code
+* (optional) latex rendering through [katex](https://katex.org/) (more below)
+* a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
+* a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
+* (optional) possibility to create a markdown version of the same document
 
-### Customization
-
-* uno
-* due
-* tre
-
-## 🐝 API <!-- Api means bees in Italian -->
-
-### external API
-
-By external API we mean the following templates:
-
-* `nbInit` (*always required*): it initializes the notebook,
-   the other templates are not accessible if nbInit is not called.
-* `nbText`: it is followed by any expression that evaluates to a string.
-  this text is by default assumed to be markdown and it will be rendered as html
-  thanks to [nim-markdown](https://github.com/soasme/nim-markdown).
-* `nbCode`: followed by a block of code, it will execute the code,
-  and capture the output. It will be rendered in the final html document
-  as a block of nim code followed by preformatted text.
-* `nbSave`: it is required to save the document to a file.
-  Rendering takes place at this moment.
-  By default the document will be save as an html (templated with [nim-mustache](https://github.com/soasme/nim-mustache))
-
-other templates on top of the four basic ones will likely be added.
-
-### internal api
-
-`nbInit` creates two variables `nbDoc` and `nbBlock`, which are injected in the scope.
-At every block of code or text (or else) `nbBlock` is updated and added to `nbDoc`.
-`nbBlock` is a ref object, so changes done to it after a block will be reflected in
-the content of `nbDoc`.
-
-The specific types `NbDoc` and `NbBlock` are unstable and they will likely change,
-but it is likely that access the following elements will be guaranteed:
-
-  * `nbDoc.blocks`: container of all the blocks
-  * `nbDoc.render`: a closure from NbDoc to string that produces the rendered document
-  * `nbBlock.output`: string with the output of a nbCode/nbText block (not yet rendered)
-  * `nbBlock.code`: stringification of the code block through AST.
-    if it appears different than what you typed it is because nim likes it better that way.
-    In particular only documentation comments survive this process and normal comments will
-    not appear.
-
-Here are two examples that show how to abuse the internal api:
-
-* [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
-* [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
-
-<!--
-### extending the api
-
-*TODO*
-
--->
-
-## Rendering
-
-### html rendering
-
-There are two levels of html rendering.
-
-1. **render-in-the-small**: rendering html fragments. This is mostly taken care by nim-markdown
-   and by appropriate semantic tagging in render functions (this can be overriden).
-2. **render-in-the-large***: putting together html fragments and other elements to publish one or more documents.
-   this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.
-
-### markdown rendering
-
-For an example on how to output Markdown see [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim),
-which automatically renders the `README.md` in the repo.
-
-## Other features
-
-### styling
-
-Default style is provided by [water.css](https://watercss.kognise.dev/).
-Style can be customized.
-
-### code highlighting
-
-Code highlighting is provided by [highlight.js](https://highlightjs.org/).
-The script `docs/static/highlight.nim.js` contains highlighting assets only for nim language.
-The default css style for highlighting is `docs/static/atom-one-light.css`.
-
-If you want to change the style pick one using [highlight demo page](https://highlightjs.org/static/demo/)
-(select all languages to find Nim) and make the appropriate change in `templates/head.mustache`.
+Customization over the default is mostly achieved through nim-mustache or the internal Api (see below).
+Currently most of the documentation on customization is given by the examples, target of version 0.2
+is to streamline and document better how to customize the appearance of documents.
 
 ### latex
 
-Rendering latex expressions is an opt-in feature provided by [katex](https://katex.org/).
-The delimiter supported are `$` for inline-math and `$$` for display math.
+See [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an example of latex usage.
+To add latex support:
+
+  * add a `nbUseLatex command somewhere between `nbInit` and `nbSave`
+  * use delimiters `$` for inline-math or `$$` for display math inside nbText blocks.
+
 Latex is rendered through an autodetection during document loading.
 
-<!--
-## static assets
+### interaction with filesystem
 
-*TODO*
-
-## filesystem
-
-*TODO*
-
-default situation for single article that does not access filesystem:
+The default situation for single article that does not access filesystem:
 
 * you do not have to worry about nothing.
   the new html will appear next to your nim file with same name and html extension
@@ -256,7 +176,83 @@ filesystem (in particular if you need it for your web assets), this is what you 
 * nbDoc.file (RelativeFile): nbDoc.dir + nbDoc.filename + nbDoc.ext
 * the above fields of nbDoc become then an API that should be guaranteed for NbDoc object.
 
-other thoughts
+## 🐝 API <!-- Api means bees in Italian -->
+
+### external API
+
+By external API we mean the following templates:
+
+* `nbInit` (*always required*): it initializes the notebook,
+   the other templates are not accessible if nbInit is not called.
+* `nbText`: it is followed by any expression that evaluates to a string.
+  this text is by default assumed to be markdown and it will be rendered as html
+  thanks to [nim-markdown](https://github.com/soasme/nim-markdown).
+* `nbCode`: followed by a block of code, it will execute the code,
+  and capture the output. It will be rendered in the final html document
+  as a block of nim code followed by preformatted text.
+* `nbSave`: it is required to save the document to a file.
+  Rendering takes place at this moment.
+  By default the document will be save as an html (templated with [nim-mustache](https://github.com/soasme/nim-mustache))
+
+other templates on top of the four basic ones are available (e.g. `nbImage`)
+or will likely be added (see issue [#2](https://github.com/pietroppeter/nimib/issues/2)).
+
+### internal api
+
+`nbInit` creates two variables `nbDoc` and `nbBlock`, which are injected in the scope.
+At every block of code or text (or else) `nbBlock` is updated and added to `nbDoc`.
+`nbBlock` is a ref object, so changes done to it after a block will be reflected in
+the content of `nbDoc`.
+
+The specific types `NbDoc` and `NbBlock` are unstable and they will likely change,
+but it is likely that access the following elements will be guaranteed:
+
+  * `nbDoc.blocks`: container of all the blocks
+  * `nbDoc.render`: a closure from NbDoc to string that produces the rendered document
+  * `nbBlock.output`: string with the output of a nbCode/nbText block (not yet rendered)
+  * `nbBlock.code`: stringification of the code block through AST.
+    if it appears different than what you typed it is because nim likes it better that way.
+    In particular only documentation comments survive this process and normal comments will
+    not appear.
+
+Here are two examples that show how to abuse the internal api:
+
+* [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
+* [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
+
+<!--
+### extending the api
+
+*TODO* after 0.2
+
+## Rendering
+
+*TODO* after 0.2
+
+### html rendering
+
+There are two levels of html rendering.
+
+1. **render-in-the-small**: rendering html fragments. This is mostly taken care by nim-markdown
+   and by appropriate semantic tagging in render functions (this can be overriden).
+2. **render-in-the-large***: putting together html fragments and other elements to publish one or more documents.
+   this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.
+
+### markdown rendering
+
+For an example on how to output Markdown see [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim),
+which automatically renders the `README.md` in the repo.
+
+-->
+
+
+<!--
+## static assets
+
+*TODO*
+
+
+other thoughts on filesystem
 
 - should I add a Filename and Ext distinct string to pathutils?
 - since I never remember which slash should I use maybe I could introduce
@@ -306,7 +302,7 @@ to:
 
 * soasme for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
 * clonk for help in a critical piece of code early on (see SO question)
-* baf03 for tempfile, which elegantly fills a stdlib gap
+* yardanico for implementation of static highlighting of nim code
 
 -->
 

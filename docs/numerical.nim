@@ -91,18 +91,15 @@ nbCode:
   assert t3rk == tspan
   ## solutions
   echo "Heun2:"
-  echo y1hn[^1]
-  echo y2hn[^1]
-  echo y3hn[^1]
+  echo fmt"{y1hn[^1]:.7f}"
+  echo fmt"{y2hn[^1]:.7f}"
+  echo fmt"{y3hn[^1]:.7f}"
   echo "RK4:"
-  echo y1rk[^1]
-  echo y2rk[^1]
-  echo y3rk[^1]
+  echo fmt"{y1rk[^1]:.7f}"
+  echo fmt"{y2rk[^1]:.7f}"
+  echo fmt"{y3rk[^1]:.7f}"
   echo "Analytical:"
-  echo y5
-# to fix CI (I run on Windows, CI runs on Linux):
-nbBlock.output = nbBlock.output.replace("1.127319598144045", "1.127319598144044")
-nbBlock.output = nbBlock.output.replace("1.482155016263979", "1.482155016263978")
+  echo fmt"{y5:.7f}"
 nbText: "As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps."
 nbText: "To compute percentage error of each method at $y(5)$ I will use:"
 nbCode:

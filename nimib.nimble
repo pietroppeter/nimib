@@ -12,3 +12,9 @@ requires "nim >= 1.4.0"
 requires "tempfile >= 0.1.6"
 requires "markdown >= 0.8.1"
 requires "mustache >= 0.2.1"
+
+task tdeps, "install dependendencies required for testing":
+  exec "nimble install ggplotnim@0.3.25 numericalnim@0.6.1"
+
+task ptest, "test with ptest":
+  exec "nim r docs/ptest"

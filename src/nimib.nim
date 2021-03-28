@@ -1,23 +1,19 @@
-import nimib / [types, blocks, docs, renders, paths, gits]
-from nimib / assets import nil
-from nimib / highlight import highlightNim
+import os
+import nimib / [types, blocks, docs, renders, paths]
 export types, blocks, docs, renders, paths
+from nimib.defaults import nil
 # types exports mustache, tables
 # paths exports pathutils
-import os
 from mustachepkg/values import searchTable, searchDirs
 export searchTable, searchDirs
 
 
-# should I put used all around?
 template nbInit*() =
-  # if I make the template dirty I have to export all imports
-  # the alternative is put inject in a lot of stuff
+  # I think I want to migrate to a single global object nb
+  # with nb.doc as nbDoc and nb.block (or nb.blk?) as nbBlock
+  # the global object will also contain all those paths
 
-  # paths
-  # all this stuff is absolute, relative directories will depend on the context (rel from projDir, thisDir, nbDoc.dir, ...)
-  # Rel stuff is relative to what? curDir? thisDir? docDir? templateDirs?
-  # or maybe it should be the other way around? Abs is not marked and Rel is stuff you compute on the go depending what you need.
+  # all paths are absolute, use relPath to have path relative to Project directory
   let
     nbThisFile {.inject.} = instantiationInfo(-1, true).filename.AbsoluteFile
     thisTuple = nbThisFile.splitFile
@@ -35,47 +31,22 @@ template nbInit*() =
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
     (path.relativeTo nbProjDir).string
     
-  when defined(nbDebug):
-    echo "nbThisFile: ", nbThisFile.string
-    echo "nbInitDir : ", nbInitDir.string
-    echo "nbUser    : ", nbUser
-    echo "nbProjDir : ", nbProjDir
-
   var
     nbDoc {.inject.}: NbDoc
     nbBlock {.inject.}: NbBlock
 
-  nbDoc.templateDirs = @["./", "./templates/"]
-  nbDoc.render = renderHtml
-  nbDoc.context = newContext(searchDirs = @[])
-  nbDoc.context["source"] = highlightNim(read(nbThisFile))
-  nbDoc.partials = initTable[string, string]()
-  nbDoc.partials["doc"] = assets.doc
-  nbDoc.partials["head"] = assets.head
-  nbDoc.partials["footer"] = assets.footer
-  nbDoc.partials["header"] = assets.header
-  nbDoc.context["stylesheet"] = assets.waterLight
-  nbDoc.context["github-logo"] = assets.githubLogoLight
-  nbDoc.context["highlight_style"] = assets.atomOneLight
-  template nbDarkMode =
-    nbDoc.context["stylesheet"] = assets.waterDark
-    nbDoc.context["github-logo"] = assets.githubLogoDark
-    nbDoc.context["highlight_style"] = assets.androidStudio
-  template nbUseLatex =
-    nbDoc.context["latex"] = assets.latex
-
-  # the rest could be actually be put directly in the context? (possibly keep the same API using dot setters and getters?)
-  nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
-  # probably no for all those that I need to know the exact type. Filename for example I need to be a string
-  # even so there could be workaround for this
-  # for the moment anyway let's keep them here and declared in NbDoc type
-  nbDoc.title = (nbThisFile.relativeTo nbProjDir).string
-  nbDoc.context["header-title"] = "<code>" & nbDoc.title & "</code>"
-  nbDoc.context["home-path"] = (nbProjDir.relativeTo nbThisDir).string
-  nbDoc.context["here-path"] = (nbThisDir.relativeTo nbProjDir).string
-  if isGitAvailable() and isOnGithub():
-    nbDoc.context["github-remote-url"] = getGitRemoteUrl()
   nbDoc.author = nbUser
+  nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
+
+  nbDoc.render = renderHtml
+  nbDoc.templateDirs = @["./", "./templates/"]
+  nbDoc.partials = initTable[string, string]()
+  nbDoc.context = newContext(searchDirs = @[])
+  nbDoc.context["home_path"] = (nbProjDir.relativeTo nbThisDir).string
+  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbProjDir).string
+  nbDoc.context["source"] = read(nbThisFile)
+
+  defaults.init(nbDoc)
 
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
@@ -98,7 +69,6 @@ template nbInit*() =
     nbDoc.context.searchTable(nbDoc.partials)
     withDir(nbProjDir):
       write nbDoc
-
 
   template nbShow =
     nbSave

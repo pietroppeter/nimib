@@ -48,9 +48,7 @@ proc renderHtmlBlocks*(doc: NbDoc): string =
 proc renderHtml*(doc: NbDoc): string =
   let blocks = doc.renderHtmlBlocks
   doc.context["blocks"] = blocks
-  doc.context["title"] = doc.title
-  # I need to put a protection here. doc MUST exist and this should fail if it does not!
-  return "{{> doc}}".render(doc.context)
+  return "{{> document}}".render(doc.context)
 
 proc renderMarkBlock(blk: NbBlock) : string =
   case blk.kind:

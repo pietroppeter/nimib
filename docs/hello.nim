@@ -26,7 +26,7 @@ a recently declassified top-secret cryptoanalytic weapon:"""
 
 nbCode:
   func decode(secret: openArray[int]): string =
-    ## classified by NSA as <a href="https://www.nsa.gov/Portals/70/documents/news-features/declassified-documents/cryptologic-histories/EC-121.pdf">TOP SECRET</a>
+    ## classified by NSA as <strong>TOP SECRET</strong>
     # so secret that they do not want me to tell you and they will remove this message!
     for c in secret:
       result.add char(c)

@@ -230,7 +230,6 @@ There are two levels of html rendering.
 - a [mdbook](https://rust-lang.github.io/mdBook/) / [bookdown](https://bookdown.org/) theme.
 - can I use nimib to build library directly from documentation?
 - client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
-- client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
 - nimib executable for scaffolding and to support different publishing workflows
 - server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
 - possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)

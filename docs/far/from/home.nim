@@ -1,6 +1,6 @@
 import nimib
 nbInit
-nbDoc.partials["doc"] = """
-<a href=".">🕷️</a> is {{here-path}} <a href="{{home-path}}">🏡</a> ({{home-path}})
+nbDoc.partials["document"] = """
+<a href=".">🕷️</a> is {{here_path}} <a href="{{home_path}}">🏡</a> ({{home_path}})
 """
-nbShow
+nbSave

@@ -1,16 +1,14 @@
 #remember to run also with -d:numericalDefaultStyle
 import nimib, strformat, strutils
 nbInit
+nbDoc.useLatex
 let filename_default_style = nbDoc.filename.replace(".html", "_default_style.html")
 when not defined(numericalDefaultStyle):
-  nbDoc.partials["style"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
-  nbDoc.context["no_default_style"] = true
+  nbDoc.context["stylesheet"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
   # I should also change font size, see https://katex.org/docs/font.html
   let otherStyle = fmt"; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_"
 else:
   let otherStyle = fmt"; _you are looking at default style, for custom style [click here]({(nbDoc.filename.AbsoluteFile).relPath})_"
-
-nbUseLatex
 nbText: fmt"""
 > This nimib example document shows how to:
 >  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}

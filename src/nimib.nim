@@ -1,7 +1,8 @@
 import os
 import nimib / [types, blocks, docs, renders, paths]
 export types, blocks, docs, renders, paths
-from nimib.defaults import nil
+from nimib/defaults import nil
+export defaults.useLatex, defaults.darkMode
 # types exports mustache, tables
 # paths exports pathutils
 from mustachepkg/values import searchTable, searchDirs
@@ -28,6 +29,7 @@ template nbInit*() =
     nbProjDir = nbProjDir / "docs".RelativeDir
   setCurrentDir nbProjDir
 
+  # could change to nb.rel with nb global object
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
     (path.relativeTo nbProjDir).string
     
@@ -35,7 +37,7 @@ template nbInit*() =
     nbDoc {.inject.}: NbDoc
     nbBlock {.inject.}: NbBlock
 
-  nbDoc.author = nbUser
+  nbDoc.author = nbUser  # never really used it yet, but probably could be a strdefine
   nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
 
   nbDoc.render = renderHtml

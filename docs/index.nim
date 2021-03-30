@@ -73,6 +73,7 @@ in this repo:
 elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
+* [intro to binarylang](https://ajusa.github.io/binarylang-fun/intro.html): a introduction to library [binarylang](https://github.com/sealmove/binarylang) (first public usage of nimib I was aware of)
 
 ## :hammer_and_wrench: Features
 

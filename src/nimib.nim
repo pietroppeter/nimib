@@ -50,6 +50,9 @@ template nbInit*() =
 
   defaults.init(nbDoc)
 
+  when defined(nimibIncludePostInit):
+    include nbPostInit
+
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
 
@@ -67,6 +70,8 @@ template nbInit*() =
     #   - in memory partial contain default mustache assets
     #   - to override/customize (for a nuch of documents) the best way is to modify a version on file
     #   - in case you need to manage additional exceptions for a single document add a new set of partials before calling nbSave
+    when defined(nimibIncludePreSave):
+      include nbPreSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
     withDir(nbHomeDir):

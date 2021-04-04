@@ -50,7 +50,7 @@ template nbInit*() =
 
   defaults.init(nbDoc)
 
-  when defined(nimibIncludePostInit):
+  when defined(nimibCustomPostInit):
     include nbPostInit
 
   template nbText(body: untyped) =
@@ -66,12 +66,12 @@ template nbInit*() =
     nbDoc.blocks.add nbBlock
 
   template nbSave =
-    # order is relevant: directories have higher priority. rationale:
-    #   - in memory partial contain default mustache assets
-    #   - to override/customize (for a nuch of documents) the best way is to modify a version on file
-    #   - in case you need to manage additional exceptions for a single document add a new set of partials before calling nbSave
-    when defined(nimibIncludePreSave):
+    when defined(nimibCustomPreSave):
       include nbPreSave
+    # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
+    #   - in memory partial contain default mustache assets
+    #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
+    #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
     withDir(nbHomeDir):

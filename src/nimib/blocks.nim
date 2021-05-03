@@ -7,9 +7,11 @@ macro toStr*(body: untyped): string =
 proc newBlock*(kind: NbBlockKind, code: string): NbBlock =
   # I cannot use this directly in nbBlocks (nbText, nbCode, ...)
   # or it will substitute kind and body fields with their values
-  NbBlock(kind: kind, code: code)
+  result = NbBlock(kind: kind, code: code)
+  result.context = newContext(searchDirs = @[])  # searchDirs=@[] gives error, why?
 
 template manageErrors*(identBlock, body: untyped) =
+  # not used yet!
   try:
     body
   except:
@@ -21,21 +23,19 @@ template manageErrors*(identBlock, body: untyped) =
 template nbTextBlock*(identBlock, identContainer, body: untyped) =
   # assume body is a string
   identBlock = newBlock(nbkText, toStr(body))  # nbDoc.flags.update(flags)
+  identBlock.renderPlan = nbTextBlockDefaultSteps
   identBlock.output = block:
     body
-  when not defined(nimibQuiet):
-    echo identBlock.output
   identContainer.blocks.add identBlock
-
-proc echoCodeBlock(b: NbBlock) =
-  when not defined(nimibQuiet):
-    echo "```nim" & b.code & "\n```\n"
-    if b.output != "":
-      echo "```\n" & b.output & "```\n"
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
+  identBlock.renderPlan = nbCodeBlockDefaultSteps
   captureStdout(identBlock.output):
     body
-  echoCodeBlock identBlock
+  identContainer.blocks.add identBlock
+
+template nbFreeBlock*(identBlock, identContainer, body: untyped) =
+  identBlock = newBlock(nbkCode, toStr(body))
+  body
   identContainer.blocks.add identBlock

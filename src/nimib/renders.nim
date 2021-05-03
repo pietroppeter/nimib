@@ -1,49 +1,91 @@
-import types, strformat, strutils, markdown, mustache
+import types, strutils, markdown, mustache
 export escapeTag
 import tables
 import highlight
+from mustachepkg/values import searchTable
+import std / with
 
-let mdCfg = initGfmConfig()
+# generic render functions
+proc render*(blk: NbBlock, backend: NbBlockBackend): string =
+  # if both partial and proc are present in backend, both are applied
+  # (first the partial, then the proc)
+  # if step not present in backend, nothing is done
+  blk.context.searchTable(backend.partials)
+  for step in blk.renderPlan:
+    if step in backend.partials:
+      let partial = "{{> " & step & " }}"
+      result.add partial.render(blk.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](blk, result)
 
+proc render*(doc: NbDoc, backend: NbDocBackend): string =
+  doc.context.searchTable(backend.partials)
+  for step in doc.renderPlan:
+    if step in backend.partials:
+      result.add backend.partials[step].render(doc.context)
+    if step in backend.renderProc:
+      backend.renderProc[step](doc, result)
+
+# default is html backend
+var
+  nbBlockBackend* = new NbBlockBackend
+  nbDocBackend* = new NbDocBackend
+  nbBlockBackendMd* = new NbBlockBackend
+  nbDocBackendMd* = new NbDocBackend
+  nbCodeBlockDefaultSteps* = @[
+    "codeHighlighted",
+    "outputEscaped",
+    "addCode",
+    "addOutput"
+  ]
+  nbTextBlockDefaultSteps* = @[
+    "addOutputMdToHtml"
+  ]
+
+# procs needed for html block backend
 proc renderMarkdown*(text: string): string =
+  # I was not able to put mdToHtml in renderProc table
+  # unless I put mdCfg inside here
+  # (even changing type NbBlockRenderProc to closure)
+  let mdCfg = initGfmConfig()
   markdown(text, config=mdCfg)
 
-proc renderHtmlTextOutput*(output: string): string =
-  # why complain if func? because I am using mdCfg?
-  renderMarkdown(output.strip)
+proc addOutputMdToHtml*(blk: NbBlock, res: var string) =
+  res.add renderMarkdown(blk.output.strip)
 
-func renderHtmlCodeBodyEscapeTag*(code: string): string =
-  fmt"""<pre><code class="nim">{code.strip.escapeTag}</code></pre>""" & "\n"
+proc codeHighlighted*(blk: NbBlock, res: var string) =
+  blk.context["code"] = highlightNim(blk.code).strip
 
-proc renderHtmlCodeBody*(code: string): string =
-  let highlit = highlightNim(code)
-  result = fmt"""<pre><code class="nim hljs">{highlit.strip}</code></pre>""" & "\n"
+proc outputEscaped*(blk: NbBlock, res: var string) =
+  blk.context["output"] = blk.output.escapeCode.strip
 
-func renderHtmlCodeOutput*(output: string): string =
-  fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
-
-proc renderHtmlBlock*(blk: NbBlock): string =
-  case blk.kind
-  of nbkText:
-    result = blk.output.renderHtmlTextOutput
-  of nbkCode:
-    result = blk.code.renderHtmlCodeBody
-    if blk.output != "":
-      result.add blk.output.renderHtmlCodeOutput
-  of nbkImage:
-    let
-      image_url = blk.code
-      caption = blk.output
-    result = fmt"""
+with nbBlockBackend:
+  partials = {
+      "addCode": """
+{{#code}}<pre><code class="nim hljs">{{{code}}}</code></pre>{{/code}}
+""",
+      "addOutput": """
+{{#output}}<pre><samp>{{{output}}}</samp></pre>{{/output}}
+""",
+      # should change to addImage with image.url and image.caption
+      # also I will add an addImages (to show multiple images through a code block)
+      "partialImageSingle": """
 <figure>
-<img src="{image_url}" alt="{caption}">
-<figcaption>{caption}</figcaption>
+<img src="{{url}}" alt="{{caption}}">
+<figcaption>{{{caption}}}</figcaption>
 </figure>
-""" & "\n"
+"""
+  }.toTable
+  renderProc = {
+    "codeHighlighted": codeHighlighted,
+    "outputEscaped": outputEscaped,
+    "addOutputMdToHtml": addOutputMdToHtml
+  }.toTable
 
+# procs needed for html doc backend
 proc renderHtmlBlocks*(doc: NbDoc): string =
   for blk in doc.blocks:
-    result.add blk.renderHtmlBlock
+    result.add render(blk, nbBlockBackend)
 
 proc renderHtml*(doc: NbDoc): string =
   let blocks = doc.renderHtmlBlocks

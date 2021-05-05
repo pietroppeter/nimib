@@ -39,43 +39,89 @@ section#source {
 </div>
 <hr>
 </header><main>
-<h1>Example of usage of mustache</h1>
-<p>From <a href="https://github.com/soasme/nim-mustache">nim-mustache</a>.</p>
-<h2>Usage</h2>
-<p>Step 1.</p>
+<h1>mustache man (5)</h1>
+<p><a href="https://mustache.github.io/">mustache</a> is a logic-less template system
+with implementations available in multiple languages.</p>
+<p>In nim there are two implementations:</p>
+<ul>
+<li><a href="https://github.com/soasme/nim-mustache">nim-mustache</a></li>
+<li><a href="https://github.com/fenekku/moustachu">moustachu</a></li>
+</ul>
+<p><a href="https://pietroppeter.github.io/nimib/">nimib</a> uses <code>nim-mustache</code> and takes
+specific advantage of its feature for in-memory partials to store default templates.</p>
+<p>Below I will show examples of usage of <code>mustache</code> using <code>nim-mustache</code>,
+mostly replicating <a href="https://mustache.github.io/mustache.5.html">mustache(5)</a> man page
+(<a href="https://en.wikipedia.org/wiki/Man_page#Manual_sections">why (5)?</a>).</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span>
-  mustache, tables</code></pre>
-<p>Step 2.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">var</span> c = newContext()
-c[<span class="hljs-string">&quot;i&quot;</span>] = <span class="hljs-number">1</span>
-c[<span class="hljs-string">&quot;f&quot;</span>] = <span class="hljs-number">1.0</span>
-c[<span class="hljs-string">&quot;s&quot;</span>] = <span class="hljs-string">&quot;hello world&quot;</span>
-c[<span class="hljs-string">&quot;a&quot;</span>] = @[{<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable]
-c[<span class="hljs-string">&quot;t&quot;</span>] = {<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable
-c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">proc</span> (s: <span class="hljs-built_in">string</span>; c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> =
-  <span class="hljs-string">&quot;&amp;lt;b&amp;gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&amp;lt;/b&amp;gt;&quot;</span></code></pre>
-<p>Step 3.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> s = <span class="hljs-string">&quot;&quot;&quot;{{i}} {{f}} {{s}}
-{{#a}}
-  {{k}}
-{{/a}}
-
-{{#t}}
-  {{k}}
-{{/t}}
-
-{{#l}}
-  {{s}}
-{{/l}}
-&quot;&quot;&quot;</span>
-<span class="hljs-keyword">echo</span>(s.render(c))</code></pre>
-<pre><samp>1 1.0 hello world
-  v
-
-  v
-
-<b>  hello world
-</b></samp></pre>
+  mustache</code></pre>
+<h2>SYNOPSIS</h2>
+<p>A typical mustache template:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> tmpl = <span class="hljs-string">&quot;&quot;&quot;Hello {{name}}
+You have just won {{value}} dollars!
+{{#in_california}}
+Well, {{taxed_value}} dollars, after taxes.
+{{/in_california}}
+&quot;&quot;&quot;</span></code></pre>
+<p>Given the following context:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">var</span> context = newContext()
+context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
+context[<span class="hljs-string">&quot;value&quot;</span>] = <span class="hljs-number">10000</span>
+context[<span class="hljs-string">&quot;taxed_value&quot;</span>] = <span class="hljs-number">10000</span> - (<span class="hljs-number">10000</span> * <span class="hljs-number">0.4</span>)
+context[<span class="hljs-string">&quot;in_california&quot;</span>] = <span class="hljs-literal">true</span></code></pre>
+<p>Will produce the following:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>Hello Chris
+You have just won 10000 dollars!
+Well, 6000.0 dollars, after taxes.</samp></pre>
+<h2>DESCRIPTION</h2>
+<p>Mustache can be used for HTML, config files, source code - anything.
+It works by expanding tags in a template using values provided in a context
+object.</p>
+<p>We call it &quot;logic-less&quot; because there are no if statements, else clauses, or for loops.
+Instead there are only tags.
+Some tags are replaced with a value, some nothing, and others a series of values.
+This document explains the different types of Mustache tags.</p>
+<blockquote>
+<p>in this document we use the <code>context</code> keyword instead of referring to it as a hash or object
+as in the original document</p>
+</blockquote>
+<h2>TAG TYPES</h2>
+<p>Tags are indicated by the double mustaches. <code>{{person}}</code> is a <strong>tag</strong>, as is <code>{{#person}}</code>.
+In both examples, we'd refer to person as the key or tag key.
+Let's talk about the different types of tags.</p>
+<h3>Variables</h3>
+<p>The most basic tag type is the variable.
+A <code>{{name}}</code> tag in a basic template will try to find the <strong>name</strong> key in the current context.
+If there is no <strong>name</strong> key, the parent contexts will be checked recursively.
+If the top context is reached and the <strong>name</strong> key is still not found, nothing will be rendered.</p>
+<p>All variables are HTML escaped by default.
+If you want to return unescaped HTML, use the triple mustache: <code>{{{name}}}</code>.</p>
+<p>You can also use &amp; to unescape a variable: <code>{{&amp; name}}</code>.
+This may be useful when changing delimiters (see &quot;Set Delimiter&quot; below).</p>
+<p>By default a variable &quot;miss&quot; returns an empty string.
+This can usually be configured in your Mustache library.
+The Ruby version of Mustache supports raising an exception in this situation, for instance.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;* {{name}}
+* {{age}}
+* {{company}}
+* {{{company}}}
+* {{&amp;company}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs">context = newContext()
+context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
+context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hljs-string">&quot;&lt;b&gt;Github&lt;/b&gt;&quot;</span></code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>* Chris
+* 
+* &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
+* &lt;b&gt;Github&lt;/b&gt;
+* &lt;b&gt;Github&lt;/b&gt;</samp></pre>
+<blockquote>
+<p>added the <code>{{&amp;company}}</code> to clarify that it is just an alternative syntax with the same result
+as the triple mustache.</p>
+</blockquote>
 
 </main>
 <footer>
@@ -91,73 +137,116 @@ c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">p
 
 nbInit
 nbDoc.darkMode
-nbText: <span class="hljs-string">&quot;&quot;&quot;# Example of usage of mustache
+nbText: <span class="hljs-string">&quot;&quot;&quot;# mustache man (5)
 
-From [nim-mustache](https://github.com/soasme/nim-mustache).
+[mustache](https://mustache.github.io/) is a logic-less template system
+with implementations available in multiple languages.
 
-## Usage
+In nim there are two implementations:
 
-Step 1.
+* [nim-mustache](https://github.com/soasme/nim-mustache)
+* [moustachu](https://github.com/fenekku/moustachu)
+
+[nimib](https://pietroppeter.github.io/nimib/) uses `nim-mustache` and takes
+specific advantage of its feature for in-memory partials to store default templates.
+
+Below I will show examples of usage of `mustache` using `nim-mustache`,
+mostly replicating [mustache(5)](https://mustache.github.io/mustache.5.html) man page
+([why (5)?](https://en.wikipedia.org/wiki/Man_page#Manual_sections)).
+&quot;&quot;&quot;</span>
+nbCode: <span class="hljs-keyword">import</span> mustache
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## SYNOPSIS
+
+A typical mustache template:
 &quot;&quot;&quot;</span>
 nbCode:
-  <span class="hljs-keyword">import</span> mustache, tables
-nbText: <span class="hljs-string">&quot;Step 2.&quot;</span>
-<span class="hljs-keyword">block</span>:
-  nbCode:
-    <span class="hljs-keyword">var</span> c = newContext()
-    c[<span class="hljs-string">&quot;i&quot;</span>] = <span class="hljs-number">1</span>
-    c[<span class="hljs-string">&quot;f&quot;</span>] = <span class="hljs-number">1.0</span>
-    c[<span class="hljs-string">&quot;s&quot;</span>] = <span class="hljs-string">&quot;hello world&quot;</span>
-    c[<span class="hljs-string">&quot;a&quot;</span>] = @[{<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable]
-    c[<span class="hljs-string">&quot;t&quot;</span>] = {<span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-string">&quot;v&quot;</span>}.toTable
-    c[<span class="hljs-string">&quot;l&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span>
-  nbBlock.code = nbBlock.code.escapeTag
-  nbText: <span class="hljs-string">&quot;Step 3.&quot;</span>
-  nbCode:
-    <span class="hljs-keyword">let</span> s = <span class="hljs-string">&quot;&quot;&quot;
-{{i}} {{f}} {{s}}
-{{#a}}
-  {{k}}
-{{/a}}
-
-{{#t}}
-  {{k}}
-{{/t}}
-
-{{#l}}
-  {{s}}
-{{/l}}
+  <span class="hljs-keyword">var</span> tmpl = <span class="hljs-string">&quot;&quot;&quot;
+Hello {{name}}
+You have just won {{value}} dollars!
+{{#in_california}}
+Well, {{taxed_value}} dollars, after taxes.
+{{/in_california}}
 &quot;&quot;&quot;</span>
-    <span class="hljs-keyword">echo</span>(s.render(c))
+nbText: <span class="hljs-string">&quot;Given the following context:&quot;</span> <span class="hljs-comment"># using context instead of hash</span>
+nbCode:
+  <span class="hljs-keyword">var</span> context = newContext()
+  context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
+  context[<span class="hljs-string">&quot;value&quot;</span>] = <span class="hljs-number">10_000</span>
+  context[<span class="hljs-string">&quot;taxed_value&quot;</span>] = <span class="hljs-number">10000</span> - (<span class="hljs-number">10000</span> * <span class="hljs-number">0.4</span>)
+  context[<span class="hljs-string">&quot;in_california&quot;</span>] = <span class="hljs-literal">true</span>
+nbText: <span class="hljs-string">&quot;Will produce the following:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+## DESCRIPTION
 
-<span class="hljs-comment">#[
-nbText: &quot;&quot;&quot;## Other examples
+Mustache can be used for HTML, config files, source code - anything.
+It works by expanding tags in a template using values provided in a context
+object.
 
-not taken from [nim-mustache](https://github.com/soasme/nim-mustache).
-&quot;&quot;&quot;
-block:
-  nbCode:
-    var c = newContext()
-    var s = &quot;&quot;&quot;
-{{highlight}}{{^highlight}}&lt;default&gt;
-{{/highlight}}
-&quot;&quot;&quot;
-    echo s.render c
-  nbBlock.code = nbBlock.code.escapeTag
-  nbBlock.output = nbBlock.output.escapeTag
-  nbText: &quot;In order to get the default tag probably rendered I had to escape it (both in code and output)&quot;
-  nbCode:
-    c[&quot;highlight&quot;] = &quot;&lt;custom&gt;&quot;
-    echo s.render c
-  nbText: &quot;rendering in mustache does automatic escaping&quot;
-  nbCode:
-    s = &quot;{{&gt; highlight }}&quot;
-    echo s.render c
-  nbBlock.output = nbBlock.output.escapeTag
-  nbText: &quot;unless you use a partial (no escaping by mustache, I did it manually in order to have it appear here)&quot;
-]#</span>
-nbSave
-</code></pre>
+We call it &quot;logic-less&quot; because there are no if statements, else clauses, or for loops.
+Instead there are only tags.
+Some tags are replaced with a value, some nothing, and others a series of values.
+This document explains the different types of Mustache tags.
+
+&gt; in this document we use the `context` keyword instead of referring to it as a hash or object
+&gt; as in the original document
+
+## TAG TYPES
+
+Tags are indicated by the double mustaches. `{{person}}` is a **tag**, as is `{{#person}}`.
+In both examples, we'd refer to person as the key or tag key.
+Let's talk about the different types of tags.
+
+### Variables
+
+The most basic tag type is the variable.
+A `{{name}}` tag in a basic template will try to find the **name** key in the current context.
+If there is no **name** key, the parent contexts will be checked recursively.
+If the top context is reached and the **name** key is still not found, nothing will be rendered.
+
+All variables are HTML escaped by default.
+If you want to return unescaped HTML, use the triple mustache: `{{{name}}}`.
+
+You can also use &amp; to unescape a variable: `{{&amp; name}}`.
+This may be useful when changing delimiters (see &quot;Set Delimiter&quot; below).
+
+By default a variable &quot;miss&quot; returns an empty string.
+This can usually be configured in your Mustache library.
+The Ruby version of Mustache supports raising an exception in this situation, for instance.
+
+Template:
+&quot;&quot;&quot;</span> <span class="hljs-comment"># is there a way to raise the exception in nim-mustache?</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;* {{name}}
+* {{age}}
+* {{company}}
+* {{{company}}}
+* {{&amp;company}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  context = newContext()
+  context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
+  context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hljs-string">&quot;&lt;b&gt;Github&lt;/b&gt;&quot;</span>
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context) <span class="hljs-comment"># the output is not correctly escaped!!! BIG TODO!</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; added the `{{&amp;company}}` to clarify that it is just an alternative syntax with the same result
+&gt; as the triple mustache.
+&quot;&quot;&quot;</span>
+<span class="hljs-comment">### Sections</span>
+<span class="hljs-comment">#### Non-Empty Lists</span>
+<span class="hljs-comment">#### Lambdas</span>
+<span class="hljs-comment">#### Non-False Values</span>
+<span class="hljs-comment">### Inverted Sections</span>
+<span class="hljs-comment">### Comments</span>
+<span class="hljs-comment">### Partials</span>
+<span class="hljs-comment">### Set Delimiter</span>
+<span class="hljs-comment">## COPYRIGHT</span>
+<span class="hljs-comment">## SEE ALSO</span>
+nbShow</code></pre>
 </section><script>
 function toggleSourceDisplay() {
   var btn = document.getElementById("show")

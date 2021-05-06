@@ -122,6 +122,100 @@ context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hlj
 <p>added the <code>{{&amp;company}}</code> to clarify that it is just an alternative syntax with the same result
 as the triple mustache.</p>
 </blockquote>
+<h3>Sections</h3>
+<p>Sections render blocks of text one or more times, depending on the value of the key in the current context.</p>
+<p>A section begins with a pound and ends with a slash.
+That is, <code>{{#person}}</code> begins a &quot;person&quot; section while <code>{{/person}}</code> ends it.</p>
+<p>The behavior of the section is determined by the value of the key.</p>
+<h4>False Values or Empty Lists</h4>
+<p>If the person key exists and has a value of false or an empty list, the HTML between the pound and slash will not be displayed.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;Shown.
+{{#person}}
+  Never shown!
+{{/person}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs">context = newContext()
+context[<span class="hljs-string">&quot;person&quot;</span>] = <span class="hljs-literal">false</span></code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>Shown.</samp></pre>
+<h4>Non-Empty Lists</h4>
+<p>If the <strong>person</strong> key exists and has a non-false value,
+the HTML between the pound and slash will be rendered and displayed one or more times.</p>
+<p>When the value is a non-empty list, the text in the block will be displayed once for each item in the list.
+The context of the block will be set to the current item for each iteration. In this way we can loop over collections.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;{{#repo}}
+  &lt;b&gt;{{name}}&lt;/b&gt;
+{{/repo}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  json
+
+context = newContext()
+context[<span class="hljs-string">&quot;repo&quot;</span>] = %*[{<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;resque&quot;</span>}, {<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;hub&quot;</span>}, {<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span>}]</code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>&lt;b&gt;resque&lt;/b&gt;
+  &lt;b&gt;hub&lt;/b&gt;
+  &lt;b&gt;rip&lt;/b&gt;</samp></pre>
+<h4>Lambdas</h4>
+<p>When the value is a callable object, such as a function or lambda, the object will be invoked and passed the block of text.
+The text passed is the literal block, unrendered.
+<code>{{tags}}</code> will not have been expanded - the lambda should do that on its own. In this way you can implement filters or caching.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;{{#wrapped}}
+  {{name}} is awesome.
+{{/wrapped}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs">context = newContext()
+context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
+context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span> (s: <span class="hljs-built_in">string</span>; c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> =
+  <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>&lt;b&gt;  Willy is awesome.
+&lt;/b&gt;</samp></pre>
+<h4>Non-False Values</h4>
+<p>When the value is non-false but not a list,
+it will be used as the context for a single rendering of the block.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;{{#person?}}
+  Hi {{name}}!
+{{/person?}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs">context = newContext()
+context[<span class="hljs-string">&quot;person?&quot;</span>] = %*{<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Jon&quot;</span>}</code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>Hi Jon!</samp></pre>
+<h3>Inverted Sections</h3>
+<p>An inverted section begins with a caret (hat) and ends with a slash.
+That is <code>{{^person}}</code> begins a &quot;person&quot; inverted section while <code>{{/person}}</code> ends it.</p>
+<p>While sections can be used to render text one or more times based on the value of the key,
+inverted sections may render text once based on the inverse value of the key.
+That is, they will be rendered if the key doesn't exist, is false, or is an empty list.</p>
+<p>Template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;{{#repo}}
+  &lt;b&gt;{{name}}&lt;/b&gt;
+{{/repo}}
+{{^repo}}
+  No repos :(
+{{/repo}}&quot;&quot;&quot;</span></code></pre>
+<p>Context:</p>
+<pre><code class="nim hljs">context = newContext()
+<span class="hljs-keyword">let</span> empty: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[]
+context[<span class="hljs-string">&quot;repo&quot;</span>] = empty</code></pre>
+<p>Output:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>No repos :(</samp></pre>
+<h3>Comments</h3>
+<p>Comments begin with a bang and are ignored. The following template:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;&lt;h1&gt;Today{{! ignore me }}.&lt;/h1&gt;&quot;&quot;&quot;</span></code></pre>
+<p>Will render as follows:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre>
+<pre><samp>&lt;h1&gt;Today.&lt;/h1&gt;</samp></pre>
 
 </main>
 <footer>
@@ -219,7 +313,8 @@ The Ruby version of Mustache supports raising an exception in this situation, fo
 Template:
 &quot;&quot;&quot;</span> <span class="hljs-comment"># is there a way to raise the exception in nim-mustache?</span>
 nbCode:
-  tmpl = <span class="hljs-string">&quot;&quot;&quot;* {{name}}
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+* {{name}}
 * {{age}}
 * {{company}}
 * {{{company}}}
@@ -231,22 +326,155 @@ nbCode:
   context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hljs-string">&quot;&lt;b&gt;Github&lt;/b&gt;&quot;</span>
 nbText: <span class="hljs-string">&quot;Output:&quot;</span>
 nbCode:
-  <span class="hljs-keyword">echo</span> tmpl.render(context) <span class="hljs-comment"># the output is not correctly escaped!!! BIG TODO!</span>
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 &gt; added the `{{&amp;company}}` to clarify that it is just an alternative syntax with the same result
 &gt; as the triple mustache.
+
+### Sections
+
+Sections render blocks of text one or more times, depending on the value of the key in the current context.
+
+A section begins with a pound and ends with a slash.
+That is, `{{#person}}` begins a &quot;person&quot; section while `{{/person}}` ends it.
+
+The behavior of the section is determined by the value of the key.
+
+#### False Values or Empty Lists
+
+If the person key exists and has a value of false or an empty list, the HTML between the pound and slash will not be displayed.
+
+Template:
 &quot;&quot;&quot;</span>
-<span class="hljs-comment">### Sections</span>
-<span class="hljs-comment">#### Non-Empty Lists</span>
-<span class="hljs-comment">#### Lambdas</span>
-<span class="hljs-comment">#### Non-False Values</span>
-<span class="hljs-comment">### Inverted Sections</span>
-<span class="hljs-comment">### Comments</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+Shown.
+{{#person}}
+  Never shown!
+{{/person}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  context = newContext()
+  context[<span class="hljs-string">&quot;person&quot;</span>] = <span class="hljs-literal">false</span>
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+#### Non-Empty Lists
+
+If the **person** key exists and has a non-false value,
+the HTML between the pound and slash will be rendered and displayed one or more times.
+
+When the value is a non-empty list, the text in the block will be displayed once for each item in the list.
+The context of the block will be set to the current item for each iteration. In this way we can loop over collections.
+
+Template:
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+{{#repo}}
+  &lt;b&gt;{{name}}&lt;/b&gt;
+{{/repo}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">import</span> json
+  context = newContext()
+  context[<span class="hljs-string">&quot;repo&quot;</span>] = %* [
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;resque&quot;</span> },
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;hub&quot;</span> },
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span> }
+  ]
+<span class="hljs-comment"># add a note to explain better what is Context and what can be casted to a context value?</span>
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+#### Lambdas
+
+When the value is a callable object, such as a function or lambda, the object will be invoked and passed the block of text.
+The text passed is the literal block, unrendered.
+`{{tags}}` will not have been expanded - the lambda should do that on its own. In this way you can implement filters or caching.
+
+Template:
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+{{#wrapped}}
+  {{name}} is awesome.
+{{/wrapped}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  context = newContext()
+  context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
+  context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span>
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+#### Non-False Values
+
+When the value is non-false but not a list,
+it will be used as the context for a single rendering of the block.
+
+Template:
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+{{#person?}}
+  Hi {{name}}!
+{{/person?}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  context = newContext()
+  context[<span class="hljs-string">&quot;person?&quot;</span>] = %* { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Jon&quot;</span> }
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### Inverted Sections
+
+An inverted section begins with a caret (hat) and ends with a slash.
+That is `{{^person}}` begins a &quot;person&quot; inverted section while `{{/person}}` ends it.
+
+While sections can be used to render text one or more times based on the value of the key,
+inverted sections may render text once based on the inverse value of the key.
+That is, they will be rendered if the key doesn't exist, is false, or is an empty list.
+
+Template:
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+{{#repo}}
+  &lt;b&gt;{{name}}&lt;/b&gt;
+{{/repo}}
+{{^repo}}
+  No repos :(
+{{/repo}}&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Context:&quot;</span>
+nbCode:
+  context = newContext()
+  <span class="hljs-keyword">let</span> empty: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[]
+  context[<span class="hljs-string">&quot;repo&quot;</span>] = empty  <span class="hljs-comment"># does not work with seq or array or also with %* []</span>
+nbText: <span class="hljs-string">&quot;Output:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### Comments
+
+Comments begin with a bang and are ignored. The following template:
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;&lt;h1&gt;Today{{! ignore me }}.&lt;/h1&gt;&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;Will render as follows:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> tmpl.render(newContext())
+
 <span class="hljs-comment">### Partials</span>
 <span class="hljs-comment">### Set Delimiter</span>
 <span class="hljs-comment">## COPYRIGHT</span>
 <span class="hljs-comment">## SEE ALSO</span>
-nbShow</code></pre>
+nbShow
+<span class="hljs-comment"># idea: document that shows all spec tests of nim mustache (do this in nblog)</span></code></pre>
 </section><script>
 function toggleSourceDisplay() {
   var btn = document.getElementById("show")

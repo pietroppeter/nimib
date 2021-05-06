@@ -49,16 +49,10 @@ type
   # (in fact nbDoc and nbBlock will be different also from this backend field; this makes sense to NOT put it in the context)
 
   #[
-    type
-      NbRenderProc* = proc (blk: NbBlock, res: var string) {. nimcall .}
-      NbBackend = ref object
-        partials*: Table[string, string]
-        procs*: Table[string, NbRenderProc]
-    var # globals in renders
-      backends = Table[string, NbBackend]
-      defaultPlans = Table[string, seq[string]]
   
   render of a block:
     - derive a new context for rendering from given context.
     - actually I think all block context should be derived from container context if there is a container. we also should track the container in the block!
+  
+  
   ]#

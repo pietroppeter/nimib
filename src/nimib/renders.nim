@@ -135,4 +135,24 @@ proc renderMark*(doc: NbDoc): string =
     - nbImage could be a template that ultimately reduces to a nbFree
   nbFile should be a block that writes to a file (from scratch the first time it appears, in append mode adding a newline later times),
   -> executing a file should be a separate command.
+
+  For backends introduce a Backend object and a BackendSelector object and a global backend variable (a BackendSlector):
+  
+  type
+    Backend = ref object
+      defaultSteps: Table[string, seq[string]] # maps nbCode to ...
+      partials: Table[string, string]
+      procs: Table[string, RenderProc]
+    BackendSelector = object
+      default: string
+      backends: Table[string, Backend]
+  
+  var nbBackend: BackendSelector
+  
+  api will support
+
+  let s = nbBackend.render(nbDoc)  # uses default (and you can change the default)
+  let s = nbBackend["md"].render(nbDoc)
+
+  and you are also able to override the backend or add other backends
 ]#

@@ -58,15 +58,15 @@ section#source {
 <td>9</td>
 <td>9</td>
 </tr></tbody></table>
-<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
-<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
-<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
-<span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
-<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
-<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a>
-<span style="color:green">[OK]</span>   <a href="far\from\home.html">far\from\home.nim</a></samp></pre>
+<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;</samp></pre>
 <hr />
 <h1>Implementation</h1>
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
@@ -164,15 +164,15 @@ added test candidate: far\from\home.nim</samp></pre>
   <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[OK]&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp><span style="color:green">[OK]</span>   <a href="cheatsheet.html">cheatsheet.nim</a>
-<span style="color:green">[OK]</span>   <a href="hello.html">hello.nim</a>
-<span style="color:green">[OK]</span>   <a href="index.html">index.nim</a>
-<span style="color:green">[OK]</span>   <a href="mostaccio.html">mostaccio.nim</a>
-<span style="color:green">[OK]</span>   <a href="nolan.html">nolan.nim</a>
-<span style="color:green">[OK]</span>   <a href="numerical.html">numerical.nim</a>
-<span style="color:green">[OK]</span>   <a href="penguins.html">penguins.nim</a>
-<span style="color:green">[OK]</span>   <a href="pythno.html">pythno.nim</a>
-<span style="color:green">[OK]</span>   <a href="far\from\home.html">far\from\home.nim</a></samp></pre>
+<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;</samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (skip, fail, pass) = tests.stats
 <span class="hljs-keyword">if</span> fail &gt; <span class="hljs-number">0</span>:

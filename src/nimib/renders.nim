@@ -1,7 +1,8 @@
 import types, strformat, strutils, markdown, mustache
-export escapeTag
+export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import tables
 import highlight
+from std/cgi import xmlEncode
 
 let mdCfg = initGfmConfig()
 
@@ -13,14 +14,14 @@ proc renderHtmlTextOutput*(output: string): string =
   renderMarkdown(output.strip)
 
 func renderHtmlCodeBodyEscapeTag*(code: string): string =
-  fmt"""<pre><code class="nim">{code.strip.escapeTag}</code></pre>""" & "\n"
+  fmt"""<pre><code class="nim">{code.strip.xmlEncode}</code></pre>""" & "\n"
 
 proc renderHtmlCodeBody*(code: string): string =
   let highlit = highlightNim(code)
   result = fmt"""<pre><code class="nim hljs">{highlit.strip}</code></pre>""" & "\n"
 
 func renderHtmlCodeOutput*(output: string): string =
-  fmt"<pre><samp>{output.strip}</samp></pre>" & "\n"
+  fmt"<pre><samp>{output.strip.xmlEncode}</samp></pre>" & "\n"
 
 proc renderHtmlBlock*(blk: NbBlock): string =
   case blk.kind

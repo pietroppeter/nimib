@@ -160,6 +160,13 @@ context[<span class="hljs-string">&quot;repo&quot;</span>] = %*[{<span class="hl
 <pre><samp>&lt;b&gt;resque&lt;/b&gt;
   &lt;b&gt;hub&lt;/b&gt;
   &lt;b&gt;rip&lt;/b&gt;</samp></pre>
+<blockquote>
+<p>output is not the expected output:</p>
+</blockquote>
+<pre><code>&lt;b&gt;resque&lt;/b&gt;
+&lt;b&gt;hub&lt;/b&gt;
+&lt;b&gt;rip&lt;/b&gt;
+</code></pre>
 <h4>Lambdas</h4>
 <p>When the value is a callable object, such as a function or lambda, the object will be invoked and passed the block of text.
 The text passed is the literal block, unrendered.
@@ -177,6 +184,11 @@ context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hlj
 <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
 <pre><samp>&lt;b&gt;  Willy is awesome.
 &lt;/b&gt;</samp></pre>
+<blockquote>
+<p>output is not the expected output:</p>
+</blockquote>
+<pre><code>&lt;b&gt;Willy is awesome.&lt;/b&gt;
+</code></pre>
 <h4>Non-False Values</h4>
 <p>When the value is non-false but not a list,
 it will be used as the context for a single rendering of the block.</p>
@@ -216,6 +228,83 @@ context[<span class="hljs-string">&quot;repo&quot;</span>] = empty</code></pre>
 <p>Will render as follows:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre>
 <pre><samp>&lt;h1&gt;Today.&lt;/h1&gt;</samp></pre>
+<h3>Partials</h3>
+<p>Partials begin with a greater than sign, like <code>{{&gt; box}}</code>.</p>
+<p>Partials are rendered at runtime (as opposed to compile time),
+so recursive partials are possible. Just avoid infinite loops.</p>
+<p>They also inherit the calling context.
+Whereas in an <a href="http://en.wikipedia.org/wiki/ERuby">ERB</a> file you may have this:</p>
+<pre><code>&lt;%= partial :next_more, :start =&gt; start, :size =&gt; size %&gt;
+</code></pre>
+<p>Mustache requires only this:</p>
+<pre><code>{{&gt; next_more}}
+</code></pre>
+<p>Why? Because the <code>next_more.mustache</code> file will inherit
+the size and start methods from the calling context.</p>
+<p>In this way you may want to think of partials as
+includes, imports, template expansion, nested templates,
+or subtemplates, even though those aren't literally the case here.</p>
+<p>For example, this template and partial:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> base = <span class="hljs-string">&quot;&quot;&quot;&lt;h2&gt;Names&lt;/h2&gt;
+{{#names}}
+  {{&gt; user}}
+{{/names}}
+&quot;&quot;&quot;</span>
+<span class="hljs-keyword">let</span> user = <span class="hljs-string">&quot;&lt;strong&gt;{{name}}&lt;/strong&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span></code></pre>
+<p>Can be thought of as a single, expanded template:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> expanded = <span class="hljs-string">&quot;&quot;&quot;&lt;h2&gt;Names&lt;/h2&gt;
+{{#names}}
+  &lt;strong&gt;{{name}}&lt;/strong&gt;
+{{/names}}
+&quot;&quot;&quot;</span></code></pre>
+<blockquote>
+<p><code>nim-mustache</code> allows to use partials in-memory.
+By default nim-mustache looks for <code>.mustache</code> files in current directory
+but the behaviour of where to find partials (which directories or in-memory)
+can be fully customized
+(see <a href="https://github.com/soasme/nim-mustache#read-partials-from-memory">here</a>).</p>
+<p>Below we show an example where we only search in-memory.</p>
+</blockquote>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  tables
+
+<span class="hljs-keyword">let</span> partials = {<span class="hljs-string">&quot;base&quot;</span>: base, <span class="hljs-string">&quot;user&quot;</span>: user, <span class="hljs-string">&quot;expanded&quot;</span>: expanded}.toTable
+context = newContext(searchDirs = @[], partials = partials)
+context[<span class="hljs-string">&quot;names&quot;</span>] = %*[{<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;resque&quot;</span>}, {<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;hub&quot;</span>}, {<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span>}]
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;base}}&quot;</span>.render(context)</code></pre>
+<pre><samp>&lt;h2&gt;Names&lt;/h2&gt;
+  &lt;strong&gt;resque&lt;/strong&gt;
+  &lt;strong&gt;hub&lt;/strong&gt;
+  &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)</code></pre>
+<pre><samp>&lt;h2&gt;Names&lt;/h2&gt;
+  &lt;strong&gt;resque&lt;/strong&gt;
+  &lt;strong&gt;hub&lt;/strong&gt;
+  &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
+<h3>Set Delimiter</h3>
+<p>Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.</p>
+<p>Consider the following contrived example:</p>
+<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;* {{default_tags}}
+{{=&lt;% %&gt;=}}
+* &lt;% erb_style_tags %&gt;
+&lt;%={{ }}=%&gt;
+* {{ default_tags_again }}
+&quot;&quot;&quot;</span></code></pre>
+<p>Here we have a list with three items. The first item uses the default tag style, the second uses erb style as defined by the Set Delimiter tag, and the third returns to the default style after yet another Set Delimiter declaration.</p>
+<p>According to ctemplates, this &quot;is useful for languages like TeX,
+where double-braces may occur in the text and are awkward to use for markup.&quot;</p>
+<p>Custom delimiters may not contain whitespace or the equals sign.</p>
+<blockquote>
+<p>adding an example of usage of set delimiter feature</p>
+</blockquote>
+<pre><code class="nim hljs">context = newContext()
+context[<span class="hljs-string">&quot;default_tags&quot;</span>] = <span class="hljs-string">&quot;one&quot;</span>
+context[<span class="hljs-string">&quot;erb_style_tags&quot;</span>] = <span class="hljs-string">&quot;two&quot;</span>
+context[<span class="hljs-string">&quot;default_tags_again&quot;</span>] = <span class="hljs-string">&quot;three&quot;</span>
+<span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
+<pre><samp>* one
+* two
+* three</samp></pre>
 
 </main>
 <footer>
@@ -388,6 +477,15 @@ nbCode:
 nbText: <span class="hljs-string">&quot;Output:&quot;</span>
 nbCode:
   <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;&gt; output is not the expected output:
+
+```
+&lt;b&gt;resque&lt;/b&gt;
+&lt;b&gt;hub&lt;/b&gt;
+&lt;b&gt;rip&lt;/b&gt;
+```
+&quot;&quot;&quot;</span>
+
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 #### Lambdas
 
@@ -410,6 +508,13 @@ nbCode:
 nbText: <span class="hljs-string">&quot;Output:&quot;</span>
 nbCode:
   <span class="hljs-keyword">echo</span> tmpl.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;&gt; output is not the expected output:
+
+```
+&lt;b&gt;Willy is awesome.&lt;/b&gt;
+```
+&quot;&quot;&quot;</span>
+
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 #### Non-False Values
 
@@ -468,9 +573,112 @@ nbCode:
 nbText: <span class="hljs-string">&quot;Will render as follows:&quot;</span>
 nbCode:
   <span class="hljs-keyword">echo</span> tmpl.render(newContext())
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### Partials
 
-<span class="hljs-comment">### Partials</span>
-<span class="hljs-comment">### Set Delimiter</span>
+Partials begin with a greater than sign, like `{{&gt; box}}`.
+
+Partials are rendered at runtime (as opposed to compile time),
+so recursive partials are possible. Just avoid infinite loops.
+
+They also inherit the calling context.
+Whereas in an [ERB](http://en.wikipedia.org/wiki/ERuby) file you may have this:
+
+```
+&lt;%= partial :next_more, :start =&gt; start, :size =&gt; size %&gt;
+```
+
+Mustache requires only this:
+
+```
+{{&gt; next_more}}
+```
+
+Why? Because the `next_more.mustache` file will inherit
+the size and start methods from the calling context.
+
+In this way you may want to think of partials as
+includes, imports, template expansion, nested templates,
+or subtemplates, even though those aren't literally the case here.
+
+For example, this template and partial:
+&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">let</span> base = <span class="hljs-string">&quot;&quot;&quot;
+&lt;h2&gt;Names&lt;/h2&gt;
+{{#names}}
+  {{&gt; user}}
+{{/names}}
+&quot;&quot;&quot;</span>
+  <span class="hljs-keyword">let</span> user = <span class="hljs-string">&quot;&lt;strong&gt;{{name}}&lt;/strong&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+nbText: <span class="hljs-string">&quot;Can be thought of as a single, expanded template:&quot;</span>
+nbCode:
+  <span class="hljs-keyword">let</span> expanded = <span class="hljs-string">&quot;&quot;&quot;
+&lt;h2&gt;Names&lt;/h2&gt;
+{{#names}}
+  &lt;strong&gt;{{name}}&lt;/strong&gt;
+{{/names}}
+&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; `nim-mustache` allows to use partials in-memory.
+&gt; By default nim-mustache looks for `.mustache` files in current directory
+&gt; but the behaviour of where to find partials (which directories or in-memory)
+&gt; can be fully customized
+&gt; (see [here](https://github.com/soasme/nim-mustache#read-partials-from-memory)).
+&gt;
+&gt; Below we show an example where we only search in-memory.
+&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">import</span> tables
+  <span class="hljs-keyword">let</span> partials = {
+    <span class="hljs-string">&quot;base&quot;</span>: base,
+    <span class="hljs-string">&quot;user&quot;</span>: user,
+    <span class="hljs-string">&quot;expanded&quot;</span>: expanded
+  }.toTable
+  
+  context = newContext(searchDirs = @[], partials=partials)
+  context[<span class="hljs-string">&quot;names&quot;</span>] = %* [
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;resque&quot;</span> },
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;hub&quot;</span> },
+    { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span> }
+  ]
+
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;base}}&quot;</span>.render(context)
+nbCode:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+### Set Delimiter
+
+Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.
+
+Consider the following contrived example:
+
+&quot;&quot;&quot;</span>
+nbCode:
+  tmpl = <span class="hljs-string">&quot;&quot;&quot;
+* {{default_tags}}
+{{=&lt;% %&gt;=}}
+* &lt;% erb_style_tags %&gt;
+&lt;%={{ }}=%&gt;
+* {{ default_tags_again }}
+&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Here we have a list with three items. The first item uses the default tag style, the second uses erb style as defined by the Set Delimiter tag, and the third returns to the default style after yet another Set Delimiter declaration.
+
+According to ctemplates, this &quot;is useful for languages like TeX,
+where double-braces may occur in the text and are awkward to use for markup.&quot;
+
+Custom delimiters may not contain whitespace or the equals sign.
+
+&gt; adding an example of usage of set delimiter feature
+&quot;&quot;&quot;</span> <span class="hljs-comment"># probably also useful for delayed rendering</span>
+nbCode:
+  context = newContext()
+  context[<span class="hljs-string">&quot;default_tags&quot;</span>] = <span class="hljs-string">&quot;one&quot;</span>
+  context[<span class="hljs-string">&quot;erb_style_tags&quot;</span>] = <span class="hljs-string">&quot;two&quot;</span>
+  context[<span class="hljs-string">&quot;default_tags_again&quot;</span>] = <span class="hljs-string">&quot;three&quot;</span>
+  <span class="hljs-keyword">echo</span> tmpl.render(context)
+
 <span class="hljs-comment">## COPYRIGHT</span>
 <span class="hljs-comment">## SEE ALSO</span>
 nbShow

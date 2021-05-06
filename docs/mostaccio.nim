@@ -159,6 +159,15 @@ nbCode:
 nbText: "Output:"
 nbCode:
   echo tmpl.render(context)
+nbText: """> output is not the expected output:
+
+```
+<b>resque</b>
+<b>hub</b>
+<b>rip</b>
+```
+"""
+
 nbText: """
 #### Lambdas
 
@@ -181,6 +190,13 @@ nbCode:
 nbText: "Output:"
 nbCode:
   echo tmpl.render(context)
+nbText: """> output is not the expected output:
+
+```
+<b>Willy is awesome.</b>
+```
+"""
+
 nbText: """
 #### Non-False Values
 
@@ -239,9 +255,112 @@ nbCode:
 nbText: "Will render as follows:"
 nbCode:
   echo tmpl.render(newContext())
-
+nbText: """
 ### Partials
+
+Partials begin with a greater than sign, like `{{> box}}`.
+
+Partials are rendered at runtime (as opposed to compile time),
+so recursive partials are possible. Just avoid infinite loops.
+
+They also inherit the calling context.
+Whereas in an [ERB](http://en.wikipedia.org/wiki/ERuby) file you may have this:
+
+```
+<%= partial :next_more, :start => start, :size => size %>
+```
+
+Mustache requires only this:
+
+```
+{{> next_more}}
+```
+
+Why? Because the `next_more.mustache` file will inherit
+the size and start methods from the calling context.
+
+In this way you may want to think of partials as
+includes, imports, template expansion, nested templates,
+or subtemplates, even though those aren't literally the case here.
+
+For example, this template and partial:
+"""
+nbCode:
+  let base = """
+<h2>Names</h2>
+{{#names}}
+  {{> user}}
+{{/names}}
+"""
+  let user = "<strong>{{name}}</strong>\n"
+nbText: "Can be thought of as a single, expanded template:"
+nbCode:
+  let expanded = """
+<h2>Names</h2>
+{{#names}}
+  <strong>{{name}}</strong>
+{{/names}}
+"""
+nbText: """
+> `nim-mustache` allows to use partials in-memory.
+> By default nim-mustache looks for `.mustache` files in current directory
+> but the behaviour of where to find partials (which directories or in-memory)
+> can be fully customized
+> (see [here](https://github.com/soasme/nim-mustache#read-partials-from-memory)).
+>
+> Below we show an example where we only search in-memory.
+"""
+nbCode:
+  import tables
+  let partials = {
+    "base": base,
+    "user": user,
+    "expanded": expanded
+  }.toTable
+  
+  context = newContext(searchDirs = @[], partials=partials)
+  context["names"] = %* [
+    { "name": "resque" },
+    { "name": "hub" },
+    { "name": "rip" }
+  ]
+
+  echo "{{>base}}".render(context)
+nbCode:
+  echo "{{>expanded}}".render(context)
+nbText: """
 ### Set Delimiter
+
+Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.
+
+Consider the following contrived example:
+
+"""
+nbCode:
+  tmpl = """
+* {{default_tags}}
+{{=<% %>=}}
+* <% erb_style_tags %>
+<%={{ }}=%>
+* {{ default_tags_again }}
+"""
+nbText: """
+Here we have a list with three items. The first item uses the default tag style, the second uses erb style as defined by the Set Delimiter tag, and the third returns to the default style after yet another Set Delimiter declaration.
+
+According to ctemplates, this "is useful for languages like TeX,
+where double-braces may occur in the text and are awkward to use for markup."
+
+Custom delimiters may not contain whitespace or the equals sign.
+
+> adding an example of usage of set delimiter feature
+""" # probably also useful for delayed rendering
+nbCode:
+  context = newContext()
+  context["default_tags"] = "one"
+  context["erb_style_tags"] = "two"
+  context["default_tags_again"] = "three"
+  echo tmpl.render(context)
+
 ## COPYRIGHT
 ## SEE ALSO
 nbShow

@@ -159,14 +159,6 @@ nbCode:
 nbText: "Output:"
 nbCode:
   echo tmpl.render(context)
-nbText: """> output is not the expected output:
-
-```
-<b>resque</b>
-<b>hub</b>
-<b>rip</b>
-```
-"""
 
 nbText: """
 #### Lambdas

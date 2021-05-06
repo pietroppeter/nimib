@@ -363,5 +363,5 @@ nbCode:
 
 ## COPYRIGHT
 ## SEE ALSO
-nbShow
+nbSave
 # idea: document that shows all spec tests of nim mustache (do this in nblog)

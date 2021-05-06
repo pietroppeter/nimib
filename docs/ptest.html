@@ -41,7 +41,7 @@ section#source {
 </header><main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ❌</h2>
+<h2>Test Results ✅</h2>
 <table>
 <thead>
 <tr>
@@ -54,36 +54,14 @@ section#source {
 <tbody>
 <tr>
 <td>0</td>
-<td>1</td>
-<td>8</td>
+<td>0</td>
+<td>9</td>
 <td>9</td>
 </tr></tbody></table>
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-index 67eab4b..f63d46b 100644
---- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-@@ -231,7 +231,7 @@ nbCode:
-   context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;company&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;&amp;quot;&lt;/span&gt;
- nbText: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;Output:&amp;quot;&lt;/span&gt;
- nbCode:
--  &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)
-+  &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context) &lt;span class=&quot;hljs-comment&quot;&gt;# the output is not correctly escaped!!! BIG TODO!&lt;/span&gt;
- nbText: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
- &amp;gt; added the `{{&amp;amp;company}}` to clarify that it is just an alternative syntax with the same result
- &amp;gt; as the triple mustache.
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
@@ -189,29 +167,7 @@ added test candidate: far\from\home.nim</samp></pre>
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-index 67eab4b..f63d46b 100644
---- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-@@ -231,7 +231,7 @@ nbCode:
-   context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;company&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;&amp;quot;&lt;/span&gt;
- nbText: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;Output:&amp;quot;&lt;/span&gt;
- nbCode:
--  &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)
-+  &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context) &lt;span class=&quot;hljs-comment&quot;&gt;# the output is not correctly escaped!!! BIG TODO!&lt;/span&gt;
- nbText: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
- &amp;gt; added the `{{&amp;amp;company}}` to clarify that it is just an alternative syntax with the same result
- &amp;gt; as the triple mustache.
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
-The file will have its original line endings in your working directory
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;

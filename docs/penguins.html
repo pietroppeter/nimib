@@ -73,7 +73,9 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a></p>
                    16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
                    17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
                    18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
-                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE
+
+</samp></pre>
 <p>Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
 The remaining 4 are numeric but they have datatype object. Why?</p>
 <p>Because that there are null values in those columns (interpreted as strings):</p>
@@ -86,11 +88,13 @@ The remaining 4 are numeric but they have datatype object. Why?</p>
 VFloat
 VString
 VInt
-VString</samp></pre>
+VString
+</samp></pre>
 <p>Let's see how many penguins by species we have (and how do they relate to islands).</p>
 <pre><code class="nim hljs">ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() +
     ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
 <figure>
 <img src="images/penguins_count_species.png" alt="Count of penguins by species">
 <figcaption>Count of penguins by species</figcaption>
@@ -116,7 +120,8 @@ from where this dataset comes from:</p>
 ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y = <span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>)) +
     geom_point() +
     ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
 <figure>
 <img src="images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
 <figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
@@ -132,7 +137,8 @@ ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y 
 <pre><code class="nim hljs">ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y = <span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;species&quot;</span>)) +
     geom_point() +
     ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_species.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
 <figure>
 <img src="images/penguins_mass_vs_length_with_species.png" alt="Penguins' mass vs flipper length (colored by species)">
 <figcaption>Penguins' mass vs flipper length (colored by species)</figcaption>
@@ -144,7 +150,8 @@ as reported by <a href="https://twitter.com/andrewheiss/status/13011667926274211
 <pre><code class="nim hljs">ggplot(df1, aes(x = <span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y = <span class="hljs-string">&quot;body_mass_g&quot;</span>, color = <span class="hljs-string">&quot;species&quot;</span>)) +
     geom_point() +
     ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre>
-<pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<pre><samp>StatusSuccess output of write_to_png
+</samp></pre>
 <figure>
 <img src="images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill">

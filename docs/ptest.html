@@ -41,7 +41,7 @@ section#source {
 </header><main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ✅</h2>
+<h2>Test Results ❌</h2>
 <table>
 <thead>
 <tr>
@@ -54,19 +54,321 @@ section#source {
 <tbody>
 <tr>
 <td>0</td>
-<td>0</td>
-<td>9</td>
+<td>5</td>
+<td>4</td>
 <td>9</td>
 </tr></tbody></table>
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/hello.html b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+index 07d2606..482a6df 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/hello.html
++++ b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+@@ -45,8 +45,7 @@ and incidentally you might learn the basics of &lt;a href=&quot;https://github.com/pietr
+ &lt;h3&gt;A secret message&lt;/h3&gt;
+ &lt;p&gt;Inside this document is hidden a secret message. I will ask the computer to spit it out:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; secret&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;what does this integer sequence mean?
+ Am I supposed to &lt;a href=&quot;https://oeis.org/search?q=104%2C+101%2C+108%2C+108%2C+111%2C+44%2C+32%2C+119%2C+111%2C+114%2C+108%2C+100&amp;language=english&amp;go=Search&quot;&gt;recognize it&lt;/a&gt;?&lt;/p&gt;
+ &lt;h3&gt;A cryptoanalytic weapon&lt;/h3&gt;
+@@ -61,8 +60,7 @@ a recently declassified top-secret cryptoanalytic weapon:&lt;/p&gt;
+ finally decrypt what the computer wants to tell me:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; msg = decode secret
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; msg&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;hello, world
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;hello, world&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;&lt;em&gt;Hey&lt;/em&gt;, there must be a bug somewhere, the message (&lt;code&gt;hello, world&lt;/code&gt;) is not even addressed to me!&lt;/p&gt;
+ 
+ &lt;/main&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+index ac7f4bd..1563169 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
++++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+@@ -72,9 +72,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;in_california&amp;quot;&lt;/span&gt;] = &lt;span clas
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;Hello Chris
+ You have just won 10000 dollars!
+-Well, 6000.0 dollars, after taxes.
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++Well, 6000.0 dollars, after taxes.&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h2&gt;DESCRIPTION&lt;/h2&gt;
+ &lt;p&gt;Mustache can be used for HTML, config files, source code - anything.
+ It works by expanding tags in a template using values provided in a context
+@@ -119,8 +117,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;company&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
+ * 
+ * &amp;amp;lt;b&amp;amp;gt;Github&amp;amp;lt;/b&amp;amp;gt;
+ * &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
+-* &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++* &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;added the &lt;code&gt;{{&amp;amp;company}}&lt;/code&gt; to clarify that it is just an alternative syntax with the same result
+ as the triple mustache.&lt;/p&gt;
+@@ -142,9 +139,7 @@ That is, &lt;code&gt;{{#person}}&lt;/code&gt; begins a &amp;quot;person&amp;quot; section while &lt;cod
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;person&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hljs-literal&quot;&gt;false&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;Shown.
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;Shown.&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h4&gt;Non-Empty Lists&lt;/h4&gt;
+ &lt;p&gt;If the &lt;strong&gt;person&lt;/strong&gt; key exists and has a non-false value,
+ the HTML between the pound and slash will be rendered and displayed one or more times.&lt;/p&gt;
+@@ -162,11 +157,9 @@ context = newContext()
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;repo&amp;quot;&lt;/span&gt;] = %*[{&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;resque&amp;quot;&lt;/span&gt;}, {&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;hub&amp;quot;&lt;/span&gt;}, {&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;rip&amp;quot;&lt;/span&gt;}]&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  &amp;lt;b&amp;gt;resque&amp;lt;/b&amp;gt;
++&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;resque&amp;lt;/b&amp;gt;
+   &amp;lt;b&amp;gt;hub&amp;lt;/b&amp;gt;
+-  &amp;lt;b&amp;gt;rip&amp;lt;/b&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;b&amp;gt;rip&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;output is not the expected output:&lt;/p&gt;
+ &lt;/blockquote&gt;
+@@ -190,8 +183,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;wrapped&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;  Willy is awesome.
+-&amp;lt;/b&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;output is not the expected output:&lt;/p&gt;
+ &lt;/blockquote&gt;
+@@ -209,9 +201,7 @@ it will be used as the context for a single rendering of the block.&lt;/p&gt;
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;person?&amp;quot;&lt;/span&gt;] = %*{&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;Jon&amp;quot;&lt;/span&gt;}&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  Hi Jon!
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;Hi Jon!&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Inverted Sections&lt;/h3&gt;
+ &lt;p&gt;An inverted section begins with a caret (hat) and ends with a slash.
+ That is &lt;code&gt;{{^person}}&lt;/code&gt; begins a &amp;quot;person&amp;quot; inverted section while &lt;code&gt;{{/person}}&lt;/code&gt; ends it.&lt;/p&gt;
+@@ -231,16 +221,13 @@ That is, they will be rendered if the key doesn't exist, is false, or is an empt
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;repo&amp;quot;&lt;/span&gt;] = empty&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  No repos :(
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;No repos :(&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Comments&lt;/h3&gt;
+ &lt;p&gt;Comments begin with a bang and are ignored. The following template:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;tmpl = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&amp;lt;h1&amp;gt;Today{{! ignore me }}.&amp;lt;/h1&amp;gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Will render as follows:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(newContext())&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;&amp;lt;h1&amp;gt;Today.&amp;lt;/h1&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;&amp;lt;h1&amp;gt;Today.&amp;lt;/h1&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Partials&lt;/h3&gt;
+ &lt;p&gt;Partials begin with a greater than sign, like &lt;code&gt;{{&amp;gt; box}}&lt;/code&gt;.&lt;/p&gt;
+ &lt;p&gt;Partials are rendered at runtime (as opposed to compile time),
+@@ -288,16 +275,12 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;names&amp;quot;&lt;/span&gt;] = %*[{&lt;span class=&quot;h
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;h2&amp;gt;Names&amp;lt;/h2&amp;gt;
+   &amp;lt;strong&amp;gt;resque&amp;lt;/strong&amp;gt;
+   &amp;lt;strong&amp;gt;hub&amp;lt;/strong&amp;gt;
+-  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;{{&amp;gt;expanded}}&amp;quot;&lt;/span&gt;.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;h2&amp;gt;Names&amp;lt;/h2&amp;gt;
+   &amp;lt;strong&amp;gt;resque&amp;lt;/strong&amp;gt;
+   &amp;lt;strong&amp;gt;hub&amp;lt;/strong&amp;gt;
+-  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Set Delimiter&lt;/h3&gt;
+ &lt;p&gt;Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.&lt;/p&gt;
+ &lt;p&gt;Consider the following contrived example:&lt;/p&gt;
+@@ -321,9 +304,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;default_tags_again&amp;quot;&lt;/span&gt;] = &lt;span
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;* one
+ * two
+-* three
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++* three&lt;/samp&gt;&lt;/pre&gt;
+ 
+ &lt;/main&gt;
+ &lt;footer&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
+The file will have its original line endings in your working directory
+
+err
+:1
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;</samp></pre>
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/numerical.html b/C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html
+index 861584f..76e5950 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/numerical.html
++++ b/C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html
+@@ -85,13 +85,11 @@ to integrate an ODE.&lt;/p&gt;
+ &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; y5 = y(&lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;)
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;y(5): &amp;quot;&lt;/span&gt;, y5&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;y'(0): 5.0
+-y(5): -1.612374396254655
+-&lt;/samp&gt;&lt;/pre&gt;
++y(5): -1.612374396254655&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;We want the solution to be available for every point in $[0, 5]$ with timestep $h=0.05$&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; tspan = arange(&lt;span class=&quot;hljs-number&quot;&gt;0.0&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;5.0&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;0.05&lt;/span&gt;, includeEnd = &lt;span class=&quot;hljs-literal&quot;&gt;true&lt;/span&gt;)
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tspan[&lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt; .. &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;], &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot; . . . &amp;quot;&lt;/span&gt;, tspan[^&lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt; .. ^&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;]&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;We compute the solution according to our selected 2 methods and 3 timesteps:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt;
+   options1 = newODEoptions(dt = &lt;span class=&quot;hljs-number&quot;&gt;0.1&lt;/span&gt;)
+@@ -131,16 +129,14 @@ RK4:
+ -1.6124233
+ -1.6123745
+ Analytical:
+--1.6123744
+-&lt;/samp&gt;&lt;/pre&gt;
++-1.6123744&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.&lt;/p&gt;
+ &lt;p&gt;To compute percentage error of each method at $y(5)$ I will use:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;proc&lt;/span&gt; pe(yApprox: &lt;span class=&quot;hljs-built_in&quot;&gt;float&lt;/span&gt;): &lt;span class=&quot;hljs-built_in&quot;&gt;string&lt;/span&gt; =
+   &lt;span class=&quot;hljs-string&quot;&gt;fmt&amp;quot;{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%&amp;quot;&lt;/span&gt;
+ 
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; pe y1hn[^&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;]             &lt;span class=&quot;hljs-comment&quot;&gt;## used like this&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;30.083%
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;30.083%&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;The following table is built as a Markdown table in a &lt;code&gt;nbText&lt;/code&gt; block.&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Table 1.&lt;/strong&gt; Percentage errors&lt;/p&gt;
+ &lt;table&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/numerical.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/penguins.html b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+index 942d6eb..eb80fd7 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/penguins.html
++++ b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+@@ -73,9 +73,7 @@ with &lt;a href=&quot;https://github.com/Vindaar/ggplotnim&quot;&gt;ggplotnim&lt;/a&gt;&lt;/p&gt;
+                    16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
+                    17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
+                    18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
+-                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+ The remaining 4 are numeric but they have datatype object. Why?&lt;/p&gt;
+ &lt;p&gt;Because that there are null values in those columns (interpreted as strings):&lt;/p&gt;
+@@ -88,13 +86,11 @@ The remaining 4 are numeric but they have datatype object. Why?&lt;/p&gt;
+ VFloat
+ VString
+ VInt
+-VString
+-&lt;/samp&gt;&lt;/pre&gt;
++VString&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;Let's see how many penguins by species we have (and how do they relate to islands).&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df, aes(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;, fill = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;island&amp;quot;&lt;/span&gt;)) + geom_bar() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_count_species.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_count_species.png&quot; alt=&quot;Count of penguins by species&quot;&gt;
+ &lt;figcaption&gt;Count of penguins by species&lt;/figcaption&gt;
+@@ -120,8 +116,7 @@ from where this dataset comes from:&lt;/p&gt;
+ ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;flipper_length_mm&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;sex&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_mass_vs_length_with_sex.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_mass_vs_length_with_sex.png&quot; alt=&quot;Penguins' mass vs flipper length (colored by sex)&quot;&gt;
+ &lt;figcaption&gt;Penguins' mass vs flipper length (colored by sex)&lt;/figcaption&gt;
+@@ -137,8 +132,7 @@ ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;flipper_length_mm&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_mass_vs_length_with_species.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_mass_vs_length_with_species.png&quot; alt=&quot;Penguins' mass vs flipper length (colored by species)&quot;&gt;
+ &lt;figcaption&gt;Penguins' mass vs flipper length (colored by species)&lt;/figcaption&gt;
+@@ -150,8 +144,7 @@ as reported by &lt;a href=&quot;https://twitter.com/andrewheiss/status/13011667926274211
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;culmen_depth_mm&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_simpson.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_simpson.png&quot; alt=&quot;Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+ but looking at all species taken together bigger mass is correlated with thinner bill&quot;&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/pythno.html b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+index b05e166..a4c38f7 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/pythno.html
++++ b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+@@ -52,8 +52,7 @@ to modify code and output of a block after it has run.&lt;/p&gt;
+   &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-literal&quot;&gt;result&lt;/span&gt;
+   
+ print(repeat(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;_this_is_not_python&amp;quot;&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;6&lt;/span&gt;))&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python&lt;/samp&gt;&lt;/pre&gt;
+ 
+ &lt;/main&gt;
+ &lt;footer&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;
+</samp></pre>
 <hr />
 <h1>Implementation</h1>
 <p>The following is an adaption of <a href="https://github.com/treeform/ptest/blob/master/src/ptest.nim">treeform's ptest.nim</a>
@@ -113,7 +415,8 @@ added test candidate: nolan.nim
 added test candidate: numerical.nim
 added test candidate: penguins.nim
 added test candidate: pythno.nim
-added test candidate: far\from\home.nim</samp></pre>
+added test candidate: far\from\home.nim
+</samp></pre>
 <h3>performing test</h3>
 <p>for every non-skipped test case:</p>
 <ul>
@@ -165,14 +468,316 @@ added test candidate: far\from\home.nim</samp></pre>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
   removeFile(tmp)</code></pre>
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/hello.html b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+index 07d2606..482a6df 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/hello.html
++++ b/C:/Users/ppeterlongo/nimib/docs/hello.tmp.html
+@@ -45,8 +45,7 @@ and incidentally you might learn the basics of &lt;a href=&quot;https://github.com/pietr
+ &lt;h3&gt;A secret message&lt;/h3&gt;
+ &lt;p&gt;Inside this document is hidden a secret message. I will ask the computer to spit it out:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; secret&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;what does this integer sequence mean?
+ Am I supposed to &lt;a href=&quot;https://oeis.org/search?q=104%2C+101%2C+108%2C+108%2C+111%2C+44%2C+32%2C+119%2C+111%2C+114%2C+108%2C+100&amp;language=english&amp;go=Search&quot;&gt;recognize it&lt;/a&gt;?&lt;/p&gt;
+ &lt;h3&gt;A cryptoanalytic weapon&lt;/h3&gt;
+@@ -61,8 +60,7 @@ a recently declassified top-secret cryptoanalytic weapon:&lt;/p&gt;
+ finally decrypt what the computer wants to tell me:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; msg = decode secret
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; msg&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;hello, world
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;hello, world&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;&lt;em&gt;Hey&lt;/em&gt;, there must be a bug somewhere, the message (&lt;code&gt;hello, world&lt;/code&gt;) is not even addressed to me!&lt;/p&gt;
+ 
+ &lt;/main&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/hello.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+index ac7f4bd..1563169 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
++++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
+@@ -72,9 +72,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;in_california&amp;quot;&lt;/span&gt;] = &lt;span clas
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;Hello Chris
+ You have just won 10000 dollars!
+-Well, 6000.0 dollars, after taxes.
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++Well, 6000.0 dollars, after taxes.&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h2&gt;DESCRIPTION&lt;/h2&gt;
+ &lt;p&gt;Mustache can be used for HTML, config files, source code - anything.
+ It works by expanding tags in a template using values provided in a context
+@@ -119,8 +117,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;company&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
+ * 
+ * &amp;amp;lt;b&amp;amp;gt;Github&amp;amp;lt;/b&amp;amp;gt;
+ * &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
+-* &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++* &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;added the &lt;code&gt;{{&amp;amp;company}}&lt;/code&gt; to clarify that it is just an alternative syntax with the same result
+ as the triple mustache.&lt;/p&gt;
+@@ -142,9 +139,7 @@ That is, &lt;code&gt;{{#person}}&lt;/code&gt; begins a &amp;quot;person&amp;quot; section while &lt;cod
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;person&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hljs-literal&quot;&gt;false&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;Shown.
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;Shown.&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h4&gt;Non-Empty Lists&lt;/h4&gt;
+ &lt;p&gt;If the &lt;strong&gt;person&lt;/strong&gt; key exists and has a non-false value,
+ the HTML between the pound and slash will be rendered and displayed one or more times.&lt;/p&gt;
+@@ -162,11 +157,9 @@ context = newContext()
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;repo&amp;quot;&lt;/span&gt;] = %*[{&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;resque&amp;quot;&lt;/span&gt;}, {&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;hub&amp;quot;&lt;/span&gt;}, {&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;rip&amp;quot;&lt;/span&gt;}]&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  &amp;lt;b&amp;gt;resque&amp;lt;/b&amp;gt;
++&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;resque&amp;lt;/b&amp;gt;
+   &amp;lt;b&amp;gt;hub&amp;lt;/b&amp;gt;
+-  &amp;lt;b&amp;gt;rip&amp;lt;/b&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;b&amp;gt;rip&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;output is not the expected output:&lt;/p&gt;
+ &lt;/blockquote&gt;
+@@ -190,8 +183,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;wrapped&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;  Willy is awesome.
+-&amp;lt;/b&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++&amp;lt;/b&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;output is not the expected output:&lt;/p&gt;
+ &lt;/blockquote&gt;
+@@ -209,9 +201,7 @@ it will be used as the context for a single rendering of the block.&lt;/p&gt;
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;person?&amp;quot;&lt;/span&gt;] = %*{&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;Jon&amp;quot;&lt;/span&gt;}&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  Hi Jon!
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;Hi Jon!&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Inverted Sections&lt;/h3&gt;
+ &lt;p&gt;An inverted section begins with a caret (hat) and ends with a slash.
+ That is &lt;code&gt;{{^person}}&lt;/code&gt; begins a &amp;quot;person&amp;quot; inverted section while &lt;code&gt;{{/person}}&lt;/code&gt; ends it.&lt;/p&gt;
+@@ -231,16 +221,13 @@ That is, they will be rendered if the key doesn't exist, is false, or is an empt
+ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;repo&amp;quot;&lt;/span&gt;] = empty&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Output:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;  No repos :(
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;No repos :(&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Comments&lt;/h3&gt;
+ &lt;p&gt;Comments begin with a bang and are ignored. The following template:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;tmpl = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;quot;&amp;quot;&amp;lt;h1&amp;gt;Today{{! ignore me }}.&amp;lt;/h1&amp;gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+ &lt;p&gt;Will render as follows:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(newContext())&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;&amp;lt;h1&amp;gt;Today.&amp;lt;/h1&amp;gt;
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;&amp;lt;h1&amp;gt;Today.&amp;lt;/h1&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Partials&lt;/h3&gt;
+ &lt;p&gt;Partials begin with a greater than sign, like &lt;code&gt;{{&amp;gt; box}}&lt;/code&gt;.&lt;/p&gt;
+ &lt;p&gt;Partials are rendered at runtime (as opposed to compile time),
+@@ -288,16 +275,12 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;names&amp;quot;&lt;/span&gt;] = %*[{&lt;span class=&quot;h
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;h2&amp;gt;Names&amp;lt;/h2&amp;gt;
+   &amp;lt;strong&amp;gt;resque&amp;lt;/strong&amp;gt;
+   &amp;lt;strong&amp;gt;hub&amp;lt;/strong&amp;gt;
+-  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;{{&amp;gt;expanded}}&amp;quot;&lt;/span&gt;.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;&amp;lt;h2&amp;gt;Names&amp;lt;/h2&amp;gt;
+   &amp;lt;strong&amp;gt;resque&amp;lt;/strong&amp;gt;
+   &amp;lt;strong&amp;gt;hub&amp;lt;/strong&amp;gt;
+-  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++  &amp;lt;strong&amp;gt;rip&amp;lt;/strong&amp;gt;&lt;/samp&gt;&lt;/pre&gt;
+ &lt;h3&gt;Set Delimiter&lt;/h3&gt;
+ &lt;p&gt;Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.&lt;/p&gt;
+ &lt;p&gt;Consider the following contrived example:&lt;/p&gt;
+@@ -321,9 +304,7 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;default_tags_again&amp;quot;&lt;/span&gt;] = &lt;span
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;* one
+ * two
+-* three
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++* three&lt;/samp&gt;&lt;/pre&gt;
+ 
+ &lt;/main&gt;
+ &lt;footer&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
+The file will have its original line endings in your working directory
+
+err
+:1
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;</samp></pre>
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/numerical.html b/C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html
+index 861584f..76e5950 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/numerical.html
++++ b/C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html
+@@ -85,13 +85,11 @@ to integrate an ODE.&lt;/p&gt;
+ &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; y5 = y(&lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;)
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;y(5): &amp;quot;&lt;/span&gt;, y5&lt;/code&gt;&lt;/pre&gt;
+ &lt;pre&gt;&lt;samp&gt;y'(0): 5.0
+-y(5): -1.612374396254655
+-&lt;/samp&gt;&lt;/pre&gt;
++y(5): -1.612374396254655&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;We want the solution to be available for every point in $[0, 5]$ with timestep $h=0.05$&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; tspan = arange(&lt;span class=&quot;hljs-number&quot;&gt;0.0&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;5.0&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;0.05&lt;/span&gt;, includeEnd = &lt;span class=&quot;hljs-literal&quot;&gt;true&lt;/span&gt;)
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tspan[&lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt; .. &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;], &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot; . . . &amp;quot;&lt;/span&gt;, tspan[^&lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt; .. ^&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;]&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;We compute the solution according to our selected 2 methods and 3 timesteps:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt;
+   options1 = newODEoptions(dt = &lt;span class=&quot;hljs-number&quot;&gt;0.1&lt;/span&gt;)
+@@ -131,16 +129,14 @@ RK4:
+ -1.6124233
+ -1.6123745
+ Analytical:
+--1.6123744
+-&lt;/samp&gt;&lt;/pre&gt;
++-1.6123744&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.&lt;/p&gt;
+ &lt;p&gt;To compute percentage error of each method at $y(5)$ I will use:&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;proc&lt;/span&gt; pe(yApprox: &lt;span class=&quot;hljs-built_in&quot;&gt;float&lt;/span&gt;): &lt;span class=&quot;hljs-built_in&quot;&gt;string&lt;/span&gt; =
+   &lt;span class=&quot;hljs-string&quot;&gt;fmt&amp;quot;{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%&amp;quot;&lt;/span&gt;
+ 
+ &lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; pe y1hn[^&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;]             &lt;span class=&quot;hljs-comment&quot;&gt;## used like this&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;30.083%
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;30.083%&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;The following table is built as a Markdown table in a &lt;code&gt;nbText&lt;/code&gt; block.&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Table 1.&lt;/strong&gt; Percentage errors&lt;/p&gt;
+ &lt;table&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/numerical.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/numerical.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/penguins.html b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+index 942d6eb..eb80fd7 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/penguins.html
++++ b/C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html
+@@ -73,9 +73,7 @@ with &lt;a href=&quot;https://github.com/Vindaar/ggplotnim&quot;&gt;ggplotnim&lt;/a&gt;&lt;/p&gt;
+                    16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
+                    17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
+                    18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
+-                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE
+-
+-&lt;/samp&gt;&lt;/pre&gt;
++                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+ The remaining 4 are numeric but they have datatype object. Why?&lt;/p&gt;
+ &lt;p&gt;Because that there are null values in those columns (interpreted as strings):&lt;/p&gt;
+@@ -88,13 +86,11 @@ The remaining 4 are numeric but they have datatype object. Why?&lt;/p&gt;
+ VFloat
+ VString
+ VInt
+-VString
+-&lt;/samp&gt;&lt;/pre&gt;
++VString&lt;/samp&gt;&lt;/pre&gt;
+ &lt;p&gt;Let's see how many penguins by species we have (and how do they relate to islands).&lt;/p&gt;
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df, aes(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;, fill = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;island&amp;quot;&lt;/span&gt;)) + geom_bar() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_count_species.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_count_species.png&quot; alt=&quot;Count of penguins by species&quot;&gt;
+ &lt;figcaption&gt;Count of penguins by species&lt;/figcaption&gt;
+@@ -120,8 +116,7 @@ from where this dataset comes from:&lt;/p&gt;
+ ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;flipper_length_mm&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;sex&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_mass_vs_length_with_sex.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_mass_vs_length_with_sex.png&quot; alt=&quot;Penguins' mass vs flipper length (colored by sex)&quot;&gt;
+ &lt;figcaption&gt;Penguins' mass vs flipper length (colored by sex)&lt;/figcaption&gt;
+@@ -137,8 +132,7 @@ ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;flipper_length_mm&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_mass_vs_length_with_species.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_mass_vs_length_with_species.png&quot; alt=&quot;Penguins' mass vs flipper length (colored by species)&quot;&gt;
+ &lt;figcaption&gt;Penguins' mass vs flipper length (colored by species)&lt;/figcaption&gt;
+@@ -150,8 +144,7 @@ as reported by &lt;a href=&quot;https://twitter.com/andrewheiss/status/13011667926274211
+ &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;ggplot(df1, aes(x = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;culmen_depth_mm&amp;quot;&lt;/span&gt;, y = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;body_mass_g&amp;quot;&lt;/span&gt;, color = &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;species&amp;quot;&lt;/span&gt;)) +
+     geom_point() +
+     ggsave(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;images/penguins_simpson.png&amp;quot;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;StatusSuccess output of write_to_png&lt;/samp&gt;&lt;/pre&gt;
+ &lt;figure&gt;
+ &lt;img src=&quot;images/penguins_simpson.png&quot; alt=&quot;Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+ but looking at all species taken together bigger mass is correlated with thinner bill&quot;&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/penguins.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+Differences found in html file
+output
+:diff --git a/C:/Users/ppeterlongo/nimib/docs/pythno.html b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+index b05e166..a4c38f7 100644
+--- a/C:/Users/ppeterlongo/nimib/docs/pythno.html
++++ b/C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html
+@@ -52,8 +52,7 @@ to modify code and output of a block after it has run.&lt;/p&gt;
+   &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-literal&quot;&gt;result&lt;/span&gt;
+   
+ print(repeat(&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;_this_is_not_python&amp;quot;&lt;/span&gt;, &lt;span class=&quot;hljs-number&quot;&gt;6&lt;/span&gt;))&lt;/code&gt;&lt;/pre&gt;
+-&lt;pre&gt;&lt;samp&gt;_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python
+-&lt;/samp&gt;&lt;/pre&gt;
++&lt;pre&gt;&lt;samp&gt;_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python&lt;/samp&gt;&lt;/pre&gt;
+ 
+ &lt;/main&gt;
+ &lt;footer&gt;
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/pythno.tmp.html.
+The file will have its original line endings in your working directory
+
+err
+:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;
+</samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (skip, fail, pass) = tests.stats
 <span class="hljs-keyword">if</span> fail &gt; <span class="hljs-number">0</span>:

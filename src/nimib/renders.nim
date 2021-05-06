@@ -21,7 +21,7 @@ proc renderHtmlCodeBody*(code: string): string =
   result = fmt"""<pre><code class="nim hljs">{highlit.strip}</code></pre>""" & "\n"
 
 func renderHtmlCodeOutput*(output: string): string =
-  fmt"<pre><samp>{output.strip.xmlEncode}</samp></pre>" & "\n"
+  fmt"<pre><samp>{output.xmlEncode}</samp></pre>" & "\n"
 
 proc renderHtmlBlock*(blk: NbBlock): string =
   case blk.kind

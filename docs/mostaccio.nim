@@ -184,18 +184,17 @@ nbCode:
 {{/wrapped}}"""
 nbText: "Context:"
 nbCode:
+  import strutils
   context = newContext()
   context["name"] = "Willy"
-  context["wrapped"] = proc(s: string, c: Context): string = "<b>" & s.render(c) & "</b>"
+  context["wrapped"] = proc(s: string, c: Context): string = "<b>" & s.strip.render(c) & "</b>"
 nbText: "Output:"
 nbCode:
   echo tmpl.render(context)
-nbText: """> output is not the expected output:
-
-```
-<b>Willy is awesome.</b>
-```
-"""
+nbText: """
+> note that we need to `strutils.strip` the string in order to obtain the expected
+> whitespace behaviour
+> (see discussion in [soasme/mustache/issues/8](https://github.com/soasme/nim-mustache/issues/8))"""
 
 nbText: """
 #### Non-False Values

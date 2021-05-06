@@ -176,19 +176,21 @@ The text passed is the literal block, unrendered.
   {{name}} is awesome.
 {{/wrapped}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  strutils
+
+context = newContext()
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
 context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span> (s: <span class="hljs-built_in">string</span>; c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> =
-  <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
+  <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.strip.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
-<pre><samp>&lt;b&gt;  Willy is awesome.
-&lt;/b&gt;</samp></pre>
+<pre><samp>&lt;b&gt;Willy is awesome.&lt;/b&gt;</samp></pre>
 <blockquote>
-<p>output is not the expected output:</p>
+<p>note that we need to <code>strutils.strip</code> the string in order to obtain the expected
+whitespace behaviour
+(see discussion in <a href="https://github.com/soasme/nim-mustache/issues/8">soasme/mustache/issues/8</a>)</p>
 </blockquote>
-<pre><code>&lt;b&gt;Willy is awesome.&lt;/b&gt;
-</code></pre>
 <h4>Non-False Values</h4>
 <p>When the value is non-false but not a list,
 it will be used as the context for a single rendering of the block.</p>
@@ -502,18 +504,17 @@ nbCode:
 {{/wrapped}}&quot;&quot;&quot;</span>
 nbText: <span class="hljs-string">&quot;Context:&quot;</span>
 nbCode:
+  <span class="hljs-keyword">import</span> strutils
   context = newContext()
   context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
-  context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span>
+  context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.strip.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span>
 nbText: <span class="hljs-string">&quot;Output:&quot;</span>
 nbCode:
   <span class="hljs-keyword">echo</span> tmpl.render(context)
-nbText: <span class="hljs-string">&quot;&quot;&quot;&gt; output is not the expected output:
-
-```
-&lt;b&gt;Willy is awesome.&lt;/b&gt;
-```
-&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; note that we need to `strutils.strip` the string in order to obtain the expected
+&gt; whitespace behaviour
+&gt; (see discussion in [soasme/mustache/issues/8](https://github.com/soasme/nim-mustache/issues/8))&quot;&quot;&quot;</span>
 
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 #### Non-False Values

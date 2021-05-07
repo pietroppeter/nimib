@@ -41,7 +41,7 @@ section#source {
 </header><main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ❌</h2>
+<h2>Test Results ✅</h2>
 <table>
 <thead>
 <tr>
@@ -54,35 +54,14 @@ section#source {
 <tbody>
 <tr>
 <td>0</td>
-<td>1</td>
-<td>8</td>
+<td>0</td>
+<td>9</td>
 <td>9</td>
 </tr></tbody></table>
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-index f02c037..ac83165 100644
---- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-@@ -185,7 +185,8 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;wrapped&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
-   &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;b&amp;gt;&amp;quot;&lt;/span&gt; &amp;amp; s.strip.render(c) &amp;amp; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;/b&amp;gt;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
- &lt;p&gt;Output:&lt;/p&gt;
- &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
--&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;Willy is awesome.&amp;lt;/b&amp;gt;
-+&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;  Willy is awesome.
-+&amp;lt;/b&amp;gt;
- &lt;/samp&gt;&lt;/pre&gt;
- &lt;blockquote&gt;
- &lt;p&gt;note that we need to &lt;code&gt;strutils.strip&lt;/code&gt; the string in order to obtain the expected
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
@@ -224,28 +203,7 @@ added test candidate: far\from\home.nim
 <pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-Differences found in html file
-output
-:diff --git a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-index f02c037..ac83165 100644
---- a/C:/Users/ppeterlongo/nimib/docs/mostaccio.html
-+++ b/C:/Users/ppeterlongo/nimib/docs/mostaccio.tmp.html
-@@ -185,7 +185,8 @@ context[&lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;wrapped&amp;quot;&lt;/span&gt;] = &lt;span class=&quot;hlj
-   &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;b&amp;gt;&amp;quot;&lt;/span&gt; &amp;amp; s.strip.render(c) &amp;amp; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;&amp;lt;/b&amp;gt;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
- &lt;p&gt;Output:&lt;/p&gt;
- &lt;pre&gt;&lt;code class=&quot;nim hljs&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;echo&lt;/span&gt; tmpl.render(context)&lt;/code&gt;&lt;/pre&gt;
--&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;Willy is awesome.&amp;lt;/b&amp;gt;
-+&lt;pre&gt;&lt;samp&gt;&amp;lt;b&amp;gt;  Willy is awesome.
-+&amp;lt;/b&amp;gt;
- &lt;/samp&gt;&lt;/pre&gt;
- &lt;blockquote&gt;
- &lt;p&gt;note that we need to &lt;code&gt;strutils.strip&lt;/code&gt; the string in order to obtain the expected
-warning: LF will be replaced by CRLF in C:/Users/ppeterlongo/nimib/docs/mostaccio.html.
-The file will have its original line endings in your working directory
-
-err
-:1
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;

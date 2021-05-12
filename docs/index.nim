@@ -206,7 +206,7 @@ There are two levels of html rendering.
 to:
 
 * [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
-* [clonk](https://github.com/clonk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
+* [clonkk](https://github.com/clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
 * [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
 
 ## :question: :exclamation: Q & A

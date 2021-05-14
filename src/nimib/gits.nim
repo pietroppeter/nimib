@@ -27,27 +27,6 @@ proc getGitRemoteUrl*(file: AbsoluteFile, branch="main"): string =
   result = getGitRemoteUrl()
   result.add getGitRelativeUrl(file, branch)
 
-# the following come from ptest and are even lower quality than the above
-# they kinda work though...
-proc isGitTracked*(file: AbsoluteFile): bool =
-  # https://stackoverflow.com/questions/2405305/how-to-tell-if-a-file-is-git-tracked-by-shell-exit-code
-  let (_, err) = execCmdEx("git ls-files --error-unmatch " & file.string)
-  err == 0
-
-proc gitChangedFiles* : seq[AbsoluteFile] =
-  let
-    (output, err) = execCmdEx("git status -s")
-    dir = getCurrentDir()
-  if err > 0: return
-  for line in output.splitlines:
-    if line.len < 4:
-      continue
-    result.add (dir / line[3..^1]).AbsoluteFile
-
-proc isGitChanged*(file: AbsoluteFile): bool =
-  for f in gitChangedFiles():
-    if f == file: return true
-
 when isMainModule:
   import sugar
   dump getGitRootDirectory()

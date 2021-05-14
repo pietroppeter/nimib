@@ -185,7 +185,8 @@ context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hlj
   <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.strip.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre>
-<pre><samp>&lt;b&gt;Willy is awesome.&lt;/b&gt;
+<pre><samp>&lt;b&gt;  Willy is awesome.
+&lt;/b&gt;
 </samp></pre>
 <blockquote>
 <p>note that we need to <code>strutils.strip</code> the string in order to obtain the expected

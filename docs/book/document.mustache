@@ -26,6 +26,21 @@ optional stuff:
 - playground_js
 - search_js
 - additional_js
+partials:
+- head
+- header
+- toc
+assets required:
+- css/variables.css
+- css/general.css
+- css/chrome.css
+- FontAwesome/css/font-awesome.css
+- highlight.css
+- tomorrow-night.css
+- ayu-highlight.css
+- clipboard.min.js
+- highlight.js
+- book.js
 -->
 <!DOCTYPE HTML>
 <html lang="{{ language }}" class="sidebar-visible no-js {{ default_theme }}">
@@ -69,9 +84,9 @@ optional stuff:
         {{/copy_fonts}}
 
         <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
-        <link rel="stylesheet" href="{{ path_to_root }}highlight.css">
-        <link rel="stylesheet" href="{{ path_to_root }}tomorrow-night.css">
-        <link rel="stylesheet" href="{{ path_to_root }}ayu-highlight.css">
+        <link rel="stylesheet" href="{{ path_to_root }}css/highlight.css">
+        <link rel="stylesheet" href="{{ path_to_root }}css/tomorrow-night.css">
+        <link rel="stylesheet" href="{{ path_to_root }}css/ayu-highlight.css">
         
         <!-- Custom theme stylesheets - why the "../"? -->
         {{#additional_css}}
@@ -310,9 +325,9 @@ optional stuff:
         <script src="{{ path_to_root }}searcher.js" type="text/javascript" charset="utf-8"></script>
         {{/search_js}}
 
-        <script src="{{ path_to_root }}clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="{{ path_to_root }}highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="{{ path_to_root }}book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}js/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ path_to_root }}js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
         {{#additional_js}}
@@ -327,7 +342,8 @@ optional stuff:
                 window.setTimeout(window.print, 100);
             });
         });
-        </mathjax_support>
+        </script>
+        {{/mathjax_support}}
         {{^mathjax_support}}
         <script type="text/javascript">
         window.addEventListener('load', function() {

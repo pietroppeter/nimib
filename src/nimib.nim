@@ -8,8 +8,25 @@ export defaults.useLatex, defaults.darkMode
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
+type
+  NbCustomInit* = object
+  NbDefaultInit* = object
 
-template nbInit*() =
+proc initNbDoc*(nbThisDir, nbHomeDir: AbsoluteDir, nbThisFile: AbsoluteFile, nbUser: string) : NbDoc =
+  var nbDoc : NbDoc
+  nbDoc.author = nbUser  # never really used it yet, but probably could be a strdefine
+  nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
+  nbDoc.render = renderHtml
+  nbDoc.templateDirs = @["./", "./templates/"]
+  nbDoc.partials = initTable[string, string]()
+  nbDoc.context = newContext(searchDirs = @[])
+  nbDoc.context["home_path"] = (nbHomeDir.relativeTo nbThisDir).string
+  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbHomeDir).string
+  nbDoc.context["source"] = read(nbThisFile)
+  defaults.init(nbDoc)
+  return nbDoc
+
+template nbInit*(t: untyped = type NbDefaultInit) =
   # I think I want to migrate to a single global object nb
   # with nb.doc as nbDoc and nb.block (or nb.blk?) as nbBlock
   # the global object will also contain all those paths
@@ -32,23 +49,13 @@ template nbInit*() =
   # could change to nb.rel with nb global object
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
     (path.relativeTo nbHomeDir).string
-    
-  var
-    nbDoc {.inject.}: NbDoc
-    nbBlock {.inject.}: NbBlock
 
-  nbDoc.author = nbUser  # never really used it yet, but probably could be a strdefine
-  nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
-
-  nbDoc.render = renderHtml
-  nbDoc.templateDirs = @["./", "./templates/"]
-  nbDoc.partials = initTable[string, string]()
-  nbDoc.context = newContext(searchDirs = @[])
-  nbDoc.context["home_path"] = (nbHomeDir.relativeTo nbThisDir).string
-  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbHomeDir).string
-  nbDoc.context["source"] = read(nbThisFile)
-
-  defaults.init(nbDoc)
+  var nbBlock {.inject.}: NbBlock
+  when t is type NbCustomInit:
+    mixin nbUserInit
+    var nbDoc {.inject.} = nbUserInit(nbThisDir, nbHomeDir, nbThisFile, nbUser)
+  else:
+    var nbDoc {.inject.} = initNbDoc(t, nbThisDir, nbHomeDir, nbThisFile, nbUser)
 
   when defined(nimibCustomPostInit):
     include nbPostInit
@@ -58,7 +65,7 @@ template nbInit*() =
 
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
-  
+
   template nbImage(url: string, caption = "") =
     # TODO: fix this workaround with refactoring of NbBlock
     nbBlock = NbBlock(kind: nbkImage, code: url)

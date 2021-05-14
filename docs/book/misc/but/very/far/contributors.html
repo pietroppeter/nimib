@@ -47,7 +47,7 @@ assets required:
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>nbPostInit.nim</title>
+        <title>misc\but\very\far\contributors.nim</title>
 
 
         <!-- Custom HTML head -->
@@ -58,17 +58,17 @@ assets required:
         <meta name="theme-color" content="#ffffff" />
 
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
-        <link rel="stylesheet" href="./css/variables.css">
-        <link rel="stylesheet" href="./css/general.css">
-        <link rel="stylesheet" href="./css/chrome.css">
+        <link rel="stylesheet" href="..\..\..\../css/variables.css">
+        <link rel="stylesheet" href="..\..\..\../css/general.css">
+        <link rel="stylesheet" href="..\..\..\../css/chrome.css">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="./FontAwesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="..\..\..\../FontAwesome/css/font-awesome.min.css">
 
         <!-- Highlight.js Stylesheets - I could use nimib native highlight but let's keep it for styling... -->
-        <link rel="stylesheet" href="./css/highlight.css">
-        <link rel="stylesheet" href="./css/tomorrow-night.css">
-        <link rel="stylesheet" href="./css/ayu-highlight.css">
+        <link rel="stylesheet" href="..\..\..\../css/highlight.css">
+        <link rel="stylesheet" href="..\..\..\../css/tomorrow-night.css">
+        <link rel="stylesheet" href="..\..\..\../css/ayu-highlight.css">
         
         <!-- Custom theme stylesheets - why the "../"? -->
 
@@ -76,7 +76,7 @@ assets required:
     <body>
         <!-- Provide site root to javascript -->
         <script type="text/javascript">
-            var path_to_root = "./";
+            var path_to_root = "..\..\..\../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "false" : "light";
         </script>
 
@@ -124,138 +124,36 @@ assets required:
             <div class="sidebar-scrollbox">
                                 <ol class="chapter">
                 	<li class="chapter-item expanded ">
-                		<a href="index.html" class="active" tabindex="0">
-                			<strong aria-hidden="true">1.</strong> mdBook
+                    <!-- add class="active" in a link to mark current page -->
+                		<a href="..\..\..\../index.html" tabindex="0">
+                			<strong aria-hidden="true">1.</strong> Introduction
                 		</a>
                 	</li>
                 	<li class="chapter-item expanded ">
-                		<a href="cli/index.html" tabindex="0">
-                			<strong aria-hidden="true">2.</strong> Command Line Tool
-                		</a>
-                	</li>
-                	<li>
-                		<ol class="section">
-                			<li class="chapter-item expanded ">
-                				<a href="cli/init.html" tabindex="0">
-                					<strong aria-hidden="true">2.1.</strong> init
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="cli/build.html" tabindex="0">
-                					<strong aria-hidden="true">2.2.</strong> build
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="cli/watch.html" tabindex="0">
-                					<strong aria-hidden="true">2.3.</strong> watch
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="cli/serve.html" tabindex="0">
-                					<strong aria-hidden="true">2.4.</strong> serve
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="cli/test.html" tabindex="0">
-                					<strong aria-hidden="true">2.5.</strong> test
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="cli/clean.html" tabindex="0">
-                					<strong aria-hidden="true">2.6.</strong> clean
-                				</a>
-                			</li>
-                		</ol>
-                	</li>
-                	<li class="chapter-item expanded ">
-                		<a href="format/index.html" tabindex="0">
-                			<strong aria-hidden="true">3.</strong> Format
+                		<a href="..\..\..\../basics/index.html" tabindex="0">
+                			<strong aria-hidden="true">2.</strong> Basics
                 		</a>
                 	</li>
                 	<li>
                 		<ol class="section">
                 			<li class="chapter-item expanded ">
-                				<a href="format/summary.html" tabindex="0">
-                					<strong aria-hidden="true">3.1.</strong> SUMMARY.md
-                				</a>
-                			</li>
-                			<li>
-                				<ol class="section">
-                					<li class="chapter-item expanded ">
-                						<div>
-                							<strong aria-hidden="true">3.1.1.</strong> Draft chapter
-                						</div>
-                					</li>
-                				</ol>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="format/config.html" tabindex="0">
-                					<strong aria-hidden="true">3.2.</strong> Configuration
+                				<a href="..\..\..\../basics/plotting.html" tabindex="0">
+                					<strong aria-hidden="true">2.1.</strong> Plotting
                 				</a>
                 			</li>
                 			<li class="chapter-item expanded ">
-                				<a href="format/theme/index.html" tabindex="0">
-                					<strong aria-hidden="true">3.3.</strong> Theme
-                				</a>
-                			</li>
-                			<li>
-                				<ol class="section">
-                					<li class="chapter-item expanded ">
-                						<a href="format/theme/index-hbs.html" tabindex="0">
-                							<strong aria-hidden="true">3.3.1.</strong> index.hbs
-                						</a>
-                					</li>
-                					<li class="chapter-item expanded ">
-                						<a href="format/theme/syntax-highlighting.html" tabindex="0">
-                							<strong aria-hidden="true">3.3.2.</strong> Syntax highlighting
-                						</a>
-                					</li>
-                					<li class="chapter-item expanded ">
-                						<a href="format/theme/editor.html" tabindex="0">
-                							<strong aria-hidden="true">3.3.3.</strong> Editor
-                						</a>
-                					</li>
-                				</ol>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="format/mathjax.html" tabindex="0">
-                					<strong aria-hidden="true">3.4.</strong> MathJax Support
+                				<a href="..\..\..\../basics/data_manipulation.html" tabindex="0">
+                					<strong aria-hidden="true">2.2.</strong> Data Manipulation
                 				</a>
                 			</li>
                 			<li class="chapter-item expanded ">
-                				<a href="format/mdbook.html" tabindex="0">
-                					<strong aria-hidden="true">3.5.</strong> mdBook-specific features
+                				<a href="..\..\..\../basics/models.html" tabindex="0">
+                					<strong aria-hidden="true">2.3.</strong> Models
                 				</a>
                 			</li>
-                		</ol>
-                	</li>
+                    </ol>
                 	<li class="chapter-item expanded ">
-                		<a href="continuous-integration.html" tabindex="0">
-                			<strong aria-hidden="true">4.</strong> Continuous Integration
-                		</a>
-                	</li>
-                	<li class="chapter-item expanded ">
-                		<a href="for_developers/index.html" tabindex="0">
-                			<strong aria-hidden="true">5.</strong> For Developers
-                		</a>
-                	</li>
-                	<li>
-                		<ol class="section">
-                			<li class="chapter-item expanded ">
-                				<a href="for_developers/preprocessors.html" tabindex="0">
-                					<strong aria-hidden="true">5.1.</strong> Preprocessors
-                				</a>
-                			</li>
-                			<li class="chapter-item expanded ">
-                				<a href="for_developers/backends.html" tabindex="0">
-                					<strong aria-hidden="true">5.2.</strong> Alternative Backends
-                				</a>
-                			</li>
-                			<li class="spacer"></li>
-                		</ol>
-                	</li>
-                	<li class="chapter-item expanded ">
-                		<a href="misc/contributors.html" tabindex="0">Contributors</a>
+                		<a href="..\..\..\../misc/but/very/far/contributors.html" tabindex="0">Contributors</a>
                 	</li>
                 </ol><!-- I could use also an unescaped context value -->
             </div>
@@ -305,7 +203,9 @@ assets required:
 
                 <div id="content" class="content">
                     <main>
-                        <p>empty test page</p>
+                        <h1>Contributors</h1>
+<p>Clonkk with 2 k, pietroppeter with 3 p, HugoGranstrom with 2 r.</p>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -329,9 +229,9 @@ assets required:
 
 
 
-        <script src="./js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="./js/highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="./js/book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="..\..\..\../js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="..\..\..\../js/highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="..\..\..\../js/book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
 

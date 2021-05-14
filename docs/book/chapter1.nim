@@ -1,3 +1,0 @@
-import nimib
-
-nbInit

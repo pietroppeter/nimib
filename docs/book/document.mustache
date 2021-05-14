@@ -64,6 +64,7 @@ assets required:
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
 
+        {{&favicon_whale}}
         {{#favicon_svg}}
         <link rel="icon" href="{{ path_to_root }}favicon.svg">
         {{/favicon_svg}}
@@ -78,7 +79,7 @@ assets required:
         {{/print_enable}}
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="{{ path_to_root }}FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="{{ path_to_root }}FontAwesome/css/font-awesome.min.css">
         {{#copy_fonts}}
         <link rel="stylesheet" href="{{ path_to_root }}fonts/fonts.css">
         {{/copy_fonts}}
@@ -225,7 +226,7 @@ assets required:
 
                 <div id="content" class="content">
                     <main>
-                        {{{ content }}}
+                        {{{ blocks }}}
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

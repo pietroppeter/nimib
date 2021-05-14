@@ -85,6 +85,9 @@ taking into account specifics of nimib files: they already produce an output (ht
 </ul>
 <pre><code class="nim hljs"><span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbHomeDir):
   <span class="hljs-comment">## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)</span>
+  <span class="hljs-keyword">let</span> (dir, name, ext) = file.splitFile()
+  <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;book&quot;</span> <span class="hljs-keyword">in</span> dir.<span class="hljs-built_in">string</span>:
+    <span class="hljs-keyword">continue</span>
   <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
     test = <span class="hljs-type">TestCase</span>(file: file)
     <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath
@@ -287,6 +290,9 @@ for every file ending in nim (and not starting with ptest) in nbHomeDir (test ca
   nbCode:
     <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> walkDirRec(nbHomeDir):
       <span class="hljs-comment">## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)</span>
+      <span class="hljs-keyword">let</span> (dir, name, ext) = file.splitFile()
+      <span class="hljs-keyword">if</span> <span class="hljs-string">&quot;book&quot;</span> <span class="hljs-keyword">in</span> dir.<span class="hljs-built_in">string</span>: <span class="hljs-comment"># hacky fix to exclude book stuff </span>
+        <span class="hljs-keyword">continue</span>
       <span class="hljs-keyword">if</span> file.endsWith(<span class="hljs-string">&quot;.nim&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> file.name.startsWith(<span class="hljs-string">&quot;ptest&quot;</span>):
         test = <span class="hljs-type">TestCase</span>(file: file)
         <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;added test candidate: &quot;</span>, file.relPath

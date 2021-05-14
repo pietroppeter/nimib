@@ -84,6 +84,9 @@ for every file ending in nim (and not starting with ptest) in nbHomeDir (test ca
   nbCode:
     for file in walkDirRec(nbHomeDir):
       ## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)
+      let (dir, name, ext) = file.splitFile()
+      if "book" in dir.string: # hacky fix to exclude book stuff 
+        continue
       if file.endsWith(".nim") and not file.name.startsWith("ptest"):
         test = TestCase(file: file)
         stdout.write "added test candidate: ", file.relPath

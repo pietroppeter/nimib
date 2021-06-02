@@ -46,7 +46,6 @@ template nbInit*() =
 
   nbDoc.author = nbUser  # never really used it yet, but probably could be a strdefine
   nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
-  echo "doc.filename = ", nbDoc.filename # it is an absolute path instead of an relative path
 
   nbDoc.render = renderHtml
   nbDoc.templateDirs = @["./", "./templates/"]
@@ -84,7 +83,6 @@ template nbInit*() =
     nbDoc.context.searchTable(nbDoc.partials)
     when defined(nimibSrcDir):
       nbDoc.filename = (nbDoc.filename.toAbsoluteDir.relativeTo nimibSrcDirAbs).string
-      echo "nbDoc.filename after = ", nbDoc.filename
     withDir(nbHomeDir):
       write nbDoc
 

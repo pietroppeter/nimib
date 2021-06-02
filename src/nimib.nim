@@ -24,14 +24,12 @@ template nbInit*() =
     nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
   var nbUser {.inject.}: string = getUser()
 
-
-  const nbOutDir {.strdefine, inject.} = "" # must inject it for it to recognize that we pass in -d:nbOutDir=someDir.
-  # Otherwise it will just be ""
-  const nbBaseDir {.strdefine, inject} = "" # nbSrcDir. Make filename relative to this path
-  when defined(nbBaseDir):
-    let nbBaseDirAbs = nbBaseDir.toAbsoluteDir
-  when defined(nbOutDir):
-    var nbHomeDir {.inject.}: AbsoluteDir = nbOutDir.toAbsoluteDir
+  const nimibOutDir {.strdefine, inject.} = "" # must inject otherwise it is always its default ""
+  const nimibSrcDir {.strdefine, inject} = ""
+  when defined(nimibSrcDir):
+    let nimibSrcDirAbs = nimibSrcDir.toAbsoluteDir
+  when defined(nimibOutDir):
+    var nbHomeDir {.inject.}: AbsoluteDir = nimibOutDir.toAbsoluteDir
   else:
     var nbHomeDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
     if dirExists(nbHomeDir / "docs".RelativeDir):
@@ -84,8 +82,8 @@ template nbInit*() =
     #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
-    when defined(nbBaseDir):
-      nbDoc.filename = (nbDoc.filename.toAbsoluteDir.relativeTo nbBaseDirAbs).string
+    when defined(nimibSrcDir):
+      nbDoc.filename = (nbDoc.filename.toAbsoluteDir.relativeTo nimibSrcDirAbs).string
       echo "nbDoc.filename after = ", nbDoc.filename
     withDir(nbHomeDir):
       write nbDoc

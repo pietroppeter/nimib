@@ -82,7 +82,8 @@ template nbInit*() =
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
     when defined(nimibSrcDir):
-      nbDoc.filename = (nbDoc.filename.toAbsoluteDir.relativeTo nimibSrcDirAbs).string
+      if isAbsolute(nbDoc.filename):
+        nbDoc.filename = (AbsoluteFile(nbDoc.filename).relativeTo nimibSrcDirAbs).string
     withDir(nbHomeDir):
       write nbDoc
 

@@ -22,11 +22,18 @@ template nbInit*() =
     nbThisName {.inject, used.}: string = thisTuple.name
     nbThisExt {.inject, used.}: string = thisTuple.ext
     nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
-  var
-    nbUser {.inject.}: string = getUser()
-    nbHomeDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
-  if dirExists(nbHomeDir / "docs".RelativeDir):
-    nbHomeDir = nbHomeDir / "docs".RelativeDir
+  var nbUser {.inject.}: string = getUser()
+
+  const nimibOutDir {.strdefine, inject.} = "" # must inject otherwise it is always its default ""
+  const nimibSrcDir {.strdefine, inject} = ""
+  when defined(nimibSrcDir):
+    let nimibSrcDirAbs = nimibSrcDir.toAbsoluteDir
+  when defined(nimibOutDir):
+    var nbHomeDir {.inject.}: AbsoluteDir = nimibOutDir.toAbsoluteDir
+  else:
+    var nbHomeDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
+    if dirExists(nbHomeDir / "docs".RelativeDir):
+      nbHomeDir = nbHomeDir / "docs".RelativeDir
   setCurrentDir nbHomeDir
 
   # could change to nb.rel with nb global object
@@ -74,6 +81,9 @@ template nbInit*() =
     #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
     nbDoc.context.searchDirs(nbDoc.templateDirs)
     nbDoc.context.searchTable(nbDoc.partials)
+    when defined(nimibSrcDir):
+      if isAbsolute(nbDoc.filename):
+        nbDoc.filename = (AbsoluteFile(nbDoc.filename).relativeTo nimibSrcDirAbs).string
     withDir(nbHomeDir):
       write nbDoc
 

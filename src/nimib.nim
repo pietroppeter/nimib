@@ -39,7 +39,7 @@ template nbInit*() =
   # could change to nb.rel with nb global object
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
     (path.relativeTo nbHomeDir).string
-    
+
   var
     nbDoc {.inject.}: NbDoc
     nbBlock {.inject.}: NbBlock
@@ -65,10 +65,14 @@ template nbInit*() =
 
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
-  
+
   template nbImage(url: string, caption = "") =
-    # TODO: fix this workaround with refactoring of NbBlock
-    nbBlock = NbBlock(kind: nbkImage, code: url)
+    if url.isAbsolute:
+      nbBlock = NbBlock(kind: nbkImage, code: url)
+    else:
+      let relativeUrl = nbDoc.context["home_path"].vString / url
+      nbBlock = NbBlock(kind: nbkImage, code: relativeUrl)
+
     nbBlock.output = caption
     nbDoc.blocks.add nbBlock
 

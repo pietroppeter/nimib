@@ -67,9 +67,11 @@ template nbInit*() =
     nbCodeBlock(nbBlock, nbDoc, body)
 
   template nbImage(url: string, caption = "") =
-    if url.isAbsolute:
+    if url.isAbsolute or url[0..3] == "http":
+      # Absolute URL or External URL
       nbBlock = NbBlock(kind: nbkImage, code: url)
     else:
+      # Relative URL
       let relativeUrl = nbDoc.context["home_path"].vString / url
       nbBlock = NbBlock(kind: nbkImage, code: relativeUrl)
 

@@ -67,7 +67,7 @@ template nbInit*() =
     nbCodeBlock(nbBlock, nbDoc, body)
 
   template nbImage(url: string, caption = "") =
-    if url.isAbsolute or url[0..3] == "http":
+    if isAbsolute(url) or url[0..3] == "http":
       # Absolute URL or External URL
       nbBlock = NbBlock(kind: nbkImage, code: url)
     else:

@@ -41,7 +41,7 @@ section#source {
 </header><main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ❌</h2>
+<h2>Test Results ✅</h2>
 <table>
 <thead>
 <tr>
@@ -53,26 +53,19 @@ section#source {
 </thead>
 <tbody>
 <tr>
-<td>1</td>
-<td>7</td>
-<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>9</td>
 <td>9</td>
 </tr></tbody></table>
-<pre><samp>&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:blue&quot;&gt;[SKIP]&lt;/span&gt; &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
+<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far/from/home.html&quot;&gt;far/from/home.nim&lt;/a&gt;
 </samp></pre>
 <hr />
@@ -152,7 +145,7 @@ added test candidate: penguins.nim
 added test candidate: hello.nim
 added test candidate: nolan.nim
 added test candidate: mostaccio.nim
-added test candidate: index.nim -&gt; skipped since it is changed in git
+added test candidate: index.nim
 added test candidate: pythno.nim
 added test candidate: cheatsheet.nim
 added test candidate: far/from/home.nim
@@ -207,21 +200,14 @@ added test candidate: far/from/home.nim
   <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[OK]&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp>&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:blue&quot;&gt;[SKIP]&lt;/span&gt; &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
-&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-html file is changed in git. commit or revert and rerun test
+<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
 &lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far/from/home.html&quot;&gt;far/from/home.nim&lt;/a&gt;
 </samp></pre>
 <p>results are appended to previously save resultsBlock</p>

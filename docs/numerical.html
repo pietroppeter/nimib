@@ -206,7 +206,7 @@ nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
 &gt; This nimib example document shows how to:
 &gt;  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
 &gt;  - using latex rendering of equations (thanks to [katex](https://katex.org/))
-&gt;  - having as output an html table (using standard markdown converter to table) 
+&gt;  - having as output an html table (using standard markdown converter to table)
 &gt;
 &gt; The document itself shows how to use [numericalnim](https://github.com/hugogranstrom/numericalnim)
 &gt; to integrate an ODE.
@@ -236,7 +236,7 @@ We want to find the approximation to the solution and compare it with the analyt
 
 We will use two fixed timestep methods to find the solution:
   - Heun's 2nd order method (`Heun2`)
-  - classic 4th order Runge-Kutta (`RK4`) 
+  - classic 4th order Runge-Kutta (`RK4`)
 
 As timestamps we will use $h=0.1, 0.05, 0.01$.
 &quot;&quot;&quot;</span>
@@ -244,11 +244,11 @@ nbText: <span class="hljs-string">&quot;First we translate the ODE as $y'=f(y,t)
 nbCode:
   <span class="hljs-keyword">proc</span> f(t, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
     y - <span class="hljs-number">0.5</span>*exp(<span class="hljs-number">0.5</span>*t)*sin(<span class="hljs-number">5</span>*t) + <span class="hljs-number">5</span>*exp(<span class="hljs-number">0.5</span>*t)*cos(<span class="hljs-number">5</span>*t)
-  
+
   <span class="hljs-keyword">proc</span> y(t: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
     <span class="hljs-comment">## analytical solution</span>
     exp(<span class="hljs-number">0.5</span>*t)*sin(<span class="hljs-number">5</span>*t)
-  
+
   <span class="hljs-keyword">let</span> y0 = <span class="hljs-number">0.0</span>
   <span class="hljs-comment">## we will not be using the NumContext object</span>
   <span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-built_in">float</span>]()
@@ -318,7 +318,7 @@ nbBlock.code = mdCode
 <span class="hljs-comment"># add a show Markdown source. It would be nice when hovering a code block to show (on the side? how to do it on mobile?) the call code (nbText: or other)</span>
 <span class="hljs-keyword">when</span> <span class="hljs-keyword">defined</span>(numericalDefaultStyle):
   nbDoc.filename = filename_default_style
-  
+
 nbSave
 </code></pre>
 </section><script>

@@ -35,13 +35,13 @@ section#source {
 <div class="nb-box">
   <span><a href=".">🏡</a></span>
   <span><code>ptest.nim</code></span>
-  <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+  <span><a href="https://github.com/Clonkk/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
 </div>
 <hr>
 </header><main>
 <h1>Print-testing for nimib</h1>
 <p>What is print-testing? Testing by comparing printed output of a file with a versioned reference (see <a href="https://github.com/treeform/ptest">treeform/ptest</a>).</p>
-<h2>Test Results ✅</h2>
+<h2>Test Results ❌</h2>
 <table>
 <thead>
 <tr>
@@ -53,20 +53,27 @@ section#source {
 </thead>
 <tbody>
 <tr>
-<td>0</td>
-<td>0</td>
-<td>9</td>
+<td>1</td>
+<td>7</td>
+<td>1</td>
 <td>9</td>
 </tr></tbody></table>
-<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;
+<pre><samp>&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:blue&quot;&gt;[SKIP]&lt;/span&gt; &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far/from/home.html&quot;&gt;far/from/home.nim&lt;/a&gt;
 </samp></pre>
 <hr />
 <h1>Implementation</h1>
@@ -140,15 +147,15 @@ taking into account specifics of nimib files: they already produce an output (ht
   <span class="hljs-keyword">else</span>:
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;&quot;</span>
   tests.add test</code></pre>
-<pre><samp>added test candidate: cheatsheet.nim
-added test candidate: hello.nim
-added test candidate: index.nim
-added test candidate: mostaccio.nim
-added test candidate: nolan.nim
-added test candidate: numerical.nim
+<pre><samp>added test candidate: numerical.nim
 added test candidate: penguins.nim
+added test candidate: hello.nim
+added test candidate: nolan.nim
+added test candidate: mostaccio.nim
+added test candidate: index.nim -&gt; skipped since it is changed in git
 added test candidate: pythno.nim
-added test candidate: far\from\home.nim
+added test candidate: cheatsheet.nim
+added test candidate: far/from/home.nim
 </samp></pre>
 <h3>performing test</h3>
 <p>for every non-skipped test case:</p>
@@ -200,15 +207,22 @@ added test candidate: far\from\home.nim
   <span class="hljs-literal">stdout</span>.write <span class="hljs-string">&quot;[OK]&quot;</span>.spanColor <span class="hljs-string">&quot;green&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;   &quot;</span> &amp; fileWithLink
   removeFile(tmp)</code></pre>
-<pre><samp>&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
-&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far\from\home.html&quot;&gt;far\from\home.nim&lt;/a&gt;
+<pre><samp>&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;numerical.html&quot;&gt;numerical.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;penguins.html&quot;&gt;penguins.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;hello.html&quot;&gt;hello.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;nolan.html&quot;&gt;nolan.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;mostaccio.html&quot;&gt;mostaccio.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:blue&quot;&gt;[SKIP]&lt;/span&gt; &lt;a href=&quot;index.html&quot;&gt;index.nim&lt;/a&gt;
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;pythno.html&quot;&gt;pythno.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:red&quot;&gt;[FAIL]&lt;/span&gt; &lt;a href=&quot;cheatsheet.html&quot;&gt;cheatsheet.nim&lt;/a&gt;
+html file is changed in git. commit or revert and rerun test
+&lt;span style=&quot;color:green&quot;&gt;[OK]&lt;/span&gt;   &lt;a href=&quot;far/from/home.html&quot;&gt;far/from/home.nim&lt;/a&gt;
 </samp></pre>
 <p>results are appended to previously save resultsBlock</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> (skip, fail, pass) = tests.stats

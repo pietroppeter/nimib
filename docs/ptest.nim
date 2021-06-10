@@ -131,7 +131,7 @@ nbCode:
       echo "output\n:", output
       echo "err\n:", err
       continue
-    (output, err) = execCmdEx(&"git diff --no-index {html} {tmp}")
+    (output, err) = execCmdEx(&"git diff -w --ignore-space-at-eol --no-index {html} {tmp}")
     if err != 0:
       test.fail = true
       stdout.write "[FAIL]".spanColor "red"

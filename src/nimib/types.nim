@@ -1,5 +1,5 @@
-import mustache, tables
-export mustache, tables
+import mustache, std / tables, nimib / paths 
+export mustache, tables, paths
 
 type
   NbBlockKind* = enum
@@ -10,7 +10,11 @@ type
     output*: string
     #error*: string # have not used this one yet
   NbDoc* = object
+    thisFile*: AbsoluteFile
+    thisDir*, initDir*, homeDir*, srcDir*, rootDir*: AbsoluteDir
+    user*: string
     filename*, title*, author*: string
+    blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
     render*: proc (doc: NbDoc): string {.closure.}
     context*: Context

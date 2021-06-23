@@ -1,6 +1,6 @@
 import os
-import nimib / [types, blocks, docs, renders, paths]
-export types, blocks, docs, renders, paths
+import nimib / [types, blocks, docs, renders, paths, boost]
+export types, blocks, docs, renders, paths, boost
 from nimib/defaults import nil
 export defaults.useLatex, defaults.darkMode
 # types exports mustache, tables

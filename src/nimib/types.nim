@@ -12,8 +12,8 @@ type
   NbDoc* = object
     thisFile*: AbsoluteFile
     thisDir*, initDir*, homeDir*, srcDir*, rootDir*: AbsoluteDir
-    user*: string
-    filename*, title*, author*: string
+    source*: string
+    filename*: string
     blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
     render*: proc (doc: NbDoc): string {.closure.}

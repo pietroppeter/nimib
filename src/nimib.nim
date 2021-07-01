@@ -1,10 +1,10 @@
 import os
 import nimib / [types, blocks, docs, renders]
-export types, blocks, docs, renders
+export types, blocks, docs
 # types exports mustache, tables, paths
 
-from nimib/defaults import nil
-export defaults.useLatex, defaults.darkMode
+from nimib / themes import nil
+export themes.useLatex, themes.darkMode
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -14,16 +14,21 @@ const nimibHomeDir {.strdefine.} = ""
 const nimibSrcDir {.strdefine.} = ""
 
 
-template nbInit*() =
+template nbInit*(theme = themes.useDefault) =
   var nb {.inject.}: NbDoc
-  nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
-  nb.thisDir = nb.thisFile.splitFile.dir
-  nb.initDir = getCurrentDir().AbsoluteDir
-  nb.user = getUser()
 
+  # aliases to minimize breaking changes after refactoring nbDoc -> nb
   template nbDoc = nb
   template nbBlock = nb.blk
 
+  nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
+  echo "[nimib] nb.thisFile: ", nb.thisFile
+  nb.thisDir = nb.thisFile.splitFile.dir
+  nb.initDir = getCurrentDir().AbsoluteDir
+  nb.source = read(nb.thisFile)
+  nb.render = renderHtml
+
+  # todo: implement nimibRootFindPattern
   when defined(nimibRootFindPattern):
     nb.rootDir = findRootDir(startDir=nb.thisDir, pattern=nimibRootFindPattern)
     setCurrentDir nb.rootDir
@@ -32,29 +37,27 @@ template nbInit*() =
 
   when defined(nimibHomeDir):
     nb.homeDir = nimibHomeDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
+    echo "[nimib] nb.homeDir: ", nb.homeDir
   else:
     nb.homeDir = nb.initDir
   
   when defined(nimibSrcDir):
     nb.srcDir = nimibSrcDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
+    echo "[nimib] nb.srcDir: ", nb.srcDir
   else:
     nb.srcDir = nb.homeDir
 
   when defined(nimibHomeDir):
+    echo "[nimib] setting current directory to nb.homeDir"
     setCurrentDir nb.homeDir
 
-  nb.author = nb.user
-  nb.filename = changeFileExt(nbThisFile.string, ".html")
+  when defined(nimibSrcDir):
+    nb.filename = (nimibSrcDir / nbThisFile.relativeTo nimibSrcDir).string
+  else:
+    nb.filename = nb.thisfile.string
+  nb.filename = changeFileExt(nb.filename, ".html")
 
-  nb.render = renderHtml
-  nb.templateDirs = @["./", "./templates/"]
-  nb.partials = initTable[string, string]()
-  nb.context = newContext(searchDirs = @[])
-  nb.context["home_path"] = (nbHomeDir.relativeTo nbThisDir).string
-  nb.context["here_path"] = (nbThisFile.relativeTo nbHomeDir).string
-  nb.context["source"] = read(nbThisFile)
-
-  defaults.init(nb)
+  theme nb  # apply theme
 
   template nbText(body: untyped) =
     nbTextBlock(nb.blk, nb, body)
@@ -86,11 +89,8 @@ template nbInit*() =
     #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
     nb.context.searchDirs(nb.templateDirs)
     nb.context.searchTable(nb.partials)
-    when defined(nimibSrcDir):
-      if isAbsolute(nb.filename):
-        nb.filename = (AbsoluteFile(nb.filename).relativeTo nimibSrcDirAbs).string
-    withDir(nbHomeDir):
-      write nb
+
+    write nb
 
   template nbShow =
     nbSave

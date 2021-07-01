@@ -3,7 +3,7 @@ import browsers
 import types
 
 proc write*(doc: NbDoc) =
-  let (dir, name, ext) = doc.filename.splitFile()
+  let dir = doc.filename.splitFile().dir
   if not dir.dirExists:
     createDir(dir)
   writeFile(doc.filename, doc.render(doc))

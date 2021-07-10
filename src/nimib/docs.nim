@@ -10,4 +10,3 @@ proc write*(doc: NbDoc) =
 
 proc open*(doc: NbDoc) =
   openDefaultBrowser(doc.filename)
-

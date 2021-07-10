@@ -18,8 +18,9 @@ template nbInit*(theme = themes.useDefault) =
   var nb {.inject.}: NbDoc
 
   # aliases to minimize breaking changes after refactoring nbDoc -> nb
-  template nbDoc = nb
-  template nbBlock = nb.blk
+  template nbDoc: NbDoc = nb
+  template nbBlock: NbBlock = nb.blk
+  template nbHomeDir: AbsoluteDir = nb.homeDir
 
   nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   echo "[nimib] nb.thisFile: ", nb.thisFile
@@ -39,7 +40,7 @@ template nbInit*(theme = themes.useDefault) =
     nb.homeDir = nimibHomeDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
     echo "[nimib] nb.homeDir: ", nb.homeDir
   else:
-    nb.homeDir = nb.initDir
+    nb.homeDir = nb.rootDir
   
   when defined(nimibSrcDir):
     nb.srcDir = nimibSrcDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
@@ -52,12 +53,12 @@ template nbInit*(theme = themes.useDefault) =
     setCurrentDir nb.homeDir
 
   when defined(nimibSrcDir):
-    nb.filename = (nimibSrcDir / nbThisFile.relativeTo nimibSrcDir).string
+    nb.filename = (nb.homeDir / nbThisFile.relativeTo nb.srcDir).string
   else:
     nb.filename = nb.thisfile.string
   nb.filename = changeFileExt(nb.filename, ".html")
 
-  theme nb  # apply theme
+  theme nb  # apply theme    
 
   template nbText(body: untyped) =
     nbTextBlock(nb.blk, nb, body)

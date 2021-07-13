@@ -90,6 +90,9 @@ export
   sequtils.mapIt,
   parseutils.skipWhile
 
+proc isSingleLineCode*(s: string): bool =
+  "nbcode" notin s.toLower
+
 macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
   let startPos = startPos(body)
   let endPos = finishPos(body)
@@ -103,8 +106,8 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
-    if "nbcode" notin lines[startLine].toLower: # only check if not single.line case
-      while 0 < startLine and "nbcode" notin lines[startLine-1].toLower:
+    if lines[startLine].isSingleLineCode: # only check if not single.line case
+      while 0 < startLine and lines[startLine-1].isSingleLineCode:
         #[ cases like this reports the third line instead of the second line:
           nbCode:
             let # this is the line we want
@@ -116,7 +119,7 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     var codeText: string
     if codeLines.len == 1:
       echo "Line: ", codeLines[0]
-    if codeLines.len == 1 and "nbcode" in codeLines[0].toLower:
+    if codeLines.len == 1 and codeLines[0].isSingleLineCode:
       discard # check if it is written single line: nbCode: echo "Hello World"
       let line = codeLines[0]
       codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.

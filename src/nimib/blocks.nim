@@ -47,17 +47,19 @@ proc toPos(info: LineInfo): Pos =
 
 proc startPos(node: NimNode): Pos =
   ## Has column info
+  echo node.kind, " ", node.repr, "\n---------------------------"
   case node.kind:
-    of nnkNone .. nnkNilLit, nnkDiscardStmt:
+    of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
 
     else:
+      echo "Hej"
       result = node[0].startPos()
 
 proc finishPos(node: NimNode): Pos =
   ## Does not have column info
   case node.kind:
-    of nnkNone .. nnkNilLit, nnkDiscardStmt:
+    of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
       #result.column += len($node) - 1 doesn't work for all NimNode kinds
 
@@ -76,38 +78,44 @@ proc finishPos(node: NimNode): Pos =
       else:
         result = toPos(node.lineInfoObj())
 
-import std/[sequtils, parseutils, unicode]
+import std/[sequtils, parseutils, unicode, strutils]
+export
+  strutils.split, strutils.contains,
+  unicode.toLower,
+  sequtils.mapIt,
+  parseutils.skipWhile
 
 macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
   let startPos = startPos(body)
   let endPos = finishPos(body)
+  let lObj = body.lineInfoObj()
   let filename = body.lineInfoObj().filename
+  #bind mapIt, skipWhile, toLower, split, contains
   result = quote do:
-    mixin mapIt, skipWhile, toLower
     const entireFile = staticRead(`filename`)
     let lines = entireFile.split("\n")
+    echo "Filename: ", `lObj`
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
 
-    while 0 < startLine and "nbcode:" notin lines[startLine-1].toLower:
+    while 0 < startLine and "nbcode" notin lines[startLine-1].toLower:
       #[ cases like this reports the third line instead of the second line:
         nbCode:
           let # this is the line we want
             x = 1 # but this is the one we get
       ]#
       dec(startLine)
-
+    echo "adjusted Start line: ", startLine
     var codeLines = lines[startLine .. endLine]
     var codeText: string
-    if codeLines.len == 1 and "nbcode:" in codeLines[0].toLower:
+    if codeLines.len == 1 and "nbcode" in codeLines[0].toLower:
       discard # check if it is written
     else:
       let indent = skipWhile(codeLines[0], {' '})
       echo "Indent: ", indent
       codeText = codeLines.mapIt(it.substr(indent)).join("\n")
     
-    # Do extraction of code block here
     `identBlock` = newBlock(nbkCode, codeText)
     captureStdout(`identBlock`.output):
       `body`

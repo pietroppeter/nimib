@@ -78,9 +78,14 @@ proc finishPos(node: NimNode): Pos =
       else:
         result = toPos(node.lineInfoObj())
 
-import std/[sequtils, parseutils, unicode, strutils]
+import std/[
+  sequtils,
+  parseutils, 
+  strutils
+  ]
+import std/unicode except strip
 export
-  strutils.split, strutils.contains,
+  strutils.split, strutils.contains, strutils.strip, strutils.join,
   unicode.toLower,
   sequtils.mapIt,
   parseutils.skipWhile
@@ -98,19 +103,23 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
-
-    while 0 < startLine and "nbcode" notin lines[startLine-1].toLower:
-      #[ cases like this reports the third line instead of the second line:
-        nbCode:
-          let # this is the line we want
-            x = 1 # but this is the one we get
-      ]#
-      dec(startLine)
+    if "nbcode" notin lines[startLine].toLower: # only check if not single.line case
+      while 0 < startLine and "nbcode" notin lines[startLine-1].toLower:
+        #[ cases like this reports the third line instead of the second line:
+          nbCode:
+            let # this is the line we want
+              x = 1 # but this is the one we get
+        ]#
+        dec(startLine)
     echo "adjusted Start line: ", startLine
     var codeLines = lines[startLine .. endLine]
     var codeText: string
+    if codeLines.len == 1:
+      echo "Line: ", codeLines[0]
     if codeLines.len == 1 and "nbcode" in codeLines[0].toLower:
-      discard # check if it is written
+      discard # check if it is written single line: nbCode: echo "Hello World"
+      let line = codeLines[0]
+      codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
     else:
       let indent = skipWhile(codeLines[0], {' '})
       echo "Indent: ", indent

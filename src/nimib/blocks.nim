@@ -34,6 +34,9 @@ proc echoCodeBlock(b: NbBlock) =
       echo "```\n" & b.output & "```\n"
 
 
+# Credits to @haxscramper for sharing his code on reading the line info
+# And credits to @Yardanico for making a previous attempt which I have taken much inspiration from.
+
 type
   Pos* = object
     line*: int

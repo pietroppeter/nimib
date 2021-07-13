@@ -90,8 +90,8 @@ export
   sequtils.mapIt,
   parseutils.skipWhile
 
-proc isSingleLineCode*(s: string): bool =
-  "nbcode" notin s.toLower
+proc isNbCodeLine*(s: string): bool =
+  "nbcode" in s.toLower
 
 macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
   let startPos = startPos(body)
@@ -106,23 +106,26 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
-    if lines[startLine].isSingleLineCode: # only check if not single.line case
-      while 0 < startLine and lines[startLine-1].isSingleLineCode:
+    if not lines[startLine].isNbCodeLine: # only check if not single.line case
+      while 0 < startLine and not lines[startLine-1].isNbCodeLine:
         #[ cases like this reports the third line instead of the second line:
           nbCode:
             let # this is the line we want
               x = 1 # but this is the one we get
         ]#
         dec(startLine)
+    else:
+      echo "Single line! ", lines[startLine]
     echo "adjusted Start line: ", startLine
     var codeLines = lines[startLine .. endLine]
     var codeText: string
     if codeLines.len == 1:
       echo "Line: ", codeLines[0]
-    if codeLines.len == 1 and codeLines[0].isSingleLineCode:
-      discard # check if it is written single line: nbCode: echo "Hello World"
+    if codeLines.len == 1 and codeLines[0].isNbCodeLine:
+      # check if it is written single line: nbCode: echo "Hello World"
       let line = codeLines[0]
       codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
+      echo "Single line after! ", codeText
     else:
       let indent = skipWhile(codeLines[0], {' '})
       echo "Indent: ", indent

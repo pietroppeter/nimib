@@ -47,13 +47,11 @@ proc toPos(info: LineInfo): Pos =
 
 proc startPos(node: NimNode): Pos =
   ## Has column info
-  echo node.kind, " ", node.repr, "\n---------------------------"
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
 
     else:
-      echo "Hej"
       result = node[0].startPos()
 
 proc finishPos(node: NimNode): Pos =
@@ -114,13 +112,8 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
               x = 1 # but this is the one we get
         ]#
         dec(startLine)
-    else:
-      echo "Single line! ", lines[startLine]
-    echo "adjusted Start line: ", startLine
     var codeLines = lines[startLine .. endLine]
     var codeText: string
-    if codeLines.len == 1:
-      echo "Line: ", codeLines[0]
     if codeLines.len == 1 and codeLines[0].isNbCodeLine:
       # check if it is written single line: nbCode: echo "Hello World"
       let line = codeLines[0]

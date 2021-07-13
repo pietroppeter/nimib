@@ -81,10 +81,9 @@ import std/[
   parseutils, 
   strutils
   ]
-import std/unicode except strip
+
 export
-  strutils.split, strutils.contains, strutils.strip, strutils.join,
-  unicode.toLower,
+  strutils.split, strutils.contains, strutils.strip, strutils.join, strutils.repeat, isEmptyOrWhitespace,
   sequtils.mapIt,
   parseutils.skipWhile
 
@@ -104,6 +103,8 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
+    var indent: int = -1
+
     if not lines[startLine].isNbCodeLine: # only check if not single.line case
       while 0 < startLine and not lines[startLine-1].isNbCodeLine:
         #[ cases like this reports the third line instead of the second line:
@@ -111,7 +112,14 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
             let # this is the line we want
               x = 1 # but this is the one we get
         ]#
-        dec(startLine)
+        dec startLine
+
+      indent = skipWhile(lines[startLine], {' '})
+      let indentStr = " ".repeat(indent)
+      while endLine < lines.high and (lines[endLine+1].startsWith(indentStr) or lines[endLine+1].isEmptyOrWhitespace):# and lines[endLine+1].strip().startsWith("#"):
+        # Ending Comments should be included as well, but they won't be included in the AST -> endLine doesn't take them into account.
+        # This doesn't cover block comment yet though.
+        inc endLine
     var codeLines = lines[startLine .. endLine]
     var codeText: string
     if codeLines.len == 1 and codeLines[0].isNbCodeLine:
@@ -120,11 +128,9 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
       codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
       echo "Single line after! ", codeText
     else:
-      let indent = skipWhile(codeLines[0], {' '})
-      echo "Indent: ", indent
       codeText = codeLines.mapIt(it.substr(indent)).join("\n")
     
-    `identBlock` = newBlock(nbkCode, codeText)
+    `identBlock` = newBlock(nbkCode, codeText.strip)
     captureStdout(`identBlock`.output):
       `body`
     echoCodeBlock `identBlock`

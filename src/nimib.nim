@@ -1,4 +1,5 @@
-import os
+import os, macros
+export macros
 import nimib / [types, blocks, docs, renders, paths]
 export types, blocks, docs, renders, paths
 from nimib/defaults import nil
@@ -66,10 +67,21 @@ template nbInit*() =
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
 
-  template nbCodeInBlock(body: untyped) =
-    block:
-      nbCode:
-        body
+  macro nbCodeInBlock(body: untyped): untyped =
+    # Had to rewrite it as a macro to get the correct line info in `nbCodeBlock`,
+    # otherwise it would just have pointed here. `quote do` didn't work for me here,
+    # therefore the verbose syntax below.
+    nnkStmtList.newTree(
+      nnkBlockStmt.newTree(
+        newEmptyNode(),
+        nnkStmtList.newTree(
+          nnkCall.newTree(
+            newIdentNode("nbCode"),
+            body
+          )
+        )
+      )
+    )
 
   template nbImage(url: string, caption = "") =
     if isAbsolute(url) or url[0..3] == "http":

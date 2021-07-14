@@ -1,4 +1,4 @@
-import macros
+import std/[macros, sugar]
 import types, capture
 
 macro toStr*(body: untyped): string =
@@ -83,9 +83,10 @@ import std/[
   ]
 
 export
-  strutils.split, strutils.contains, strutils.strip, strutils.join, strutils.repeat, isEmptyOrWhitespace,
+  strutils.split, strutils.contains, strutils.strip, strutils.join, strutils.repeat, strutils.isEmptyOrWhitespace, strutils.count,
   sequtils.mapIt,
-  parseutils.skipWhile
+  parseutils.skipWhile,
+  sugar.collect
 
 proc isNbCodeLine*(s: string): bool =
   "nbcode" in s.toLower
@@ -116,12 +117,43 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
 
       let indent = skipWhile(lines[startLine], {' '})
       let indentStr = " ".repeat(indent)
+
+      if lines[endLine].count("\"\"\"") == 1: # only opening of triple quoted string found. Rest is below it. 
+        inc endLine # bump it to not trigger the loop to immediately break
+        while endLine < lines.high and "\"\"\"" notin lines[endLine]:
+          inc endLine
+          echo "Triple quote: ", lines[endLine]
+
       while endLine < lines.high and (lines[endLine+1].startsWith(indentStr) or lines[endLine+1].isEmptyOrWhitespace):# and lines[endLine+1].strip().startsWith("#"):
         # Ending Comments should be included as well, but they won't be included in the AST -> endLine doesn't take them into account.
         # Block comments must be properly indented (including the content)
         inc endLine
+
       var codeLines = lines[startLine .. endLine]
-      codeText = codeLines.mapIt(it.substr(indent)).join("\n")
+
+      var notIndentLines: seq[int] # these lines are not to be adjusted for indentation. Eg content of triple quoted strings.
+      var i: int
+      while i < codeLines.len:
+        if codeLines[i].count("\"\"\"") == 1:
+          # We must do the identification of triple quoted string separatly from the endLine bumping because the triple strings
+          # might not be the last expression in the code block.
+          inc i # bump it to not trigger the loop to immediately break on the initial """
+          notIndentLines.add i
+          while i < codeLines.len and "\"\"\"" notin codeLines[i]:
+            inc i
+            notIndentLines.add i
+        inc i
+        
+
+
+      let parsedLines = collect(newSeqOfCap(codeLines.len)):
+        for i in 0 .. codeLines.high:
+          if i in notIndentLines:
+            codeLines[i]
+          else:
+            codeLines[i].substr(indent)
+      codeText = parsedLines.join("\n")
+      #codeText = codeLines.mapIt(it.substr(indent)).join("\n")
 
     else: # single line case, eg `nbCode: echo "Hello World"`
       let line = lines[startLine]

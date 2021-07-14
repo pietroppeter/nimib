@@ -103,9 +103,9 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
     echo "Start line: ", `startPos`.line
     var startLine = `startPos`.line - 1
     var endLine = `endPos`.line - 1
-    var indent: int = -1
 
-    if not lines[startLine].isNbCodeLine: # only check if not single.line case
+    var codeText: string
+    if not lines[startLine].isNbCodeLine: # multiline case
       while 0 < startLine and not lines[startLine-1].isNbCodeLine:
         #[ cases like this reports the third line instead of the second line:
           nbCode:
@@ -114,28 +114,25 @@ macro nbCodeBlock*(identBlock, identContainer, body: untyped) =
         ]#
         dec startLine
 
-      indent = skipWhile(lines[startLine], {' '})
+      let indent = skipWhile(lines[startLine], {' '})
       let indentStr = " ".repeat(indent)
       while endLine < lines.high and (lines[endLine+1].startsWith(indentStr) or lines[endLine+1].isEmptyOrWhitespace):# and lines[endLine+1].strip().startsWith("#"):
         # Ending Comments should be included as well, but they won't be included in the AST -> endLine doesn't take them into account.
-        # This doesn't cover block comment yet though.
+        # Block comments must be properly indented (including the content)
         inc endLine
-    var codeLines = lines[startLine .. endLine]
-    var codeText: string
-    if codeLines.len == 1 and codeLines[0].isNbCodeLine:
-      # check if it is written single line: nbCode: echo "Hello World"
-      let line = codeLines[0]
-      codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
-      echo "Single line after! ", codeText
-    else:
+      var codeLines = lines[startLine .. endLine]
       codeText = codeLines.mapIt(it.substr(indent)).join("\n")
-    
+
+    else: # single line case, eg `nbCode: echo "Hello World"`
+      let line = lines[startLine]
+      codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
+
     `identBlock` = newBlock(nbkCode, codeText.strip)
     captureStdout(`identBlock`.output):
       `body`
     echoCodeBlock `identBlock`
     `identContainer`.blocks.add `identBlock`
-  echo result.repr
+
 
 #[
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =

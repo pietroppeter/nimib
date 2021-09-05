@@ -53,7 +53,7 @@ template nbInit*(theme = themes.useDefault) =
     setCurrentDir nb.homeDir
 
   when defined(nimibSrcDir):
-    nb.filename = (nb.homeDir / nbThisFile.relativeTo nb.srcDir).string
+    nb.filename = (nb.homeDir / nb.thisFile.relativeTo nb.srcDir).string
   else:
     nb.filename = nb.thisfile.string
   nb.filename = changeFileExt(nb.filename, ".html")

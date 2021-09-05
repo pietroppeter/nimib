@@ -63,9 +63,10 @@ for every file ending in nim (and not starting with ptest) in nbHomeDir (test ca
 - a test case will be skipped if it is modified/added in git
 """
 nbCode:
+  let skipList = @["penguins.nim"]
   for file in walkDirRec(nbHomeDir):
     ## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)
-    if file.endsWith(".nim") and not file.name.startsWith("ptest"):
+    if file.endsWith(".nim") and not file.name.startsWith("ptest") and file.relPath notin skipList:
       test = TestCase(file: file)
       stdout.write "added test candidate: ", file.relPath
     else:

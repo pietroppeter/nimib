@@ -122,7 +122,7 @@ nbCode:
       echo "html file is changed in git. commit or revert and rerun test"
       continue
     copyFile(source=html, dest=tmp)
-    (output, err) = execCmdEx &"nim --verbosity:0 --hints:off r {test.file}"
+    (output, err) = execCmdEx &"nim --verbosity:0 --hints:off -d:nimibHomeDir=. r {test.file}"
     if err != 0:
       test.fail = true
       stdout.write "[FAIL]".spanColor "red"

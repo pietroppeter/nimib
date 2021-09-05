@@ -1,10 +1,10 @@
 import os
 import nimib / [types, blocks, docs, renders]
-export types, blocks, docs
+export types, blocks, docs, renders
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
-export themes.useLatex, themes.darkMode
+export themes.useLatex, themes.darkMode, themes.`title=`
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -17,7 +17,7 @@ const nimibSrcDir {.strdefine.} = ""
 template nbInit*(theme = themes.useDefault) =
   var nb {.inject.}: NbDoc
 
-  # aliases to minimize breaking changes after refactoring nbDoc -> nb
+  # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
   template nbDoc: NbDoc = nb
   template nbBlock: NbBlock = nb.blk
   template nbHomeDir: AbsoluteDir = nb.homeDir
@@ -57,6 +57,10 @@ template nbInit*(theme = themes.useDefault) =
   else:
     nb.filename = nb.thisfile.string
   nb.filename = changeFileExt(nb.filename, ".html")
+
+  # how to change this to a better version using nb?
+  proc relPath(path: AbsoluteFile | AbsoluteDir): string =
+    (path.relativeTo nb.homeDir).string
 
   theme nb  # apply theme    
 

@@ -151,3 +151,7 @@ proc darkMode*(doc: var NbDoc) =
 
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = latex
+
+proc `title=`*(doc: var NbDoc, text: string) =
+  # to deprecate?
+  doc.context["title"] = text

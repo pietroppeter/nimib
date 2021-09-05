@@ -27,7 +27,7 @@ section#source {
   display:none
 }
 </style>
-
+  
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@ to modify code and output of a block after it has run.</p>
   <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num):
     <span class="hljs-literal">result</span> += text
   <span class="hljs-keyword">return</span> <span class="hljs-literal">result</span>
-
+  
 print(repeat(<span class="hljs-string">&quot;_this_is_not_python&quot;</span>, <span class="hljs-number">6</span>))</code></pre>
 <pre><samp>_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python_this_is_not_python
 </samp></pre>
@@ -89,7 +89,7 @@ nbCode:
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span> .. num:
       <span class="hljs-literal">result</span> &amp;= text
     <span class="hljs-comment">## and if I forgot to return? None!</span>
-
+  
   <span class="hljs-keyword">echo</span> repeat(<span class="hljs-string">&quot;ThisIsNotPython&quot;</span>, <span class="hljs-number">6</span>)
 
 nbBlock.output = camel2snake(nbBlock.output)

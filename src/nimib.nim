@@ -1,6 +1,6 @@
 import os
-import nimib / [types, blocks, docs, renders, paths, boost]
-export types, blocks, docs, renders, paths, boost
+import nimib / [types, blocks, docs, renders, boost]
+export types, blocks, docs, renders, boost
 # types exports mustache, tables, paths
 
 from nimib / themes import nil

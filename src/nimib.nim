@@ -1,5 +1,5 @@
 import os
-import nimib / [types, blocks, docs, renders, boost]
+import nimib / [types, blocks, docs, renders, boost, config]
 export types, blocks, docs, renders, boost
 # types exports mustache, tables, paths
 
@@ -9,54 +9,32 @@ export themes.useLatex, themes.darkMode, themes.`title=`
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
-const nimibRootFindPattern {.strdefine.} = ""
-const nimibHomeDir {.strdefine.} = ""
-const nimibSrcDir {.strdefine.} = ""
-
-
 template nbInit*(theme = themes.useDefault) =
   var nb {.inject.}: NbDoc
 
   # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
   template nbDoc: NbDoc = nb
   template nbBlock: NbBlock = nb.blk
-  template nbHomeDir: AbsoluteDir = nb.homeDir
+  template nbHomeDir: AbsoluteDir = nb.cfg.homeDir
 
+  # make these two static?
   nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
-  echo "[nimib] nb.thisFile: ", nb.thisFile
-  nb.thisDir = nb.thisFile.splitFile.dir
-  nb.initDir = getCurrentDir().AbsoluteDir
   nb.source = read(nb.thisFile)
+
+  nb.initDir = getCurrentDir().AbsoluteDir
   nb.render = renderHtml
 
-  # todo: implement nimibRootFindPattern
-  when defined(nimibRootFindPattern):
-    nb.rootDir = findRootDir(startDir=nb.thisDir, pattern=nimibRootFindPattern)
-    setCurrentDir nb.rootDir
+  loadCfg nb
+  # change nb.filename to saveFile?
+  if nb.hasValidSrcDir:
+    nb.filename = nb.thisFile.relativeTo nb.srcDir
   else:
-    nb.rootDir = nb.initDir
+    nb.filename = nb.thisFile.splitFile().name
+  nb.filename = changeFileExt(nb.filename, ".html")
 
-  when defined(nimibHomeDir):
-    nb.homeDir = nimibHomeDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
-    echo "[nimib] nb.homeDir: ", nb.homeDir
-  else:
-    nb.homeDir = nb.rootDir
-  
-  when defined(nimibSrcDir):
-    nb.srcDir = nimibSrcDir.toAbsoluteDir # either absolute or relative to rootDir/initDir
-    echo "[nimib] nb.srcDir: ", nb.srcDir
-  else:
-    nb.srcDir = nb.homeDir
-
-  when defined(nimibHomeDir):
+  if nb.hasValidHomeDir:
     echo "[nimib] setting current directory to nb.homeDir"
     setCurrentDir nb.homeDir
-
-  when defined(nimibSrcDir):
-    nb.filename = (nb.homeDir / nb.thisFile.relativeTo nb.srcDir).string
-  else:
-    nb.filename = nb.thisfile.string
-  nb.filename = changeFileExt(nb.filename, ".html")
 
   # how to change this to a better version using nb?
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =

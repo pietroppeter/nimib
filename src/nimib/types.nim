@@ -9,16 +9,16 @@ type
     code*: string
     output*: string
     #error*: string # have not used this one yet
-  NbConfig = object
-    raw*: string
-    cfgDir*: AbsoluteDir
-    srcDir*, homeDir*: string # or RelativeDir?
-    filename*: string
+  NbConfig* = object
+    srcDir*, homeDir*: string
   NbDoc* = object
     thisFile*: AbsoluteFile
+    filename*: string
     source*: string
     initDir*: AbsoluteDir
-    cfg*: NbConfig 
+    cfg*: NbConfig
+    cfgDir*: AbsoluteDir
+    rawCfg*: string
     blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
     render*: proc (doc: NbDoc): string {.closure.}
@@ -26,9 +26,6 @@ type
     partials*: Table[string, string]
     templateDirs*: seq[string]
 
-proc homeDir*(doc: NbDoc): AbsoluteDir = doc.cfg.homeDir
-proc srcDir*(doc: NbDoc): AbsoluteDir = doc.cfg.srcDir
-proc filename*(doc: NbDoc): string = doc.cfg.filename
-proc `filename=`*(doc: NbDoc, filename: string) = doc.cfg.filename = filename
-
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
+proc srcDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.srcDir.RelativeDir
+proc homeDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.homeDir.RelativeDir

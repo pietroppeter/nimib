@@ -15,25 +15,25 @@ template nbInit*(theme = themes.useDefault) =
   # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
   template nbDoc: NbDoc = nb
   template nbBlock: NbBlock = nb.blk
-  template nbHomeDir: AbsoluteDir = nb.cfg.homeDir
+  template nbHomeDir: AbsoluteDir = nb.homeDir
 
-  # make these two static?
+  nb.initDir = getCurrentDir().AbsoluteDir
+
   nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   nb.source = read(nb.thisFile)
 
-  nb.initDir = getCurrentDir().AbsoluteDir
   nb.render = renderHtml
+  nb.filename = nb.thisFile.string.splitFile.name & ".html"
 
   loadCfg nb
-  # change nb.filename to saveFile?
-  if nb.hasValidSrcDir:
-    nb.filename = nb.thisFile.relativeTo nb.srcDir
-  else:
-    nb.filename = nb.thisFile.splitFile().name
-  nb.filename = changeFileExt(nb.filename, ".html")
 
-  if nb.hasValidHomeDir:
-    echo "[nimib] setting current directory to nb.homeDir"
+  if nb.cfg.srcDir != "":
+    echo "[nimib] srcDir: ", nb.srcDir
+    nb.filename = (nb.thisDir.relativeTo nb.srcDir).string / nb.filename
+    echo "[nimib] filename: ", nb.filename
+
+  if nb.cfg.homeDir != "":
+    echo "[nimib] setting current directory to nb.homeDir: ", nb.homeDir
     setCurrentDir nb.homeDir
 
   # how to change this to a better version using nb?

@@ -111,12 +111,8 @@ proc optOut*(content, keyword: string): string =
   "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}"
 
 proc useDefault*(doc: var NbDoc) =
-  doc.templateDirs = @["./", "./templates/"]
-  doc.partials = initTable[string, string]()
-
-  doc.context = newContext(searchDirs = @[])
-  doc.context["home_path"] = (doc.homeDir.relativeTo doc.thisDir).string
-  doc.context["here_path"] = (doc.thisFile.relativeTo doc.homeDir).string
+  doc.context["home_path"] = (doc.homeDirRel).string
+  doc.context["here_path"] = (doc.thisFileRel).string
   doc.context["source"] = doc.source
 
 

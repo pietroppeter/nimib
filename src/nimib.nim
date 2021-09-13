@@ -9,7 +9,7 @@ export themes.useLatex, themes.darkMode, themes.`title=`
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
-template nbInit*(theme = themes.useDefault) =
+template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   var nb {.inject.}: NbDoc
 
   # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
@@ -19,13 +19,18 @@ template nbInit*(theme = themes.useDefault) =
 
   nb.initDir = getCurrentDir().AbsoluteDir
 
-  nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
+  loadCfg nb
+
+  # nbInit can be called not from inside the correct file (e.g. when rendering markdown files in nimibook)
+  if thisFileRel == "":
+    nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
+  else:
+    nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
+    echo "[nimib] thisFile: ", nb.thisFile
   nb.source = read(nb.thisFile)
 
   nb.render = renderHtml
   nb.filename = nb.thisFile.string.splitFile.name & ".html"
-
-  loadCfg nb
 
   if nb.cfg.srcDir != "":
     echo "[nimib] srcDir: ", nb.srcDir
@@ -40,6 +45,10 @@ template nbInit*(theme = themes.useDefault) =
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
     (path.relativeTo nb.homeDir).string
 
+  # can be overriden by theme, but it is better to initialize this anyway
+  nb.templateDirs = @["./", "./templates/"]
+  nb.partials = initTable[string, string]()
+  nb.context = newContext(searchDirs = @[])
   theme nb  # apply theme    
 
   template nbText(body: untyped) =

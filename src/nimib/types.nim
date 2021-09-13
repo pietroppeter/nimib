@@ -29,3 +29,5 @@ type
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.srcDir.RelativeDir
 proc homeDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.homeDir.RelativeDir
+proc thisFileRel*(doc: NbDoc): RelativeFile = doc.thisFile.relativeTo doc.srcDir
+proc homeDirRel*(doc: NbDoc): RelativeDir = doc.homeDir.relativeTo doc.thisDir

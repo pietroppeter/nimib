@@ -1,5 +1,5 @@
 import os
-import nimib / [types, blocks, docs, renders, boost, config]
+import nimib / [types, blocks, docs, renders, boost, config, options]
 export types, blocks, docs, renders, boost
 # types exports mustache, tables, paths
 
@@ -18,7 +18,7 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   template nbHomeDir: AbsoluteDir = nb.homeDir
 
   nb.initDir = getCurrentDir().AbsoluteDir
-
+  loadOptions nb
   loadCfg nb
 
   # nbInit can be called not from inside the correct file (e.g. when rendering markdown files in nimibook)

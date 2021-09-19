@@ -1,5 +1,6 @@
-import mustache, std / tables, nimib / paths 
+import mustache, std / tables, nimib / paths, std / parseopt
 export mustache, tables, paths
+import std / os
 
 type
   NbBlockKind* = enum
@@ -9,6 +10,10 @@ type
     code*: string
     output*: string
     #error*: string # have not used this one yet
+  NbOptions* = object
+    skipCfg*: bool
+    cfgName*, srcDir*, homeDir*: string
+    otherOptions*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
   NbDoc* = object
@@ -16,6 +21,7 @@ type
     filename*: string
     source*: string
     initDir*: AbsoluteDir
+    options*: NbOptions
     cfg*: NbConfig
     cfgDir*: AbsoluteDir
     rawCfg*: string
@@ -27,7 +33,15 @@ type
     templateDirs*: seq[string]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
-proc srcDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.srcDir.RelativeDir
-proc homeDir*(doc: NbDoc): AbsoluteDir = doc.cfgDir / doc.cfg.homeDir.RelativeDir
+proc srcDir*(doc: NbDoc): AbsoluteDir =
+  if doc.cfg.srcDir.isAbsolute:
+    doc.cfg.srcDir.AbsoluteDir
+  else:
+    doc.cfgDir / doc.cfg.srcDir.RelativeDir
+proc homeDir*(doc: NbDoc): AbsoluteDir =
+  if doc.cfg.homeDir.isAbsolute:
+    doc.cfg.homeDir.AbsoluteDir
+  else:
+    doc.cfgDir / doc.cfg.homeDir.RelativeDir
 proc thisFileRel*(doc: NbDoc): RelativeFile = doc.thisFile.relativeTo doc.srcDir
 proc homeDirRel*(doc: NbDoc): RelativeDir = doc.homeDir.relativeTo doc.thisDir

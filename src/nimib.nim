@@ -27,10 +27,16 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   else:
     nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
     echo "[nimib] thisFile: ", nb.thisFile
-  nb.source = read(nb.thisFile)
+  try:
+    nb.source = read(nb.thisFile)
+  except IOError:
+    echo "[nimib] cannot read source"
 
   nb.render = renderHtml
-  nb.filename = nb.thisFile.string.splitFile.name & ".html"
+  if nb.options.filename == "":
+    nb.filename = nb.thisFile.string.splitFile.name & ".html"
+  else:
+    nb.filename = nb.options.filename
 
   if nb.cfg.srcDir != "":
     echo "[nimib] srcDir: ", nb.srcDir

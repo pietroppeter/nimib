@@ -12,8 +12,8 @@ type
     #error*: string # have not used this one yet
   NbOptions* = object
     skipCfg*: bool
-    cfgName*, srcDir*, homeDir*: string
-    otherOptions*: seq[tuple[kind: CmdLineKind; name, value: string]]
+    cfgName*, srcDir*, homeDir*, filename*: string
+    other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
   NbDoc* = object

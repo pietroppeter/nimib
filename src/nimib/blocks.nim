@@ -1,4 +1,4 @@
-import std/[macros, sugar]
+import std/macros
 import types, capture, sources
 
 macro toStr*(body: untyped): string =

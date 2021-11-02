@@ -1,5 +1,5 @@
 import std/[macros, sugar]
-import types, capture
+import types, capture, sources
 
 macro toStr*(body: untyped): string =
   (body.toStrLit)
@@ -33,8 +33,13 @@ proc echoCodeBlock(b: NbBlock) =
     if b.output != "":
       echo "```\n" & b.output & "```\n"
 
-template nbCodeBlock*(identBlock, identContainer, body: untyped) =
-  identBlock = newBlock(nbkCode, toStr(body))
+template nbCodeBlock*(source: static string, identBlock, identContainer, body: untyped) =
+  var codeText: string
+  when defined(nimibPreviewCodeAsInSource):
+    codeText = getCodeAsInSource(source, "nbCode", body)
+  else:
+    codeText = toStr(body)
+  identBlock = newBlock(nbkCode, codeText)
   captureStdout(identBlock.output):
     body
   echoCodeBlock identBlock

@@ -16,8 +16,8 @@ template nbInit*() =
   # the global object will also contain all those paths
 
   # all paths are absolute, use relPath to have path relative to Project directory
+  const nbThisFile {.inject.} = instantiationInfo(-1, true).filename.AbsoluteFile
   let
-    nbThisFile {.inject.} = instantiationInfo(-1, true).filename.AbsoluteFile
     thisTuple = nbThisFile.splitFile
     nbThisDir {.inject.}: AbsoluteDir = thisTuple.dir
     nbThisName {.inject, used.}: string = thisTuple.name
@@ -25,7 +25,7 @@ template nbInit*() =
     nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
   var nbUser {.inject.}: string = getUser()
 
-  const nbSource = staticRead(nbThisFile)
+  const nbSource = staticRead(nbThisFile.string)
 
   const nimibOutDir {.strdefine, inject.} = "" # must inject otherwise it is always its default ""
   const nimibSrcDir {.strdefine, inject} = ""
@@ -67,7 +67,7 @@ template nbInit*() =
     nbTextBlock(nbBlock, nbDoc, body)
 
   template nbCode(body: untyped) =
-    nbCodeBlock(nbBlock, nbDoc, body)
+    nbCodeBlock(nbSource, nbBlock, nbDoc, body)
 
   macro nbCodeInBlock(body: untyped): untyped =
     # Had to rewrite it as a macro to get the correct line info in `nbCodeBlock`,

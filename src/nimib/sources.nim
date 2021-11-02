@@ -1,5 +1,11 @@
 import std/[macros, sugar]
+import std/[
+  parseutils, 
+  strutils
+  ]
 import types
+
+
 
 # Credits to @haxscramper for sharing his code on reading the line info
 # And credits to @Yardanico for making a previous attempt which I have taken much inspiration from.
@@ -42,18 +48,6 @@ proc finishPos*(node: NimNode): Pos =
 
       else:
         result = toPos(node.lineInfoObj())
-
-import std/[
-  sequtils,
-  parseutils, 
-  strutils
-  ]
-
-export
-  strutils.split, strutils.contains, strutils.strip, strutils.join, strutils.repeat, strutils.isEmptyOrWhitespace, strutils.count,
-  sequtils.mapIt,
-  parseutils.skipWhile,
-  sugar.collect
 
 proc isCommandLine*(s: string, command: string): bool =
   nimIdentNormalize(command) in nimIdentNormalize(s)

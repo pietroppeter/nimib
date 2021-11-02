@@ -1,5 +1,4 @@
-import os, macros
-export macros
+import os
 import nimib / [types, blocks, docs, renders, paths, boost]
 export types, blocks, docs, renders, paths, boost
 from nimib/defaults import nil

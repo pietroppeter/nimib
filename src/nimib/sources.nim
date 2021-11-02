@@ -9,10 +9,10 @@ type
     line*: int
     column*: int
 
-proc toPos(info: LineInfo): Pos =
+proc toPos*(info: LineInfo): Pos =
   Pos(line: info.line, column: info.column)
 
-proc startPos(node: NimNode): Pos =
+proc startPos*(node: NimNode): Pos =
   ## Has column info
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
@@ -21,7 +21,7 @@ proc startPos(node: NimNode): Pos =
     else:
       result = node[0].startPos()
 
-proc finishPos(node: NimNode): Pos =
+proc finishPos*(node: NimNode): Pos =
   ## Does not have column info
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
@@ -120,7 +120,7 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
     codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
   return codeText
 
-macro getCodeAsInSource(source: static string, command: static string, body: untyped): static string =
+macro getCodeAsInSource*(source: static string, command: static string, body: untyped): static string =
   ## substitute for `toStr` in blocks.nim
   let startPos = startPos(body)
   let endPos = finishPos(body)

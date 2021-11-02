@@ -69,6 +69,12 @@ template nbInit*() =
   template nbCode(body: untyped) =
     nbCodeBlock(nbSource, nbBlock, nbDoc, body)
 
+  template nbCodeInBlock*(body: untyped): untyped =
+    block:
+      nbCode:
+        body
+
+#[
   macro nbCodeInBlock(body: untyped): untyped =
     # Had to rewrite it as a macro to get the correct line info in `nbCodeBlock`,
     # otherwise it would just have pointed here. `quote do` didn't work for me here,
@@ -84,7 +90,7 @@ template nbInit*() =
         )
       )
     )
-
+]#
   template nbImage(url: string, caption = "") =
     if isAbsolute(url) or url[0..3] == "http":
       # Absolute URL or External URL

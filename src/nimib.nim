@@ -25,6 +25,8 @@ template nbInit*() =
     nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
   var nbUser {.inject.}: string = getUser()
 
+  const nbSource = staticRead(nbThisFile)
+
   const nimibOutDir {.strdefine, inject.} = "" # must inject otherwise it is always its default ""
   const nimibSrcDir {.strdefine, inject} = ""
   when defined(nimibSrcDir):

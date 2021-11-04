@@ -20,7 +20,8 @@ proc toPos*(info: LineInfo): Pos =
   Pos(line: info.line, column: info.column)
 
 proc startPos*(node: NimNode): Pos =
-  ## Has column info
+  ## Get the starting position of a NimNode. Corrections will be needed for certains cases though.
+  # Has column info
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
@@ -29,7 +30,8 @@ proc startPos*(node: NimNode): Pos =
       result = node[0].startPos()
 
 proc finishPos*(node: NimNode): Pos =
-  ## Does not have column info
+  ## Get the ending position of a NimNode. Corrections will be needed for certains cases though.
+  # Does not have column info
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
@@ -54,7 +56,7 @@ proc isCommandLine*(s: string, command: string): bool =
   nimIdentNormalize(command) in nimIdentNormalize(s)
 
 func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): string =
-  ## Called by getCodeAsInSource
+  ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.
   let lines = source.split("\n")
   debugecho "Start line: ", startPos.line
   var startLine = startPos.line - 1
@@ -116,7 +118,8 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
   return codeText
 
 macro getCodeAsInSource*(source: static string, command: static string, body: untyped): static string =
-  ## substitute for `toStr` in blocks.nim
+  ## Returns string for the code in body from source. 
+  # substitute for `toStr` in blocks.nim
   let startPos = startPos(body)
   let endPos = finishPos(body)
   let lObj = body.lineInfoObj()

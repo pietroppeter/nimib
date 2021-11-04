@@ -122,6 +122,5 @@ macro getCodeAsInSource*(source: static string, command: static string, body: un
   # substitute for `toStr` in blocks.nim
   let startPos = startPos(body)
   let endPos = finishPos(body)
-  let lObj = body.lineInfoObj()
   let codeText = getCodeBlock(source, command, startPos, endPos)
   result = newLit(codeText)

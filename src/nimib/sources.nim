@@ -53,7 +53,7 @@ proc finishPos*(node: NimNode): Pos =
         result = toPos(node.lineInfoObj())
 
 proc isCommandLine*(s: string, command: string): bool =
-  nimIdentNormalize(command) in nimIdentNormalize(s)
+  nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command))
 
 func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): string =
   ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.

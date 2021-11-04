@@ -8,7 +8,8 @@ import types
 
 
 # Credits to @haxscramper for sharing his code on reading the line info
-# And credits to @Yardanico for making a previous attempt which I have taken much inspiration from.
+# And credits to @Yardanico for making a previous attempt which @hugogranstrom have taken much inspiration from
+# when implementing this.
 
 type
   Pos* = object

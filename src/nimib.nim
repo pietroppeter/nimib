@@ -1,4 +1,4 @@
-import os
+import std/os
 import nimib / [types, blocks, docs, renders, paths, boost]
 export types, blocks, docs, renders, paths, boost
 from nimib/defaults import nil
@@ -62,6 +62,12 @@ template nbInit*() =
 
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
+
+  template nbFile(name: string, body: untyped) =
+    block:
+      let f = open(getCurrentDir() / name, fmWrite)
+      f.write(body)
+      f.close()
 
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)

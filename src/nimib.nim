@@ -63,12 +63,6 @@ template nbInit*() =
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
 
-  template nbFile(name: string, body: untyped) =
-    block:
-      let f = open(getCurrentDir() / name, fmWrite)
-      f.write(body)
-      f.close()
-
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
 
@@ -88,6 +82,23 @@ template nbInit*() =
 
     nbBlock.output = caption
     nbDoc.blocks.add nbBlock
+
+  template nbFile(name: string, body: string) =
+    ## Generic string file
+    block:
+      let f = open(getCurrentDir() / name, fmWrite)
+      f.write(body)
+      f.close()
+    nbText(name)
+
+  template nbFile(name: string, body: untyped) =
+    ## Nim code file
+    block:
+      let f = open(getCurrentDir() / name, fmWrite)
+      f.write(body)
+      f.close()
+    nbText(name)
+    nbCode(body)
 
   template nbSave =
     when defined(nimibCustomPreSave):

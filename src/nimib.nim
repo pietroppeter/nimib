@@ -63,6 +63,9 @@ template nbInit*() =
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
 
+  template nbQuote(body: untyped) =
+    nbTextQuote(nbBlock, nbDoc, body)
+
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
 
@@ -89,7 +92,8 @@ template nbInit*() =
       let f = open(getCurrentDir() / name, fmWrite)
       f.write(body)
       f.close()
-    nbText(name)
+    nbText(name & ": ")
+    nbTextQuote(body)
 
   template nbFile(name: string, body: untyped) =
     ## Nim code file
@@ -97,7 +101,7 @@ template nbInit*() =
       let f = open(getCurrentDir() / name, fmWrite)
       f.write(body)
       f.close()
-    nbText(name)
+    nbText(name & ": ")
     nbCode(body)
 
   template nbSave =

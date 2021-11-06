@@ -4,11 +4,11 @@ import std / [parseopt, strutils]
 const nimibHelp = """
 Nimib options:
 
-  --nbHelp, --nimibHelp                     print this help
-  --nbSkipCfg, --nimibSkipCfg               skip nimib config file
-  --nbCfgName, --nimibCfgName               change name of config file (default "nimib.toml")
-  --nbSrcDir, --nimibSrcDir                 set srcDir as relative (to CfgDir) or absolute; overrides config 
-  --nbHomeDir, --nimibHomeDir               set homeDir as relative (to CfgDir) or absolute; overrides config 
+  --nbHelp,     --nimibHelp                 print this help
+  --nbSkipCfg,  --nimibSkipCfg              skip nimib config file
+  --nbCfgName,  --nimibCfgName              change name of config file (default "nimib.toml")
+  --nbSrcDir,   --nimibSrcDir               set srcDir as relative (to CfgDir) or absolute; overrides config 
+  --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
   --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
 """
 

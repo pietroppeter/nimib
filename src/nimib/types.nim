@@ -13,6 +13,7 @@ type
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string
+    show*: bool
     other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string

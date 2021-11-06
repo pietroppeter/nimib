@@ -10,6 +10,7 @@ Nimib options:
   --nbSrcDir,   --nimibSrcDir               set srcDir as relative (to CfgDir) or absolute; overrides config 
   --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
   --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
+  --nbShow,     --nimibShow                 open in browser at the end of nbSave
 """
 
 proc loadOptions*(doc: var NbDoc) =
@@ -33,6 +34,9 @@ proc loadOptions*(doc: var NbDoc) =
       of "nbfilename", "nimibfilename":
         assert kind == cmdLongOption
         doc.options.filename = val
+      of "nbshow", "nimibshow":
+        assert kind == cmdLongOption and val == ""
+        doc.options.show = true
       of "nbhelp", "nimibhelp":
         assert kind == cmdLongOption and val == ""
         echo nimibHelp

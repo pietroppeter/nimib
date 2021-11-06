@@ -89,6 +89,8 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
     nb.context.searchTable(nb.partials)
 
     write nb
+    if nb.options.show:
+      open nb
 
   template nbShow =
     nbSave

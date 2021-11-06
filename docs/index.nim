@@ -30,6 +30,7 @@ If you have some nim code lying around that echoes stuff you can try how nimib w
   * add a `nbSave` command at the end
   * compile and run
   * open the html file that has been generated next to your nim file (same name)
+  * (you can use runtime option `--nbShow` to open the html file automatically in your default browser)
 
 See below for an example of this.
 
@@ -191,7 +192,8 @@ most of the changes break the api
   that is a `NbDoc`. Some aliases are provided to minimize breakage.
 * handling of paths (`srcDir` and `homeDir`) is changed and is based on the presence
   of a new config file `nimib.toml`
-* command line options are now processed and can be used to skip/override the config process
+* command line options are now processed and can be used to skip/override the config process.
+  Run any nimib file with option `--nbHelp` to see available options.
 * `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
 
 ## :sunrise: Roadmap

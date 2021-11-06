@@ -6,7 +6,7 @@ nbText: """
 > This nimib example document shows how to:
 >   * add a table of contents
 >   * create a custom NbBlock (a text block that shows Markdown source)
->   * customize of code highlighting
+>   * customize code highlighting
 >
 > The document itself is a remake in nimib of a Markdown Cheatsheet
 > by [markdown-here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).

@@ -46,7 +46,7 @@ section#source {
 <ul>
 <li>add a table of contents</li>
 <li>create a custom NbBlock (a text block that shows Markdown source)</li>
-<li>customize of code highlighting</li>
+<li>customize code highlighting</li>
 </ul>
 <p>The document itself is a remake in nimib of a Markdown Cheatsheet
 by <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown-here</a>.</p>
@@ -451,7 +451,7 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;
 &gt; This nimib example document shows how to:
 &gt;   * add a table of contents
 &gt;   * create a custom NbBlock (a text block that shows Markdown source)
-&gt;   * customize of code highlighting
+&gt;   * customize code highlighting
 &gt;
 &gt; The document itself is a remake in nimib of a Markdown Cheatsheet
 &gt; by [markdown-here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
@@ -460,7 +460,7 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;
 &quot;&quot;&quot;</span>
 
 <span class="hljs-comment"># customize source highlighting:</span>
-nbDoc.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span class="hljs-string">&quot;&quot;&quot;
+nb.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span class="hljs-string">&quot;&quot;&quot;
 &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css&quot;&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;hljs.initHighlightingOnLoad();&lt;/script&gt;&quot;&quot;&quot;</span>
@@ -471,8 +471,8 @@ nbDoc.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span cl
 
 <span class="hljs-keyword">template</span> nbTextWithSource(escapeHtml: <span class="hljs-built_in">bool</span>, body: <span class="hljs-built_in">untyped</span>) =
   nbText(body)
-  <span class="hljs-keyword">let</span> toWrap = <span class="hljs-keyword">if</span> escapeHtml: nbBlock.output.replace(<span class="hljs-string">&quot;&lt;&quot;</span>, <span class="hljs-string">&quot;&amp;lt;&quot;</span>) <span class="hljs-keyword">else</span>: nbBlock.output
-  nbBlock.output = wrapMarkdown(toWrap) &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> &amp; nbBlock.output
+  <span class="hljs-keyword">let</span> toWrap = <span class="hljs-keyword">if</span> escapeHtml: nb.blk.output.replace(<span class="hljs-string">&quot;&lt;&quot;</span>, <span class="hljs-string">&quot;&amp;lt;&quot;</span>) <span class="hljs-keyword">else</span>: nb.blk.output
+  nb.blk.output = wrapMarkdown(toWrap) &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> &amp; nb.blk.output
 
 <span class="hljs-comment"># arguments with default do not work well in templates, overloading is a common trick</span>
 <span class="hljs-keyword">template</span> nbTextWithSource(body: <span class="hljs-built_in">untyped</span>) =
@@ -483,7 +483,7 @@ nbDoc.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span cl
   nbToc: <span class="hljs-type">NbBlock</span>
 
 <span class="hljs-keyword">template</span> addToc =
-  nbTextBlock(nbToc, nbDoc, <span class="hljs-string">&quot;# Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>)
+  nbTextBlock(nbToc, nb, <span class="hljs-string">&quot;# Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>)
 
 <span class="hljs-keyword">template</span> nbSection(name:<span class="hljs-built_in">string</span>) =
   <span class="hljs-keyword">let</span> anchorName = name.toLower.replace(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>)

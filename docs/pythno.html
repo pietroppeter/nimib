@@ -92,8 +92,8 @@ nbCode:
   
   <span class="hljs-keyword">echo</span> repeat(<span class="hljs-string">&quot;ThisIsNotPython&quot;</span>, <span class="hljs-number">6</span>)
 
-nbBlock.output = camel2snake(nbBlock.output)
-nbBlock.code = nbBlock.code.multiReplace([
+nb.blk.output = camel2snake(nb.blk.output)
+nb.blk.code = nb.blk.code.multiReplace([
   (<span class="hljs-string">&quot;proc&quot;</span>, <span class="hljs-string">&quot;def&quot;</span>),
   (<span class="hljs-string">&quot;string&quot;</span>, <span class="hljs-string">&quot;str&quot;</span>),
   (<span class="hljs-string">&quot;;&quot;</span>, <span class="hljs-string">&quot;,&quot;</span>), <span class="hljs-comment"># tricky one</span>

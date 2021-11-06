@@ -6,7 +6,7 @@ nbText: """
 > This nimib example document shows how to:
 >   * add a table of contents
 >   * create a custom NbBlock (a text block that shows Markdown source)
->   * customize of code highlighting
+>   * customize code highlighting
 >
 > The document itself is a remake in nimib of a Markdown Cheatsheet
 > by [markdown-here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
@@ -15,7 +15,7 @@ nbText: """
 """
 
 # customize source highlighting:
-nbDoc.context["highlight"] = """
+nb.context["highlight"] = """
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>"""
@@ -26,8 +26,8 @@ func wrapMarkdown(code: string): string =
 
 template nbTextWithSource(escapeHtml: bool, body: untyped) =
   nbText(body)
-  let toWrap = if escapeHtml: nbBlock.output.replace("<", "&lt;") else: nbBlock.output
-  nbBlock.output = wrapMarkdown(toWrap) & "\n\n" & nbBlock.output
+  let toWrap = if escapeHtml: nb.blk.output.replace("<", "&lt;") else: nb.blk.output
+  nb.blk.output = wrapMarkdown(toWrap) & "\n\n" & nb.blk.output
 
 # arguments with default do not work well in templates, overloading is a common trick
 template nbTextWithSource(body: untyped) =
@@ -38,7 +38,7 @@ var
   nbToc: NbBlock
 
 template addToc =
-  nbTextBlock(nbToc, nbDoc, "# Table of Contents:\n\n")
+  nbTextBlock(nbToc, nb, "# Table of Contents:\n\n")
 
 template nbSection(name:string) =
   let anchorName = name.toLower.replace(" ", "-")

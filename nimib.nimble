@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.6"
+version       = "0.2"
 author        = "Pietro Peterlongo"
 description   = "nimib 🐳 - nim 👑 driven ⛵ publishing ✍"
 license       = "MIT"
@@ -12,9 +12,10 @@ requires "nim >= 1.4.0"
 requires "tempfile >= 0.1.6"
 requires "markdown >= 0.8.1"
 requires "mustache >= 0.2.1"
+requires "toml_serialization >= 0.2.0"
 
 task deps, "install dependendencies": # task created for CI, not sure how to avoid this
-  exec """nimble -y install tempfile@">= 0.1.6" markdown@">= 0.8.1" mustache@">= 0.2.1""""
+  exec """nimble -y install tempfile@">= 0.1.6" markdown@">= 0.8.1" mustache@">= 0.2.1" toml_serialization@">= 0.2.0""""
 
 task tdeps, "install dependendencies required for testing":
   exec "nimble -y install ggplotnim@0.3.25 numericalnim@0.6.1 nimoji"

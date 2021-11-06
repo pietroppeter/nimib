@@ -1,15 +1,20 @@
 #remember to run also with -d:numericalDefaultStyle
 import nimib, strformat, strutils
 nbInit
-nbDoc.useLatex
-let filename_default_style = nbDoc.filename.replace(".html", "_default_style.html")
-when not defined(numericalDefaultStyle):
-  nbDoc.context["stylesheet"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
-  # I should also change font size, see https://katex.org/docs/font.html
-  let otherStyle = fmt"; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_"
-else:
-  let otherStyle = fmt"; _you are looking at default style, for custom style [click here]({(nbDoc.filename.AbsoluteFile).relPath})_"
-nbText: fmt"""
+nb.useLatex
+let
+  filename_default_style = nb.filename.replace(".html", "_default_style.html")
+  default_style = nb.context["stylesheet"]
+
+nb.context["stylesheet"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
+
+proc introText(defaultStyle = false): string =
+  let otherStyle = if defaultStyle:
+    fmt"; _you are looking at default style, for custom style [click here]({(nb.filename.AbsoluteFile).relPath})_"
+  else:
+    fmt"; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_"
+
+  fmt"""
 > This nimib example document shows how to:
 >  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
 >  - using latex rendering of equations (thanks to [katex](https://katex.org/))
@@ -18,6 +23,11 @@ nbText: fmt"""
 > The document itself shows how to use [numericalnim](https://github.com/hugogranstrom/numericalnim)
 > to integrate an ODE.
 """
+
+nbText: introText()
+# save to change later
+var blockIntroText = nb.blk
+
 nbText: fmt"""# Using NumericalNim
 
 Example of usage of [numericalnim](https://github.com/hugogranstrom/numericalnim).
@@ -118,12 +128,17 @@ $h=0.01$ | {pe y3hn[^1]} | {pe y3rk[^1]}
 
 and here is the code for this Markdown block:
 """ # right alignment of numbers does not seem to work. is this an issue of latex.css?
-let mdCode = nbBlock.code
+let mdCode = nb.blk.code
 nbCode:
   discard
-nbBlock.code = mdCode
+nb.blk.code = mdCode
 # add a show Markdown source. It would be nice when hovering a code block to show (on the side? how to do it on mobile?) the call code (nbText: or other)
-when defined(numericalDefaultStyle):
-  nbDoc.filename = filename_default_style
-  
+
+# first save with latex style
+nbSave
+
+# then save with default style
+blockIntroText.output = introText(default_style=true)
+nb.filename = filename_default_style
+nb.context["stylesheet"] = default_style 
 nbSave

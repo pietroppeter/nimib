@@ -1,7 +1,3 @@
 [nimib]
 srcDir = "docs"
 homeDir = "docs"
-
-[notused]
-this = 1
-that = "hi"

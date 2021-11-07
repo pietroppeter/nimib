@@ -16,6 +16,7 @@ If you have some nim code lying around that echoes stuff you can try how nimib w
   * add a `nbSave` command at the end
   * compile and run
   * open the html file that has been generated next to your nim file (same name)
+  * (you can use runtime option `--nbShow` to open the html file automatically in your default browser)
 
 See below for an example of this.
 
@@ -31,6 +32,14 @@ you should be reading one of the two, for the other:
 
 * [README.md](https://github.com/pietroppeter/nimib)
 * [index.html](https://pietroppeter.github.io/nimib)
+
+Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
+see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
+and [slides](https://github.com/pietroppeter/nimconf2021). 
+
+The vs code extension
+[nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost)
+provides markdown highlighting in nimib file and a preview mechanism.
 
 ## 👋 🌍 Example Usage
 
@@ -90,10 +99,6 @@ nbSave # use nbShow to automatically open a browser tab with html output
 ```
 
 
-<!--TODO
-Notes should be directly embedded in hello file.
--->
-
 ### Other examples of usage
 
 in this repo:
@@ -109,6 +114,12 @@ elsewhere:
 
 * [adventofnim](https://pietroppeter.github.io/adventofnim/index.html): solutions for advent of code in nim
 * [intro to binarylang](https://ajusa.github.io/binarylang-fun/intro.html): a introduction to library [binarylang](https://github.com/sealmove/binarylang) (first public usage of nimib I was aware of)
+* [nblog](https://github.com/pietroppeter/nblog): a blog about nimib and its ecosystem
+* [nimibook](https://github.com/pietroppeter/nimibook): a port of mdbook to nim(ib)
+* [SciNim Getting Started](https://scinim.github.io/getting-started/): tutorials for nim in scientific computing 
+* [Norm documentation](https://norm.nim.town): documentation of a Nim ORM library.
+
+you are welcome to add here what you have built with nimib!
 
 ## 🛠 Features
 
@@ -116,10 +127,12 @@ elsewhere:
 
 The following are the main elements of a default nimib document:
 
+* `nbInit`: initializes a nimib document, required for all other commands to work.
 * `nbCode`: code blocks with automatic stdout capture
 * `nbText`: text blocks with automatic conversion from markdown to html (thanks to [nim-markdown](https://github.com/soasme/nim-markdown))
 * `nbImage`: image command to show images
-* styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nbDoc.darkMode` after `nbInit`).
+* `nbSave`: save the document (by default to html)
+* styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nb.darkMode` after `nbInit`).
 * static highlighting of nim code. Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
   and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
@@ -127,7 +140,8 @@ The following are the main elements of a default nimib document:
 * a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
 * (optional) possibility to create a markdown version of the same document (see this document for an example: [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim))
 
-Customization over the default is mostly achieved through nim-mustache or the internal Api (see below).
+Customization over the default is mostly achieved through nim-mustache or changing
+`NbDoc` and `NbBlock` elements (see below api).
 Currently most of the documentation on customization is given by the examples.
 
 ### latex
@@ -136,101 +150,94 @@ See [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an exam
 
 To add latex support:
 
-  * add a `nbDoc.useLatex` command somewhere between `nbInit` and `nbSave`
+  * add a `nb.useLatex` command somewhere between `nbInit` and `nbSave`
   * use delimiters `$` for inline-math or `$$` for display math inside nbText blocks.
 
 Latex is rendered with [katex](https://katex.org/) through an autodetection during document loading.
 
-### interaction with filesystem
+### config, command line options and interaction with filesystem
 
-The default situation for single article that does not access filesystem:
+In the default situation a single nimib document
+that writes or reads from filesystem will behave as a normal nim file:
+the current directory is the directory from where you launch the executable.
 
-* you do not have to worry about nothing.
-  the new html will appear next to your nim file with same name and html extension
+When nimib is used to produce a website or in general a collection of document
+it is useful to set up a **configuration file**.
+A nimib configuration file is a file named `nimib.toml` and
+it is a [toml](https://github.com/toml-lang/toml) file.
+Every time `nbInit` is called nimib tries to find a config file in current directory
+or in any parent directory.
+Inside a config file you can define two special directory:
 
-if you need to change name or location of html output, or if you need to access
-filesystem (in particular if you need it for your web assets), this is what you need to know:
+* `homeDir`: the directory to set as current directory.
+  It can be given as an absolute directory or as a relative directory.
+  When it is given as a relative directory it is relative with respect
+  to the directory of config file.
+* `srcDir`: the directory where all the sources resides.
+  It is used to create the output filename that includes a relative path.
+  In this way the folder structure of nim files can be recreated in the output.
+  As `homeDir`, it can be set as absolute or relative (to config).
 
-* with `nbInit` a `nbHomeDir` a number of paths are initialized
-* we follow [compiler/pathutils](https://nim-lang.org/docs/compiler/pathutils.html) which is available (exported) from `nimib/paths`.
-* `nbThisFile` is an `AbsoluteFile` path of current nim file (the one where the `nbInit` is called from). `nbThisDir` is the corresponding `AbsoluteDir`.
-* `nbHomeDir` is a "home" directory:
-  - if no nimble file is found in `nbThisDir` or a parent directory, then it is set to `nbThisDir`.
-  - if a nimble file is found and in that directory there is a `docs` folder, it is set to that `docs` folder.
-  - if a nimble file is found without a `docs` folder, it is set to the directory containing the nimble file.
-* current directory is set to `nbHomeDir` (current directory at initialization is saved in `nbInitDir` if needed)
-* a procedure `relPath(path: AbsoluteFile | AbsoluteDir): string` turns an AbsolutePath into a string path relative to `nbHomeDir`
+`nbInit` also parses command line options that start with `nb` or `nimib`
+that allow to override the above value, skip the config file or other options.
+To see all the options execute any nimib file with option `nbHelp`.
+
 
 ## 🐝 API <!-- Api means bees in Italian -->
 
-### external API
+* `nbInit` template creates and injects a `nb` variable of type `NbDoc`.
+* templates like `nbCode` and `nbText` create a new object of type `NbBlock`,
+  these objects are added to a sequence of blocks accessible in `nb.blocks`
+* the last processed block is available as `nb.blk`
+* `nb.blk.output` contains the (non rendered) output of block
+* `nb.blk.code` contains the source code of the block
+* currently the source code is a stringification of AST and as such it might be
+  formatted differently than the actual source
+* Work is ongoing to have the code source exactly as in source file (see PR ([#63](https://github.com/pietroppeter/nimib/pull/63)))
+* `NbBlock` is a ref object, so changing `nb.blk`, changes the last block in `nb.blocks`.
+* rendering happens during the call of `nbSave` and and calls a `nb.render` proc
+  that can be overriden
+* two render procs are available in nimib, one to produce a html, one to produce markdown
+* the default html render proc uses [nim-mustache](https://github.com/soasme/nim-mustache)
+  to produce the final document starting from a `document` template available in memory
+* the main template (`document`) or all the other templates can be ovveriden in memory or
+  providing an ovveride in a template directory
+  (defaults are `.` and `templates`, can be overriden with `nb.templateDirs`)
+* the templates in memory are available as `nb.partials`
+  (partial is another name for a mustache template)
+* to fill in all details, mustache starts from a `Context` object, that is initialized during `nbInit`
+  and can be updated later (accessible as `nb.context`)
+* during `nbInit` a default theme is called that initializes all partials and the context.
+  this process can be overriden to create a new "theme" for nimib
+  (see for example [nimibook](https://github.com/pietroppeter/nimibook))
 
-By external API we mean the following templates:
-
-* `nbInit` (*always required*): it initializes the notebook,
-   the other templates are not accessible if nbInit is not called.
-* `nbText`: it is followed by any expression that evaluates to a string.
-  this text is by default assumed to be markdown and it will be rendered as html
-  thanks to [nim-markdown](https://github.com/soasme/nim-markdown).
-* `nbCode`: followed by a block of code, it will execute the code,
-  and capture the output. It will be rendered in the final html document
-  as a block of nim code followed by preformatted text.
-* `nbSave`: it is required to save the document to a file.
-  Rendering takes place at this moment.
-  By default the document will be save as an html (templated with [nim-mustache](https://github.com/soasme/nim-mustache))
-
-other templates on top of the four basic ones are available (e.g. `nbImage`)
-or will likely be added (see issue [#2](https://github.com/pietroppeter/nimib/issues/2)).
-
-### internal api
-
-`nbInit` creates two variables `nbDoc` and `nbBlock`, which are injected in the scope.
-At every block of code or text (or else) `nbBlock` is updated and added to `nbDoc`.
-`nbBlock` is a ref object, so changes done to it after a block will be reflected in
-the content of `nbDoc`.
-
-The specific types `NbDoc` and `NbBlock` are unstable and they will likely change,
-but it is likely that access the following elements will be guaranteed:
-
-  * `nbDoc.blocks`: container of all the blocks
-  * `nbDoc.render`: a closure from NbDoc to string that produces the rendered document
-  * `nbBlock.output`: string with the output of a nbCode/nbText block (not yet rendered)
-  * `nbBlock.code`: stringification of the code block through AST.
-    if it appears different than what you typed it is because nim likes it better that way.
-    In particular only documentation comments survive this process and normal comments will
-    not appear.
-
-Here are two examples that show how to abuse the internal api:
+Here are two examples that show how to hijack the api:
 
 * [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
 * [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
 
-<!--
-### extending the api
+## Changelog
 
-*TODO* after 0.2
+### 0.2
 
-## Rendering
+most of the changes break the api
 
-*TODO* after 0.2
-
-### html rendering
-
-There are two levels of html rendering.
-
-1. **render-in-the-small**: rendering html fragments. This is mostly taken care by nim-markdown
-   and by appropriate semantic tagging in render functions (this can be overriden).
-2. **render-in-the-large***: putting together html fragments and other elements to publish one or more documents.
-   this is delegated to nim-mustache and to manual creation and update of json and context fields in doc and block objects.
--->
+* instead of creating and injecting multiple variables
+  (`nbDoc`, `nbBlock`, `nbHomeDir`, ...), nimib now only injects a `nb` variable
+  that is a `NbDoc`. Some aliases are provided to minimize breakage.
+* handling of paths (`srcDir` and `homeDir`) is changed and is based on the presence
+  of a new config file `nimib.toml`
+* command line options are now processed and can be used to skip/override the config process.
+  Run any nimib file with option `--nbHelp` to see available options.
+* `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
 
 ## 🌅 Roadmap
 
-- refactor rendering and simplify customization ([#24](https://github.com/pietroppeter/nimib/issues/24))
-- add additional blocks and features for blogging ([#30](https://github.com/pietroppeter/nimib/issues/30))
-- a [mdbook](https://rust-lang.github.io/mdBook/) / [bookdown](https://bookdown.org/) theme.
-- can I use nimib to build library directly from documentation?
+- refactor rendering of blocks and simplify api extensions ([#24](https://github.com/pietroppeter/nimib/issues/24))
+- add more themes such as [nimibook](https://github.com/pietroppeter/nimibook).
+  In particular themes for blogging and for creating general websites.
 - client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
+- can I use nimib to build a library directly from documentation?
 - nimib executable for scaffolding and to support different publishing workflows
 - server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
 - possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
@@ -243,6 +250,9 @@ to:
 * [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
 * [Clonkk](https://github.com/Clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
 * [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
+* [vindaar](https://github.com/Vindaar),
+  [hugogranstrom](https://github.com/HugoGranstrom)
+  for their contributions towards version 0.2.
 
 ## ❓ ❗ Q & A
 

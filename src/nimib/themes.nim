@@ -110,7 +110,12 @@ function toggleSourceDisplay() {
 proc optOut*(content, keyword: string): string =
   "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}"
 
-proc init*(doc: var NbDoc) =
+proc useDefault*(doc: var NbDoc) =
+  doc.context["home_path"] = (doc.homeDirRel).string
+  doc.context["here_path"] = (doc.thisFileRel).string
+  doc.context["source"] = doc.source
+
+
   doc.partials["document"] = document
   # head
   doc.partials["head"] = head
@@ -142,3 +147,7 @@ proc darkMode*(doc: var NbDoc) =
 
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = latex
+
+proc `title=`*(doc: var NbDoc, text: string) =
+  # to deprecate?
+  doc.context["title"] = text

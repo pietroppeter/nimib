@@ -63,9 +63,10 @@ for every file ending in nim (and not starting with ptest) in nbHomeDir (test ca
 - a test case will be skipped if it is modified/added in git
 """
 nbCode:
+  let skipList = @["penguins.nim"]
   for file in walkDirRec(nbHomeDir):
     ## note that file is an AbsoluteFile (since nbHomeDir is an AbsoluteDir)
-    if file.endsWith(".nim") and not file.name.startsWith("ptest"):
+    if file.endsWith(".nim") and not file.name.startsWith("ptest") and file.relPath notin skipList:
       test = TestCase(file: file)
       stdout.write "added test candidate: ", file.relPath
     else:
@@ -122,7 +123,7 @@ nbCode:
       echo "html file is changed in git. commit or revert and rerun test"
       continue
     copyFile(source=html, dest=tmp)
-    (output, err) = execCmdEx &"nim --verbosity:0 --hints:off r {test.file}"
+    (output, err) = execCmdEx &"nim --verbosity:0 --hints:off -d:nimibHomeDir=. r {test.file}"
     if err != 0:
       test.fail = true
       stdout.write "[FAIL]".spanColor "red"

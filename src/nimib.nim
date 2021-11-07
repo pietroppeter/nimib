@@ -68,7 +68,7 @@ template nbInit*() =
   template nbCode(body: untyped) =
     nbCodeBlock(nbSource, nbBlock, nbDoc, body)
 
-  template nbCodeInBlock*(body: untyped): untyped =
+  template nbCodeInBlock(body: untyped): untyped =
     block:
       nbCode:
         body

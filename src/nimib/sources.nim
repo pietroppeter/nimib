@@ -117,10 +117,10 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
     codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
   return codeText
 
-macro getCodeAsInSource*(source: static string, command: static string, body: untyped): static string =
+macro getCodeAsInSource*(source: string, command: static string, body: untyped): string =
   ## Returns string for the code in body from source. 
   # substitute for `toStr` in blocks.nim
   let startPos = startPos(body)
   let endPos = finishPos(body)
-  let codeText = getCodeBlock(source, command, startPos, endPos)
-  result = newLit(codeText)
+  result = quote do:
+    getCodeBlock(`source`, `command`, `startPos`, `endPos`)

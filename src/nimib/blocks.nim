@@ -33,7 +33,7 @@ proc echoCodeBlock(b: NbBlock) =
     if b.output != "":
       echo "```\n" & b.output & "```\n"
 
-template nbCodeBlock*(source: static string, identBlock, identContainer, body: untyped) =
+template nbCodeBlock*(source: string, identBlock, identContainer, body: untyped) =
   var codeText: string
   when defined(nimibPreviewCodeAsInSource):
     codeText = getCodeAsInSource(source, "nbCode", body)

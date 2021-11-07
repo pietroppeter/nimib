@@ -45,4 +45,4 @@ proc homeDir*(doc: NbDoc): AbsoluteDir =
   else:
     doc.cfgDir / doc.cfg.homeDir.RelativeDir
 proc thisFileRel*(doc: NbDoc): RelativeFile = doc.thisFile.relativeTo doc.srcDir
-proc homeDirRel*(doc: NbDoc): RelativeDir = doc.homeDir.relativeTo doc.thisDir
+proc srcDirRel*(doc: NbDoc): RelativeDir = doc.srcDir.relativeTo doc.thisDir

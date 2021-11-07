@@ -74,7 +74,7 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
       nb.blk = NbBlock(kind: nbkImage, code: url)
     else:
       # Relative URL
-      let relativeUrl = nb.context["home_path"].vString / url
+      let relativeUrl = nb.context["path_to_root"].vString / url
       nb.blk = NbBlock(kind: nbkImage, code: relativeUrl)
 
     nb.blk.output = caption

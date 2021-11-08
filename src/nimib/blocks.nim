@@ -1,4 +1,4 @@
-import macros
+import std/macros
 import types, capture
 
 macro toStr*(body: untyped): string =

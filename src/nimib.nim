@@ -1,4 +1,4 @@
-import os
+import std/[os, strutils]
 import nimib / [types, blocks, docs, renders, boost, config, options]
 export types, blocks, docs, renders, boost
 # types exports mustache, tables, paths
@@ -55,7 +55,7 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   nb.templateDirs = @["./", "./templates/"]
   nb.partials = initTable[string, string]()
   nb.context = newContext(searchDirs = @[])
-  theme nb  # apply theme    
+  theme nb  # apply theme
 
   template nbText(body: untyped) =
     nbTextBlock(nb.blk, nb, body)
@@ -79,6 +79,29 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
 
     nb.blk.output = caption
     nb.blocks.add nb.blk
+
+  template nbFile(name: string, body: string) =
+    ## Generic string file
+    block:
+      let f = open(getCurrentDir() / name, fmWrite)
+      f.write(body)
+      f.close()
+
+    var r = name.splitFile()
+    r.ext.removePrefix('.')
+    nbText("Writing file `" & name & "` :")
+    let newbody = "```" & r.ext & "\n" & body & "```"
+    nbText(newbody)
+
+  template nbFile(name: string, body: untyped) =
+    ## Nim code file
+    block:
+      let f = open(getCurrentDir() / name, fmWrite)
+      f.write(body)
+      f.close()
+    nbText("Writing file `" & name & "` :")
+    identBlock = newBlock(nbkCode, toStr(body))
+    identContainer.blocks.add identBlock
 
   template nbSave =
     # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:

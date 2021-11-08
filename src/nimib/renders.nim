@@ -86,7 +86,7 @@ proc renderMark*(doc: NbDoc): string =
     - table allows customizing a single step of renderPlan
     - list allows easy skipping of plan, adding new steps to plan
   Example:
-  
+
   Also to refactor nbImage, I think I should have a nbFree (or another name) block which:
     - executes code creating nbBlock object but does not capture stdout (same as nbCode but with no Capture)
     - also by default it should not be displayed

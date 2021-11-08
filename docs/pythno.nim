@@ -25,8 +25,8 @@ nbCode:
   
   echo repeat("ThisIsNotPython", 6)
 
-nbBlock.output = camel2snake(nbBlock.output)
-nbBlock.code = nbBlock.code.multiReplace([
+nb.blk.output = camel2snake(nb.blk.output)
+nb.blk.code = nb.blk.code.multiReplace([
   ("proc", "def"),
   ("string", "str"),
   (";", ","), # tricky one

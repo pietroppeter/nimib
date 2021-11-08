@@ -1,7 +1,7 @@
 import nimib
 
 nbInit
-nbDoc.darkMode
+nb.darkMode
 nbText: """# mustache man (5)
 
 [mustache](https://mustache.github.io/) is a logic-less template system

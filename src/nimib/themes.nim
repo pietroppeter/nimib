@@ -70,7 +70,7 @@ const header* = """
 </div>
 <hr>
 </header>"""
-const homeLink* = """<a href="{{home_path}}">🏡</a>"""
+const homeLink* = """<a href="{{path_to_root}}">🏡</a>"""
 const githubLink* = """<a href="{{github_remote_url}}">{{{github_logo}}}</a>"""
 # github light svg adapted from: https://iconify.design/icon-sets/octicon/mark-github.html
 # github dark svg taken directly from github website
@@ -110,7 +110,12 @@ function toggleSourceDisplay() {
 proc optOut*(content, keyword: string): string =
   "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}"
 
-proc init*(doc: var NbDoc) =
+proc useDefault*(doc: var NbDoc) =
+  doc.context["path_to_root"] = (doc.srcDirRel).string
+  doc.context["path_to_here"] = (doc.thisFileRel).string
+  doc.context["source"] = doc.source
+
+
   doc.partials["document"] = document
   # head
   doc.partials["head"] = head
@@ -121,7 +126,7 @@ proc init*(doc: var NbDoc) =
   # header
   doc.partials["header"] = header
   doc.partials["header_left"] = homeLink
-  doc.context["title"] = doc.context["here_path"]
+  doc.context["title"] = doc.context["path_to_here"]
   doc.partials["header_center"] = "<code>" & doc.context["title"].castStr & "</code>"
   if isGitAvailable() and isOnGithub():
     doc.partials["header_right"] = githubLink
@@ -142,3 +147,7 @@ proc darkMode*(doc: var NbDoc) =
 
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = latex
+
+proc `title=`*(doc: var NbDoc, text: string) =
+  # to deprecate?
+  doc.context["title"] = text

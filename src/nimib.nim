@@ -1,70 +1,67 @@
 import std/os
-import nimib / [types, blocks, docs, renders, paths, boost]
-export types, blocks, docs, renders, paths, boost
-from nimib/defaults import nil
-export defaults.useLatex, defaults.darkMode
-# types exports mustache, tables
-# paths exports pathutils
+import nimib / [types, blocks, docs, renders, boost, config, options]
+export types, blocks, docs, renders, boost
+# types exports mustache, tables, paths
+
+from nimib / themes import nil
+export themes.useLatex, themes.darkMode, themes.`title=`
+
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
+template nbInit*(theme = themes.useDefault, thisFileRel = "") =
+  var nb {.inject.}: NbDoc
 
-template nbInit*() =
-  # I think I want to migrate to a single global object nb
-  # with nb.doc as nbDoc and nb.block (or nb.blk?) as nbBlock
-  # the global object will also contain all those paths
+  # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
+  template nbDoc: NbDoc = nb
+  template nbBlock: NbBlock = nb.blk
+  template nbHomeDir: AbsoluteDir = nb.homeDir
 
-  # all paths are absolute, use relPath to have path relative to Project directory
-  let
-    nbThisFile {.inject.} = instantiationInfo(-1, true).filename.AbsoluteFile
-    thisTuple = nbThisFile.splitFile
-    nbThisDir {.inject.}: AbsoluteDir = thisTuple.dir
-    nbThisName {.inject, used.}: string = thisTuple.name
-    nbThisExt {.inject, used.}: string = thisTuple.ext
-    nbInitDir {.inject, used.} = getCurrentDir().AbsoluteDir # current directory at initialization
-  var nbUser {.inject.}: string = getUser()
+  nb.initDir = getCurrentDir().AbsoluteDir
+  loadOptions nb
+  loadCfg nb
 
-  const nimibOutDir {.strdefine, inject.} = "" # must inject otherwise it is always its default ""
-  const nimibSrcDir {.strdefine, inject} = ""
-  when defined(nimibSrcDir):
-    let nimibSrcDirAbs = nimibSrcDir.toAbsoluteDir
-  when defined(nimibOutDir):
-    var nbHomeDir {.inject.}: AbsoluteDir = nimibOutDir.toAbsoluteDir
+  # nbInit can be called not from inside the correct file (e.g. when rendering markdown files in nimibook)
+  if thisFileRel == "":
+    nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   else:
-    var nbHomeDir {.inject.}: AbsoluteDir = findNimbleDir(nbThisDir)
-    if dirExists(nbHomeDir / "docs".RelativeDir):
-      nbHomeDir = nbHomeDir / "docs".RelativeDir
-  setCurrentDir nbHomeDir
+    nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
+    echo "[nimib] thisFile: ", nb.thisFile
+  try:
+    nb.source = read(nb.thisFile)
+  except IOError:
+    echo "[nimib] cannot read source"
 
-  # could change to nb.rel with nb global object
+  nb.render = renderHtml
+  if nb.options.filename == "":
+    nb.filename = nb.thisFile.string.splitFile.name & ".html"
+  else:
+    nb.filename = nb.options.filename
+
+  if nb.cfg.srcDir != "":
+    echo "[nimib] srcDir: ", nb.srcDir
+    nb.filename = (nb.thisDir.relativeTo nb.srcDir).string / nb.filename
+    echo "[nimib] filename: ", nb.filename
+
+  if nb.cfg.homeDir != "":
+    echo "[nimib] setting current directory to nb.homeDir: ", nb.homeDir
+    setCurrentDir nb.homeDir
+
+  # how to change this to a better version using nb?
   proc relPath(path: AbsoluteFile | AbsoluteDir): string =
-    (path.relativeTo nbHomeDir).string
+    (path.relativeTo nb.homeDir).string
 
-  var
-    nbDoc {.inject.}: NbDoc
-    nbBlock {.inject.}: NbBlock
-
-  nbDoc.author = nbUser  # never really used it yet, but probably could be a strdefine
-  nbDoc.filename = changeFileExt(nbThisFile.string, ".html")
-
-  nbDoc.render = renderHtml
-  nbDoc.templateDirs = @["./", "./templates/"]
-  nbDoc.partials = initTable[string, string]()
-  nbDoc.context = newContext(searchDirs = @[])
-  nbDoc.context["home_path"] = (nbHomeDir.relativeTo nbThisDir).string
-  nbDoc.context["here_path"] = (nbThisFile.relativeTo nbHomeDir).string
-  nbDoc.context["source"] = read(nbThisFile)
-
-  defaults.init(nbDoc)
-
-  when defined(nimibCustomPostInit):
-    include nbPostInit
+  # can be overriden by theme, but it is better to initialize this anyway
+  nb.templateDirs = @["./", "./templates/"]
+  nb.partials = initTable[string, string]()
+  nb.context = newContext(searchDirs = @[])
+  theme nb  # apply theme    
 
   template nbText(body: untyped) =
-    nbTextBlock(nbBlock, nbDoc, body)
+    nbTextBlock(nb.blk, nb, body)
 
   template nbCode(body: untyped) =
-    nbCodeBlock(nbBlock, nbDoc, body)
+    nbCodeBlock(nb.blk, nb, body)
 
   template nbCodeInBlock(body: untyped) =
     block:
@@ -74,14 +71,14 @@ template nbInit*() =
   template nbImage(url: string, caption = "") =
     if isAbsolute(url) or url[0..3] == "http":
       # Absolute URL or External URL
-      nbBlock = NbBlock(kind: nbkImage, code: url)
+      nb.blk = NbBlock(kind: nbkImage, code: url)
     else:
       # Relative URL
-      let relativeUrl = nbDoc.context["home_path"].vString / url
-      nbBlock = NbBlock(kind: nbkImage, code: relativeUrl)
+      let relativeUrl = nb.context["path_to_root"].vString / url
+      nb.blk = NbBlock(kind: nbkImage, code: relativeUrl)
 
-    nbBlock.output = caption
-    nbDoc.blocks.add nbBlock
+    nb.blk.output = caption
+    nb.blocks.add nb.blk
 
   template nbFile(name: string, body: string) =
     ## Generic string file
@@ -102,20 +99,17 @@ template nbInit*() =
     nbCode(body)
 
   template nbSave =
-    when defined(nimibCustomPreSave):
-      include nbPreSave
     # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
-    #   - in memory partial contain default mustache assets
+    #   - in memory partial contains default mustache assets
     #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
     #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
-    nbDoc.context.searchDirs(nbDoc.templateDirs)
-    nbDoc.context.searchTable(nbDoc.partials)
-    when defined(nimibSrcDir):
-      if isAbsolute(nbDoc.filename):
-        nbDoc.filename = (AbsoluteFile(nbDoc.filename).relativeTo nimibSrcDirAbs).string
-    withDir(nbHomeDir):
-      write nbDoc
+    nb.context.searchDirs(nb.templateDirs)
+    nb.context.searchTable(nb.partials)
+
+    write nb
+    if nb.options.show:
+      open nb
 
   template nbShow =
     nbSave
-    open nbDoc
+    open nb

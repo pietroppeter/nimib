@@ -27,7 +27,7 @@ section#source {
   display:none
 }
 </style>
-
+  
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
 </head>
 <body>
@@ -83,8 +83,8 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;
 &gt;
 &gt; It reorders a **Limerick** according to Nolan's [Memento film structure](https://en.wikipedia.org/wiki/Memento_(film)#Film_structure).
 &quot;&quot;&quot;</span>
-<span class="hljs-keyword">let</span> filename_variant = nbDoc.filename.replace(<span class="hljs-string">&quot;.html&quot;</span>, <span class="hljs-string">&quot;_no_source.html&quot;</span>)
-<span class="hljs-keyword">let</span> iChange = nbDoc.blocks.len
+<span class="hljs-keyword">let</span> filename_variant = nb.filename.replace(<span class="hljs-string">&quot;.html&quot;</span>, <span class="hljs-string">&quot;_no_source.html&quot;</span>)
+<span class="hljs-keyword">let</span> iChange = nb.blocks.len
 nbText:<span class="hljs-string">fmt&quot;&quot;&quot;
 &gt; Click on `Show Source` at the bottom to see the nim file that generates this document.
 &gt; To see the variant with no Show Source [click here]({(filename_variant.AbsoluteFile).relPath})
@@ -105,28 +105,28 @@ nbText:<span class="hljs-string">fmt&quot;&quot;&quot;
     dec j
 
 nbText: <span class="hljs-string">&quot;# &quot;</span> &amp; mix(toSeq(<span class="hljs-string">&quot;Limerick&quot;</span>)).join
-<span class="hljs-keyword">let</span> iStart = nbDoc.blocks.len
+<span class="hljs-keyword">let</span> iStart = nb.blocks.len
 nbText: <span class="hljs-string">&quot;`1` There was a young man from Japan&quot;</span>
 nbText: <span class="hljs-string">&quot;`2` Whose limericks never would scan.&quot;</span>
 nbText: <span class="hljs-string">&quot;`3` And when they asked why,&quot;</span>
 nbText: <span class="hljs-string">&quot;`4` He said </span><span class="hljs-meta">\&quot;</span><span class="hljs-string">I do try!&quot;</span>
 nbtext: <span class="hljs-string">&quot;`5` But when I get to the last line I try to fit in as many words as I can.</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span>
-<span class="hljs-keyword">let</span> iEnd = nbDoc.blocks.len
+<span class="hljs-keyword">let</span> iEnd = nb.blocks.len
 
-nbDoc.blocks[iStart ..&lt; iEnd] = mix(nbDoc.blocks[iStart ..&lt; iEnd])
+nb.blocks[iStart ..&lt; iEnd] = mix(nb.blocks[iStart ..&lt; iEnd])
 
 nbSave
 
 <span class="hljs-comment"># save another document without source to test the opt-out of Show Source feature</span>
 nbText: <span class="hljs-string">&quot;---</span><span class="hljs-meta">\n</span><span class="hljs-string">&gt; This is how we can remove the `Show Source` functionality&quot;</span>
 nbCode:
-  nbDoc.context[<span class="hljs-string">&quot;no_source&quot;</span>] = <span class="hljs-literal">true</span>
+  nb.context[<span class="hljs-string">&quot;no_source&quot;</span>] = <span class="hljs-literal">true</span>
 <span class="hljs-comment"># we will generate this last block to change a previous block and then remove it</span>
 nbText:<span class="hljs-string">fmt&quot;&quot;&quot;
-&gt; To see the variant with Show Source [click here]({(nbDoc.filename.AbsoluteFile).relPath})
+&gt; To see the variant with Show Source [click here]({(nb.filename.AbsoluteFile).relPath})
 &quot;&quot;&quot;</span>
-nbDoc.blocks[iChange] = nbDoc.blocks.pop
-nbDoc.filename = filename_variant
+nb.blocks[iChange] = nbDoc.blocks.pop
+nb.filename = filename_variant
 nbSave</code></pre>
 </section><script>
 function toggleSourceDisplay() {

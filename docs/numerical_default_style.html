@@ -85,11 +85,13 @@ to integrate an ODE.</p>
 <span class="hljs-keyword">let</span> y5 = y(<span class="hljs-number">5</span>)
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y(5): &quot;</span>, y5</code></pre>
 <pre><samp>y'(0): 5.0
-y(5): -1.612374396254655</samp></pre>
+y(5): -1.612374396254655
+</samp></pre>
 <p>We want the solution to be available for every point in $[0, 5]$ with timestep $h=0.05$</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> tspan = arange(<span class="hljs-number">0.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">0.05</span>, includeEnd = <span class="hljs-literal">true</span>)
 <span class="hljs-keyword">echo</span> tspan[<span class="hljs-number">0</span> .. <span class="hljs-number">2</span>], <span class="hljs-string">&quot; . . . &quot;</span>, tspan[^<span class="hljs-number">3</span> .. ^<span class="hljs-number">1</span>]</code></pre>
-<pre><samp>@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]</samp></pre>
+<pre><samp>@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]
+</samp></pre>
 <p>We compute the solution according to our selected 2 methods and 3 timesteps:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span>
   options1 = newODEoptions(dt = <span class="hljs-number">0.1</span>)
@@ -129,14 +131,16 @@ RK4:
 -1.6124233
 -1.6123745
 Analytical:
--1.6123744</samp></pre>
+-1.6123744
+</samp></pre>
 <p>As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.</p>
 <p>To compute percentage error of each method at $y(5)$ I will use:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> pe(yApprox: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">string</span> =
   <span class="hljs-string">fmt&quot;{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%&quot;</span>
 
 <span class="hljs-keyword">echo</span> pe y1hn[^<span class="hljs-number">1</span>]             <span class="hljs-comment">## used like this</span></code></pre>
-<pre><samp>30.083%</samp></pre>
+<pre><samp>30.083%
+</samp></pre>
 <p>The following table is built as a Markdown table in a <code>nbText</code> block.</p>
 <p><strong>Table 1.</strong> Percentage errors</p>
 <table>
@@ -190,15 +194,20 @@ and here is the code for this Markdown block:
 <pre><code class="nim hljs"><span class="hljs-comment">#remember to run also with -d:numericalDefaultStyle</span>
 <span class="hljs-keyword">import</span> nimib, strformat, strutils
 nbInit
-nbDoc.useLatex
-<span class="hljs-keyword">let</span> filename_default_style = nbDoc.filename.replace(<span class="hljs-string">&quot;.html&quot;</span>, <span class="hljs-string">&quot;_default_style.html&quot;</span>)
-<span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(numericalDefaultStyle):
-  nbDoc.context[<span class="hljs-string">&quot;stylesheet&quot;</span>] = <span class="hljs-string">&quot;&quot;&quot;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://latex.now.sh/style.css&quot;&gt;&quot;&quot;&quot;</span>
-  <span class="hljs-comment"># I should also change font size, see https://katex.org/docs/font.html</span>
-  <span class="hljs-keyword">let</span> otherStyle = <span class="hljs-string">fmt&quot;; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_&quot;</span>
-<span class="hljs-keyword">else</span>:
-  <span class="hljs-keyword">let</span> otherStyle = <span class="hljs-string">fmt&quot;; _you are looking at default style, for custom style [click here]({(nbDoc.filename.AbsoluteFile).relPath})_&quot;</span>
-nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
+nb.useLatex
+<span class="hljs-keyword">let</span>
+  filename_default_style = nb.filename.replace(<span class="hljs-string">&quot;.html&quot;</span>, <span class="hljs-string">&quot;_default_style.html&quot;</span>)
+  default_style = nb.context[<span class="hljs-string">&quot;stylesheet&quot;</span>]
+
+nb.context[<span class="hljs-string">&quot;stylesheet&quot;</span>] = <span class="hljs-string">&quot;&quot;&quot;&lt;link rel=&quot;stylesheet&quot; href=&quot;https://latex.now.sh/style.css&quot;&gt;&quot;&quot;&quot;</span>
+
+<span class="hljs-keyword">proc</span> introText(defaultStyle = <span class="hljs-literal">false</span>): <span class="hljs-built_in">string</span> =
+  <span class="hljs-keyword">let</span> otherStyle = <span class="hljs-keyword">if</span> defaultStyle:
+    <span class="hljs-string">fmt&quot;; _you are looking at default style, for custom style [click here]({(nb.filename.AbsoluteFile).relPath})_&quot;</span>
+  <span class="hljs-keyword">else</span>:
+    <span class="hljs-string">fmt&quot;; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_&quot;</span>
+
+  <span class="hljs-string">fmt&quot;&quot;&quot;
 &gt; This nimib example document shows how to:
 &gt;  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
 &gt;  - using latex rendering of equations (thanks to [katex](https://katex.org/))
@@ -207,6 +216,11 @@ nbText: <span class="hljs-string">fmt&quot;&quot;&quot;
 &gt; The document itself shows how to use [numericalnim](https://github.com/hugogranstrom/numericalnim)
 &gt; to integrate an ODE.
 &quot;&quot;&quot;</span>
+
+nbText: introText()
+<span class="hljs-comment"># save to change later</span>
+<span class="hljs-keyword">var</span> blockIntroText = nb.blk
+
 nbText: <span class="hljs-string">fmt&quot;&quot;&quot;# Using NumericalNim
 
 Example of usage of [numericalnim](https://github.com/hugogranstrom/numericalnim).
@@ -307,14 +321,19 @@ $h=0.01$ | {pe y3hn[^1]} | {pe y3rk[^1]}
 
 and here is the code for this Markdown block:
 &quot;&quot;&quot;</span> <span class="hljs-comment"># right alignment of numbers does not seem to work. is this an issue of latex.css?</span>
-<span class="hljs-keyword">let</span> mdCode = nbBlock.code
+<span class="hljs-keyword">let</span> mdCode = nb.blk.code
 nbCode:
   <span class="hljs-keyword">discard</span>
-nbBlock.code = mdCode
+nb.blk.code = mdCode
 <span class="hljs-comment"># add a show Markdown source. It would be nice when hovering a code block to show (on the side? how to do it on mobile?) the call code (nbText: or other)</span>
-<span class="hljs-keyword">when</span> <span class="hljs-keyword">defined</span>(numericalDefaultStyle):
-  nbDoc.filename = filename_default_style
-  
+
+<span class="hljs-comment"># first save with latex style</span>
+nbSave
+
+<span class="hljs-comment"># then save with default style</span>
+blockIntroText.output = introText(default_style=<span class="hljs-literal">true</span>)
+nb.filename = filename_default_style
+nb.context[<span class="hljs-string">&quot;stylesheet&quot;</span>] = default_style 
 nbSave
 </code></pre>
 </section><script>

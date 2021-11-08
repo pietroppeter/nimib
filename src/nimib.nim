@@ -55,7 +55,7 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   nb.templateDirs = @["./", "./templates/"]
   nb.partials = initTable[string, string]()
   nb.context = newContext(searchDirs = @[])
-  theme nb  # apply theme    
+  theme nb  # apply theme
 
   template nbText(body: untyped) =
     nbTextBlock(nb.blk, nb, body)
@@ -87,7 +87,7 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
       f.write(body)
       f.close()
     nbText(name & ": ")
-    nbText(nbBlock, nbDoc, body)
+    nbText(body)
 
   template nbFile(name: string, body: untyped) =
     ## Nim code file

@@ -1,4 +1,4 @@
-import std/[macros, strutils]
+import std/macros
 import types, capture
 
 macro toStr*(body: untyped): string =
@@ -31,7 +31,7 @@ proc echoCodeBlock(b: NbBlock) =
   when not defined(nimibQuiet):
     echo "```nim" & b.code & "\n```\n"
     if b.output != "":
-      echo "\n" & b.output & "\n"
+      echo "```\n" & b.output & "```\n"
 
 template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))

@@ -27,23 +27,6 @@ template nbTextBlock*(identBlock, identContainer, body: untyped) =
     echo identBlock.output
   identContainer.blocks.add identBlock
 
-proc addQuoteToBlock*(identBlock: var NbBlock) =
-  if identBlock.output != "":
-    var lines = identBlock.output.splitLines()
-    for l in lines.mitems:
-      insert(l, "> ", 0)
-    identBlock.output = join(lines, "\n")
-
-template nbTextQuote*(identBlock, identContainer, body: untyped) =
-  # assume body is a string
-  identBlock = newBlock(nbkText, toStr(body))  # nbDoc.flags.update(flags)
-  identBlock.output = block:
-    body
-  identBlock.addQuoteToBlock()
-  when not defined(nimibQuiet):
-    echo identBlock.output
-  identContainer.blocks.add identBlock
-
 proc echoCodeBlock(b: NbBlock) =
   when not defined(nimibQuiet):
     echo "```nim" & b.code & "\n```\n"
@@ -54,6 +37,5 @@ template nbCodeBlock*(identBlock, identContainer, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   captureStdout(identBlock.output):
     body
-  identBlock.addQuoteToBlock()
   echoCodeBlock identBlock
   identContainer.blocks.add identBlock

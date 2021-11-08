@@ -63,9 +63,6 @@ template nbInit*() =
   template nbText(body: untyped) =
     nbTextBlock(nbBlock, nbDoc, body)
 
-  template nbQuote(body: untyped) =
-    nbTextQuote(nbBlock, nbDoc, body)
-
   template nbCode(body: untyped) =
     nbCodeBlock(nbBlock, nbDoc, body)
 
@@ -93,7 +90,7 @@ template nbInit*() =
       f.write(body)
       f.close()
     nbText(name & ": ")
-    nbTextQuote(nbBlock, nbDoc, body)
+    nbText(nbBlock, nbDoc, body)
 
   template nbFile(name: string, body: untyped) =
     ## Nim code file

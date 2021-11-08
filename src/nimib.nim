@@ -1,4 +1,4 @@
-import std/os
+import std/[os, strutils]
 import nimib / [types, blocks, docs, renders, boost, config, options]
 export types, blocks, docs, renders, boost
 # types exports mustache, tables, paths
@@ -86,8 +86,12 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
       let f = open(getCurrentDir() / name, fmWrite)
       f.write(body)
       f.close()
-    nbText(name & ": ")
-    nbText(body)
+
+    var r = name.splitFile()
+    r.ext.removePrefix('.')
+    nbText("Writing file `" & name & "` :")
+    let newbody = "```" & r.ext & "\n" & body & "```"
+    nbText(newbody)
 
   template nbFile(name: string, body: untyped) =
     ## Nim code file
@@ -95,8 +99,9 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
       let f = open(getCurrentDir() / name, fmWrite)
       f.write(body)
       f.close()
-    nbText(name & ": ")
-    nbCode(body)
+    nbText("Writing file `" & name & "` :")
+    identBlock = newBlock(nbkCode, toStr(body))
+    identContainer.blocks.add identBlock
 
   template nbSave =
     # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:

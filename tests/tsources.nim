@@ -31,7 +31,7 @@ let  # and a comment with nbCode
   y = 1
 """
 check
-#[
+
 nbCode echo y
 expected = "echo y"
 check
@@ -41,4 +41,3 @@ check
 nbCode(echo y)
 expected = "echo y"
 check
-]#

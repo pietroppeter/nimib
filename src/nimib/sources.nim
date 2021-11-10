@@ -58,7 +58,6 @@ proc isCommandLine*(s: string, command: string): bool =
 func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): string =
   ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.
   let lines = source.split("\n")
-  debugecho "Start line: ", startPos.line
   var startLine = startPos.line - 1
   var endLine = endPos.line - 1
 
@@ -101,8 +100,6 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
           notIndentLines.add i
       inc i
       
-
-
     let parsedLines = collect(newSeqOfCap(codeLines.len)):
       for i in 0 .. codeLines.high:
         if i in notIndentLines:
@@ -110,11 +107,23 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
         else:
           codeLines[i].substr(indent)
     codeText = parsedLines.join("\n")
-    #codeText = codeLines.mapIt(it.substr(indent)).join("\n")
 
   else: # single line case, eg `nbCode: echo "Hello World"`
     let line = lines[startLine]
-    codeText = line.split(":")[1 .. ^1].join(":").strip() # split at first ":" and take the rest as code and then strip it.
+    var extractedLine = line[startPos.column .. ^1].strip()
+    if extractedLine.strip().endsWith(")"):
+      # check if the ending ")" has a matching "(", otherwise remove it.
+      var nOpen, nClose: int
+      for c in extractedLine:
+        if c == '(': nOpen += 1
+        elif c == ')': nClose += 1
+      if nOpen < nClose:
+        # remove trailing ")" so that we get matching number of "()".
+        # We trust the compiler to only give us valid code, thus we can assume all ")" are at the end as the missing "("
+        # are expected to exist before line[startPos.column].
+        let diff = nClose - nOpen
+        extractedLine = extractedLine[0 .. ^(diff+1)]
+    codeText = extractedLine
   return codeText
 
 macro getCodeAsInSource*(source: string, command: static string, body: untyped): string =

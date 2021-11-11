@@ -113,16 +113,20 @@ func getCodeBlock*(source: string, command: string, startPos, endPos: Pos): stri
     var extractedLine = line[startPos.column .. ^1].strip()
     if extractedLine.strip().endsWith(")"):
       # check if the ending ")" has a matching "(", otherwise remove it.
-      var nOpen, nClose: int
-      for c in extractedLine:
-        if c == '(': nOpen += 1
-        elif c == ')': nClose += 1
-      if nOpen < nClose:
-        # remove trailing ")" so that we get matching number of "()".
-        # We trust the compiler to only give us valid code, thus we can assume all ")" are at the end as the missing "("
-        # are expected to exist before line[startPos.column].
-        let diff = nClose - nOpen
-        extractedLine = extractedLine[0 .. ^(diff+1)]
+      var nOpen: int
+      var i = startPos.column
+      # count the number of opening brackets before code starts.
+      while line[i-1] in Whitespace or line[i-1] == '(':
+        if line[i-1] == '(':
+          nOpen += 1
+        i -= 1
+      var nRemoved: int
+      while nRemoved < nOpen: # remove last char until we have removed correct number of parentesis
+                              # We assume we are given correct Nim code and thus won't have to check what we remove, it should either be Whitespace or ')'
+        assert extractedLine[^1] in Whitespace or extractedLine[^1] == ')', "Unexpected ending of string during parsing. Single line expression ended with character that wasn't whitespace of ')'."
+        if extractedLine[^1] == ')':
+          nRemoved += 1
+        extractedLine.setLen(extractedLine.len-1)
     codeText = extractedLine
   return codeText
 

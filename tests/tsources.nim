@@ -41,3 +41,6 @@ check
 nbCode(echo y)
 expected = "echo y"
 check
+nbCode ((echo ("( This is ( weird string)")))
+expected = "echo (\"( This is ( weird string)\")"
+check

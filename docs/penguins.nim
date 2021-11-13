@@ -7,14 +7,14 @@ nbText: """
 nbText: """# :penguin: Exploring penguins with ggplotnim
 
 We will explore the [palmer penguins dataset](https://github.com/allisonhorst/palmerpenguins)
-with [ggplotnim](https://github.com/Vindaar/ggplotnim)
+with [ggplotnim](https://github.com/Vindaar/ggplotnim) and [datamancer](https://github.com/SciNim/Datamancer).
 """.emojize
 
 nbCode:
-  import ggplotnim
-nbText: "we read penguins csv in ggplotnim `DataFrame`"
+  import datamancer
+nbText: "we read the penguins csv into a Datamancer `DataFrame`"
 nbCode:
-  let df = toDf(readCsv("data/penguins.csv"))
+  let df = readCsv("data/penguins.csv")
 nbText: "let us see how it looks"
 nbCode:
   echo df # why so wide the first column?
@@ -28,11 +28,13 @@ nbCode:
   echo df["culmen_depth_mm", 3].kind
   echo df["flipper_length_mm", 2].kind
   echo df["flipper_length_mm", 3].kind
-  
 
 
-nbText: "Let's see how many penguins by species we have (and how do they relate to islands)."
+
+nbText: """Let's see how many penguins by species we have (and how do they relate to islands)
+by plotting the species count per island using ggplotnim:"""
 nbCode:
+  import ggplotnim
   ggplot(df, aes("species", fill = "island")) + geom_bar() + ggsave("images/penguins_count_species.png")
 nbImage(url="images/penguins_count_species.png", caption="Count of penguins by species")
 nbText: """We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)

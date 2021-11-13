@@ -72,12 +72,16 @@ nbText: """A few things to remark:
 - we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns
 - we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger
 
-
-As a final plot, I would like to (partly) reproduce a plot that "shows" the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
+As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that "shows" the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
 as reported by [this tweet](https://twitter.com/andrewheiss/status/1301166792627421186):
 """
 nbCode:
-  ggplot(df1, aes(x="culmen_depth_mm", y="body_mass_g", color = "species")) + geom_point() + ggsave("images/penguins_simpson.png")
+  ggplot(df1, aes(x="culmen_depth_mm", y="body_mass_g")) +
+    geom_point(aes = aes(color = "species")) +      # point...
+    geom_smooth(aes = aes(color = "species"),       # and smooth classified by species
+                smoother = "poly", polyOrder = 1) + # polynomial order 1 == line
+    geom_smooth(smoother = "poly", polyOrder = 1) + # and smooth w/o classification by species
+    ggsave("images/penguins_simpson.png")
 nbImage(url="images/penguins_simpson.png", caption="""
 Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill""")

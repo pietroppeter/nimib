@@ -62,7 +62,7 @@ well as their species:
 #  ggplot(df, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex_and_species2.png")
 #nbImage(url="images/penguins_mass_vs_length_with_sex_and_species2.png", caption="Penguins' mass vs flipper length")
 nbCode:
-  let df1 = df.filter(f{`body_mass_g` != "NA"}) # c"foo" == `foo` == idx("foo") (accent quoted not usable for columns w/ spaces)
+  let df1 = df.filter(f{`body_mass_g` != "NA"}) # c"foo" == `foo` == idx("foo") (backtick quotes not usable for columns with spaces)
   ggplot(df1, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex.png")
 nbImage(url="images/penguins_mass_vs_length_with_sex.png", caption="Penguins' mass vs flipper length (colored by sex)")
 nbText: """A few things to remark:

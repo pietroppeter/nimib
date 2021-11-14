@@ -69,7 +69,7 @@ nbText: """A few things to remark:
 
 - as expected body mass and flipper length are linearly correlated
 - males are in general bigger than females but there appear 2 groups, possibly related to species
-- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns
+- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)
 - we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger
 
 As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that "shows" the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,

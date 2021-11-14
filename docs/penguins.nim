@@ -80,7 +80,7 @@ nbCode:
     geom_point(aes = aes(color = "species")) +      # point...
     geom_smooth(aes = aes(color = "species"),       # and smooth classified by species
                 smoother = "poly", polyOrder = 1) + # polynomial order 1 == line
-    geom_smooth(smoother = "poly", polyOrder = 1) + # and smooth w/o classification by species
+    geom_smooth(smoother = "poly", polyOrder = 1) + # and smooth without classification by species
     ggsave("images/penguins_simpson.png")
 nbImage(url="images/penguins_simpson.png", caption="""
 Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,

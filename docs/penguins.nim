@@ -57,10 +57,6 @@ nbText: """We do expect weight being correlated to some of the length measures
 To plot this we need to remove all `NA` and then classify the points both by the penguins sex as
 well as their species:
 """
-# manage runtime error here!
-#nbCode:
-#  ggplot(df, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex_and_species2.png")
-#nbImage(url="images/penguins_mass_vs_length_with_sex_and_species2.png", caption="Penguins' mass vs flipper length")
 nbCode:
   let df1 = df.filter(f{`body_mass_g` != "NA"}) # c"foo" == `foo` == idx("foo") (backtick quotes not usable for columns with spaces)
   ggplot(df1, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex.png")

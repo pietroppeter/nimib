@@ -7,14 +7,14 @@ nbText: """
 nbText: """# :penguin: Exploring penguins with ggplotnim
 
 We will explore the [palmer penguins dataset](https://github.com/allisonhorst/palmerpenguins)
-with [ggplotnim](https://github.com/Vindaar/ggplotnim)
+with [ggplotnim](https://github.com/Vindaar/ggplotnim) and [datamancer](https://github.com/SciNim/Datamancer).
 """.emojize
 
 nbCode:
-  import ggplotnim
-nbText: "we read penguins csv in ggplotnim `DataFrame`"
+  import datamancer
+nbText: "we read the penguins csv into a Datamancer `DataFrame`"
 nbCode:
-  let df = toDf(readCsv("data/penguins.csv"))
+  let df = readCsv("data/penguins.csv")
 nbText: "let us see how it looks"
 nbCode:
   echo df # why so wide the first column?
@@ -28,11 +28,13 @@ nbCode:
   echo df["culmen_depth_mm", 3].kind
   echo df["flipper_length_mm", 2].kind
   echo df["flipper_length_mm", 3].kind
-  
 
 
-nbText: "Let's see how many penguins by species we have (and how do they relate to islands)."
+
+nbText: """Let's see how many penguins by species we have (and how do they relate to islands)
+by plotting the species count per island using ggplotnim:"""
 nbCode:
+  import ggplotnim
   ggplot(df, aes("species", fill = "island")) + geom_bar() + ggsave("images/penguins_count_species.png")
 nbImage(url="images/penguins_count_species.png", caption="Count of penguins by species")
 nbText: """We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
@@ -41,7 +43,7 @@ The majority of penguins are Adelie and they are distributed over the 3 islands.
 Gentoo penguins (second most common) almost all live on Biscoe,
 and Chinstrap penguins almost all live on Dream.
 
-We can confirm this with the following  image taken from the
+We can confirm this with the following image taken from the
 [article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081)
 from where this dataset comes from:
 """
@@ -52,34 +54,30 @@ nbImage(url="images/penguins_map.png",
 nbText: """We do expect weight being correlated to some of the length measures
 (e.g. flipper length) with males being bigger than females.
 
-To plot this we need to remove all `NA`s:
+To plot this we need to remove all `NA` and then classify the points both by the penguins sex as
+well as their species:
 """
-# manage runtime error here!
-#nbCode:
-#  ggplot(df, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex_and_species.png")
-#nbImage(url="images/penguins_mass_vs_length_with_sex_and_species.png", caption="Penguins' mass vs flipper length")
 nbCode:
-  let df1 = df.filter(f{c"body_mass_g" != "NA"}) # why c""?
-  ggplot(df1, aes(x="body_mass_g", y="flipper_length_mm", color = "sex")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex.png")
+  let df1 = df.filter(f{`body_mass_g` != "NA"}) # c"foo" == `foo` == idx("foo") (backtick quotes not usable for columns with spaces)
+  ggplot(df1, aes(x="body_mass_g", y="flipper_length_mm", color = "sex", shape="species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_sex.png")
 nbImage(url="images/penguins_mass_vs_length_with_sex.png", caption="Penguins' mass vs flipper length (colored by sex)")
 nbText: """A few things to remark:
 
 - as expected body mass and flipper length are linearly correlated
 - males are in general bigger than females but there appear 2 groups, possibly related to species
 - we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)
+- we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger
 
-Let's now look at the same chart coloring by species instead of by sex (shape is not yet supported in ggplotnim):
-"""
-nbCode:
-  ggplot(df1, aes(x="body_mass_g", y="flipper_length_mm", color = "species")) + geom_point() + ggsave("images/penguins_mass_vs_length_with_species.png")
-nbImage(url="images/penguins_mass_vs_length_with_species.png", caption="Penguins' mass vs flipper length (colored by species)")
-nbText: """We can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger.
-
-As a final plot, I would like to (partly) reproduce a plot that "shows" the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
+As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that "shows" the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
 as reported by [this tweet](https://twitter.com/andrewheiss/status/1301166792627421186):
 """
 nbCode:
-  ggplot(df1, aes(x="culmen_depth_mm", y="body_mass_g", color = "species")) + geom_point() + ggsave("images/penguins_simpson.png")
+  ggplot(df1, aes(x="culmen_depth_mm", y="body_mass_g")) +
+    geom_point(aes = aes(color = "species")) +      # point...
+    geom_smooth(aes = aes(color = "species"),       # and smooth classified by species
+                smoother = "poly", polyOrder = 1) + # polynomial order 1 == line
+    geom_smooth(smoother = "poly", polyOrder = 1) + # and smooth without classification by species
+    ggsave("images/penguins_simpson.png")
 nbImage(url="images/penguins_simpson.png", caption="""
 Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill""")

@@ -139,7 +139,7 @@ StatusSuccess output of write_to_png
 <ul>
 <li>as expected body mass and flipper length are linearly correlated</li>
 <li>males are in general bigger than females but there appear 2 groups, possibly related to species</li>
-<li>we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns</li>
+<li>we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)</li>
 <li>we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger</li>
 </ul>
 <p>As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that &quot;shows&quot; the presence of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson's paradox</a> in this dataset,
@@ -236,19 +236,15 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;We do expect weight being co
 To plot this we need to remove all `NA` and then classify the points both by the penguins sex as
 well as their species:
 &quot;&quot;&quot;</span>
-<span class="hljs-comment"># manage runtime error here!</span>
-<span class="hljs-comment">#nbCode:</span>
-<span class="hljs-comment">#  ggplot(df, aes(x=&quot;body_mass_g&quot;, y=&quot;flipper_length_mm&quot;, color = &quot;sex&quot;, shape=&quot;species&quot;)) + geom_point() + ggsave(&quot;images/penguins_mass_vs_length_with_sex_and_species2.png&quot;)</span>
-<span class="hljs-comment">#nbImage(url=&quot;images/penguins_mass_vs_length_with_sex_and_species2.png&quot;, caption=&quot;Penguins' mass vs flipper length&quot;)</span>
 nbCode:
-  <span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (accent quoted not usable for columns w/ spaces)</span>
+  <span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
   ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)
 nbImage(url=<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>, caption=<span class="hljs-string">&quot;Penguins' mass vs flipper length (colored by sex)&quot;</span>)
 nbText: <span class="hljs-string">&quot;&quot;&quot;A few things to remark:
 
 - as expected body mass and flipper length are linearly correlated
 - males are in general bigger than females but there appear 2 groups, possibly related to species
-- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns
+- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)
 - we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger
 
 As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that &quot;shows&quot; the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
@@ -259,7 +255,7 @@ nbCode:
     geom_point(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>)) +      <span class="hljs-comment"># point...</span>
     geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>),       <span class="hljs-comment"># and smooth classified by species</span>
                 smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
-    geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth w/o classification by species</span>
+    geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth without classification by species</span>
     ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)
 nbImage(url=<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>, caption=<span class="hljs-string">&quot;&quot;&quot;
 Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,

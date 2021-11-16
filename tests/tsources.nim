@@ -10,7 +10,7 @@ suite "test sources":
     currentTest += 1
 
   var currentTest: int
-  var expected: string
+  var expected, actual: string
   nbInit
   nbCode:
     # a comment

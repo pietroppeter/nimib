@@ -1,8 +1,8 @@
 import nimib, strutils
 nbInit
-nb.context["home_path"] = nb.context["home_path"].castStr.replace("/", r"\") # for CI since I run locally on Windows and CI runs on Linux: behaviour is the same
-nb.context["here_path"] = nb.context["here_path"].castStr.replace("/", r"\") # for CI since I run locally on Windows and CI runs on Linux: behaviour is the same
+nb.context["path_to_root"] = nb.context["path_to_root"].castStr.replace("/", r"\") # for CI since I run locally on Windows and CI runs on Linux: behaviour is the same
+nb.context["path_to_here"] = nb.context["path_to_here"].castStr.replace("/", r"\") # for CI since I run locally on Windows and CI runs on Linux: behaviour is the same
 nb.partials["document"] = """
-<a href=".">🕷️</a> is {{here_path}} <a href="{{home_path}}">🏡</a> ({{home_path}})
+<a href=".">🕷️</a> is {{path_to_here}} <a href="{{path_to_root}}">🏡</a> ({{path_to_root}})
 """
 nbSave

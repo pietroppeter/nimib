@@ -6,6 +6,8 @@ suite "test sources":
     #echo &"---\n{nbBlock.code}\n"
     # the replace stuff needed on windows where the lines read from file will have windows native new lines
     test $currentTest:
+      actual = nbBlock.code.replace("\c\l", "\n").replace("\c", "\n")
+      echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
       check nbBlock.code.replace("\c\l", "\n").replace("\c", "\n") == expected
     currentTest += 1
 

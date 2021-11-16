@@ -61,9 +61,9 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
     nbTextBlock(nb.blk, nb, body)
 
   template nbCode(body: untyped) =
-    nbCodeBlock(nb.blk, nb, body)
+    nbCodeBlock(nb.source, nb.blk, nb, body)
 
-  template nbCodeInBlock(body: untyped) =
+  template nbCodeInBlock(body: untyped): untyped =
     block:
       nbCode:
         body

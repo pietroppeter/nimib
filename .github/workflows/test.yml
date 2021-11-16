@@ -15,3 +15,4 @@ jobs:
       - run: nimble deps
       - run: nimble tdeps
       - run: nimble ptest
+      - run: nimble test

@@ -22,3 +22,6 @@ task tdeps, "install dependendencies required for testing":
 
 task ptest, "test with ptest":
   exec "nim r docs/ptest"
+
+task test, "General tests":
+  exec "nim r -d:nimibPreviewCodeAsInSource tests/tsources.nim"

@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.3"
+version       = "0.2.4"
 author        = "Pietro Peterlongo"
 description   = "nimib 🐳 - nim 👑 driven ⛵ publishing ✍"
 license       = "MIT"

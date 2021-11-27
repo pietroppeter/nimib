@@ -14,5 +14,5 @@ jobs:
           nim-version: '1.6.x'
       - run: nimble deps
       - run: nimble tdeps
-      - run: nimble ptest
+      #- run: nimble ptest
       - run: nimble test

@@ -12,11 +12,6 @@ export searchTable, searchDirs, castStr
 template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   var nb {.inject.}: NbDoc
 
-  # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
-  template nbDoc: NbDoc = nb
-  template nbBlock: NbBlock = nb.blk
-  template nbHomeDir: AbsoluteDir = nb.homeDir
-
   nb.initDir = getCurrentDir().AbsoluteDir
   loadOptions nb
   loadCfg nb
@@ -27,12 +22,12 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   else:
     nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
     echo "[nimib] thisFile: ", nb.thisFile
+
   try:
     nb.source = read(nb.thisFile)
   except IOError:
     echo "[nimib] cannot read source"
 
-  nb.render = renderHtml
   if nb.options.filename == "":
     nb.filename = nb.thisFile.string.splitFile.name & ".html"
   else:
@@ -47,74 +42,82 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
     echo "[nimib] setting current directory to nb.homeDir: ", nb.homeDir
     setCurrentDir nb.homeDir
 
-  # how to change this to a better version using nb?
-  proc relPath(path: AbsoluteFile | AbsoluteDir): string =
-    (path.relativeTo nb.homeDir).string
-
   # can be overriden by theme, but it is better to initialize this anyway
   nb.templateDirs = @["./", "./templates/"]
   nb.partials = initTable[string, string]()
-  nb.context = newContext(searchDirs = @[])
+  nb.context = newContext(searchDirs = @[]) # templateDirs and partials added during nbSave
   theme nb  # apply theme
 
-  template nbText(body: untyped) =
-    nbTextBlock(nb.blk, nb, body)
+  # render defaults
+  nb.render = renderHtml
 
-  template nbCode(body: untyped) =
-    nbCodeBlock(nb.source, nb.blk, nb, body)
+template nbText*(body: untyped) =
+  nbTextBlock(nb.blk, nb, body)
 
-  template nbCodeInBlock(body: untyped): untyped =
-    block:
-      nbCode:
-        body
+template nbCode*(body: untyped) =
+  nbCodeBlock(nb.source, nb.blk, nb, body)
 
-  template nbImage(url: string, caption = "") =
-    if isAbsolute(url) or url[0..3] == "http":
-      # Absolute URL or External URL
-      nb.blk = NbBlock(kind: nbkImage, code: url)
-    else:
-      # Relative URL
-      let relativeUrl = nb.context["path_to_root"].vString / url
-      nb.blk = NbBlock(kind: nbkImage, code: relativeUrl)
+template nbCodeInBlock*(body: untyped): untyped =
+  block:
+    nbCode:
+      body
 
-    nb.blk.output = caption
-    nb.blocks.add nb.blk
+template nbImage*(url: string, caption = "") =
+  if isAbsolute(url) or url[0..3] == "http":
+    # Absolute URL or External URL
+    nb.blk = NbBlock(kind: nbkImage, code: url)
+  else:
+    # Relative URL
+    let relativeUrl = nb.context["path_to_root"].vString / url
+    nb.blk = NbBlock(kind: nbkImage, code: relativeUrl)
 
-  template nbFile(name: string, body: string) =
-    ## Generic string file
-    block:
-      let f = open(getCurrentDir() / name, fmWrite)
-      f.write(body)
-      f.close()
+  nb.blk.output = caption
+  nb.blocks.add nb.blk
 
-    var r = name.splitFile()
-    r.ext.removePrefix('.')
-    nbText("Writing file `" & name & "` :")
-    let newbody = "```" & r.ext & "\n" & body & "```"
-    nbText(newbody)
+template nbFile*(name: string, body: string) =
+  ## Generic string file
+  block:
+    let f = open(getCurrentDir() / name, fmWrite)
+    f.write(body)
+    f.close()
 
-  template nbFile(name: string, body: untyped) =
-    ## Nim code file
-    block:
-      let f = open(getCurrentDir() / name, fmWrite)
-      f.write(body)
-      f.close()
-    nbText("Writing file `" & name & "` :")
-    identBlock = newBlock(nbkCode, toStr(body))
-    identContainer.blocks.add identBlock
+  var r = name.splitFile()
+  r.ext.removePrefix('.')
+  nbText("Writing file `" & name & "` :")
+  let newbody = "```" & r.ext & "\n" & body & "```"
+  nbText(newbody)
 
-  template nbSave =
-    # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
-    #   - in memory partial contains default mustache assets
-    #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
-    #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
-    nb.context.searchDirs(nb.templateDirs)
-    nb.context.searchTable(nb.partials)
+template nbFile*(name: string, body: untyped) =
+  ## Nim code file
+  block:
+    let f = open(getCurrentDir() / name, fmWrite)
+    f.write(body)
+    f.close()
+  nbText("Writing file `" & name & "` :")
+  identBlock = newBlock(nbkCode, toStr(body))
+  identContainer.blocks.add identBlock
 
-    write nb
-    if nb.options.show:
-      open nb
+template nbSave* =
+  # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
+  #   - in memory partial contains default mustache assets
+  #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
+  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
+  nb.context.searchDirs(nb.templateDirs)
+  nb.context.searchTable(nb.partials)
 
-  template nbShow =
-    nbSave
+  write nb
+  if nb.options.show:
     open nb
+
+# how to change this to a better version using nb?
+template relPath*(path: AbsoluteFile | AbsoluteDir): string =
+  (path.relativeTo nb.homeDir).string
+
+# aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
+template nbDoc*: NbDoc = nb
+template nbBlock*: NbBlock = nb.blk
+template nbHomeDir*: AbsoluteDir = nb.homeDir
+
+template nbShow* =
+  nbSave
+  open nb

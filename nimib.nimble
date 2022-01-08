@@ -25,3 +25,5 @@ task ptest, "test with ptest":
 
 task test, "General tests":
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tsources.nim"
+  exec "nim r tests/tblocks.nim"
+  exec "nim r -d:nimibPreviewCodeAsInSource tests/tblocks.nim"

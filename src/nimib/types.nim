@@ -7,7 +7,7 @@ type
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
     command*: string
-    kind*: NbBlockKind
+    kind*: NbBlockKind # refactor: to remove
     code*: string
     output*: string
     #error*: string # have not used this one yet

@@ -4,6 +4,15 @@ import types, capture, sources
 macro toStr*(body: untyped): string =
   (body.toStrLit)
 
+template newBlock*(cmd: string, body: untyped): NbBlock =
+  NbBlock(command: cmd,
+    code: block:
+      when defined(nimibPreviewCodeAsInSource):
+        getCodeAsInSource(nb.source, cmd, body)
+      else:
+        toStr(body)
+      )
+
 proc newBlock*(kind: NbBlockKind, code: string): NbBlock =
   # I cannot use this directly in nbBlocks (nbText, nbCode, ...)
   # or it will substitute kind and body fields with their values

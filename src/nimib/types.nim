@@ -6,6 +6,7 @@ type
   NbBlockKind* = enum
     nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
+    command*: string
     kind*: NbBlockKind
     code*: string
     output*: string

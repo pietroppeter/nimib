@@ -15,6 +15,12 @@ todo:
   - [ ] add task nimble docs to build docs
     - [x] mostaccio
     - [x] numerical
+    - [x] nolan
+    - [ ] pythno
+    - [ ] cheatsheet
+    - [ ] penguins
+    - [ ] index
+    - [ ] remove ptest (also from index)
   - [ ] markdown backend
   - [ ] nbImage
   - [ ] nbFile

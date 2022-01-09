@@ -10,7 +10,7 @@ const document* = """
 {{> left }}
 <main>
 {{#blocks}}
-{{{blocks}}}
+{{&.}}
 {{/blocks}}
 </main>
 {{> right }}

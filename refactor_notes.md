@@ -1,15 +1,16 @@
 todo:
 
-- [ ] be able to run nim r docs/hello (also with nimibPreviewCodeAsInSource)
+- [x] be able to run nim r docs/hello (also with nimibPreviewCodeAsInSource)
   - [x] newNbNewBlock
   - [x] context field for NbBlock (populated during newNbBlock)
   - [x] new nbText and nbCode
   - [x] default html backend for nbText and nbCode: useHtmlBackend, highlightCode, highlightCode
   - [x] renderPlan(s) and renderProc(s) for NbDoc
   - [x] ~optional renderPlan and partial for NbBlock?~ no need. Change command name and add specific partial and renderPlan in doc.
-  - [x] renderBlock generic proc
-  - [ ] fix rendering upstream of renderBlock
-  - [ ] run nim r hello successfully
+  - [x] render (block) backend independent proc
+  - [x] render (doc) backend independent proc
+  - [x] fix rendering upstream of renderBlock (in write)
+  - [x] run nim r hello successfully
 - [ ] be able to run the rest of documentation
   - [ ] markdown backend
   - [ ] nbImage
@@ -28,9 +29,11 @@ todo:
   - [ ] frontmatter for markdown backend
 - [ ] accidental changes
   - [x] exporting sugar - am I sure about this?
+  - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
 - [ ] cleanup
   - [ ] remove old newBlock
   - [ ] remove manageErrors (never used)
+  - [ ] remove all unused stuff in renders
 - [ ] check that projects that depend on nimib are not broken
   - [ ] nimibook
   - [ ] scinim/getting-started
@@ -74,3 +77,6 @@ notes:
   - exporting sugar now
   - especially a bad idea to have blk.output and blk.context["output"] different
   - I really should think of an alternative...
+- something I do not like is that rendering changes state of doc and blocks. it should not (it could affect a second pass with another backend)
+- in fact now write wants a mutable doc
+- the moment I have the json backend I might be able to have a non mutable doc (but might not be worth it)

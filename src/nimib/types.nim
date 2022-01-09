@@ -31,7 +31,6 @@ type
     rawCfg*: string
     blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
-    render*: proc (doc: NbDoc): string {.closure.} # refactor: can I remove this?
     context*: Context
     partials*: Table[string, string]
     templateDirs*: seq[string]

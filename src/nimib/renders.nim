@@ -1,4 +1,4 @@
-import types, strformat, strutils, markdown, mustache
+import types, strformat, strutils, markdown, mustache, sugar
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import tables
 import highlight
@@ -7,7 +7,7 @@ from std/cgi import xmlEncode
 let mdCfg = initGfmConfig() # remove (cannot be made const)
 
 proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
-  blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig())
+  blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
 
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
@@ -29,7 +29,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
 
-proc renderBlock*(nb: var NbDoc, blk: var NbBlock): string =
+proc render*(nb: var NbDoc, blk: var NbBlock): string =
   if blk.command not_in nb.partials:
     echo "[nimib.warning] no partial found for block ", blk.command
     return
@@ -41,6 +41,14 @@ proc renderBlock*(nb: var NbDoc, blk: var NbBlock): string =
     blk.context.searchTable(nb.partials)
     result = nb.partials[blk.command].render(blk.context)
 
+proc render*(nb: var NbDoc): string =
+  var blocks: seq[string]
+  for blk in nb.blocks.mitems:
+    blocks.add nb.render(blk)
+  nb.context["blocks"] = blocks
+  return "{{> document}}".render(nb.context)
+
+# todo: starting from here it should all become obsolete and to be removed
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
 

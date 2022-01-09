@@ -13,7 +13,8 @@ todo:
   - [x] run nim r hello successfully
 - [ ] be able to run the rest of documentation
   - [ ] add task nimble docs to build docs
-  - [x] mostaccio
+    - [x] mostaccio
+    - [x] numerical
   - [ ] markdown backend
   - [ ] nbImage
   - [ ] nbFile

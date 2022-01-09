@@ -13,7 +13,8 @@ func peekFirstLineOf*(text: string, maxChars=12): string =
     result.add "..."
 
 func nbNormalize*(text: string): string =
-  text.replace("\c\l", "\n").replace("\c", "\n").strip(chars = {'\n'})
+  text.replace("\c\l", "\n").replace("\c", "\n").strip # this could be made more efficient
+# note that: '\c' == '\r' and '\l' == '\n'
 
 template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
   stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "

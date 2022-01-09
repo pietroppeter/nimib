@@ -1,6 +1,6 @@
-import std/[os, strutils]
+import std/[os, strutils, sugar]
 import nimib / [types, blocks, docs, boost, config, options, capture]
-export types, blocks, docs, boost
+export types, blocks, docs, boost, sugar
 # types exports mustache, tables, paths
 
 from nimib / themes import nil

@@ -19,6 +19,7 @@ type
     other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
+  NbRenderProc* = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}
   NbDoc* = object
     thisFile*: AbsoluteFile
     filename*: string
@@ -30,10 +31,12 @@ type
     rawCfg*: string
     blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
-    render*: proc (doc: NbDoc): string {.closure.}
+    render*: proc (doc: NbDoc): string {.closure.} # refactor: can I remove this?
     context*: Context
     partials*: Table[string, string]
     templateDirs*: seq[string]
+    renderPlans*: Table[string, seq[string]]
+    renderProcs*: Table[string, NbRenderProc]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

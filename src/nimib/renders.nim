@@ -4,10 +4,42 @@ import tables
 import highlight
 from std/cgi import xmlEncode
 
-let mdCfg = initGfmConfig()
+let mdCfg = initGfmConfig() # remove (cannot be made const)
+
+proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
+  blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig())
+
+proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
+  blk.context["codeHighlighted"] = highlightNim(blk.code)
 
 proc useHtmlBackend*(doc: var NbDoc) =
-  discard
+  doc.partials["nbText"] = "{{&outputToHtml}}"
+  doc.partials["nbCode"] = """
+{{>nbCodeSource}}
+{{>nbCodeOutput}}"""
+  doc.partials["nbCodeSource"] = "<pre><code class=\"nim hljs\">{{&codeHighlighted}}</code></pre>"
+  doc.partials["nbCodeOutput"] = "{{#output}}<pre><samp>{{output}}</samp></pre>{{/output}}"
+
+  # I prefer to initialize here instead of in nimib (each backend should re-initialize)
+  doc.renderPlans = initTable[string, seq[string]]()
+  doc.renderPlans["nbText"] = @["mdOutputToHtml"]
+  doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
+
+  doc.renderProcs = initTable[string, NbRenderProc]()
+  doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
+  doc.renderProcs["highlightCode"] = highlightCode
+
+proc renderBlock*(nb: var NbDoc, blk: var NbBlock): string =
+  if blk.command not_in nb.partials:
+    echo "[nimib.warning] no partial found for block ", blk.command
+    return
+  else:
+    if blk.command in nb.renderPlans:
+      for step in nb.renderPlans[blk.command]:
+        if step in nb.renderProcs:
+          nb.renderProcs[step](nb, blk)
+    blk.context.searchTable(nb.partials)
+    result = nb.partials[blk.command].render(blk.context)
 
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)

@@ -1,4 +1,4 @@
-import std / [macros, strutils]
+import std / [macros, strutils, sugar]
 import types, capture, sources
 
 macro toStr*(body: untyped): string =
@@ -28,7 +28,7 @@ template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
   blockImpl
   if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
   nbBlock.context["code"] = nbBlock.code
-  nbBlock.context["output"] = nbBlock.output
+  nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock
 
 # refactor: to remove

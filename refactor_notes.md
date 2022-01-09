@@ -4,11 +4,14 @@ todo:
   - [x] newNbNewBlock
   - [x] context field for NbBlock (populated during newNbBlock)
   - [x] new nbText and nbCode
-  - [ ] renderBlock generic proc
-  - [ ] renderPlan(s) and renderProc(s) for NbDoc
+  - [x] default html backend for nbText and nbCode: useHtmlBackend, highlightCode, highlightCode
+  - [x] renderPlan(s) and renderProc(s) for NbDoc
   - [x] ~optional renderPlan and partial for NbBlock?~ no need. Change command name and add specific partial and renderPlan in doc.
-  - [ ] new nbSave
+  - [x] renderBlock generic proc
+  - [ ] fix rendering upstream of renderBlock
+  - [ ] run nim r hello successfully
 - [ ] be able to run the rest of documentation
+  - [ ] markdown backend
   - [ ] nbImage
   - [ ] nbFile
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
@@ -18,9 +21,13 @@ todo:
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
   - [x] tnimib.nbCode
+  - [x] trenders.renderBlock
 - [ ] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
+  - [ ] frontmatter for markdown backend
+- [ ] accidental changes
+  - [x] exporting sugar - am I sure about this?
 - [ ] cleanup
   - [ ] remove old newBlock
   - [ ] remove manageErrors (never used)
@@ -31,6 +38,10 @@ todo:
 - [ ] release
   - [ ] bump to 0.3
   - [ ] prepare release notes
+- [ ] follow ups
+  - [ ] nim-mustache
+    - [ ] access to values
+    - [ ] print context
 
 notes:
 
@@ -54,3 +65,12 @@ notes:
 - code is now normalized (including newlines)
 - minimal testing for nbText and nbCode added (could be improved later)
 - note that output currently not stripped and by default it has a newLine at end. should I remove the newline at the end? (we will in rendering...)
+- not having mdCfg as global object in renders (I would like to have it as const but did not work back then, should check if it works now)
+- can I remove NbDoc.render field? probably yes
+- there is no way to print a Context -> follow up PR to nim-mustache
+- using develop version of nim-mustache with public values
+- these two do not seem very good ideas, but I do want output without newlines at the end:
+  - output in context has removeSuffix (with dup)
+  - exporting sugar now
+  - especially a bad idea to have blk.output and blk.context["output"] different
+  - I really should think of an alternative...

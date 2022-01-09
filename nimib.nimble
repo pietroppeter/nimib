@@ -29,3 +29,5 @@ task test, "General tests":
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tblocks.nim"
   exec "nim r tests/tnimib.nim"
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tnimib.nim"
+  exec "nim r tests/trenders.nim"
+  exec "nim r -d:nimibPreviewCodeAsInSource tests/trenders.nim"

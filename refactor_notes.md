@@ -1,14 +1,26 @@
 todo:
 
 - [ ] be able to run nim r docs/hello (also with nimibPreviewCodeAsInSource)
-  - [x] new NewBlock with test (that works for NbCode and NbText and custom version of those)
-  - [ ] new nbText and nbCode
+  - [x] newNbNewBlock
+  - [x] context field for NbBlock (populated during newNbBlock)
+  - [x] new nbText and nbCode
+  - [ ] renderBlock generic proc
+  - [ ] renderPlan(s) and renderProc(s) for NbDoc
+  - [x] ~optional renderPlan and partial for NbBlock?~ no need. Change command and add specific partial and renderPlan in doc.
   - [ ] new nbSave
 - [ ] be able to run the rest of documentation
   - [ ] nbImage
   - [ ] nbFile
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
   - [ ] add task nimble docs to build docs
+  - [ ] update notebooks to use more recent functionality (e.g. cheatsheet and others...)
+- [ ] tests
+  - [x] tblocks.newNbBlock
+  - [ ] tnimib.nbText
+  - [ ] tnimib.nbCode
+- [ ] addons
+  - [x] new logging
+  - [x] nbNormalize (taken from tsources)
 - [ ] cleanup
   - [ ] remove old newBlock
   - [ ] remove manageErrors (never used)
@@ -16,6 +28,9 @@ todo:
   - [ ] nimibook
   - [ ] scinim/getting-started
   - [ ] nimislides
+- [ ] release
+  - [ ] bump to 0.3
+  - [ ] prepare release notes
 
 notes:
 
@@ -34,4 +49,6 @@ notes:
 - later I need to decide if I want them to be Option object (they should be but I never used much that API and not sure if it is worth it) or not
 - refactored newBlock to contain blockImpl and other identifiers (nbBlock, nbDoc - will this names clash with aliases?)
   - also renamed to newNbBlock
-  - also added simple logging (should I have a whale emoji everywhere instead of \[nimib\]? yeah probably!)
+  - also added simple logging (should I have a whale emoji everywhere instead of \[nimib\]? yeah probably! but maybe I leave it for another PR...)
+- not sure whether to use renderPlans or renderPlan for NbDoc (and renderProcs or renderProc?)
+- code is now normalized (including newlines)

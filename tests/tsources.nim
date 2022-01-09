@@ -1,18 +1,14 @@
-import nimib, strutils, strformat
+import nimib, strformat
 import unittest
 
 suite "test sources":
-
-  func normalize(text: string): string =
-    text.replace("\c\l", "\n").replace("\c", "\n").strip(chars = {'\n'})
-  
   template check =
     #echo &"---\n{nbBlock.code}\n"
     # the replace stuff needed on windows where the lines read from file will have windows native new lines
     test $currentTest:
       actual = nbBlock.code
       echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
-      check actual.normalize == expected.normalize
+      check actual.nbNormalize == expected.nbNormalize
     currentTest += 1
 
   var currentTest: int

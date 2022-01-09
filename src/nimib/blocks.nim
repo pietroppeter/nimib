@@ -12,14 +12,17 @@ func peekFirstLineOf*(text: string, maxChars=12): string =
   if result.len < text.len:
     result.add "..."
 
+func nbNormalize*(text: string): string =
+  text.replace("\c\l", "\n").replace("\c", "\n").strip(chars = {'\n'})
+
 template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
   stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
   nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
-  nbBlock.code = block:
+  nbBlock.code = nbNormalize:
     when defined(nimibPreviewCodeAsInSource):
-      getCodeAsInSource(nbDoc.source, cmd, body).strip
+      getCodeAsInSource(nbDoc.source, cmd, body)
     else:
-      toStr(body).strip
+      toStr(body)
   stdout.write peekFirstLineOf(nbBlock.code)
   blockImpl
   stdout.writeLine " -> ", peekFirstLineOf(nbBlock.output)

@@ -73,7 +73,6 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [ptest]({docs}/ptest.html): print testing for nimib
 
 elsewhere:
 

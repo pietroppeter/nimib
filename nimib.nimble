@@ -20,9 +20,6 @@ task deps, "install dependendencies": # task created for CI, not sure how to avo
 task tdeps, "install dependendencies required for testing":
   exec "nimble -y install ggplotnim@0.4.9 numericalnim@0.6.1 nimoji"
 
-task ptest, "test with ptest":
-  exec "nim r docs/ptest"
-
 task test, "General tests":
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tsources.nim"
   exec "nim r tests/tblocks.nim"

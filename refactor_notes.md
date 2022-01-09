@@ -17,16 +17,15 @@ todo:
     - [x] numerical
     - [x] nolan
     - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
-    - [ ] cheatsheet
-    - [ ] penguins
+    - [ ] cheatsheet (needs fixing)
+    - [ ] penguins (can't test on my mac)
     - [ ] index
-    - [ ] remove ptest (also from index)
+    - [x] remove ptest (also from index)
   - [ ] markdown backend
   - [ ] nbImage
-  - [ ] nbFile
+  - [ ] nbFile (this is without example? add one?)
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
-  - [ ] update notebooks to use more recent functionality (e.g. cheatsheet and others...)
-- [ ] tests
+- [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
   - [x] tnimib.nbCode
@@ -34,7 +33,7 @@ todo:
 - [ ] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
-  - [ ] frontmatter for markdown backend
+  - [ ] frontmatter for markdown backend?
 - [ ] accidental changes
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it

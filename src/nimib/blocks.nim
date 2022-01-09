@@ -24,9 +24,9 @@ template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
       getCodeAsInSource(nbDoc.source, cmd, body)
     else:
       toStr(body)
-  stdout.write peekFirstLineOf(nbBlock.code)
+  echo peekFirstLineOf(nbBlock.code)
   blockImpl
-  stdout.writeLine " -> ", peekFirstLineOf(nbBlock.output)
+  echo "     -> ", peekFirstLineOf(nbBlock.output)
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output
   nbDoc.blocks.add nbBlock

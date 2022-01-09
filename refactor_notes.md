@@ -6,7 +6,7 @@ todo:
   - [x] new nbText and nbCode
   - [ ] renderBlock generic proc
   - [ ] renderPlan(s) and renderProc(s) for NbDoc
-  - [x] ~optional renderPlan and partial for NbBlock?~ no need. Change command and add specific partial and renderPlan in doc.
+  - [x] ~optional renderPlan and partial for NbBlock?~ no need. Change command name and add specific partial and renderPlan in doc.
   - [ ] new nbSave
 - [ ] be able to run the rest of documentation
   - [ ] nbImage
@@ -16,8 +16,8 @@ todo:
   - [ ] update notebooks to use more recent functionality (e.g. cheatsheet and others...)
 - [ ] tests
   - [x] tblocks.newNbBlock
-  - [ ] tnimib.nbText
-  - [ ] tnimib.nbCode
+  - [x] tnimib.nbText
+  - [x] tnimib.nbCode
 - [ ] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
@@ -52,3 +52,5 @@ notes:
   - also added simple logging (should I have a whale emoji everywhere instead of \[nimib\]? yeah probably! but maybe I leave it for another PR...)
 - not sure whether to use renderPlans or renderPlan for NbDoc (and renderProcs or renderProc?)
 - code is now normalized (including newlines)
+- minimal testing for nbText and nbCode added (could be improved later)
+- note that output currently not stripped and by default it has a newLine at end. should I remove the newline at the end? (we will in rendering...)

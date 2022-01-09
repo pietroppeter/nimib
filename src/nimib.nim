@@ -1,5 +1,5 @@
 import std/[os, strutils]
-import nimib / [types, blocks, docs, boost, config, options]
+import nimib / [types, blocks, docs, boost, config, options, capture]
 export types, blocks, docs, boost
 # types exports mustache, tables, paths
 
@@ -56,10 +56,14 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   theme nb
 
 template nbText*(body: untyped) =
-  nbTextBlock(nb.blk, nb, body)
+  newNbBlock("nbText", nb, nb.blk, body):
+    nb.blk.output = block:
+      body
 
 template nbCode*(body: untyped) =
-  nbCodeBlock(nb.source, nb.blk, nb, body)
+  newNbBlock("nbCode", nb, nb.blk, body):
+    captureStdout(nb.blk.output):
+      body
 
 template nbCodeInBlock*(body: untyped): untyped =
   block:

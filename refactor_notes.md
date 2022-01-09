@@ -16,7 +16,7 @@ todo:
     - [x] mostaccio
     - [x] numerical
     - [x] nolan
-    - [ ] pythno
+    - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
     - [ ] cheatsheet
     - [ ] penguins
     - [ ] index

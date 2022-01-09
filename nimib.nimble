@@ -37,3 +37,4 @@ task docs, "Build documentation":
   exec "nim r docs/mostaccio.nim"
   exec "nim r docs/numerical.nim"
   exec "nim r docs/nolan.nim"
+  exec "nim r docs/pythno.nim"

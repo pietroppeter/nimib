@@ -1,15 +1,17 @@
 import std/[os, strutils]
-import nimib / [types, blocks, docs, renders, boost, config, options]
-export types, blocks, docs, renders, boost
+import nimib / [types, blocks, docs, boost, config, options]
+export types, blocks, docs, boost
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
 export themes.useLatex, themes.darkMode, themes.`title=`
 
+from nimib / renders import nil
+
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
-template nbInit*(theme = themes.useDefault, thisFileRel = "") =
+template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
   var nb {.inject.}: NbDoc
 
   nb.initDir = getCurrentDir().AbsoluteDir
@@ -46,10 +48,12 @@ template nbInit*(theme = themes.useDefault, thisFileRel = "") =
   nb.templateDirs = @["./", "./templates/"]
   nb.partials = initTable[string, string]()
   nb.context = newContext(searchDirs = @[]) # templateDirs and partials added during nbSave
-  theme nb  # apply theme
 
-  # render defaults
-  nb.render = renderHtml
+  # apply render backend (default backend can be overriden by theme)
+  backend nb
+
+  # apply theme
+  theme nb
 
 template nbText*(body: untyped) =
   nbTextBlock(nb.blk, nb, body)

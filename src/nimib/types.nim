@@ -10,6 +10,7 @@ type
     kind*: NbBlockKind # refactor: to remove
     code*: string
     output*: string
+    context*: Context
     #error*: string # have not used this one yet
   NbOptions* = object
     skipCfg*: bool

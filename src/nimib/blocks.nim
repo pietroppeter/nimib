@@ -6,6 +6,8 @@ macro toStr*(body: untyped): string =
 
 template newBlock*(cmd: string, body: untyped): NbBlock =
   NbBlock(command: cmd,
+    # I would want to inherit values from nb.context but currently this is not possible
+    context: newContext(searchDirs = @[], partials = nb.partials),
     code: block:
       when defined(nimibPreviewCodeAsInSource):
         getCodeAsInSource(nb.source, cmd, body).strip

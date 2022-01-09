@@ -6,6 +6,9 @@ from std/cgi import xmlEncode
 
 let mdCfg = initGfmConfig()
 
+proc useHtmlBackend*(doc: var NbDoc) =
+  discard
+
 proc renderMarkdown*(text: string): string =
   markdown(text, config=mdCfg)
 

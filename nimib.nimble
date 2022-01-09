@@ -31,3 +31,7 @@ task test, "General tests":
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tnimib.nim"
   exec "nim r tests/trenders.nim"
   exec "nim r -d:nimibPreviewCodeAsInSource tests/trenders.nim"
+
+task docs, "Build documentation":
+  exec "nim r docs/hello.nim"
+  exec "nim r docs/mostaccio.nim"

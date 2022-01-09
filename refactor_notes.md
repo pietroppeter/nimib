@@ -12,11 +12,12 @@ todo:
   - [x] fix rendering upstream of renderBlock (in write)
   - [x] run nim r hello successfully
 - [ ] be able to run the rest of documentation
+  - [ ] add task nimble docs to build docs
+  - [x] mostaccio
   - [ ] markdown backend
   - [ ] nbImage
   - [ ] nbFile
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
-  - [ ] add task nimble docs to build docs
   - [ ] update notebooks to use more recent functionality (e.g. cheatsheet and others...)
 - [ ] tests
   - [x] tblocks.newNbBlock

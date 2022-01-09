@@ -1,19 +1,19 @@
 import nimib
 import std / [unittest, strutils]
 
-suite "new block":
+suite "newNbBlock":
   nbInit
   var blk: NbBlock
   when not defined(nimibPreviewCodeAsInSource):
     # newBlock should be always called inside a template as below or it breaks with CodeAsInSource
-    test "nbText":
+    test "nbTextLikeExample":
       newNbBlock("nbText", nb, blk):
         "content"
       do:
         discard
       check blk.command == "nbText"
       check blk.code == "\"content\"" # need strip since I am going to find new lines
-    test "nbCode":
+    test "nbCodeLikeExample":
       newNbBlock("nbCode", nb, blk):
         echo "hello"
       do:

@@ -4,16 +4,28 @@ import types, capture, sources
 macro toStr*(body: untyped): string =
   (body.toStrLit)
 
-template newBlock*(cmd: string, body: untyped): NbBlock =
-  NbBlock(command: cmd,
-    # I would want to inherit values from nb.context but currently this is not possible
-    context: newContext(searchDirs = @[], partials = nb.partials),
-    code: block:
-      when defined(nimibPreviewCodeAsInSource):
-        getCodeAsInSource(nb.source, cmd, body).strip
-      else:
-        toStr(body).strip
-      )
+func peekFirstLineOf*(text: string, maxChars=12): string =
+  for i in 0 ..< min(text.len, maxChars):
+    if text[i] in ['\n', '\c', '\l']:
+      break
+    result.add text[i]
+  if result.len < text.len:
+    result.add "..."
+
+template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
+  stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
+  nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
+  nbBlock.code = block:
+    when defined(nimibPreviewCodeAsInSource):
+      getCodeAsInSource(nbDoc.source, cmd, body).strip
+    else:
+      toStr(body).strip
+  stdout.write peekFirstLineOf(nbBlock.code)
+  blockImpl
+  stdout.writeLine " -> ", peekFirstLineOf(nbBlock.output)
+  nbBlock.context["code"] = nbBlock.code
+  nbBlock.context["output"] = nbBlock.output
+  nbDoc.blocks.add nbBlock
 
 # refactor: to remove
 proc newBlock*(kind: NbBlockKind, code: string): NbBlock =

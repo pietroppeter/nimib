@@ -29,3 +29,9 @@ notes:
 - added a context field to NbBlock (inherits partials from nb object)
 - I cannot have the context to inherit also values from nb object (values not exported and there is no derive in nim-mustache for context, I might want to do a PR)
 - no need to have a partial field in NbBlock. will render using "{{> " & blk.cmd & "}}" (e.g. {{> nbText}})
+- actually a partial field is needed if I want to customize (it could be optional). same for a renderPlan for the block
+- but as first iteration (internal to this PR) I could just use the partials and renderPlans in the doc
+- later I need to decide if I want them to be Option object (they should be but I never used much that API and not sure if it is worth it) or not
+- refactored newBlock to contain blockImpl and other identifiers (nbBlock, nbDoc - will this names clash with aliases?)
+  - also renamed to newNbBlock
+  - also added simple logging (should I have a whale emoji everywhere instead of \[nimib\]? yeah probably!)

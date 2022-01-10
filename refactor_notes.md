@@ -18,13 +18,18 @@ todo:
     - [x] nolan
     - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
     - [ ] cheatsheet (needs fixing)
+      - [ ] fix issue #52: `<http://www.example.com>` not rendered because not escaped
     - [ ] penguins (can't test on my mac)
     - [ ] index
+    - [ ] far/from/home (fix paths?)
     - [x] remove ptest (also from index)
   - [ ] markdown backend
+  - [ ] nbCodeInBlock: use somewhere / test
   - [ ] nbImage
-  - [ ] nbFile (this is without example? add one?)
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
+  - [ ] nbFile (this is without example? add one?)
+    - [ ] make "Writing File" an optional customization
+  - [ ] add a nbShell? see #34
 - [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
@@ -33,21 +38,30 @@ todo:
 - [ ] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
+  - [ ] rename nbNormalize? (too vague)
   - [ ] frontmatter for markdown backend?
 - [ ] accidental changes
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
 - [ ] cleanup
-  - [ ] remove old newBlock
-  - [ ] remove manageErrors (never used)
+  - [x] remove old newBlock / cleanup blocks.nim
+  - [x] remove manageErrors (never used)
+  - [ ] remove NbKind (when new nbImage is ready)
   - [ ] remove all unused stuff in renders
+    - [x] cleanup html render stuff
+    - [ ] cleanup markdown render stuff
 - [ ] check that projects that depend on nimib are not broken
+  - [ ] check on windows and linux
   - [ ] nimibook
   - [ ] scinim/getting-started
   - [ ] nimislides
+  - [ ] nblog
+  - [ ] adventofnim
 - [ ] release
+  - [x] add nimble docs to CI
   - [ ] bump to 0.3
   - [ ] prepare release notes
+  - [ ] release
 - [ ] follow ups
   - [ ] nim-mustache
     - [ ] access to values

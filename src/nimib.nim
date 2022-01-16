@@ -71,16 +71,13 @@ template nbCodeInBlock*(body: untyped): untyped =
       body
 
 template nbImage*(url: string, caption = "") =
-  if isAbsolute(url) or url[0..3] == "http":
-    # Absolute URL or External URL
-    nb.blk = NbBlock(kind: nbkImage, code: url)
-  else:
-    # Relative URL
-    let relativeUrl = nb.context["path_to_root"].vString / url
-    nb.blk = NbBlock(kind: nbkImage, code: relativeUrl)
-
-  nb.blk.output = caption
-  nb.blocks.add nb.blk
+  newNbBlock("nbImage", nb, nb.blk, body):
+    nb.blk.context["url"] =
+      if isAbsolute(url) or url[0..3] == "http":
+        url
+      else:
+        nb.context["path_to_root"].vString / url
+    nb.blk.context["caption"] = caption
 
 template nbFile*(name: string, body: string) =
   ## Generic string file

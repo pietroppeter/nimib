@@ -8,11 +8,7 @@ const document* = """
 <body>
 {{> header }}
 {{> left }}
-<main>
-{{#blocks}}
-{{{blocks}}}
-{{/blocks}}
-</main>
+{{> main }}
 {{> right }}
 {{> footer }}
 </body>
@@ -32,6 +28,15 @@ const head* = """
   {{> head_other }}
 </head>
 """
+
+const main* = """
+<main>
+{{#blocks}}
+{{&.}}
+{{/blocks}}
+</main>
+"""
+
 # https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale
 const faviconWhale* = """<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">"""
 const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">"""
@@ -115,8 +120,8 @@ proc useDefault*(doc: var NbDoc) =
   doc.context["path_to_here"] = (doc.thisFileRel).string
   doc.context["source"] = doc.source
 
-
   doc.partials["document"] = document
+  doc.partials["main"] = main
   # head
   doc.partials["head"] = head
   doc.context["favicon"] = faviconWhale

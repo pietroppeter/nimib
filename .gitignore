@@ -1,6 +1,7 @@
 *
 !/**/
 !*.*
+.DS_store
 
 *.exe
 *.tmp.html

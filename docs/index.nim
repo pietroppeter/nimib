@@ -1,4 +1,4 @@
-import nimib, strformat, nimoji
+import nimib, strformat, nimoji, nimib / renders
 
 nbInit
 nb.title = "Nimib Docs"
@@ -61,8 +61,18 @@ First have a look at the following html document: [hello.html]({docs}/hello.html
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
 """.emojize
-nbCode: discard
-nb.blk.code = "\n" & hello  # "\n" should not be needed here (fix required in rendering)
+
+
+when not defined(useMdBackend):
+  nbCode: discard
+  nb.blk.code = hello  # "\n" should not be needed here (fix required in rendering)
+else:
+  nbText &"""
+```nim
+{hello}
+```"""
+
+
 nbText: fmd"""
 ### Other examples of usage
 
@@ -73,7 +83,6 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [ptest]({docs}/ptest.html): print testing for nimib
 
 elsewhere:
 
@@ -258,8 +267,9 @@ because [someone made it into an art form](https://github.com/oakes/vim_cubed#q-
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
 """.emojize
 
-nbSave
-
-nbDoc.render = renderMark
-nbDoc.filename = "../README.md"
-nbSave
+when not defined(useMdBackend):
+  nbSave
+else:
+  nb.useMdBackend
+  nb.filename = "../README.md"
+  nbSave

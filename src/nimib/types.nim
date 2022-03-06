@@ -3,13 +3,11 @@ export mustache, tables, paths
 import std / os
 
 type
-  NbBlockKind* = enum
-    nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
-    kind*: NbBlockKind
+    command*: string
     code*: string
     output*: string
-    #error*: string # have not used this one yet
+    context*: Context
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string
@@ -17,6 +15,7 @@ type
     other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
+  NbRenderProc* = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}
   NbDoc* = object
     thisFile*: AbsoluteFile
     filename*: string
@@ -28,10 +27,11 @@ type
     rawCfg*: string
     blk*: NbBlock  ## current block being processed
     blocks*: seq[NbBlock]
-    render*: proc (doc: NbDoc): string {.closure.}
     context*: Context
     partials*: Table[string, string]
     templateDirs*: seq[string]
+    renderPlans*: Table[string, seq[string]]
+    renderProcs*: Table[string, NbRenderProc]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

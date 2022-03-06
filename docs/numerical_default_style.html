@@ -83,15 +83,11 @@ to integrate an ODE.</p>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y</span><span class="hljs-meta">\'</span><span class="hljs-string">(0): &quot;</span>, f(<span class="hljs-number">0</span>, y0, ctx)
 <span class="hljs-comment">## expected solution</span>
 <span class="hljs-keyword">let</span> y5 = y(<span class="hljs-number">5</span>)
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y(5): &quot;</span>, y5</code></pre>
-<pre><samp>y'(0): 5.0
-y(5): -1.612374396254655
-</samp></pre>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y(5): &quot;</span>, y5</code></pre><pre><samp>y'(0): 5.0
+y(5): -1.612374396254655</samp></pre>
 <p>We want the solution to be available for every point in $[0, 5]$ with timestep $h=0.05$</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> tspan = arange(<span class="hljs-number">0.0</span>, <span class="hljs-number">5.0</span>, <span class="hljs-number">0.05</span>, includeEnd = <span class="hljs-literal">true</span>)
-<span class="hljs-keyword">echo</span> tspan[<span class="hljs-number">0</span> .. <span class="hljs-number">2</span>], <span class="hljs-string">&quot; . . . &quot;</span>, tspan[^<span class="hljs-number">3</span> .. ^<span class="hljs-number">1</span>]</code></pre>
-<pre><samp>@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]
-</samp></pre>
+<span class="hljs-keyword">echo</span> tspan[<span class="hljs-number">0</span> .. <span class="hljs-number">2</span>], <span class="hljs-string">&quot; . . . &quot;</span>, tspan[^<span class="hljs-number">3</span> .. ^<span class="hljs-number">1</span>]</code></pre><pre><samp>@[0.0, 0.05, 0.1] . . . @[4.9, 4.95, 5.0]</samp></pre>
 <p>We compute the solution according to our selected 2 methods and 3 timesteps:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span>
   options1 = newODEoptions(dt = <span class="hljs-number">0.1</span>)
@@ -121,8 +117,7 @@ y(5): -1.612374396254655
 <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y2rk[^1]:.7f}&quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y3rk[^1]:.7f}&quot;</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Analytical:&quot;</span>
-<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y5:.7f}&quot;</span></code></pre>
-<pre><samp>Heun2:
+<span class="hljs-keyword">echo</span> <span class="hljs-string">fmt&quot;{y5:.7f}&quot;</span></code></pre><pre><samp>Heun2:
 -1.1273196
 -1.4821550
 -1.6068528
@@ -131,16 +126,13 @@ RK4:
 -1.6124233
 -1.6123745
 Analytical:
--1.6123744
-</samp></pre>
+-1.6123744</samp></pre>
 <p>As expected Heun is not very accurate even with smaller timesteps, while Runge-Kutta is very reliable even with bigger timesteps.</p>
 <p>To compute percentage error of each method at $y(5)$ I will use:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">proc</span> pe(yApprox: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">string</span> =
   <span class="hljs-string">fmt&quot;{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%&quot;</span>
 
-<span class="hljs-keyword">echo</span> pe y1hn[^<span class="hljs-number">1</span>]             <span class="hljs-comment">## used like this</span></code></pre>
-<pre><samp>30.083%
-</samp></pre>
+<span class="hljs-keyword">echo</span> pe y1hn[^<span class="hljs-number">1</span>]             <span class="hljs-comment">## used like this</span></code></pre><pre><samp>30.083%</samp></pre>
 <p>The following table is built as a Markdown table in a <code>nbText</code> block.</p>
 <p><strong>Table 1.</strong> Percentage errors</p>
 <table>
@@ -180,7 +172,6 @@ $h=0.01$ | {pe y3hn[^1]} | {pe y3rk[^1]}
 
 and here is the code for this Markdown block:
 &quot;&quot;&quot;</span></code></pre>
-
 </main>
 <footer>
 <hr>

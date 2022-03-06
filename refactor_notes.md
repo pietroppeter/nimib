@@ -1,4 +1,4 @@
-todo:
+minimal stuff needed to merge:
 
 - [x] be able to run nim r docs/hello (also with nimibPreviewCodeAsInSource)
   - [x] newNbNewBlock
@@ -19,17 +19,12 @@ todo:
     - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
     - [ ] cheatsheet (needs fixing)
       - [ ] fix issue #52: `<http://www.example.com>` not rendered because not escaped
-    - [ ] penguins (can't test on my mac)
     - [ ] index
-    - [ ] far/from/home (fix paths?)
+    - [x] far/from/home (might be broken beacuse of encoding of files on mac?)
     - [x] remove ptest (also from index)
   - [ ] markdown backend
-  - [ ] nbCodeInBlock: use somewhere / test
-  - [ ] nbImage
-  - [ ] add also nbAudio, nbVideo? (with new doc examples)
-  - [ ] nbFile (this is without example? add one?)
-    - [ ] make "Writing File" an optional customization
-  - [ ] add a nbShell? see #34
+  - [x] nbImage
+  - [x] nbFile
 - [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
@@ -38,8 +33,7 @@ todo:
 - [ ] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
-  - [ ] rename nbNormalize? (too vague)
-  - [ ] frontmatter for markdown backend?
+  - [x] main partial in document can be overriden
 - [ ] accidental changes
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
@@ -50,6 +44,19 @@ todo:
   - [ ] remove all unused stuff in renders
     - [x] cleanup html render stuff
     - [ ] cleanup markdown render stuff
+
+to be done after merging in devel:
+
+- [ ] leftover fixes/improvements and cleanup
+  - [ ] check far/from/home is not broken
+  - [ ] test penguins
+  - [ ] nbCodeInBlock: use somewhere / test
+  - [ ] add example for nbFile
+  - [ ] add also nbAudio, nbVideo? (with new doc examples)
+  - [ ] make "Writing File" in nbFile an optional customization
+  - [ ] add a nbShell? see #34
+  - [ ] rename nbNormalize? (too vague)
+  - [ ] frontmatter for markdown backend?
 - [ ] check that projects that depend on nimib are not broken
   - [ ] check on windows and linux
   - [ ] nimibook
@@ -101,3 +108,4 @@ notes:
 - something I do not like is that rendering changes state of doc and blocks. it should not (it could affect a second pass with another backend)
 - in fact now write wants a mutable doc
 - the moment I have the json backend I might be able to have a non mutable doc (but might not be worth it)
+- far from home has likely being broken for a while (replacing partial document is wrong given current defaults)

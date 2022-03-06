@@ -21,10 +21,14 @@ minimal stuff needed to merge:
   - [x] far/from/home (might be broken beacuse of encoding of files on mac?)
   - [x] remove ptest (also from index)
   - [x] nbImage
-  - [x] nbFile
   - [x] add task nimble docs to build docs (except penguins)
-  - [ ] markdown backend
-  - [ ] index
+  - [x] markdown backend
+  - [x] index
+  - [ ] nbFile
+    - [x] block
+    - [ ] partials and renderProcs
+    - [ ] example with a text file
+    - [ ] example with a nim file
 - [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
@@ -37,26 +41,30 @@ minimal stuff needed to merge:
 - [ ] accidental changes
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
+  - [x] cannot use Html and Md backend both at the same time (need to put the backend behind a switch)
 - [ ] cleanup
   - [x] remove old newBlock / cleanup blocks.nim
   - [x] remove manageErrors (never used)
-  - [ ] remove NbKind (when new nbImage is ready)
-  - [ ] remove all unused stuff in renders
+  - [ ] remove NbKind
+  - [x] remove all unused stuff in renders
     - [x] cleanup html render stuff
-    - [ ] cleanup markdown render stuff
+    - [x] cleanup markdown render stuff
+- [ ] other
+  - [x] add nimble docs to CI
 
 to be done after merging in devel:
 
 - [ ] leftover fixes/improvements and cleanup
+  - [ ] add example for nbFile
+  - [ ] make "Writing File" in nbFile an optional customization
   - [ ] check far/from/home is not broken
   - [ ] test penguins
   - [ ] nbCodeInBlock: use somewhere / test
-  - [ ] add example for nbFile
   - [ ] add also nbAudio, nbVideo? (with new doc examples)
-  - [ ] make "Writing File" in nbFile an optional customization
   - [ ] add a nbShell? see #34
   - [ ] rename nbNormalize? (too vague)
   - [ ] frontmatter for markdown backend?
+  - [ ] why in index I have to treat differently the inclusion hello.nim with respect to Html vs Md backend? (current code is a workaround since I was not able to make them work both at the same time)
 - [ ] check that projects that depend on nimib are not broken
   - [ ] check on windows and linux
   - [ ] nimibook
@@ -64,8 +72,8 @@ to be done after merging in devel:
   - [ ] nimislides
   - [ ] nblog
   - [ ] adventofnim
+- [ ] document changes
 - [ ] release
-  - [x] add nimble docs to CI
   - [ ] bump to 0.3
   - [ ] prepare release notes
   - [ ] release
@@ -109,3 +117,4 @@ notes:
 - in fact now write wants a mutable doc
 - the moment I have the json backend I might be able to have a non mutable doc (but might not be worth it)
 - far from home has likely being broken for a while (replacing partial document is wrong given current defaults)
+- blocks in markdown are separated by empty lines

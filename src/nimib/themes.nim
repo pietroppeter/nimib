@@ -120,7 +120,6 @@ proc useDefault*(doc: var NbDoc) =
   doc.context["path_to_here"] = (doc.thisFileRel).string
   doc.context["source"] = doc.source
 
-
   doc.partials["document"] = document
   doc.partials["main"] = main
   # head

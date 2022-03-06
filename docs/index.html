@@ -125,7 +125,8 @@ nbCode:
 nbText:
   <span class="hljs-string">fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;</span>
 
-nbSave <span class="hljs-comment"># use nbShow to automatically open a browser tab with html output</span></code></pre>
+nbSave <span class="hljs-comment"># use nbShow to automatically open a browser tab with html output</span>
+</code></pre>
 <h3>Other examples of usage</h3>
 <p>in this repo:</p>
 <ul>
@@ -134,7 +135,6 @@ nbSave <span class="hljs-comment"># use nbShow to automatically open a browser t
 <li><a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
 <li><a href="https://pietroppeter.github.io/nimib/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
 <li><a href="https://pietroppeter.github.io/nimib/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache and of dark mode.</li>
-<li><a href="https://pietroppeter.github.io/nimib/ptest.html">ptest</a>: print testing for nimib</li>
 </ul>
 <p>elsewhere:</p>
 <ul>
@@ -294,7 +294,6 @@ and why <a href="https://www.theatlantic.com/science/archive/2016/01/a-major-cor
 <h3>why the Q &amp; A?</h3>
 <p>because <a href="https://github.com/oakes/vim_cubed#q--a">someone made it into an art form</a>
 and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can">imitation is the sincerest form of flattery</a></p>
-
 </main>
 <footer>
 <hr>
@@ -305,7 +304,7 @@ and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-t
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, strformat, nimoji
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, strformat, nimoji, nimib / renders
 
 nbInit
 nb.title = <span class="hljs-string">&quot;Nimib Docs&quot;</span>
@@ -368,8 +367,19 @@ First have a look at the following html document: [hello.html]({docs}/hello.html
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
 &quot;&quot;&quot;</span>.emojize
-nbCode: <span class="hljs-keyword">discard</span>
-nb.blk.code = <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> &amp; hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
+
+
+<span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(useMdBackend):
+  nbCode: <span class="hljs-keyword">discard</span>
+  nb.blk.code = hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
+<span class="hljs-keyword">else</span>:
+  nbText &amp;<span class="hljs-string">&quot;&quot;&quot;
+
+```nim
+{hello}
+```&quot;&quot;&quot;</span>
+
+
 nbText: <span class="hljs-string">fmd&quot;&quot;&quot;
 ### Other examples of usage
 
@@ -380,7 +390,6 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [ptest]({docs}/ptest.html): print testing for nimib
 
 elsewhere:
 
@@ -565,11 +574,12 @@ because [someone made it into an art form](https://github.com/oakes/vim_cubed#q-
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
 &quot;&quot;&quot;</span>.emojize
 
-nbSave
-
-nbDoc.render = renderMark
-nbDoc.filename = <span class="hljs-string">&quot;../README.md&quot;</span>
-nbSave
+<span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(useMdBackend):
+  nbSave
+<span class="hljs-keyword">else</span>:
+  nb.useMdBackend
+  nb.filename = <span class="hljs-string">&quot;../README.md&quot;</span>
+  nbSave
 </code></pre>
 </section><script>
 function toggleSourceDisplay() {

@@ -33,6 +33,38 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
 
+proc useMdBackend*(doc: var NbDoc) =
+  doc.partials["document"] = """
+{{#blocks}}
+
+{{&.}}
+
+{{/blocks}}"""
+  doc.partials["nbText"] = "{{&output}}"
+  doc.partials["nbCode"] = """
+{{>nbCodeSource}}
+{{>nbCodeOutput}}"""
+  doc.partials["nbCodeSource"] = """
+```nim
+{{code}}
+```
+"""
+  doc.partials["nbCodeOutput"] = """{{#output}}
+```
+{{output}}
+```
+{{/output}}
+"""
+  doc.partials["nbImage"] = """
+![{{caption}}]({{url}})
+
+**Figure:** {{caption}}
+"""
+
+  # no need for special treatment
+  doc.renderPlans = initTable[string, seq[string]]()
+  doc.renderProcs = initTable[string, NbRenderProc]()
+
 proc render*(nb: var NbDoc, blk: var NbBlock): string =
   if blk.command not_in nb.partials:
     echo "[nimib.warning] no partial found for block ", blk.command
@@ -51,27 +83,3 @@ proc render*(nb: var NbDoc): string =
     blocks.add nb.render(blk)
   nb.context["blocks"] = blocks
   return "{{> document}}".render(nb.context)
-
-# todo: starting from here it should all become obsolete and to be removed
-proc renderMarkBlock(blk: NbBlock) : string =
-  case blk.kind:
-    of nbkCode:
-      # these two lines currently taken from blocks.nim; should be removed from there
-      result.add "```nim" & blk.code & "\n```\n\n"
-      if blk.output != "":
-        result.add "```\n" & blk.output & "```\n\n"
-    of nbkText:
-      result = blk.output & "\n"
-    of nbkImage:
-      let
-        image_url = blk.code
-        alt_text = blk.output
-      result = "![" & alt_text & "](" & image_url & ")"
-
-proc renderMarkBlocks(doc: NbDoc) : string =
-  for blk in doc.blocks:
-    result.add blk.renderMarkBlock & "\n"
-
-proc renderMark*(doc: NbDoc): string =
-  # I might want to add a frontmatter later
-  return doc.renderMarkBlocks

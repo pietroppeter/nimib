@@ -1,3 +1,4 @@
+
 # nimib 🐳 - nim 👑 driven ⛵ publishing ✍
 
 Nimib provides an API to convert your Nim code and its outputs to html documents.
@@ -108,7 +109,6 @@ in this repo:
 * [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [ptest](https://pietroppeter.github.io/nimib/ptest.html): print testing for nimib
 
 elsewhere:
 
@@ -291,5 +291,4 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
-
 

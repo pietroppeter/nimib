@@ -1,10 +1,7 @@
-import types, strformat, strutils, markdown, mustache, sugar
+import types, strutils, markdown, mustache, sugar
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import tables
 import highlight
-from std/cgi import xmlEncode
-
-let mdCfg = initGfmConfig() # remove (cannot be made const)
 
 proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)

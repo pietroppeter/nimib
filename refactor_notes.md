@@ -21,20 +21,19 @@ minimal stuff needed to merge:
   - [x] far/from/home (might be broken beacuse of encoding of files on mac?)
   - [x] remove ptest (also from index)
   - [x] nbImage
-  - [x] add task nimble docs to build docs (except penguins)
   - [x] markdown backend
   - [x] index
-  - [ ] nbFile
-    - [x] block
-    - [ ] partials and renderProcs
-    - [ ] example with a text file
-    - [ ] example with a nim file
+- [ ] nbFile
+  - [x] block
+  - [ ] partials and renderProcs
+  - [ ] example with a text file
+  - [ ] example with a nim file
 - [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
   - [x] tnimib.nbCode
   - [x] trenders.renderBlock
-- [ ] addons
+- [x] addons
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
   - [x] main partial in document can be overriden
@@ -42,15 +41,18 @@ minimal stuff needed to merge:
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
   - [x] cannot use Html and Md backend both at the same time (need to put the backend behind a switch)
-- [ ] cleanup
+- [x] cleanup
   - [x] remove old newBlock / cleanup blocks.nim
   - [x] remove manageErrors (never used)
-  - [ ] remove NbKind
+  - [x] remove NbKind
   - [x] remove all unused stuff in renders
     - [x] cleanup html render stuff
     - [x] cleanup markdown render stuff
-- [ ] other
+    - [x] other unused stuff
+  - [ ] remove refactor_notes and add them in PR text
+- [x] other
   - [x] add nimble docs to CI
+  - [x] add task nimble docs to build docs (except penguins)
 
 to be done after merging in devel:
 
@@ -73,7 +75,7 @@ to be done after merging in devel:
   - [ ] nblog
   - [ ] adventofnim
 - [ ] document changes
-- [ ] release
+- [ ] release (name blockMaker)
   - [ ] bump to 0.3
   - [ ] prepare release notes
   - [ ] release
@@ -82,7 +84,11 @@ to be done after merging in devel:
     - [ ] access to values
     - [ ] print context
 
-notes:
+milestone for 0.4: better handling of render backends (release name backendMaker). In particular:
+
+> a big next change would be to use a json data in NbBlock instead of context and generate context during save. In this way you could go back to use multiple render backends at once, document could be made not mutable during save, ... 
+
+other dev notes:
 
 - testing will also be improved (did not notice that ptest is turned off)
 - (I could also almost pass to an improved doc generation workflow... - problem with README though...)

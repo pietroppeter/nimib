@@ -3,15 +3,11 @@ export mustache, tables, paths
 import std / os
 
 type
-  NbBlockKind* = enum
-    nbkText = "nbText", nbkCode = "nbCode", nbkImage = "nbimage"
   NbBlock* = ref object
     command*: string
-    kind*: NbBlockKind # refactor: to remove
     code*: string
     output*: string
     context*: Context
-    #error*: string # have not used this one yet
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string

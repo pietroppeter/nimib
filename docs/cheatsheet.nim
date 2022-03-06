@@ -20,25 +20,23 @@ nb.context["highlight"] = """
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>"""
 
-# how to create a custom block:
-func wrapMarkdown(code: string): string =
-  "<pre><code class=\"language-markdown\">" & code & "</code></pre>" 
+# a custom text block that shows markdown source
+template nbTextWithSource*(body: untyped) =
+  newNbBlock("nbTextWithSource", nb, nb.blk, body):
+    nb.blk.output = body
+  nb.blk.context["code"] = body
 
-template nbTextWithSource(escapeHtml: bool, body: untyped) =
-  nbText(body)
-  let toWrap = if escapeHtml: nb.blk.output.replace("<", "&lt;") else: nb.blk.output
-  nb.blk.output = wrapMarkdown(toWrap) & "\n\n" & nb.blk.output
-
-# arguments with default do not work well in templates, overloading is a common trick
-template nbTextWithSource(body: untyped) =
-  nbTextWithSource(false, body)
+nb.renderPlans["nbTextWithSource"] = @["mdOutputToHtml"]
+nb.partials["nbTextWithSource"] = """{{&outputToHtml}}
+<pre><code class=\"language-markdown\">{{code}}</code></pre>"""
 
 # how to add a ToC
 var
   nbToc: NbBlock
 
 template addToc =
-  nbTextBlock(nbToc, nb, "# Table of Contents:\n\n")
+  newNbBlock("nbText", nb, nbToc, ""):
+    nbToc.output = "# Table of Contents:\n\n"
 
 template nbSection(name:string) =
   let anchorName = name.toLower.replace(" ", "-")
@@ -46,6 +44,7 @@ template nbSection(name:string) =
   # see below, but any number works for a numbered list
   nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n" 
 
+# here is the start of the document
 nbText """
 # Markdown Cheatsheet
 Quick reference for markdown."""
@@ -83,8 +82,9 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 nbSection "Lists"
 nbText "(In this example, leading and trailing spaces are shown with with dots: ⋅)"
+
 const dot = "⋅"
-let source = """1. First ordered list item
+nbTextWithSource """1. First ordered list item
 2. Another item
 ⋅⋅⋅⋅* Unordered sub-list. 
 1. Actual numbers don't matter, just that it's a number
@@ -100,8 +100,8 @@ let source = """1. First ordered list item
 * Unordered list can use asterisks
 - Or minuses
 + Or pluses"""
-nbText wrapMarkdown(source)
-nbText source.replace(dot, " ")
+nb.blk.output = nb.blk.output.replace(dot, " ")
+
 nbText """
 > in ordered to have the ordered sublist work correctly
 > (it is not working on linked original) I increased indent from 2 to 4,
@@ -220,7 +220,7 @@ Quote break.
 nbSection "Inline HTML"
 nbText "You can also use raw HTML in your Markdown, and it'll mostly work pretty well."
 # todo: clarify and fix when stuff is escaped or not
-nbTextWithSource(escapeHtml=true): """<dl>
+nbTextWithSource """<dl>
   <dt>Definition list</dt>
   <dd>Is something people use sometimes.</dd>
 
@@ -262,7 +262,7 @@ nbText "> note that last two lines do not have a line break in between as the or
 
 nbSection "YouTube Videos"
 nbText "They can't be added directly but you can add an image with a link to the video like this:"
-nbTextWithSource(escapeHtml=true): """<a href="http://www.youtube.com/watch?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE
+nbTextWithSource """<a href="http://www.youtube.com/watch?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE
 " target="_blank"><img src="http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 """.replace("YOUTUBE_VIDEO_ID_HERE", "xqHdUjCXizI").replace("IMAGE ALT TEXT HERE", "Nim Conf 2020 Introduction")

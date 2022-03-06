@@ -12,16 +12,15 @@ minimal stuff needed to merge:
   - [x] fix rendering upstream of renderBlock (in write)
   - [x] run nim r hello successfully
 - [ ] be able to run the rest of documentation
-  - [ ] add task nimble docs to build docs
-    - [x] mostaccio
-    - [x] numerical
-    - [x] nolan
-    - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
-    - [ ] cheatsheet (needs fixing)
-      - [ ] fix issue #52: `<http://www.example.com>` not rendered because not escaped
-    - [ ] index
-    - [x] far/from/home (might be broken beacuse of encoding of files on mac?)
-    - [x] remove ptest (also from index)
+  - [x] mostaccio
+  - [x] numerical
+  - [x] nolan
+  - [x] pythno (change: `nb.blk.output` -> `nb.blk.context["output"]`)
+  - [x] cheatsheet (needs fixing)
+    - [x] fix issue #52: `<http://www.example.com>` not rendered because not escaped
+  - [ ] index
+  - [x] far/from/home (might be broken beacuse of encoding of files on mac?)
+  - [x] remove ptest (also from index)
   - [ ] markdown backend
   - [x] nbImage
   - [x] nbFile
@@ -48,6 +47,7 @@ minimal stuff needed to merge:
 to be done after merging in devel:
 
 - [ ] leftover fixes/improvements and cleanup
+  - [ ] add task nimble docs to build docs
   - [ ] check far/from/home is not broken
   - [ ] test penguins
   - [ ] nbCodeInBlock: use somewhere / test

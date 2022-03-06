@@ -11,7 +11,7 @@ minimal stuff needed to merge:
   - [x] render (doc) backend independent proc
   - [x] fix rendering upstream of renderBlock (in write)
   - [x] run nim r hello successfully
-- [ ] be able to run the rest of documentation
+- [x] be able to run the rest of documentation
   - [x] mostaccio
   - [x] numerical
   - [x] nolan
@@ -23,11 +23,6 @@ minimal stuff needed to merge:
   - [x] nbImage
   - [x] markdown backend
   - [x] index
-- [ ] nbFile
-  - [x] block
-  - [ ] partials and renderProcs
-  - [ ] example with a text file
-  - [ ] example with a nim file
 - [x] tests
   - [x] tblocks.newNbBlock
   - [x] tnimib.nbText
@@ -37,7 +32,7 @@ minimal stuff needed to merge:
   - [x] new logging
   - [x] nbNormalize (taken from tsources)
   - [x] main partial in document can be overriden
-- [ ] accidental changes
+- [x] accidental changes
   - [x] exporting sugar - am I sure about this?
   - [x] mutated doc when rendering - I do not like it but not sure how to avoid it
   - [x] cannot use Html and Md backend both at the same time (need to put the backend behind a switch)
@@ -57,8 +52,13 @@ minimal stuff needed to merge:
 to be done after merging in devel:
 
 - [ ] leftover fixes/improvements and cleanup
-  - [ ] add example for nbFile
-  - [ ] make "Writing File" in nbFile an optional customization
+  - [ ] nbFile
+    - [x] block
+    - [ ] partials and renderProcs
+    - [ ] example with a text file
+    - [ ] example with a nim file
+    - [ ] add example for nbFile
+    - [ ] make "Writing File" in nbFile an optional customization
   - [ ] check far/from/home is not broken
   - [ ] test penguins
   - [ ] nbCodeInBlock: use somewhere / test

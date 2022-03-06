@@ -464,6 +464,7 @@ nb.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span class
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js&quot;&gt;&lt;/script&gt;
 &lt;script&gt;hljs.initHighlightingOnLoad();&lt;/script&gt;&quot;&quot;&quot;</span>
 
+<span class="hljs-comment"># a custom text block that shows markdown source</span>
 <span class="hljs-keyword">template</span> nbTextWithSource*(body: <span class="hljs-built_in">untyped</span>) =
   newNbBlock(<span class="hljs-string">&quot;nbTextWithSource&quot;</span>, nb, nb.blk, body):
     nb.blk.output = body
@@ -487,6 +488,7 @@ nb.partials[<span class="hljs-string">&quot;nbTextWithSource&quot;</span>] = <sp
   <span class="hljs-comment"># see below, but any number works for a numbered list</span>
   nbToc.output.add <span class="hljs-string">&quot;1. &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span> 
 
+<span class="hljs-comment"># here is the start of the document</span>
 nbText <span class="hljs-string">&quot;&quot;&quot;
 # Markdown Cheatsheet
 Quick reference for markdown.&quot;&quot;&quot;</span>

@@ -102,6 +102,11 @@ template nbFile*(name: string, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   identContainer.blocks.add identBlock
 
+template nbRawOutput*(body: untyped) =
+  newNbBlock("nbRawOutput", nb, nb.blk, false, body):
+    nb.blk.output = block:
+      body
+
 template nbClearOutput*() =
   if not nb.blk.isNil:
     nb.blk.output = ""

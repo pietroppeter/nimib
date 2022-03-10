@@ -56,12 +56,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   theme nb
 
 template nbText*(body: untyped) =
-  newNbBlock("nbText", nb, nb.blk, body):
+  newNbBlock("nbText", nb, nb.blk, true, body):
     nb.blk.output = block:
       body
 
 template nbCode*(body: untyped) =
-  newNbBlock("nbCode", nb, nb.blk, body):
+  newNbBlock("nbCode", nb, nb.blk, true, body):
     captureStdout(nb.blk.output):
       body
 
@@ -71,7 +71,7 @@ template nbCodeInBlock*(body: untyped): untyped =
       body
 
 template nbImage*(url: string, caption = "") =
-  newNbBlock("nbImage", nb, nb.blk, body):
+  newNbBlock("nbImage", nb, nb.blk, false, body):
     nb.blk.context["url"] =
       if isAbsolute(url) or url[0..3] == "http":
         url

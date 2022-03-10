@@ -7,14 +7,14 @@ suite "newNbBlock":
   when not defined(nimibPreviewCodeAsInSource):
     # newBlock should be always called inside a template as below or it breaks with CodeAsInSource
     test "nbTextLikeExample":
-      newNbBlock("nbText", nb, blk):
+      newNbBlock("nbText", nb, blk, true):
         "content"
       do:
         discard
       check blk.command == "nbText"
       check blk.code == "\"content\"" # need strip since I am going to find new lines
     test "nbCodeLikeExample":
-      newNbBlock("nbCode", nb, blk):
+      newNbBlock("nbCode", nb, blk, true):
         echo "hello"
       do:
         discard
@@ -23,7 +23,7 @@ suite "newNbBlock":
   # the following is how newBlock should be called (to have it work with codeAsinSource)
   test "nbMyBlock":
     template nbMyBlock(body: untyped) =
-      newNbBlock("nbMyBlock", nb, blk):
+      newNbBlock("nbMyBlock", nb, blk, true):
         body
       do:
         discard

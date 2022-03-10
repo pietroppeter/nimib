@@ -22,7 +22,7 @@ nb.context["highlight"] = """
 
 # a custom text block that shows markdown source
 template nbTextWithSource*(body: untyped) =
-  newNbBlock("nbTextWithSource", nb, nb.blk, body):
+  newNbBlock("nbTextWithSource", nb, nb.blk, false, body):
     nb.blk.output = body
   nb.blk.context["code"] = body
 
@@ -35,7 +35,7 @@ var
   nbToc: NbBlock
 
 template addToc =
-  newNbBlock("nbText", nb, nbToc, ""):
+  newNbBlock("nbText", nb, nbToc, false, ""):
     nbToc.output = "# Table of Contents:\n\n"
 
 template nbSection(name:string) =

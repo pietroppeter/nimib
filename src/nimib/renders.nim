@@ -74,10 +74,6 @@ proc render*(nb: var NbDoc, blk: var NbBlock): string =
           nb.renderProcs[step](nb, blk)
     blk.context.searchTable(nb.partials)
     result = nb.partials[blk.command].render(blk.context)
-    if blk.command == "fragmentEnd":
-      echo "##########################\n##########################"
-      echo blk.context["fragments"]
-      echo result
 
 proc render*(nb: var NbDoc): string =
   var blocks: seq[string]

@@ -2,6 +2,7 @@ import types, strutils, markdown, mustache, sugar
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import tables
 import highlight
+import mustachepkg/values
 
 proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
@@ -73,6 +74,10 @@ proc render*(nb: var NbDoc, blk: var NbBlock): string =
           nb.renderProcs[step](nb, blk)
     blk.context.searchTable(nb.partials)
     result = nb.partials[blk.command].render(blk.context)
+    if blk.command == "fragmentEnd":
+      echo "##########################\n##########################"
+      echo blk.context["fragments"]
+      echo result
 
 proc render*(nb: var NbDoc): string =
   var blocks: seq[string]

@@ -102,6 +102,11 @@ template nbFile*(name: string, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   identContainer.blocks.add identBlock
 
+template nbClearOutput*() =
+  if not nb.blk.isNil:
+    nb.blk.output = ""
+    nb.blk.context["output"] = ""
+
 template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
   #   - in memory partial contains default mustache assets

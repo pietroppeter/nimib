@@ -16,7 +16,7 @@ func nbNormalize*(text: string): string =
   text.replace("\c\l", "\n").replace("\c", "\n").strip # this could be made more efficient
 # note that: '\c' == '\r' and '\l' == '\n'
 
-template newNbBlock*(cmd: string, nbDoc, nbBlock, readCode, body, blockImpl: untyped) =
+template newNbBlock*(cmd: string, readCode: bool, nbDoc, nbBlock, body, blockImpl: untyped) =
   stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
   nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
   if readCode:
@@ -31,3 +31,8 @@ template newNbBlock*(cmd: string, nbDoc, nbBlock, readCode, body, blockImpl: unt
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock
+
+template newNbBlock*(cmd: string, nbDoc, nbBlock, body, blockImpl: untyped) =
+  newNbBlock(cmd, true, nbDoc, nbBlock, body):
+    blockImpl
+

@@ -25,7 +25,7 @@ template newNbBlock*(cmd: string, nbDoc, nbBlock, readCode, body, blockImpl: unt
         getCodeAsInSource(nbDoc.source, cmd, body)
       else:
         toStr(body)
-    echo peekFirstLineOf(nbBlock.code)
+  echo peekFirstLineOf(nbBlock.code)
   blockImpl
   if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
   nbBlock.context["code"] = nbBlock.code

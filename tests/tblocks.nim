@@ -33,3 +33,26 @@ suite "newNbBlock":
     nbMyBlock: echo "hello"
     check blk.command == "nbMyBlock"
     check blk.code == "echo \"hello\""
+  
+  test "readCode":
+    template readCodeBlock(body: untyped) =
+      newNbBlock("readCodeBlock", nb, blk, true):
+        body
+      do:
+        discard
+
+    template dontReadCodeBlock(body: untyped) =
+      newNbBlock("dontReadCodeBlock", nb, blk, false):
+        body
+      do:
+        discard
+    
+    readCodeBlock:
+      let a = 1.23
+    check blk.code == "let a = 1.23"
+
+    dontReadCodeBlock:
+      let b = 3.21
+    check blk.code == ""
+
+

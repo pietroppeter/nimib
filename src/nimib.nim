@@ -56,12 +56,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   theme nb
 
 template nbText*(body: untyped) =
-  newNbBlock("nbText", true, nb, nb.blk, body):
+  newNbBlock("nbText", nb, nb.blk, body):
     nb.blk.output = block:
       body
 
 template nbCode*(body: untyped) =
-  newNbBlock("nbCode", true, nb, nb.blk, body):
+  newNbBlock("nbCode", nb, nb.blk, body):
     captureStdout(nb.blk.output):
       body
 

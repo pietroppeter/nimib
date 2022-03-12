@@ -38,4 +38,5 @@ task docs, "Build documentation":
   exec "nim r docs/cheatsheet.nim"
   exec "nim r docs/index.nim"
   exec "nim -d:useMdBackend r docs/index.nim"  
-  #exec "nim r docs/penguins.nim"
+  when not defined(nimibDocsSkipPenguins):
+    exec "nim r docs/penguins.nim"

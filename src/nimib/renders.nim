@@ -2,6 +2,7 @@ import types, strutils, markdown, mustache, sugar
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import tables
 import highlight
+import mustachepkg/values
 
 proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
@@ -20,6 +21,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <img src="{{url}}" alt="{{caption}}">
 <figcaption>{{caption}}</figcaption>
 </figure>"""
+  doc.partials["nbRawOutput"] = "{{&output}}"
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()

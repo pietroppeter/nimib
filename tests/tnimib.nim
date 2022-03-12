@@ -47,3 +47,41 @@ suite "nbCode":
     nbCode: echo "hi"
     check nb.blk.code == "echo \"hi\""
     check nb.blk.output == "hi\n"
+
+suite "nbRawOutput":
+  test "pure text":
+    nbRawOutput: "Hello world!"
+    check nb.blk.code == ""
+    check nb.blk.output == "Hello world!"
+  
+  test "html tags":
+    nbRawOutput: "<div> <span> div-span </span> </div>"
+    check nb.blk.code == ""
+    check nb.blk.output == "<div> <span> div-span </span> </div>"
+
+  test "Use inside template":
+    # codeAsInSource can't read the correct line if block is used inside a template
+    # check that readCode is having effect and preventing the reading of code.
+    template slide(body: untyped) =
+      nbRawOutput: "<slide>"
+      body
+      nbRawOutput: "</slide>"
+    
+    slide:
+      check nb.blk.code == ""
+      check nb.blk.output == "<slide>"
+    
+    check nb.blk.code == ""
+    check nb.blk.output == "</slide>"
+
+suite "nbClearOutput":
+  test "nbCode":
+    nbCode:
+      echo "Hello world!!!"
+    check nb.blk.output == "Hello world!!!\n"
+    check nb.blk.context["output"].vString == "Hello world!!!"
+    nbClearOutput()
+    check nb.blk.output == ""
+    check nb.blk.context["output"].vString == ""
+
+

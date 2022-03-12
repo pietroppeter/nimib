@@ -56,12 +56,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   theme nb
 
 template nbText*(body: untyped) =
-  newNbBlock("nbText", nb, nb.blk, body):
+  newNbBlock("nbText", true, nb, nb.blk, body):
     nb.blk.output = block:
       body
 
 template nbCode*(body: untyped) =
-  newNbBlock("nbCode", nb, nb.blk, body):
+  newNbBlock("nbCode", true, nb, nb.blk, body):
     captureStdout(nb.blk.output):
       body
 
@@ -71,7 +71,7 @@ template nbCodeInBlock*(body: untyped): untyped =
       body
 
 template nbImage*(url: string, caption = "") =
-  newNbBlock("nbImage", nb, nb.blk, body):
+  newNbBlock("nbImage", false, nb, nb.blk, body):
     nb.blk.context["url"] =
       if isAbsolute(url) or url[0..3] == "http":
         url
@@ -101,6 +101,16 @@ template nbFile*(name: string, body: untyped) =
   nbText("Writing file `" & name & "` :")
   identBlock = newBlock(nbkCode, toStr(body))
   identContainer.blocks.add identBlock
+
+template nbRawOutput*(body: untyped) =
+  newNbBlock("nbRawOutput", false, nb, nb.blk, body):
+    nb.blk.output = block:
+      body
+
+template nbClearOutput*() =
+  if not nb.blk.isNil:
+    nb.blk.output = ""
+    nb.blk.context["output"] = ""
 
 template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:

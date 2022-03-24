@@ -22,6 +22,10 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <figcaption>{{caption}}</figcaption>
 </figure>"""
   doc.partials["nbRawOutput"] = "{{&output}}"
+  doc.partials["nbPython"] = """
+<pre><code class="python hljs">{{&code}}</code></pre>
+{{#output}}<pre><samp>{{&output}}</samp></pre>{{/output}}
+"""
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()
@@ -58,6 +62,16 @@ proc useMdBackend*(doc: var NbDoc) =
 ![{{caption}}]({{url}})
 
 **Figure:** {{caption}}
+"""
+  doc.partials["nbPython"] = """
+```python
+{{&code}}
+```
+{{#output}}
+```
+{{&output}}
+```
+{{/output}}
 """
 
   # no need for special treatment

@@ -102,6 +102,22 @@ template nbFile*(name: string, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   identContainer.blocks.add identBlock
 
+template nbInitPython*() =
+  import nimpy
+  let nbPythonBuiltins = pyBuiltinsModule()
+  #[ template nbPython(pythonStr: string) =
+    newNbBlock("nbPython", false, nb, nb.blk, pythonStr):
+      nb.blk.code = pythonStr
+      captureStdout(nb.blk.output):
+        discard nbPythonBuiltins.exec(pythonStr) ]#
+  
+  template nbPython(pythonCode: untyped) =
+    when not defined(nimibPreviewCodeAsInSource):
+      {.error: "-d:nimibPreviewCodeAsInSource must be used with nbPython code blocks.".}
+    newNbBlock("nbPython", true, nb, nb.blk, pythonCode):
+      captureStdout(nb.blk.output):
+        discard nbPythonBuiltins.exec(nb.blk.code)
+
 template nbRawOutput*(body: untyped) =
   newNbBlock("nbRawOutput", false, nb, nb.blk, body):
     nb.blk.output = block:

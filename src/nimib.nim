@@ -107,8 +107,6 @@ template nbFile*(name: string, body: untyped) =
 
 when moduleAvailable(nimpy):
   template nbInitPython*() =
-    when not (compiles do: import nimpy):
-      {.error: "nimpy isn't installed!".}
     import nimpy
     let nbPythonBuiltins = pyBuiltinsModule()
 

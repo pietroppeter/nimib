@@ -105,13 +105,14 @@ template nbFile*(name: string, body: untyped) =
 template nbInitPython*() =
   import nimpy
   let nbPythonBuiltins = pyBuiltinsModule()
-  #[ template nbPython(pythonStr: string) =
+  
+  template nbPython(pythonStr: string) =
     newNbBlock("nbPython", false, nb, nb.blk, pythonStr):
       nb.blk.code = pythonStr
       captureStdout(nb.blk.output):
-        discard nbPythonBuiltins.exec(pythonStr) ]#
+        discard nbPythonBuiltins.exec(pythonStr)
   
-  template nbPython(pythonCode: untyped) =
+  template nbPythonCode(pythonCode: untyped) =
     when not defined(nimibPreviewCodeAsInSource):
       {.error: "-d:nimibPreviewCodeAsInSource must be used with nbPython code blocks.".}
     newNbBlock("nbPython", true, nb, nb.blk, pythonCode):

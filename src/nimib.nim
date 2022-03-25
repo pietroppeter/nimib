@@ -11,6 +11,9 @@ from nimib / renders import nil
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
+template moduleAvailable*(module: untyped): bool =
+  (compiles do: import module)
+
 template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
   var nb {.inject.}: NbDoc
 
@@ -102,24 +105,25 @@ template nbFile*(name: string, body: untyped) =
   identBlock = newBlock(nbkCode, toStr(body))
   identContainer.blocks.add identBlock
 
-template nbInitPython*() =
-  when not (compiles do: import nimpy):
-    {.error: "nimpy isn't installed!".}
-  import nimpy
-  let nbPythonBuiltins = pyBuiltinsModule()
+when moduleAvailable(nimpy):
+  template nbInitPython*() =
+    when not (compiles do: import nimpy):
+      {.error: "nimpy isn't installed!".}
+    import nimpy
+    let nbPythonBuiltins = pyBuiltinsModule()
 
-  template nbPython(pythonStr: string) =
-    newNbBlock("nbPython", false, nb, nb.blk, pythonStr):
-      nb.blk.code = pythonStr
-      captureStdout(nb.blk.output):
-        discard nbPythonBuiltins.exec(pythonStr)
-  
-  template nbPythonCode(pythonCode: untyped) =
-    when not defined(nimibPreviewCodeAsInSource):
-      {.error: "-d:nimibPreviewCodeAsInSource must be used with nbPython code blocks.".}
-    newNbBlock("nbPython", true, nb, nb.blk, pythonCode):
-      captureStdout(nb.blk.output):
-        discard nbPythonBuiltins.exec(nb.blk.code)
+    template nbPython(pythonStr: string) =
+      newNbBlock("nbPython", false, nb, nb.blk, pythonStr):
+        nb.blk.code = pythonStr
+        captureStdout(nb.blk.output):
+          discard nbPythonBuiltins.exec(pythonStr)
+    
+    template nbPythonCode(pythonCode: untyped) =
+      when not defined(nimibPreviewCodeAsInSource):
+        {.error: "-d:nimibPreviewCodeAsInSource must be used with nbPython code blocks.".}
+      newNbBlock("nbPython", true, nb, nb.blk, pythonCode):
+        captureStdout(nb.blk.output):
+          discard nbPythonBuiltins.exec(nb.blk.code)
 
 template nbRawOutput*(body: untyped) =
   newNbBlock("nbRawOutput", false, nb, nb.blk, body):
@@ -130,9 +134,6 @@ template nbClearOutput*() =
   if not nb.blk.isNil:
     nb.blk.output = ""
     nb.blk.context["output"] = ""
-
-template moduleAvailable*(module: untyped): bool =
-  (compiles do: import module)
 
 template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:

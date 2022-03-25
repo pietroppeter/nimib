@@ -103,9 +103,11 @@ template nbFile*(name: string, body: untyped) =
   identContainer.blocks.add identBlock
 
 template nbInitPython*() =
+  when not (compiles do: import nimpy):
+    {.error: "nimpy isn't installed!".}
   import nimpy
   let nbPythonBuiltins = pyBuiltinsModule()
-  
+
   template nbPython(pythonStr: string) =
     newNbBlock("nbPython", false, nb, nb.blk, pythonStr):
       nb.blk.code = pythonStr

@@ -84,11 +84,7 @@ suite "nbClearOutput":
     check nb.blk.output == ""
     check nb.blk.context["output"].vString == ""
 
-template whenModuleAvailable(module: untyped, body: untyped) =
-  when (compiles do: import module):
-    body
-
-whenModuleAvailable(nimpy):
+when moduleAvailable(nimpy):
   nbInitPython()
   suite "nbPython":
     test "nbPython string":
@@ -97,7 +93,7 @@ s = [2*i for i in range(3)]
 a = 3.14
 print(s)
 print(a)
-  """
+"""
       nbPython: pyString
       check nb.blk.code == pyString
       check nb.blk.output == "[0, 2, 4]\n3.14\n"

@@ -131,6 +131,9 @@ template nbClearOutput*() =
     nb.blk.output = ""
     nb.blk.context["output"] = ""
 
+template moduleAvailable*(module: untyped): bool =
+  (compiles do: import module)
+
 template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
   #   - in memory partial contains default mustache assets

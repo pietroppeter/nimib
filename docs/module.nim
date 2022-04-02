@@ -1,0 +1,1 @@
+const myNumber* = 42

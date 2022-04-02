@@ -49,3 +49,8 @@ template withDir*(dir: AbsoluteDir, body: untyped): untyped =
     body
   finally:
     setCurrentDir(curDir)
+
+proc getExt*(filename: string): string =
+  let i = filename.searchExtPos
+  if i > 0 and filename.len > i:
+    result = filename[(i+1) .. ^1]

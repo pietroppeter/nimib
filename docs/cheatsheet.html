@@ -466,7 +466,7 @@ nb.context[<span class="hljs-string">&quot;highlight&quot;</span>] = <span class
 
 <span class="hljs-comment"># a custom text block that shows markdown source</span>
 <span class="hljs-keyword">template</span> nbTextWithSource*(body: <span class="hljs-built_in">untyped</span>) =
-  newNbBlock(<span class="hljs-string">&quot;nbTextWithSource&quot;</span>, nb, nb.blk, body):
+  newNbBlock(<span class="hljs-string">&quot;nbTextWithSource&quot;</span>, <span class="hljs-literal">false</span>, nb, nb.blk, body):
     nb.blk.output = body
   nb.blk.context[<span class="hljs-string">&quot;code&quot;</span>] = body
 
@@ -479,7 +479,7 @@ nb.partials[<span class="hljs-string">&quot;nbTextWithSource&quot;</span>] = <sp
   nbToc: <span class="hljs-type">NbBlock</span>
 
 <span class="hljs-keyword">template</span> addToc =
-  newNbBlock(<span class="hljs-string">&quot;nbText&quot;</span>, nb, nbToc, <span class="hljs-string">&quot;&quot;</span>):
+  newNbBlock(<span class="hljs-string">&quot;nbText&quot;</span>, <span class="hljs-literal">false</span>, nb, nbToc, <span class="hljs-string">&quot;&quot;</span>):
     nbToc.output = <span class="hljs-string">&quot;# Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
 
 <span class="hljs-keyword">template</span> nbSection(name:<span class="hljs-built_in">string</span>) =

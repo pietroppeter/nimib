@@ -22,6 +22,10 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <figcaption>{{caption}}</figcaption>
 </figure>"""
   doc.partials["nbRawOutput"] = "{{&output}}"
+  doc.partials["nbFile"] ="""
+<pre>{{filename}}</pre>
+<pre><code class="{{ext}} hljs">{{content}}</code></pre>
+"""
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()

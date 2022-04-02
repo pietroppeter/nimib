@@ -27,10 +27,7 @@ template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, 
         toStr(body)
   echo peekFirstLineOf(nbBlock.code)
   blockImpl
-  echo "here"
   if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
-  echo "here2"
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock
-  echo "here3"

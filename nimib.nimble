@@ -36,6 +36,7 @@ task docs, "Build documentation":
   exec "nim r docs/nolan.nim"
   exec "nim r docs/pythno.nim"
   exec "nim r docs/cheatsheet.nim"
+  exec "nim r docs/files.nim"
   exec "nim r docs/index.nim"
   exec "nim -d:useMdBackend r docs/index.nim"  
   when not defined(nimibDocsSkipPenguins):

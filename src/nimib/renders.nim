@@ -26,6 +26,10 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <pre><code class="python hljs">{{&code}}</code></pre>
 {{#output}}<pre><samp>{{&output}}</samp></pre>{{/output}}
 """
+  doc.partials["nbFile"] = """
+<pre>{{filename}}</pre>
+<pre><code class="{{ext}} hljs">{{content}}</code></pre>
+"""
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()

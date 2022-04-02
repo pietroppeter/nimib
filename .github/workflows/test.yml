@@ -12,7 +12,7 @@ jobs:
       - uses: jiro4989/setup-nim-action@v1.3.15
         with:
           nim-version: '1.6.x'
-      - run: nimble deps
+      - run: nimble -y install
       - run: nimble tdeps
       - run: nimble test
       - run: nimble docs # not to publish but to test it works

@@ -58,13 +58,17 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   # apply theme
   theme nb
 
-template nbText*(body: untyped) =
-  newNbBlock("nbText", nb, nb.blk, body):
-    nb.blk.output = block:
-      body
+# block generation templates
+template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
+  newNbBlock(cmd, true, nb, nb.blk, body, blockImpl)
 
+template newNbSlimBlock*(cmd: string, blockImpl: untyped) =
+  # a slim block is a block with no body
+  newNbBlock(cmd, false, nb, nb.blk, "", blockImpl)
+
+# block templates
 template nbCode*(body: untyped) =
-  newNbBlock("nbCode", nb, nb.blk, body):
+  newNbCodeBlock("nbCode", body):
     captureStdout(nb.blk.output):
       body
 
@@ -73,8 +77,16 @@ template nbCodeInBlock*(body: untyped): untyped =
     nbCode:
       body
 
+template nbText*(text: string) =
+  newNbSlimBlock("nbText"):
+    nb.blk.output = text
+
+template nbTextWithCode*(body: untyped) =
+  newNbCodeBlock("nbText", body):
+    nb.blk.output = body
+
 template nbImage*(url: string, caption = "") =
-  newNbBlock("nbImage", false, nb, nb.blk, body):
+  newNbSlimBlock("nbImage"):
     nb.blk.context["url"] =
       if isAbsolute(url) or url[0..3] == "http":
         url
@@ -82,28 +94,20 @@ template nbImage*(url: string, caption = "") =
         nb.context["path_to_root"].vString / url
     nb.blk.context["caption"] = caption
 
-template nbFile*(name: string, body: string) =
+template nbFile*(name: string, content: string) =
   ## Generic string file
-  block:
-    let f = open(getCurrentDir() / name, fmWrite)
-    f.write(body)
-    f.close()
-
-  var r = name.splitFile()
-  r.ext.removePrefix('.')
-  nbText("Writing file `" & name & "` :")
-  let newbody = "```" & r.ext & "\n" & body & "```"
-  nbText(newbody)
+  newNbSlimBlock("nbFile"):
+    name.writeFile content
+    nb.blk.context["filename"] = name
+    nb.blk.context["ext"] = name.getExt
+    nb.blk.context["content"] = content
 
 template nbFile*(name: string, body: untyped) =
-  ## Nim code file
-  block:
-    let f = open(getCurrentDir() / name, fmWrite)
-    f.write(body)
-    f.close()
-  nbText("Writing file `" & name & "` :")
-  identBlock = newBlock(nbkCode, toStr(body))
-  identContainer.blocks.add identBlock
+  newNbCodeBlock("nbFile", body):
+    name.writeFile nb.blk.code
+    nb.blk.context["filename"] = name
+    nb.blk.context["ext"] = name.getExt
+    nb.blk.context["content"] = nb.blk.code
 
 when moduleAvailable(nimpy):
   template nbInitPython*() =
@@ -123,10 +127,9 @@ when moduleAvailable(nimpy):
         captureStdout(nb.blk.output):
           discard nbPythonBuiltins.exec(nb.blk.code)
 
-template nbRawOutput*(body: untyped) =
-  newNbBlock("nbRawOutput", false, nb, nb.blk, body):
-    nb.blk.output = block:
-      body
+template nbRawOutput*(content: string) =
+  newNbSlimBlock("nbRawOutput"):
+    nb.blk.output = content
 
 template nbClearOutput*() =
   if not nb.blk.isNil:
@@ -154,6 +157,7 @@ template nbDoc*: NbDoc = nb
 template nbBlock*: NbBlock = nb.blk
 template nbHomeDir*: AbsoluteDir = nb.homeDir
 
+# use --nbShow runtime option instead of this
 template nbShow* =
   nbSave
   open nb

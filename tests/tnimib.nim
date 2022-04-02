@@ -114,7 +114,7 @@ suite "nbClearOutput":
     check nb.blk.output == ""
     check nb.blk.context["output"].vString == ""
 
-when moduleAvailable(nimpy):
+when moduleAvailable(nimpy) and false:
   nbInitPython()
   suite "nbPython":
     test "nbPython string":

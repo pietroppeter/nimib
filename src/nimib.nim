@@ -11,6 +11,9 @@ from nimib / renders import nil
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
+template moduleAvailable*(module: untyped): bool =
+  (compiles do: import module)
+
 template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
   var nb {.inject.}: NbDoc
 
@@ -105,6 +108,17 @@ template nbFile*(name: string, body: untyped) =
     nb.blk.context["filename"] = name
     nb.blk.context["ext"] = name.getExt
     nb.blk.context["content"] = nb.blk.code
+
+when moduleAvailable(nimpy):
+  template nbInitPython*() =
+    import nimpy
+    let nbPythonBuiltins = pyBuiltinsModule()
+
+    template nbPython(pythonStr: string) =
+      newNbSlimBlock("nbPython"):
+        nb.blk.code = pythonStr
+        captureStdout(nb.blk.output):
+          discard nbPythonBuiltins.exec(pythonStr)
 
 template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):

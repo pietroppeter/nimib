@@ -114,4 +114,17 @@ suite "nbClearOutput":
     check nb.blk.output == ""
     check nb.blk.context["output"].vString == ""
 
+when moduleAvailable(nimpy) and false:
+  nbInitPython()
+  suite "nbPython":
+    test "nbPython string":
+      let pyString = hlPy"""
+s = [2*i for i in range(3)]
+a = 3.14
+print(s)
+print(a)
+"""
+      nbPython: pyString
+      check nb.blk.code == pyString
+      check nb.blk.output == "[0, 2, 4]\n3.14\n"
 

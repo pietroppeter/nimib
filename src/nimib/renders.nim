@@ -22,7 +22,11 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <figcaption>{{caption}}</figcaption>
 </figure>"""
   doc.partials["nbRawOutput"] = "{{&output}}"
-  doc.partials["nbFile"] ="""
+  doc.partials["nbPython"] = """
+<pre><code class="python hljs">{{&code}}</code></pre>
+{{#output}}<pre><samp>{{&output}}</samp></pre>{{/output}}
+"""
+  doc.partials["nbFile"] = """
 <pre>{{filename}}</pre>
 <pre><code class="{{ext}} hljs">{{content}}</code></pre>
 """
@@ -62,6 +66,16 @@ proc useMdBackend*(doc: var NbDoc) =
 ![{{caption}}]({{url}})
 
 **Figure:** {{caption}}
+"""
+  doc.partials["nbPython"] = """
+```python
+{{&code}}
+```
+{{#output}}
+```
+{{&output}}
+```
+{{/output}}
 """
 
   # no need for special treatment

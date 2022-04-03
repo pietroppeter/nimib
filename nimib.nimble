@@ -15,7 +15,7 @@ requires "mustache >= 0.2.1"
 requires "toml_serialization >= 0.2.0"
 
 task tdeps, "install dependendencies required for testing":
-  exec "nimble -y install ggplotnim@0.4.9 numericalnim@0.6.1 nimoji"
+  exec "nimble -y install ggplotnim@0.4.9 numericalnim@0.6.1 nimoji nimpy"
 
 task test, "General tests":
   exec "nim r -d:nimibPreviewCodeAsInSource tests/tsources.nim"

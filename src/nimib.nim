@@ -1,4 +1,4 @@
-import std/[os, strutils, sugar]
+import std/[os, strutils, sugar, strformat]
 import nimib / [types, blocks, docs, boost, config, options, capture]
 export types, blocks, docs, boost, sugar
 # types exports mustache, tables, paths
@@ -123,6 +123,34 @@ when moduleAvailable(nimpy):
 template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):
     nb.blk.output = content
+
+type
+  NbCodeScript* = ref object
+    code*: string
+
+template nbNewCode*(codeString: string): NbCodeScript =
+  NbCodeScript(code: codeString)
+
+template addCode*(script: NbCodeScript, codeString: string) =
+  script.code &= "\n" & codeString
+
+template addToDocAsJs*(script: NbCodeScript) =
+  let tempdir = getTempDir() / "nimib"
+  createDir(tempdir)
+  block:
+    let nimfile {.inject.} = tempdir / "code.nim"
+    echo nimfile
+    let jsfile {.inject.} = tempdir / "out.js"
+    writeFile(nimfile, script.code)
+    discard execShellCmd(fmt"nim js -d:danger -o:{jsfile} {nimfile}")
+    let jscode = readFile(jsfile)
+    nbRawOutput: "<script>\n" & jscode & "\n</script>"
+
+template nbJsCode*(code: string) =
+  let script = nbNewCode(code)
+  script.addToDocAsJs
+
+
 
 template nbClearOutput*() =
   if not nb.blk.isNil:

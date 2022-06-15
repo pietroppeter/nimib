@@ -29,3 +29,13 @@ template hlPyF*(s: string): string =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Python.
   ## Equivilent to ``&s`` so it applies string interpolation.
   &s
+
+template hlNim*(s: string): string =
+  ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Nim.
+  ## It is a no-op and returns the orginal string.
+  s
+
+template hlNimF*(s: string): string =
+  ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Nim.
+  ## Equivilent to ``&s`` so it applies string interpolation.
+  &s

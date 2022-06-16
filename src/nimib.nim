@@ -1,4 +1,5 @@
-import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
+export jsonutils
 import nimib / [types, blocks, docs, boost, config, options, capture]
 export types, blocks, docs, boost, sugar
 # types exports mustache, tables, paths
@@ -167,9 +168,10 @@ proc genCapturedAssignment*(capturedVariables, capturedTypes: seq[NimNode]): tup
       import std/json
     for (cap, capType) in zip(capturedVariables, capturedTypes):
       let placeholder = gensym(ident="placeholder")
+      let placeholderLit = newLit(placeholder.repr)
       result.placeholders.add placeholder
       result.code.add quote do:
-        let `cap` = parseJson(`placeholder`).to(`capType`)
+        let `cap` = parseJson(`placeholderLit`).to(`capType`)
 
 macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
@@ -185,7 +187,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   # dispatch either to string based if the body has type string
   # or to typed version otherwise.
   var body: NimNode
-  if key in validCodeTable:
+  if key in validCodeTable: # type information is available in this branch
     body = validCodeTable[key]
     if captureVars.len == 0 and body.getType.typeKind == ntyString:
       # It is a string, return it as is is.
@@ -206,14 +208,26 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   echo "capAssignment: ", capAssignments.repr
   echo "placeholders: ", placeholders.repr
   # 2. Stringify code
-
+  let code = newStmtList(capAssignments, body)
+  var codeText = code.toStrLit
+  echo "Code before replacement: -------------\n", codeText.strVal, "\n################"
   # 3. Generate code which does the serialization and replacement of placeholders
   #    It should return the final string
+  let codeTextIdent = ident"codeText"
+  result = newStmtList()
+  result.add newVarStmt(codeTextIdent, codeText)
+  for i in 0 .. captureVars.high:
+    let placeholder = placeholders[i].repr.newLit
+    let varIdent = captureVars[i]
+    let serializedValue = quote do:
+      $(toJson(`varIdent`))
+    result.add quote do:
+      `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, `serializedValue`)
+  result.add codeTextIdent
+  echo "Final code: -----------------\n", result.repr, "\n#############"
 
-  # let codeText = body.toStrLit
-
-  result = quote do:
-    "hello"
+  #result = quote do:
+  #  "hello"
     
 
 macro nimToJsStringFirstStage*(args: varargs[untyped]): untyped =
@@ -251,8 +265,9 @@ template nbNewCodeUntyped*(args: varargs[untyped]): untyped =
   # 2. stringify code
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
-  echo nimToJsStringFirstStage(args)
-  NbCodeScript()
+  let code = nimToJsStringFirstStage(args)
+  echo code
+  NbCodeScript(code: code)
 
 
 

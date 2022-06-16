@@ -125,15 +125,7 @@ template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):
     nb.blk.output = content
 
-type
-  NbCodeScript* = ref object
-    code*: string
 
-template nbNewCodeStr*(codeString: string): NbCodeScript =
-  NbCodeScript(code: codeString)
-
-proc addCodeStr*(script: NbCodeScript, codeString: string) =
-  script.code &= "\n" & codeString
 
 proc contains*(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:
@@ -160,6 +152,18 @@ macro addInvalid(key: string, s: untyped): untyped =
   # If it is invalid we want it untyped
   invalidCodeTable[key.strVal] = s
 
+proc degensymAst(n: NimNode) =
+  for i in 0 ..< n.len:
+    case n[i].kind
+    of nnkIdent, nnkSym:
+      let str = n[i].strVal
+      if "`gensym" in str:
+        let newStr = str.split("`gensym")[0]
+        n[i] = ident(newStr)
+        echo "Swapped ", str, " for ", newStr
+    else:
+      degensymAst(n[i])
+
 proc genCapturedAssignment*(capturedVariables, capturedTypes: seq[NimNode]): tuple[code: NimNode, placeholders: seq[NimNode]] =
   result.code = newStmtList()
   # generate fromJSON loading and then add entire body afterwards
@@ -168,10 +172,9 @@ proc genCapturedAssignment*(capturedVariables, capturedTypes: seq[NimNode]): tup
       import std/json
     for (cap, capType) in zip(capturedVariables, capturedTypes):
       let placeholder = gensym(ident="placeholder")
-      let placeholderLit = newLit(placeholder.repr)
       result.placeholders.add placeholder
       result.code.add quote do:
-        let `cap` = parseJson(`placeholderLit`).to(`capType`)
+        let `cap` = parseJson(`placeholder`).to(`capType`)
 
 macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
@@ -193,6 +196,8 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
       # It is a string, return it as is is.
       result = body
       return
+    elif captureVars.len > 0 and body.getType.typeKind == ntyString:
+        error("When passing in a string capturing variables is not supported!", body)
     #elif body.getType.typeKind != ntyVoid:
     #  error("Script expression must be discarded", body)
     else:
@@ -208,21 +213,22 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   echo "capAssignment: ", capAssignments.repr
   echo "placeholders: ", placeholders.repr
   # 2. Stringify code
-  let code = newStmtList(capAssignments, body)
+  let code = newStmtList(capAssignments, body).copyNimTree()
+  code.degensymAst()
   var codeText = code.toStrLit
   echo "Code before replacement: -------------\n", codeText.strVal, "\n################"
   # 3. Generate code which does the serialization and replacement of placeholders
   #    It should return the final string
-  let codeTextIdent = ident"codeText"
+  let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
   result = newStmtList()
   result.add newVarStmt(codeTextIdent, codeText)
   for i in 0 .. captureVars.high:
     let placeholder = placeholders[i].repr.newLit
     let varIdent = captureVars[i]
-    let serializedValue = quote do:
+    let serializedValue = quote do: # TODO: escape " in JSON
       $(toJson(`varIdent`))
     result.add quote do:
-      `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, `serializedValue`)
+      `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
   result.add codeTextIdent
   echo "Final code: -----------------\n", result.repr, "\n#############"
 
@@ -230,7 +236,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   #  "hello"
     
 
-macro nimToJsStringFirstStage*(args: varargs[untyped]): untyped =
+macro nimToJsString*(args: varargs[untyped]): untyped =
   echo args.len, " ", args.treerepr
   if args.len == 0:
     error("nbNewCode needs a code block to be passed", args)
@@ -258,18 +264,23 @@ macro nimToJsStringFirstStage*(args: varargs[untyped]): untyped =
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)
 
-template nbNewCodeUntyped*(args: varargs[untyped]): untyped =
+type
+  NbCodeScript* = ref object
+    code*: string
+
+template nbNewCode*(args: varargs[untyped]): NbCodeScript =
   # 1. preprocess code, get back idents to replace with the value
   # 2. Generate code which does the replacement and stringifies code
   # How to loop over each of the variables in the C-code to run replace for each of them?
   # 2. stringify code
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
-  let code = nimToJsStringFirstStage(args)
+  let code = nimToJsString(args)
   echo code
   NbCodeScript(code: code)
 
-
+template addCode*(script: NbCodeScript, args: varargs[untyped]) =
+  script.code &= "\n" & nimToJsString(args)
 
 template addToDocAsJs*(script: NbCodeScript) =
   let tempdir = getTempDir() / "nimib"
@@ -279,12 +290,14 @@ template addToDocAsJs*(script: NbCodeScript) =
     echo nimfile
     let jsfile {.inject.} = tempdir / "out.js"
     writeFile(nimfile, script.code)
-    discard execShellCmd(fmt"nim js -d:danger -o:{jsfile} {nimfile}")
+    let errorCode = execShellCmd(fmt"nim js -d:danger -o:{jsfile} {nimfile}")
+    if errorCode != 0:
+      raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?")
     let jscode = readFile(jsfile)
     nbRawOutput: "<script>\n" & jscode & "\n</script>"
 
-template nbJsCodeStr*(code: string) =
-  let script = nbNewCode(code)
+template nbJsCode*(args: varargs[untyped]) =
+  let script = nbNewCode(args)
   script.addToDocAsJs
 
 

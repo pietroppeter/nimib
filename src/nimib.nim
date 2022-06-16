@@ -1,4 +1,4 @@
-import std/[os, strutils, sugar, strformat]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils]
 import nimib / [types, blocks, docs, boost, config, options, capture]
 export types, blocks, docs, boost, sugar
 # types exports mustache, tables, paths
@@ -128,11 +128,133 @@ type
   NbCodeScript* = ref object
     code*: string
 
-template nbNewCode*(codeString: string): NbCodeScript =
+template nbNewCodeStr*(codeString: string): NbCodeScript =
   NbCodeScript(code: codeString)
 
-template addCode*(script: NbCodeScript, codeString: string) =
+proc addCodeStr*(script: NbCodeScript, codeString: string) =
   script.code &= "\n" & codeString
+
+proc contains*(tab: CacheTable, keyToCheck: string): bool =
+  for key, val in tab:
+    if key == keyToCheck:
+      return true
+  return false
+
+const validCodeTable = CacheTable"validCodeTable"
+const invalidCodeTable = CacheTable"invalidCodeTable"
+
+macro typedChecker(n: typed): untyped = discard
+macro checkIsValidCode(n: untyped): untyped =
+  result = quote do:
+    when compiles(typedChecker(`n`)):
+      true
+    else:
+      false
+
+macro addValid(key: string, s: typed): untyped =
+  # If it is valid we want it typed
+  validCodeTable[key.strVal] = s
+
+macro addInvalid(key: string, s: untyped): untyped =
+  # If it is invalid we want it untyped
+  invalidCodeTable[key.strVal] = s
+
+proc genCapturedAssignment*(capturedVariables, capturedTypes: seq[NimNode]): tuple[code: NimNode, placeholders: seq[NimNode]] =
+  result.code = newStmtList()
+  # generate fromJSON loading and then add entire body afterwards
+  if capturedVariables.len > 0:
+    result.code.add quote do:
+      import std/json
+    for (cap, capType) in zip(capturedVariables, capturedTypes):
+      let placeholder = gensym(ident="placeholder")
+      result.placeholders.add placeholder
+      result.code.add quote do:
+        let `cap` = parseJson(`placeholder`).to(`capType`)
+
+macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
+  let captureVars = toSeq(captureVars)
+  echo "Capture: ", captureVars.repr
+
+  let captureTypes = collect:
+    for cap in captureVars:
+      echo cap.lisprepr
+      cap.getTypeInst
+
+  echo "Capture types: ", captureTypes
+
+  # dispatch either to string based if the body has type string
+  # or to typed version otherwise.
+  var body: NimNode
+  if key in validCodeTable:
+    body = validCodeTable[key]
+    if captureVars.len == 0 and body.getType.typeKind == ntyString:
+      # It is a string, return it as is is.
+      result = body
+      return
+    #elif body.getType.typeKind != ntyVoid:
+    #  error("Script expression must be discarded", body)
+    else:
+      # It is not a string, don't do anything here
+      discard
+  elif key in invalidCodeTable:
+    body = invalidCodeTable[key]
+  else:
+    error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with the failing part of your code")
+  # Now we have the body!
+  # 1. Generate the captured variable assignments and return placeholders
+  let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
+  echo "capAssignment: ", capAssignments.repr
+  echo "placeholders: ", placeholders.repr
+  # 2. Stringify code
+
+  # 3. Generate code which does the serialization and replacement of placeholders
+  #    It should return the final string
+
+  # let codeText = body.toStrLit
+
+  result = quote do:
+    "hello"
+    
+
+macro nimToJsStringFirstStage*(args: varargs[untyped]): untyped =
+  echo args.len, " ", args.treerepr
+  if args.len == 0:
+    error("nbNewCode needs a code block to be passed", args)
+  
+  let body = args[^1]
+  let captureVars =
+    if args.len == 1:
+      @[]
+    else:
+      args[0 ..< ^1]
+  
+  # Save UNTYPED body for access later. 
+  # It's important that it is untyped to be able to combine
+  # multiple code snippets.
+  let key = body.repr
+  #bodyCacheTable[key] = body
+
+  result = newStmtList()
+  result.add quote do:
+    when checkIsValidCode(`body`):
+      addValid(`key`, `body`)
+    else:
+      addInvalid(`key`, `body`)
+  var nextArgs = @[newLit(key)]
+  nextArgs.add captureVars
+  result.add newCall("nimToJsStringSecondStage", nextArgs)
+
+template nbNewCodeUntyped*(args: varargs[untyped]): untyped =
+  # 1. preprocess code, get back idents to replace with the value
+  # 2. Generate code which does the replacement and stringifies code
+  # How to loop over each of the variables in the C-code to run replace for each of them?
+  # 2. stringify code
+  # 3. replace idents from preprocessing with their json values
+  # The problem is the overloading so body must be type-checked to see which one to call
+  echo nimToJsStringFirstStage(args)
+  NbCodeScript()
+
+
 
 template addToDocAsJs*(script: NbCodeScript) =
   let tempdir = getTempDir() / "nimib"
@@ -146,7 +268,7 @@ template addToDocAsJs*(script: NbCodeScript) =
     let jscode = readFile(jsfile)
     nbRawOutput: "<script>\n" & jscode & "\n</script>"
 
-template nbJsCode*(code: string) =
+template nbJsCodeStr*(code: string) =
   let script = nbNewCode(code)
   script.addToDocAsJs
 

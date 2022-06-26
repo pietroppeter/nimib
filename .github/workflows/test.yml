@@ -13,6 +13,4 @@ jobs:
         with:
           nim-version: '1.6.x'
       - run: nimble -y install
-      - run: nimble tdeps
       - run: nimble test
-      - run: nimble docs # not to publish but to test it works

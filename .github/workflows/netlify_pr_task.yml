@@ -1,7 +1,7 @@
 # creates a task saying that it is waiting for the build to finish, does nothing else
 name: netlify PR task
 on:
-  pull_request_target:
+  pull_request_target:  # runs for activity on pr but does not use code from pr and only from pr target
     branches:
       - main
 jobs:

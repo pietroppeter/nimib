@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>penguins.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <link rel='stylesheet' href='https://unpkg.com/normalize.css/'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+  <style>
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+</style>
+  
+</head>
+<body>
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>penguins.nim</code></span>
+  <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+</div>
+<hr>
+</header><main>
+<blockquote>
+<p>This nimib example document shows how to insert images in nimib documents.</p>
+</blockquote>
+<h1>🐧 Exploring penguins with ggplotnim</h1>
+<p>We will explore the <a href="https://github.com/allisonhorst/palmerpenguins">palmer penguins dataset</a>
+with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="https://github.com/SciNim/Datamancer">datamancer</a>.</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  datamancer</code></pre>
+<p>we read the penguins csv into a Datamancer <code>DataFrame</code></p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
+<p>let us see how it looks</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df</code></pre><pre><samp>Dataframe with 7 columns and 344 rows:
+                  Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
+               dtype:               string               string               object               object               object               object               string
+                    0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
+                    1               Adelie            Torgersen                 39.5                 17.4                  186                 3800               FEMALE
+                    2               Adelie            Torgersen                 40.3                   18                  195                 3250               FEMALE
+                    3               Adelie            Torgersen                   NA                   NA                   NA                   NA                   NA
+                    4               Adelie            Torgersen                 36.7                 19.3                  193                 3450               FEMALE
+                    5               Adelie            Torgersen                 39.3                 20.6                  190                 3650                 MALE
+                    6               Adelie            Torgersen                 38.9                 17.8                  181                 3625               FEMALE
+                    7               Adelie            Torgersen                 39.2                 19.6                  195                 4675                 MALE
+                    8               Adelie            Torgersen                 34.1                 18.1                  193                 3475                   NA
+                    9               Adelie            Torgersen                   42                 20.2                  190                 4250                   NA
+                   10               Adelie            Torgersen                 37.8                 17.1                  186                 3300                   NA
+                   11               Adelie            Torgersen                 37.8                 17.3                  180                 3700                   NA
+                   12               Adelie            Torgersen                 41.1                 17.6                  182                 3200               FEMALE
+                   13               Adelie            Torgersen                 38.6                 21.2                  191                 3800                 MALE
+                   14               Adelie            Torgersen                 34.6                 21.1                  198                 4400                 MALE
+                   15               Adelie            Torgersen                 36.6                 17.8                  185                 3700               FEMALE
+                   16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
+                   17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
+                   18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
+                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+<p>Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+The remaining 4 are numeric but they have datatype object. Why?</p>
+<p>Because that there are null values in those columns (interpreted as strings):</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">1</span>].kind
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind</code></pre><pre><samp>VFloat
+VFloat
+VString
+VInt
+VString</samp></pre>
+<p>Let's see how many penguins by species we have (and how do they relate to islands)
+by plotting the species count per island using ggplotnim:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span>
+  ggplotnim
+
+ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() +
+    ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)</code></pre><pre><samp>StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="./images/penguins_count_species.png" alt="Count of penguins by species">
+<figcaption>Count of penguins by species</figcaption>
+</figure>
+<p>We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
+are reported living on 3 islands (Biscoe, Dream, Torgersen).
+The majority of penguins are Adelie and they are distributed over the 3 islands.
+Gentoo penguins (second most common) almost all live on Biscoe,
+and Chinstrap penguins almost all live on Dream.</p>
+<p>We can confirm this with the following image taken from the
+<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081">article</a>
+from where this dataset comes from:</p>
+<figure>
+<img src="./images/penguins_map.png" alt="Penguins by Location">
+<figcaption>Penguins by Location</figcaption>
+</figure>
+<p>We do expect weight being correlated to some of the length measures
+(e.g. flipper length) with males being bigger than females.</p>
+<p>To plot this we need to remove all <code>NA</code> and then classify the points both by the penguins sex as
+well as their species:</p>
+<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>})
+ggplot(df1, aes(x = <span class="hljs-string">&quot;body_mass_g&quot;</span>, y = <span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>,
+                shape = <span class="hljs-string">&quot;species&quot;</span>)) +
+    geom_point() +
+    ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="./images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
+<figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
+</figure>
+<p>A few things to remark:</p>
+<ul>
+<li>as expected body mass and flipper length are linearly correlated</li>
+<li>males are in general bigger than females but there appear 2 groups, possibly related to species</li>
+<li>we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)</li>
+<li>we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger</li>
+</ul>
+<p>As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that &quot;shows&quot; the presence of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson's paradox</a> in this dataset,
+as reported by <a href="https://twitter.com/andrewheiss/status/1301166792627421186">this tweet</a>:</p>
+<pre><code class="nim hljs">ggplot(df1, aes(x = <span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y = <span class="hljs-string">&quot;body_mass_g&quot;</span>)) +
+    geom_point(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>)) +
+    geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>), smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) +
+    geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) +
+    ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+StatusSuccess output of write_to_png</samp></pre>
+<figure>
+<img src="./images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill">
+<figcaption>Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill</figcaption>
+</figure>
+<p>We can see that Gentoo penguins, although in general bigger, have a &quot;thinner&quot; bill (see image below for meaning of bill and culmen)!</p>
+<figure>
+<img src="https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&amp;name=4096x4096" alt="Penguin's bill and culmen explained (Artwork by @allison_horst)">
+<figcaption>Penguin's bill and culmen explained (Artwork by @allison_horst)</figcaption>
+</figure>
+</main>
+<footer>
+<hr>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, nimoji
+
+nbInit
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; This nimib example document shows how to insert images in nimib documents.
+&quot;&quot;&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;# :penguin: Exploring penguins with ggplotnim
+
+We will explore the [palmer penguins dataset](https://github.com/allisonhorst/palmerpenguins)
+with [ggplotnim](https://github.com/Vindaar/ggplotnim) and [datamancer](https://github.com/SciNim/Datamancer).
+&quot;&quot;&quot;</span>.emojize
+
+nbCode:
+  <span class="hljs-keyword">import</span> datamancer
+nbText: <span class="hljs-string">&quot;we read the penguins csv into a Datamancer `DataFrame`&quot;</span>
+nbCode:
+  <span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)
+nbText: <span class="hljs-string">&quot;let us see how it looks&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
+The remaining 4 are numeric but they have datatype object. Why?
+
+Because that there are null values in those columns (interpreted as strings):&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">1</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
+  <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind
+
+
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;Let's see how many penguins by species we have (and how do they relate to islands)
+by plotting the species count per island using ggplotnim:&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">import</span> ggplotnim
+  ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() + ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>, caption=<span class="hljs-string">&quot;Count of penguins by species&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;We see that 3 species of penguins (Adelie, Chinstrap, Gentoo)
+are reported living on 3 islands (Biscoe, Dream, Torgersen).
+The majority of penguins are Adelie and they are distributed over the 3 islands.
+Gentoo penguins (second most common) almost all live on Biscoe,
+and Chinstrap penguins almost all live on Dream.
+
+We can confirm this with the following image taken from the
+[article](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090081)
+from where this dataset comes from:
+&quot;&quot;&quot;</span>
+
+nbImage(url=<span class="hljs-string">&quot;images/penguins_map.png&quot;</span>,
+        caption=<span class="hljs-string">&quot;Penguins by Location&quot;</span>)
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;We do expect weight being correlated to some of the length measures
+(e.g. flipper length) with males being bigger than females.
+
+To plot this we need to remove all `NA` and then classify the points both by the penguins sex as
+well as their species:
+&quot;&quot;&quot;</span>
+nbCode:
+  <span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
+  ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>, caption=<span class="hljs-string">&quot;Penguins' mass vs flipper length (colored by sex)&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;A few things to remark:
+
+- as expected body mass and flipper length are linearly correlated
+- males are in general bigger than females but there appear 2 groups, possibly related to species
+- we have some more NAs (and one '.') in sex column (even after filtering for NAs in numeric columns)
+- we can see that sizes of Adelie and Chinstrap overlap, while Gentoo penguins are in general bigger
+
+As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that &quot;shows&quot; the presence of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) in this dataset,
+as reported by [this tweet](https://twitter.com/andrewheiss/status/1301166792627421186):
+&quot;&quot;&quot;</span>
+nbCode:
+  ggplot(df1, aes(x=<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y=<span class="hljs-string">&quot;body_mass_g&quot;</span>)) +
+    geom_point(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>)) +      <span class="hljs-comment"># point...</span>
+    geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>),       <span class="hljs-comment"># and smooth classified by species</span>
+                smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
+    geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth without classification by species</span>
+    ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)
+nbImage(url=<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>, caption=<span class="hljs-string">&quot;&quot;&quot;
+Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
+but looking at all species taken together bigger mass is correlated with thinner bill&quot;&quot;&quot;</span>)
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+We can see that Gentoo penguins, although in general bigger, have a &quot;thinner&quot; bill (see image below for meaning of bill and culmen)!
+&quot;&quot;&quot;</span>
+nbImage(url=<span class="hljs-string">&quot;https://pbs.twimg.com/media/Eg6sRJ1XcAAkxiu?format=jpg&amp;name=4096x4096&quot;</span>, caption=<span class="hljs-string">&quot;&quot;&quot;
+Penguin's bill and culmen explained (Artwork by @allison_horst)&quot;&quot;&quot;</span>)
+nbSave
+</code></pre>
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
+</html>

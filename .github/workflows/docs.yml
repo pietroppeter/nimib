@@ -14,7 +14,7 @@ jobs:
       - name: install library dependencies
         run: nimble install -y
       - name: install doc dependencies
-        run: nimble tdeps
+        run: nimble docsdeps
       - name: build docs
         run: nimble docs
       - name: deploy on github pages

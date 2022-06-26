@@ -118,6 +118,7 @@ elsewhere:
 * [nimibook](https://github.com/pietroppeter/nimibook): a port of mdbook to nim(ib)
 * [SciNim Getting Started](https://scinim.github.io/getting-started/): tutorials for nim in scientific computing 
 * [Norm documentation](https://norm.nim.town): documentation of a Nim ORM library.
+* [NimiSlides](https://github.com/HugoGranstrom/nimib-reveal): a [reveal.js](https://revealjs.com) theme for nimib.
 
 you are welcome to add here what you have built with nimib!
 

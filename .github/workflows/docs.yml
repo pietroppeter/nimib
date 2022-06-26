@@ -1,0 +1,24 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  gh-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: pip install scipy numpy
+      - name: "install_nim"
+        id: install_nim
+        uses: iffy/install-nim@v3
+      - name: install library dependencies
+        run: nimble install -y
+      - name: install doc dependencies
+        run: nimble tdeps
+      - name: build docs
+        run: nimble docs
+      - name: deploy on github pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs

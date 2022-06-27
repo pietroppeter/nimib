@@ -282,6 +282,9 @@ template nbNewCode*(args: varargs[untyped]): NbCodeScript =
 template addCode*(script: NbCodeScript, args: varargs[untyped]) =
   script.code &= "\n" & nimToJsString(args)
 
+# Each karax script needs it's own unique kxiname to get their own Karax instances.
+# kxi_id is used to give each their own.
+var kxi_id = 0 
 template addToDocAsJs*(script: NbCodeScript) =
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)
@@ -290,7 +293,9 @@ template addToDocAsJs*(script: NbCodeScript) =
     echo nimfile
     let jsfile {.inject.} = tempdir / "out.js"
     writeFile(nimfile, script.code)
-    let errorCode = execShellCmd(fmt"nim js -d:danger -o:{jsfile} {nimfile}")
+    let kxiname {.inject.} = $kxi_id
+    kxi_id += 1
+    let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
     if errorCode != 0:
       raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?")
     let jscode = readFile(jsfile)

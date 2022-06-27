@@ -251,7 +251,8 @@ macro nimToJsString*(args: varargs[untyped]): untyped =
   # Save UNTYPED body for access later. 
   # It's important that it is untyped to be able to combine
   # multiple code snippets.
-  let key = body.repr
+  let key = body.repr & $randomCounter
+  randomCounter += 1
   #bodyCacheTable[key] = body
 
   result = newStmtList()

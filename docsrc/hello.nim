@@ -4,7 +4,7 @@ import nimib
 nbInit
 
 nbText: """
-## Secret talk with a CI
+## Secret talk with a computer
 Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
 and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
 ### A secret message

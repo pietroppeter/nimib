@@ -1,4 +1,4 @@
-import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils, random]
 export jsonutils
 import nimib / [types, blocks, docs, boost, config, options, capture]
 export types, blocks, docs, boost, sugar
@@ -135,6 +135,7 @@ proc contains*(tab: CacheTable, keyToCheck: string): bool =
 
 const validCodeTable = CacheTable"validCodeTable"
 const invalidCodeTable = CacheTable"invalidCodeTable"
+var tabMapIdents {.compiletime.}: Table[string, NimNode]
 
 macro typedChecker(n: typed): untyped = discard
 macro checkIsValidCode(n: untyped): untyped =
@@ -159,8 +160,16 @@ proc degensymAst(n: NimNode) =
       let str = n[i].strVal
       if "`gensym" in str:
         let newStr = str.split("`gensym")[0]
-        n[i] = ident(newStr)
-        echo "Swapped ", str, " for ", newStr
+        var newSym: NimNode
+        # If this symbol is already used in this script, use the gensym'd symbol from 
+        if newStr in tabMapIdents:
+          newSym = tabMapIdents[newStr]
+        else: # else create a gensym'd symbol and add it to the table
+          newSym = gensym(ident=newStr).repr.ident
+          tabMapIdents[newStr] = newSym
+        n[i] = newSym
+        echo "Swapped ", str, " for ", newSym.repr
+      # TODO: What if the symbols aren't gensym'd? In all cases when this is relevant they are defined in a template so we should be fine?
     else:
       degensymAst(n[i])
 
@@ -178,14 +187,10 @@ proc genCapturedAssignment*(capturedVariables, capturedTypes: seq[NimNode]): tup
 
 macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
-  echo "Capture: ", captureVars.repr
 
   let captureTypes = collect:
     for cap in captureVars:
-      echo cap.lisprepr
       cap.getTypeInst
-
-  echo "Capture types: ", captureTypes
 
   # dispatch either to string based if the body has type string
   # or to typed version otherwise.
@@ -210,13 +215,10 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   # Now we have the body!
   # 1. Generate the captured variable assignments and return placeholders
   let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
-  echo "capAssignment: ", capAssignments.repr
-  echo "placeholders: ", placeholders.repr
   # 2. Stringify code
   let code = newStmtList(capAssignments, body).copyNimTree()
   code.degensymAst()
   var codeText = code.toStrLit
-  echo "Code before replacement: -------------\n", codeText.strVal, "\n################"
   # 3. Generate code which does the serialization and replacement of placeholders
   #    It should return the final string
   let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
@@ -230,17 +232,19 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
     result.add quote do:
       `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
   result.add codeTextIdent
-  echo "Final code: -----------------\n", result.repr, "\n#############"
 
   #result = quote do:
   #  "hello"
     
-
-macro nimToJsString*(args: varargs[untyped]): untyped =
-  echo args.len, " ", args.treerepr
+var randomCounter {.compiletime.} = 0
+macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
     error("nbNewCode needs a code block to be passed", args)
   
+  # If new script, clear the table.
+  if isNewScript:
+    tabMapIdents.clear()
+
   let body = args[^1]
   let captureVars =
     if args.len == 1:
@@ -276,12 +280,12 @@ template nbNewCode*(args: varargs[untyped]): NbCodeScript =
   # 2. stringify code
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
-  let code = nimToJsString(args)
+  let code = nimToJsString(true, args)
   echo code
   NbCodeScript(code: code)
 
 template addCode*(script: NbCodeScript, args: varargs[untyped]) =
-  script.code &= "\n" & nimToJsString(args)
+  script.code &= "\n" & nimToJsString(false, args)
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
 # kxi_id is used to give each their own.

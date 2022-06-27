@@ -5,10 +5,6 @@ nbInit
 
 nbText: """
 ## Secret talk with a CI
-Will you show me this in a preview or not?
-
-Let's try this again!
-
 Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
 and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
 ### A secret message

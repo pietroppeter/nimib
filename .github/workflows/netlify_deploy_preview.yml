@@ -75,5 +75,5 @@ jobs:
           description: Click link to preview ⇒
           sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
           state: success
-          # customize with user-repo
-          target_url: https://${{ env.GITHUB_SHA_SHORT }}--pietroppeter-nimib.netlify.app
+          # customize with netlify site name
+          target_url: https://${{ env.GITHUB_SHA_SHORT }}--nimib.netlify.app

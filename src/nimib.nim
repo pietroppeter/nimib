@@ -147,11 +147,13 @@ macro checkIsValidCode(n: untyped): untyped =
 
 macro addValid(key: string, s: typed): untyped =
   # If it is valid we want it typed
-  validCodeTable[key.strVal] = s
+  if key.strVal notin validCodeTable:
+    validCodeTable[key.strVal] = s
 
 macro addInvalid(key: string, s: untyped): untyped =
   # If it is invalid we want it untyped
-  invalidCodeTable[key.strVal] = s
+  if key.strVal notin invalidCodeTable:
+    invalidCodeTable[key.strVal] = s
 
 proc degensymAst(n: NimNode) =
   for i in 0 ..< n.len:
@@ -236,7 +238,6 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   #result = quote do:
   #  "hello"
     
-var randomCounter {.compiletime.} = 0
 macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
     error("nbNewCode needs a code block to be passed", args)
@@ -255,8 +256,7 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
   # Save UNTYPED body for access later. 
   # It's important that it is untyped to be able to combine
   # multiple code snippets.
-  let key = body.repr & $randomCounter
-  randomCounter += 1
+  let key = body.repr
   #bodyCacheTable[key] = body
 
   result = newStmtList()

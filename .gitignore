@@ -7,3 +7,7 @@
 *.tmp.html
 # let's try using this to test around with stuff:
 x_*
+
+# ignore build of docs 
+docs/*.html
+docs/images/*.png

@@ -1,0 +1,20 @@
+# creates a task saying that it is waiting for the build to finish, does nothing else
+name: netlify PR task
+on:
+  pull_request_target:  # runs for activity on pr but does not use code from pr and only from pr target
+    branches:
+      - main
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo Commit hash = ${{ github.event.pull_request.head.sha }} 
+      - name: Show pending status check
+        uses: Sibz/github-status-action@v1.1.5
+        with:
+          authToken: ${{ secrets.GITHUB_TOKEN }}
+          context: Netlify preview
+          sha: ${{ github.event.pull_request.head.sha }}
+          description: Waiting for build to finish...
+          state: pending

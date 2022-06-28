@@ -206,8 +206,8 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
     #elif body.getType.typeKind != ntyVoid:
     #  error("Script expression must be discarded", body)
     else:
-      # It is not a string, don't do anything here
-      discard
+      # It is not a string, get the untyped body instead then
+      body = invalidCodeTable[key]
   elif key in invalidCodeTable:
     body = invalidCodeTable[key]
   else:
@@ -263,6 +263,7 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
   result.add quote do:
     when checkIsValidCode(`body`):
       addValid(`key`, `body`)
+      addInvalid(`key`, `body`) # Add this here as we want to keep the untyped body as well
     else:
       addInvalid(`key`, `body`)
   var nextArgs = @[newLit(key)]
@@ -281,7 +282,6 @@ template nbNewCode*(args: varargs[untyped]): NbCodeScript =
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
   let code = nimToJsString(true, args)
-  echo code
   NbCodeScript(code: code)
 
 template addCode*(script: NbCodeScript, args: varargs[untyped]) =
@@ -295,14 +295,13 @@ template addToDocAsJs*(script: NbCodeScript) =
   createDir(tempdir)
   block:
     let nimfile {.inject.} = tempdir / "code.nim"
-    echo nimfile
     let jsfile {.inject.} = tempdir / "out.js"
     writeFile(nimfile, script.code)
     let kxiname {.inject.} = $kxi_id
     kxi_id += 1
     let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
     if errorCode != 0:
-      raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?")
+      raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & nimfile)
     let jscode = readFile(jsfile)
     nbRawOutput: "<script>\n" & jscode & "\n</script>"
 

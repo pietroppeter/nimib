@@ -129,7 +129,7 @@ type
   NbCodeScript* = ref object
     code*: string
 
-template nbNewCode*(args: varargs[untyped]): NbCodeScript =
+template nbCodeToJsInit*(args: varargs[untyped]): NbCodeScript =
   # 1. preprocess code, get back idents to replace with the value
   # 2. Generate code which does the replacement and stringifies code
   # How to loop over each of the variables in the C-code to run replace for each of them?
@@ -139,7 +139,7 @@ template nbNewCode*(args: varargs[untyped]): NbCodeScript =
   let code = nimToJsString(true, args)
   NbCodeScript(code: code)
 
-template addCode*(script: NbCodeScript, args: varargs[untyped]) =
+template addCodeToJs*(script: NbCodeScript, args: varargs[untyped]) =
   script.code &= "\n" & nimToJsString(false, args)
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
@@ -160,8 +160,8 @@ template addToDocAsJs*(script: NbCodeScript) =
     let jscode = readFile(jsfile)
     nbRawOutput: "<script>\n" & jscode & "\n</script>"
 
-template nbJsCode*(args: varargs[untyped]) =
-  let script = nbNewCode(args)
+template nbCodeToJs*(args: varargs[untyped]) =
+  let script = nbCodeToJsInit(args)
   script.addToDocAsJs
 
 

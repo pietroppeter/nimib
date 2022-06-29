@@ -27,6 +27,8 @@ nbCode:
   ## Uncomment this line:
   ##script.addToDocAsJs()
 script.addToDocAsJs()
+nbCodeToJsShowSource()
+
 
 nbText: hlMd"""
 The reason `script.addToDocAsJs()` is commented out is just a limitation of nimib not handling nested blocks well.

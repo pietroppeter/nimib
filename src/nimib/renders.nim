@@ -20,7 +20,7 @@ proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
   createDir(tempdir)
   let nimfile = tempdir / "code.nim"
   let jsfile = tempdir / "out.js"
-  writeFile(nimfile, blk.code)
+  writeFile(nimfile, blk.context["transformedCode"].vString)
   let kxiname = randomString(doc.rng, 32)
   let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
   if errorCode != 0:

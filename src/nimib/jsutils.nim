@@ -29,7 +29,7 @@ macro addInvalid(key: string, s: untyped): untyped =
   if key.strVal notin invalidCodeTable:
     invalidCodeTable[key.strVal] = s
 
-proc degensymAst(n: NimNode) =
+proc degensymAst(n: NimNode, removeGensym = false) =
   for i in 0 ..< n.len:
     case n[i].kind
     of nnkIdent, nnkSym:
@@ -37,17 +37,20 @@ proc degensymAst(n: NimNode) =
       if "`gensym" in str:
         let newStr = str.split("`gensym")[0]
         var newSym: NimNode
-        # If this symbol is already used in this script, use the gensym'd symbol from 
-        if newStr in tabMapIdents:
-          newSym = tabMapIdents[newStr]
-        else: # else create a gensym'd symbol and add it to the table
-          newSym = gensym(ident=newStr).repr.ident
-          tabMapIdents[newStr] = newSym
+        if removeGensym: # remove gensym all together, useful for removing gensym noise when showing code
+          newSym = ident(newStr)
+        else: # replace gensym with one that is accepted by the parser
+           # If this symbol is already used in this script, use the gensym'd symbol from tabMapIdents
+          if newStr in tabMapIdents:
+            newSym = tabMapIdents[newStr]
+          else: # else create a gensym'd symbol and add it to the table
+            newSym = gensym(ident=newStr).repr.ident
+            tabMapIdents[newStr] = newSym
         n[i] = newSym
         echo "Swapped ", str, " for ", newSym.repr
       # TODO: What if the symbols aren't gensym'd? In all cases when this is relevant they are defined in a template so we should be fine?
     else:
-      degensymAst(n[i])
+      degensymAst(n[i], removeGenSym)
 
 proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tuple[code: NimNode, placeholders: seq[NimNode]] =
   result.code = newStmtList()
@@ -75,7 +78,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
     body = validCodeTable[key]
     if captureVars.len == 0 and body.getType.typeKind == ntyString:
       # It is a string, return it as is is.
-      result = body
+      result = nnkTupleConstr.newTree(body, body) #body # return tuple of (body, body)
       return
     elif captureVars.len > 0 and body.getType.typeKind == ntyString:
         error("When passing in a string capturing variables is not supported!", body)
@@ -89,6 +92,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   else:
     error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with the failing part of your code")
   # Now we have the body!
+  body = body.copyNimTree()
   # 1. Generate the captured variable assignments and return placeholders
   let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
   # 2. Stringify code
@@ -103,18 +107,17 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   for i in 0 .. captureVars.high:
     let placeholder = placeholders[i].repr.newLit
     let varIdent = captureVars[i]
-    let serializedValue = quote do: # TODO: escape " in JSON
+    let serializedValue = quote do:
       $(toJson(`varIdent`))
     result.add quote do:
       `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
-  result.add codeTextIdent
-
-  #result = quote do:
-  #  "hello"
+  # return tuple of the transformed code to be compiled and the prettified code for visualization
+  body.degensymAst(removeGenSym=true) # remove `gensym if code was written in a template
+  result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
     
 macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
-    error("nbNewCode needs a code block to be passed", args)
+    error("nbCodeToJs needs a code block to be passed", args)
   
   # If new script, clear the table.
   if isNewScript:
@@ -131,7 +134,6 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
   # It's important that it is untyped to be able to combine
   # multiple code snippets.
   let key = body.repr
-  #bodyCacheTable[key] = body
 
   result = newStmtList()
   result.add quote do:

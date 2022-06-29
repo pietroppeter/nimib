@@ -133,11 +133,15 @@ template nbCodeToJsInit*(args: varargs[untyped]): NbBlock =
   # 2. stringify code
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
-  let code = nimToJsString(true, args)
-  NbBlock(command: "nbCodeToJs", code: code, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  let (code, originalCode) = nimToJsString(true, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
+  result
 
 template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
-  script.code &= "\n" & nimToJsString(false, args)
+  let (code, originalCode) = nimToJsString(false, args)
+  script.code &= "\n" & originalCode
+  script.context["transformedCode"] &= "\n" & code
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
 # kxi_id is used to give each their own.

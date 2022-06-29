@@ -141,7 +141,7 @@ template nbCodeToJsInit*(args: varargs[untyped]): NbBlock =
 template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(false, args)
   script.code &= "\n" & originalCode
-  script.context["transformedCode"] &= "\n" & code
+  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & code
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
 # kxi_id is used to give each their own.

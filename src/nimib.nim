@@ -141,27 +141,16 @@ template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
 # kxi_id is used to give each their own.
-var kxi_id = 0 
+
 template addToDocAsJs*(script: NbBlock) =
-  let tempdir = getTempDir() / "nimib"
-  createDir(tempdir)
-  block:
-    let nimfile {.inject.} = tempdir / "code.nim"
-    let jsfile {.inject.} = tempdir / "out.js"
-    writeFile(nimfile, script.code)
-    let kxiname {.inject.} = $kxi_id
-    kxi_id += 1
-    let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
-    if errorCode != 0:
-      raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & nimfile)
-    let jscode = readFile(jsfile)
-    nbRawOutput: "<script>\n" & jscode & "\n</script>"
+  nb.blocks.add script
+  nb.blk = script
 
 template nbCodeToJs*(args: varargs[untyped]) =
   let script = nbCodeToJsInit(args)
   script.addToDocAsJs
 
-template nbCodeToJsShowSource =
+template nbCodeToJsShowSource* =
   nb.blk.context["js_show_nim_source"] = true
 
 

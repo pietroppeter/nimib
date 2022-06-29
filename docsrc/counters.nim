@@ -45,7 +45,7 @@ place the widget there, that's the reusable part done. But it also takes an inpu
 4. We fetch the elements we emitted above by their ids. Remember that most javascript functions want `cstring`s!
 5. We create a variable `counter` to keep track of the counter and add the eventlistener to the `button` element. There we increase the counter and update the `innerHtml` of the `label`.
 
-Here we have the button in action:
+Here we have the button in action: `counterButton("uniqueString")`
 """
 
 counterButton("uniqueString")
@@ -90,7 +90,7 @@ Here's what each part of the code does:
 5. Setup `counter` to keep track of the count and create the `createDom` function with the structure of our code. The eventlistener is inlined in the `button:` so no need for setting ids for our elements.
 6. Start the karax aparatus using the root-element with id `rootId` we created above.
 
-Here is the button in action:
+Here is the button in action: `karaxButton()`
 """
 
 karaxButton()

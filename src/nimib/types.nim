@@ -1,6 +1,6 @@
 import mustache, std / tables, nimib / paths, std / parseopt
 export mustache, tables, paths
-import std / os
+import std / [os, random]
 
 type
   NbBlock* = ref object
@@ -32,6 +32,7 @@ type
     templateDirs*: seq[string]
     renderPlans*: Table[string, seq[string]]
     renderProcs*: Table[string, NbRenderProc]
+    rng*: Rand
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

@@ -90,7 +90,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   elif key in invalidCodeTable:
     body = invalidCodeTable[key]
   else:
-    error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with the failing part of your code")
+    error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with a minimal reproducible example")
   # Now we have the body!
   body = body.copyNimTree()
   # 1. Generate the captured variable assignments and return placeholders

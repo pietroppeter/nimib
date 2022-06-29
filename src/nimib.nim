@@ -125,11 +125,8 @@ template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):
     nb.blk.output = content
 
-type
-  NbCodeScript* = ref object
-    code*: string
 
-template nbCodeToJsInit*(args: varargs[untyped]): NbCodeScript =
+template nbCodeToJsInit*(args: varargs[untyped]): NbBlock =
   # 1. preprocess code, get back idents to replace with the value
   # 2. Generate code which does the replacement and stringifies code
   # How to loop over each of the variables in the C-code to run replace for each of them?
@@ -137,15 +134,15 @@ template nbCodeToJsInit*(args: varargs[untyped]): NbCodeScript =
   # 3. replace idents from preprocessing with their json values
   # The problem is the overloading so body must be type-checked to see which one to call
   let code = nimToJsString(true, args)
-  NbCodeScript(code: code)
+  NbBlock(command: "nbCodeToJs", code: code, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
 
-template addCodeToJs*(script: NbCodeScript, args: varargs[untyped]) =
+template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
   script.code &= "\n" & nimToJsString(false, args)
 
 # Each karax script needs it's own unique kxiname to get their own Karax instances.
 # kxi_id is used to give each their own.
 var kxi_id = 0 
-template addToDocAsJs*(script: NbCodeScript) =
+template addToDocAsJs*(script: NbBlock) =
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)
   block:
@@ -164,6 +161,8 @@ template nbCodeToJs*(args: varargs[untyped]) =
   let script = nbCodeToJsInit(args)
   script.addToDocAsJs
 
+template nbCodeToJsShowSource =
+  nb.blk.context["js_show_nim_source"] = true
 
 
 template nbClearOutput*() =

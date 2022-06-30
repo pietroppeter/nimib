@@ -50,6 +50,10 @@ Here we have the button in action: `counterButton("uniqueString")`
 
 counterButton("uniqueString")
 
+nbText: """And here is another independent counter: `counterButton("anotherUniqueString")`"""
+
+counterButton("anotherUniqueString")
+
 nbText: hlMd"""
 ## Karax
 
@@ -94,5 +98,50 @@ Here is the button in action: `karaxButton()`
 """
 
 karaxButton()
+
+nbText: """And here is another independent counter: `karaxButton()`"""
+
+karaxButton()
+
+nbText: hlMd"""
+## Exercise
+
+Modify the counter templates to include a reset button which sets the counter to 0 again like this:
+"""
+
+## Karax with reset button
+var karaxId2 = 0
+template karaxButtonWithReset() =
+  let rootId = "karaxButton_root2" & $karaxId2 ## important that a new id-string is used!
+  inc(karaxId2)
+  ## 2:
+  nbRawOutput: """<div id="$1"></div>""" % [rootId]
+  ## 3:
+  nbCodeToJs(rootId):
+    ## 4:
+    import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils]
+    ## 5:
+    var counter = 0
+    proc createDom(): VNode =
+      result = buildHtml(tdiv):
+        label:
+          text "Counter: " & $counter
+        button:
+          text "Click me (karax)"
+          proc onClick() =
+            counter += 1
+        button:
+          text "Reset"
+          proc onClick() =
+            counter = 0
+    ## 6
+    setRenderer(createDom, root=rootId.cstring)
+
+karaxButtonWithReset()
+
+nbText: hlMd"""
+If you click "Show source" at the bottom of the page you can find this implemented in Karax in template `karaxButtonWithReset`.
+"""
+
 
 nbSave

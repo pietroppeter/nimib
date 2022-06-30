@@ -48,7 +48,6 @@ proc degensymAst(n: NimNode, removeGensym = false) =
             tabMapIdents[newStr] = newSym
         n[i] = newSym
         echo "Swapped ", str, " for ", newSym.repr
-      # TODO: What if the symbols aren't gensym'd? In all cases when this is relevant they are defined in a template so we should be fine?
     else:
       degensymAst(n[i], removeGenSym)
 
@@ -100,7 +99,6 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   code.degensymAst()
   var codeText = code.toStrLit
   # 3. Generate code which does the serialization and replacement of placeholders
-  #    It should return the final string
   let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
   result = newStmtList()
   result.add newVarStmt(codeTextIdent, codeText)

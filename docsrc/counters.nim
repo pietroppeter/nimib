@@ -39,7 +39,7 @@ nbCode:
 nbText: hlMd"""
 Let's explain each part of the code:
 1. We define a template called `counterButton` which will create a new counter button. So if you call it somewhere it will
-place the widget there, that's the reusable part done. But it also takes an input `id: string`. This is to solve the problem of each widget needing unique ids. It can also be done with a counter as will be used in the Karax example.
+place the widget there, that's the reusable part done. But it also takes an input `id: string`. This is to solve the problem of each widget needing unique ids. It can also be done with `nb.newId` as will be used in the Karax example.
 2. Here we emit the `<label>` and `<button>` tags and insert their ids.
 3. `nbCodeToJs` is the template that will turn our Nim code into Javascript and we are capturing `labelId` and `buttonId` (Important that you capture all used variables defined outside the code block). `std/dom` is where many dom-manipulation functions are located.
 4. We fetch the elements we emitted above by their ids. Remember that most javascript functions want `cstring`s!
@@ -62,10 +62,8 @@ The second method uses Karax to construct the HTML and attach an eventlistener t
 
 nbCode:
   ## 1:
-  var karaxId = 0
   template karaxButton() =
-    let rootId = "karaxButton_root" & $karaxId
-    inc(karaxId)
+    let rootId = "karaxButton_root" & $nb.newId()
     ## 2:
     nbRawOutput: """<div id="$1"></div>""" % [rootId]
     ## 3:
@@ -87,7 +85,7 @@ nbCode:
 
 nbText: hlMd"""
 Here's what each part of the code does:
-1. Instead of using a user-provided string for uniqueness we use a counter `karaxId` instead which is incremented each time the widget is created. 
+1. Instead of using a user-provided string for uniqueness we `nb.newId()` instead which returns a unique integer each time it is called and is thus suitible for ids. 
 2. Karax needs a root-element to work so we create one with id `rootId`. The id of the root must be unique for each component!
 3. We capture `rootId` as we want to use it in the Javascript.
 4. Import karax. `include karax / prelude` is not working at the moment with `nbCodeToJs` so we have to use imports instead.
@@ -110,10 +108,8 @@ Modify the counter templates to include a reset button which sets the counter to
 """
 
 ## Karax with reset button
-var karaxId2 = 0
 template karaxButtonWithReset() =
-  let rootId = "karaxButton_root2" & $karaxId2 ## important that a new id-string is used!
-  inc(karaxId2)
+  let rootId = "karaxButton_root" & $nb.newId()
   ## 2:
   nbRawOutput: """<div id="$1"></div>""" % [rootId]
   ## 3:

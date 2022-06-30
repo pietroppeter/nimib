@@ -10,18 +10,13 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
-proc randomString*(rng: var Rand, len: int): string =
-  # from https://www.reddit.com/r/nim/comments/le1ye9/how_can_i_create_a_function_to_return_random/
-  const lowerCaseAscii = 97..122
-  result = newSeqWith(len, rng.rand(lowerCaseAscii).char).join
-
 proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)
   let nimfile = tempdir / "code.nim"
   let jsfile = tempdir / "out.js"
   writeFile(nimfile, blk.context["transformedCode"].vString)
-  let kxiname = randomString(doc.rng, 32)
+  let kxiname = "nimib_kxi_" & $doc.newId()
   let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
   if errorCode != 0:
     raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & nimfile)

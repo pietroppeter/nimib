@@ -17,7 +17,6 @@ template moduleAvailable*(module: untyped): bool =
 
 template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
   var nb {.inject.}: NbDoc
-  nb.rng = initRand()
   nb.initDir = getCurrentDir().AbsoluteDir
   loadOptions nb
   loadCfg nb

@@ -3,31 +3,32 @@ import nimib
 
 nbInit
 
+
 let rootId = "caesar_root"
 nbRawOutput: """<div id="$1"></div>""" % [rootId]
 nbCodeToJs(rootId):
   import std / [strutils, math]
   import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils, kdom]
 
-  proc encryptChar(c: char, key: int): char =
+  proc encryptChar(c: char, shift: int): char =
     let c_normalized = c.ord - 'a'.ord # a is 0, z is 25
-    var c_encrypted = euclMod(c_normalized + key, 26) + 'a'.ord
+    var c_encrypted = euclMod(c_normalized + shift, 26) + 'a'.ord
     result = c_encrypted.char
 
-  proc encryptString(s: string, key: int): string =
+  proc encryptString(s: string, shift: int): string =
     for c in s:
       if c in 'a' .. 'z':
-        result.add encryptChar(c, key)
+        result.add encryptChar(c, shift)
       else:
         result.add c
 
   var cipherText, plainText: string
   let ciphertextId = "ciphertext"
   let plaintextId = "plaintext"
-  let keySliderId = "keySlider"
+  let shiftSliderId = "shiftSlider"
   let encodeButtonId = "encodeButton"
   let decodeButtonId = "decodeButton"
-  var keyString = "0"
+  var shiftString = "3"
   proc createDom(): VNode =
     result = buildHtml(tdiv):
       label:
@@ -39,24 +40,24 @@ nbCodeToJs(rootId):
       input(id = ciphertextId)
       hr()
       label:
-        text "Key: " & keyString
-      input(`type` = "range", min = "-25", max = "25", value = "0", id = keySliderId):
+        text "Shift/Key: " & shiftString
+      input(`type` = "range", min = "0", max = "25", value = "3", id = shiftSliderId):
         proc oninput() =
-          let slider = getVNodeById(keySliderId)
-          keyString = $slider.getInputText
+          let slider = getVNodeById(shiftSliderId)
+          shiftString = $slider.getInputText
       button(id = encodeButtonId):
         text "Encrypt"
         proc onClick() =
-          let key = ($getVNodeById(keySliderId).getInputText).parseInt
+          let shift = ($getVNodeById(shiftSliderId).getInputText).parseInt
           let plaintext = ($getVNodeById(plaintextId).getInputText).toLower
-          let ciphertext = encryptString(plaintext, key)
+          let ciphertext = encryptString(plaintext, shift)
           getVNodeById(ciphertextId).setInputText ciphertext
       button(id = decodeButtonId):
         text "Decrypt"
         proc onClick() =
-          let key = ($getVNodeById(keySliderId).getInputText).parseInt
+          let shift = ($getVNodeById(shiftSliderId).getInputText).parseInt
           let ciphertext = ($getVNodeById(ciphertextId).getInputText).toLower
-          let plaintext = encryptString(ciphertext, -key) # encrypt with -key to decrypt
+          let plaintext = encryptString(ciphertext, -shift) # encrypt with -shift to decrypt
           getVNodeById(plaintextId).setInputText plainText
   setRenderer(createDom, root=rootId.cstring)
 

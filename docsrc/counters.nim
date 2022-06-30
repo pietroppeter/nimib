@@ -61,36 +61,28 @@ The second method uses Karax to construct the HTML and attach an eventlistener t
 """
 
 nbCode:
-  ## 1:
   template karaxButton() =
-    let rootId = "karaxButton_root" & $nb.newId()
-    ## 2:
-    nbRawOutput: """<div id="$1"></div>""" % [rootId]
-    ## 3:
-    nbCodeToJs(rootId):
-      ## 4:
-      import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils]
-      ## 5:
+    ## 1:
+    nbKaraxCode:
+      ## 2:
       var counter = 0
-      proc createDom(): VNode =
-        result = buildHtml(tdiv):
-          label:
-            text "Counter: " & $counter
-          button:
-            text "Click me (karax)"
-            proc onClick() =
-              counter += 1
-      ## 6
-      setRenderer(createDom, root=rootId.cstring)
+      ## 3:
+      karaxHtml:
+        label:
+          text "Counter: " & $counter
+        button:
+          text "Click me (karax)"
+          ## 4:
+          proc onClick() =
+            counter += 1
+
 
 nbText: hlMd"""
 Here's what each part of the code does:
-1. Instead of using a user-provided string for uniqueness we `nb.newId()` instead which returns a unique integer each time it is called and is thus suitible for ids. 
-2. Karax needs a root-element to work so we create one with id `rootId`. The id of the root must be unique for each component!
-3. We capture `rootId` as we want to use it in the Javascript.
-4. Import karax. `include karax / prelude` is not working at the moment with `nbCodeToJs` so we have to use imports instead.
-5. Setup `counter` to keep track of the count and create the `createDom` function with the structure of our code. The eventlistener is inlined in the `button:` so no need for setting ids for our elements.
-6. Start the karax apparatus using the root-element with id `rootId` we created above.
+1. `nbKaraxCode` is a convinience template for writing karax components. Karax is automatically imported inside the code block.
+2. Setup `counter` to keep track of the count.
+3. `karaxHtml` is a convinience wrapper for the karax dsl. The code block will automatically be inserted inside a `buildHtml(tdiv)`.
+4. The eventlistener is inlined in the `button:`.
 
 Here is the button in action: `karaxButton()`
 """
@@ -109,29 +101,19 @@ Modify the counter templates to include a reset button which sets the counter to
 
 ## Karax with reset button
 template karaxButtonWithReset() =
-  let rootId = "karaxButton_root" & $nb.newId()
-  ## 2:
-  nbRawOutput: """<div id="$1"></div>""" % [rootId]
-  ## 3:
-  nbCodeToJs(rootId):
-    ## 4:
-    import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils]
-    ## 5:
+  nbKaraxCode:
     var counter = 0
-    proc createDom(): VNode =
-      result = buildHtml(tdiv):
-        label:
-          text "Counter: " & $counter
-        button:
-          text "Click me (karax)"
-          proc onClick() =
-            counter += 1
-        button:
-          text "Reset"
-          proc onClick() =
-            counter = 0
-    ## 6
-    setRenderer(createDom, root=rootId.cstring)
+    karaxHtml:
+      label:
+        text "Counter: " & $counter
+      button:
+        text "Click me (karax)"
+        proc onClick() =
+          counter += 1
+      button:
+        text "Reset"
+        proc onClick() =
+          counter = 0
 
 karaxButtonWithReset()
 

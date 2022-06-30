@@ -10,7 +10,7 @@ This document will show you how to create reusable widgets using `nbCodeToJs`. S
 A button which increases a counter each time you click it. We will do this in two different ways, using `std/dom` and `karax`.
 ## std/dom
 
-The first method is to use Nim like you would have use Javascript using `getElementById` and `addEventListener`: 
+The first method is to use Nim like you would have used Javascript using `getElementById` and `addEventListener`: 
 """
 nbCode:
   ## 1:
@@ -92,7 +92,7 @@ Here's what each part of the code does:
 3. We capture `rootId` as we want to use it in the Javascript.
 4. Import karax. `include karax / prelude` is not working at the moment with `nbCodeToJs` so we have to use imports instead.
 5. Setup `counter` to keep track of the count and create the `createDom` function with the structure of our code. The eventlistener is inlined in the `button:` so no need for setting ids for our elements.
-6. Start the karax aparatus using the root-element with id `rootId` we created above.
+6. Start the karax apparatus using the root-element with id `rootId` we created above.
 
 Here is the button in action: `karaxButton()`
 """

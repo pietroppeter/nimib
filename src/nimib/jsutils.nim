@@ -143,3 +143,33 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
   var nextArgs = @[newLit(key)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)
+
+macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
+  if args.len == 0:
+    error("nbKaraxCode needs a code block to be passed", args)
+  
+  let body = args[^1]
+  let captureVars =
+    if args.len == 1:
+      @[]
+    else:
+      args[0 ..< ^1]
+  
+  let newBody = quote do:
+    import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils, kdom]
+
+    template karaxHtml(body: untyped) =
+      proc createDom(): VNode =
+        result = buildHtml(tdiv):
+          body # html karax code
+      setRenderer(createDom, root=`rootId`.cstring)
+
+    `body`
+
+  var callArgs = @[rootId]
+  callArgs.add captureVars
+  callArgs.add newBody
+
+  let call = newCall(ident"nbCodeToJs", callArgs)
+
+  result = call

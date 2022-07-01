@@ -171,4 +171,4 @@ echo a
         p:
           text message
     check nb.blk.code.len > 0
-    check nb.blk.context["transformedCode"].vString.len > 0
+    check nb.blk.context["transformedCode"].vString.len > 0 

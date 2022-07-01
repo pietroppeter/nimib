@@ -29,11 +29,12 @@ nbKaraxCode:
   karaxHtml:
     label:
       text "Plaintext"
-    input(id = plaintextId)
+    textarea(id = plaintextId, placeholder = "You can encrypt this message or you can try to decrypt the message below...")
     hr()
     label:
       text "Ciphertext"
-    input(id = ciphertextId)
+    textarea(id = ciphertextId):
+      text "oek vekdt jxu iushuj auo! weet meha! dem oek sqd uqj q squiqh iqbbqt qi q fhypu, okcco!"
     hr()
     label:
       text "Shift/Key: " & shiftString

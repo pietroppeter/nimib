@@ -1,4 +1,3 @@
-import std / [strutils]
 import nimib
 
 nbInit

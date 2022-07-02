@@ -5,7 +5,7 @@ nb.title = "Nimib Docs"
 
 let
   repo = "https://github.com/pietroppeter/nimib"
-  docs = "https://pietroppeter.github.io/nimib"
+  docs = if defined(useMdBackend): "https://pietroppeter.github.io/nimib" else: "."
   hello = read(nb.srcDir / "hello.nim".RelativeFile)
   assets = "docs/static"
   highlight = "highlight.nim.js"
@@ -83,6 +83,10 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
+* [interactivity]({docs}/interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [counter]({docs}/counters.html): shows how to create reusable interactive widgets by creating a counter button.
+* [caesar]({docs}/caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+
 
 elsewhere:
 

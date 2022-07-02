@@ -1,6 +1,7 @@
-import std/[os, strutils, sugar]
-import nimib / [types, blocks, docs, boost, config, options, capture]
-export types, blocks, docs, boost, sugar
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils, random]
+export jsonutils
+import nimib / [types, blocks, docs, boost, config, options, capture, jsutils]
+export types, blocks, docs, boost, sugar, jsutils
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -16,7 +17,6 @@ template moduleAvailable*(module: untyped): bool =
 
 template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
   var nb {.inject.}: NbDoc
-
   nb.initDir = getCurrentDir().AbsoluteDir
   loadOptions nb
   loadCfg nb
@@ -123,6 +123,38 @@ when moduleAvailable(nimpy):
 template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):
     nb.blk.output = content
+
+
+template nbCodeToJsInit*(args: varargs[untyped]): NbBlock =
+  let (code, originalCode) = nimToJsString(true, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
+  result
+
+template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(false, args)
+  script.code &= "\n" & originalCode
+  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & code
+
+
+template addToDocAsJs*(script: NbBlock) =
+  nb.blocks.add script
+  nb.blk = script
+
+template nbCodeToJs*(args: varargs[untyped]) =
+  let script = nbCodeToJsInit(args)
+  script.addToDocAsJs
+
+
+when moduleAvailable(karax/kbase):
+  template nbKaraxCode*(args: varargs[untyped]) =
+    let rootId = "karax-" & $nb.newId()
+    nbRawOutput: "<div id=\"" & rootId & "\"></div>"
+    nbKaraxCodeBackend(rootId, args)
+
+template nbCodeToJsShowSource* =
+  nb.blk.context["js_show_nim_source"] = true
+
 
 template nbClearOutput*() =
   if not nb.blk.isNil:

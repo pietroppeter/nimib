@@ -1,6 +1,6 @@
-import types, strutils, markdown, mustache, sugar
+import std / [strutils, tables, sugar, os, strformat, random, sequtils]
+import types, markdown, mustache
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
-import tables
 import highlight
 import mustachepkg/values
 
@@ -9,6 +9,23 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
+
+proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
+  let tempdir = getTempDir() / "nimib"
+  createDir(tempdir)
+  let (dir, filename, ext) = doc.thisFile.splitFile()
+  let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
+  let jsfile = tempdir / "out.js"
+  writeFile(nimfile, blk.context["transformedCode"].vString)
+  let kxiname = "nimib_kxi_" & $doc.newId()
+  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
+  if errorCode != 0:
+    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
+  removeFile(nimfile)
+  let jscode = readFile(jsfile)
+  removeFile(jsfile)
+  blk.output = jscode
+  blk.context["output"] = jscode
 
 proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbText"] = "{{&outputToHtml}}"
@@ -31,14 +48,22 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <pre><code class="{{ext}} hljs">{{content}}</code></pre>
 """
 
+  doc.partials["nbCodeToJs"] = """
+{{>nbJsScriptNimSource}}
+{{>nbJsScript}}"""
+  doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{>nbCodeSource}}{{/js_show_nim_source}}"
+  doc.partials["nbJsScript"] = "<script defer>{{&output}}</script>"
+
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
   doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
+  doc.renderPlans["nbCodeToJs"] = @["compileNimToJs", "highlightCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
+  doc.renderProcs["compileNimToJs"] = compileNimToJs
 
 proc useMdBackend*(doc: var NbDoc) =
   doc.partials["document"] = """

@@ -1,6 +1,6 @@
 import mustache, std / tables, nimib / paths, std / parseopt
 export mustache, tables, paths
-import std / os
+import std / [os]
 
 type
   NbBlock* = ref object
@@ -32,6 +32,7 @@ type
     templateDirs*: seq[string]
     renderPlans*: Table[string, seq[string]]
     renderProcs*: Table[string, NbRenderProc]
+    id: int
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =
@@ -46,3 +47,7 @@ proc homeDir*(doc: NbDoc): AbsoluteDir =
     doc.cfgDir / doc.cfg.homeDir.RelativeDir
 proc thisFileRel*(doc: NbDoc): RelativeFile = doc.thisFile.relativeTo doc.srcDir
 proc srcDirRel*(doc: NbDoc): RelativeDir = doc.srcDir.relativeTo doc.thisDir
+proc newId*(doc: var NbDoc): int =
+  ## Provides a unique integer each time it is called
+  result = doc.id
+  inc doc.id

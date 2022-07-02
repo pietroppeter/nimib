@@ -12,6 +12,9 @@ from nimib / renders import nil
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
 
+when defined(nimibPreviewCodeAsInSource):
+  {.warning: "-d:nimibPreviewCodeAsInSource is now default (since 0.3), old default is available with -d:nimibCodeFromAst".}
+
 template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
 

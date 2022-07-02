@@ -145,10 +145,12 @@ template nbCodeToJs*(args: varargs[untyped]) =
   let script = nbCodeToJsInit(args)
   script.addToDocAsJs
 
-template nbKaraxCode*(args: varargs[untyped]) =
-  let rootId = "karax-" & $nb.newId()
-  nbRawOutput: "<div id=\"" & rootId & "\"></div>"
-  nbKaraxCodeBackend(rootId, args)
+
+when moduleAvailable(karax/kbase):
+  template nbKaraxCode*(args: varargs[untyped]) =
+    let rootId = "karax-" & $nb.newId()
+    nbRawOutput: "<div id=\"" & rootId & "\"></div>"
+    nbKaraxCodeBackend(rootId, args)
 
 template nbCodeToJsShowSource* =
   nb.blk.context["js_show_nim_source"] = true

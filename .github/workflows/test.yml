@@ -13,4 +13,5 @@ jobs:
         with:
           nim-version: '1.6.x'
       - run: nimble -y install
+      - run: nimble docsdeps
       - run: nimble test

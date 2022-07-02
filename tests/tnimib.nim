@@ -128,47 +128,48 @@ print(a)
       check nb.blk.code == pyString
       check nb.blk.output == "[0, 2, 4]\n3.14\n"
 
-suite "nbCodeToJs":
-  test "nbCodeToJs - string":
-    nbCodeToJs: hlNim"""
-let a = 1
-echo a
-"""
-    check nb.blk.code == """
-let a = 1
-echo a
-"""
-    check nb.blk.context["transformedCode"].vString.len > 0
+when moduleAvailable(karax/kbase):
+  suite "nbCodeToJs":
+    test "nbCodeToJs - string":
+      nbCodeToJs: hlNim"""
+  let a = 1
+  echo a
+  """
+      check nb.blk.code == """
+  let a = 1
+  echo a
+  """
+      check nb.blk.context["transformedCode"].vString.len > 0
 
-  test "nbCodeToJs - untyped":
-    nbCodeToJs:
+    test "nbCodeToJs - untyped":
+      nbCodeToJs:
+        let a = 1
+        echo a
+      check nb.blk.code.len > 0
+      check nb.blk.context["transformedCode"].vString.len > 0
+
+    test "nbCodeToJs - untyped, capture variable":
       let a = 1
-      echo a
-    check nb.blk.code.len > 0
-    check nb.blk.context["transformedCode"].vString.len > 0
+      nbCodeToJs(a):
+        echo a
+      check nb.blk.code.len > 0
+      check nb.blk.context["transformedCode"].vString.len > 0
 
-  test "nbCodeToJs - untyped, capture variable":
-    let a = 1
-    nbCodeToJs(a):
-      echo a
-    check nb.blk.code.len > 0
-    check nb.blk.context["transformedCode"].vString.len > 0
+    test "nbCodeToJsInit + addCodeToJs":
+      let script = nbCodeToJsInit:
+        let a = 1
+      script.addCodeToJs:
+        echo a
+      script.addToDocAsJs
+      check nb.blk.code.len > 0
+      check nb.blk.context["transformedCode"].vString.len > 0
 
-  test "nbCodeToJsInit + addCodeToJs":
-    let script = nbCodeToJsInit:
-      let a = 1
-    script.addCodeToJs:
-      echo a
-    script.addToDocAsJs
-    check nb.blk.code.len > 0
-    check nb.blk.context["transformedCode"].vString.len > 0
-
-  test "nbKaraxCode":
-    let x = 3.14
-    nbKaraxCode(x):
-      var message = "Pi is roughly " & $x
-      karaxHtml:
-        p:
-          text message
-    check nb.blk.code.len > 0
-    check nb.blk.context["transformedCode"].vString.len > 0
+    test "nbKaraxCode":
+      let x = 3.14
+      nbKaraxCode(x):
+        var message = "Pi is roughly " & $x
+        karaxHtml:
+          p:
+            text message
+      check nb.blk.code.len > 0
+      check nb.blk.context["transformedCode"].vString.len > 0

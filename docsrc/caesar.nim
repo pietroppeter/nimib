@@ -33,7 +33,7 @@ nbKaraxCode:
     label:
       text "Ciphertext"
     textarea(id = ciphertextId):
-      text "oek vekdt jxu iushuj auo! weet meha! dem oek sqd uqj q squiqh iqbbqt qi q fhypu, okcco!"
+      text "oek vekdt jxu iushuj auo! weet meha! dem oek sqd uqj q squiqh iqbqt qi q fhypu, okcco!"
     hr()
     label:
       text "Shift/Key: " & shiftString

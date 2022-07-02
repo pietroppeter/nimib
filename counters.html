@@ -49,24 +49,23 @@ A button which increases a counter each time you click it. We will do this in tw
   <span class="hljs-keyword">let</span> labelId = <span class="hljs-string">&quot;label-&quot;</span> &amp; id
   <span class="hljs-keyword">let</span> buttonId = <span class="hljs-string">&quot;button-&quot;</span> &amp; id
   <span class="hljs-comment">## 2:</span>
-  nbRawOutput:
-    <span class="hljs-string">&quot;&quot;&quot;&lt;label id=&quot;$1&quot;&gt;0&lt;/label&gt;
+  nbRawOutput: <span class="hljs-string">&quot;&quot;&quot;
+&lt;label id=&quot;$1&quot;&gt;0&lt;/label&gt;
 &lt;button id=&quot;$2&quot;&gt;Click me&lt;/button&gt;
-&quot;&quot;&quot;</span> %
-        [labelId, buttonId]
+&quot;&quot;&quot;</span> % [labelId, buttonId]
   <span class="hljs-comment">## 3:</span>
   nbCodeToJs(labelId, buttonId):
-    <span class="hljs-keyword">import</span>
-      std / dom
-
+    <span class="hljs-keyword">import</span> std/dom
     <span class="hljs-comment">## 4:</span>
     <span class="hljs-keyword">var</span> label = getElementById(labelId.<span class="hljs-built_in">cstring</span>)
     <span class="hljs-keyword">var</span> button = getElementById(buttonId.<span class="hljs-built_in">cstring</span>)
     <span class="hljs-comment">## 5:</span>
     <span class="hljs-keyword">var</span> counter: <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span>
-    button.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-keyword">proc</span> (ev: <span class="hljs-type">Event</span>) =
-      counter += <span class="hljs-number">1</span>
-      label.innerHtml = ($counter).<span class="hljs-built_in">cstring</span>)</code></pre>
+    button.addEventListener(<span class="hljs-string">&quot;click&quot;</span>,
+      <span class="hljs-keyword">proc</span> (ev: <span class="hljs-type">Event</span>) =
+        counter += <span class="hljs-number">1</span>
+        label.innerHtml = ($counter).<span class="hljs-built_in">cstring</span>
+    )</code></pre>
 <p>Let's explain each part of the code:</p>
 <ol>
 <li>
@@ -2106,19 +2105,19 @@ function parseJson_620762310(buffer_620762311) {
   return result_620762312;
 
 }
-var labelid_469762319_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"label-uniqueString\"")));
-var buttonid_469762320_486539279 = to_486539266(parseJson_620762310(makeNimstrLit("\"button-uniqueString\"")));
+var labelid_469762321_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"label-uniqueString\"")));
+var buttonid_469762322_486539279 = to_486539266(parseJson_620762310(makeNimstrLit("\"button-uniqueString\"")));
 
-function lambda_469762300_486539331(ev_469762324_486539332) {
-    counter_469762323_486539330[0] += 1;
-    label_469762321_486539328[0].innerHTML = toJSStr(HEX24_318767107(counter_469762323_486539330[0]));
+function lambda_469762302_486539331(ev_469762326_486539332) {
+    counter_469762325_486539330[0] += 1;
+    label_469762323_486539328[0].innerHTML = toJSStr(HEX24_318767107(counter_469762325_486539330[0]));
 
   
 }
-var label_469762321_486539328 = [document.getElementById(toJSStr(labelid_469762319_486539273))];
-var button_469762322_486539329 = [document.getElementById(toJSStr(buttonid_469762320_486539279))];
-var counter_469762323_486539330 = [0];
-button_469762322_486539329[0].addEventListener("click", lambda_469762300_486539331, false);
+var label_469762323_486539328 = [document.getElementById(toJSStr(labelid_469762321_486539273))];
+var button_469762324_486539329 = [document.getElementById(toJSStr(buttonid_469762322_486539279))];
+var counter_469762325_486539330 = [0];
+button_469762324_486539329[0].addEventListener("click", lambda_469762302_486539331, false);
 </script>
 <p>And here is another independent counter: <code>counterButton(&quot;anotherUniqueString&quot;)</code></p>
 <label id="label-anotherUniqueString">0</label>
@@ -4140,19 +4139,19 @@ function parseJson_620762310(buffer_620762311) {
   return result_620762312;
 
 }
-var labelid_469762437_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"label-anotherUniqueString\"")));
-var buttonid_469762438_486539279 = to_486539266(parseJson_620762310(makeNimstrLit("\"button-anotherUniqueString\"")));
+var labelid_469762439_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"label-anotherUniqueString\"")));
+var buttonid_469762440_486539279 = to_486539266(parseJson_620762310(makeNimstrLit("\"button-anotherUniqueString\"")));
 
-function lambda_469762436_486539331(ev_469762442_486539332) {
-    counter_469762441_486539330[0] += 1;
-    label_469762439_486539328[0].innerHTML = toJSStr(HEX24_318767107(counter_469762441_486539330[0]));
+function lambda_469762438_486539331(ev_469762444_486539332) {
+    counter_469762443_486539330[0] += 1;
+    label_469762441_486539328[0].innerHTML = toJSStr(HEX24_318767107(counter_469762443_486539330[0]));
 
   
 }
-var label_469762439_486539328 = [document.getElementById(toJSStr(labelid_469762437_486539273))];
-var button_469762440_486539329 = [document.getElementById(toJSStr(buttonid_469762438_486539279))];
-var counter_469762441_486539330 = [0];
-button_469762440_486539329[0].addEventListener("click", lambda_469762436_486539331, false);
+var label_469762441_486539328 = [document.getElementById(toJSStr(labelid_469762439_486539273))];
+var button_469762442_486539329 = [document.getElementById(toJSStr(buttonid_469762440_486539279))];
+var counter_469762443_486539330 = [0];
+button_469762442_486539329[0].addEventListener("click", lambda_469762438_486539331, false);
 </script>
 <h2>Karax</h2>
 <p>The second method uses Karax to construct the HTML and attach an eventlistener to the button:</p>
@@ -7132,7 +7131,7 @@ function parseJson_620762310(buffer_620762311) {
   return result_620762312;
 
 }
-var rootid_469762645_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-0\"")));
+var rootid_469762648_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-0\"")));
 var gid_1191182943 = [0];
 var vcomponents_1224736781 = [{}];
 var kxi__nimib_kxi_8 = null;
@@ -8484,10 +8483,10 @@ function wrapper_1157629075(ev_1157629076, n_1157629077) {
   
 }
 
-function createdom_469762644_486539331() {
+function createdom_469762647_486539331() {
     
 function HEX3Aanonymous_486539371() {
-        counter_469762647_486539330[0] += 1;
+        counter_469762650_486539330[0] += 1;
 
       
     }
@@ -8496,7 +8495,7 @@ function HEX3Aanonymous_486539371() {
 
     var tmp_486539363 = tree_1191183110(44, []);
     var tmp_486539364 = tree_1191183110(193, []);
-    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762647_486539330[0]) || [])));
+    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762650_486539330[0]) || [])));
     add_1191183047(tmp_486539363, tmp_486539364);
     var tmp_486539369 = tree_1191183110(195, []);
     add_1191183047(tmp_486539369, text_1191183162(makeNimstrLit("Click me (karax)")));
@@ -8507,8 +8506,8 @@ function HEX3Aanonymous_486539371() {
   return result_486539332;
 
 }
-var counter_469762647_486539330 = [0];
-setRenderer_1157629012(createdom_469762644_486539331, toJSStr(rootid_469762645_486539273), null);
+var counter_469762650_486539330 = [0];
+setRenderer_1157629012(createdom_469762647_486539331, toJSStr(rootid_469762648_486539273), null);
 </script>
 <p>And here is another independent counter: <code>karaxButton()</code></p>
 <div id="karax-1"></div>
@@ -11465,7 +11464,7 @@ function parseJson_620762310(buffer_620762311) {
   return result_620762312;
 
 }
-var rootid_469762773_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-1\"")));
+var rootid_469762776_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-1\"")));
 var gid_1191182943 = [0];
 var vcomponents_1224736781 = [{}];
 var kxi__nimib_kxi_10 = null;
@@ -12817,10 +12816,10 @@ function wrapper_1157629075(ev_1157629076, n_1157629077) {
   
 }
 
-function createdom_469762772_486539331() {
+function createdom_469762775_486539331() {
     
 function HEX3Aanonymous_486539371() {
-        counter_469762775_486539330[0] += 1;
+        counter_469762778_486539330[0] += 1;
 
       
     }
@@ -12829,7 +12828,7 @@ function HEX3Aanonymous_486539371() {
 
     var tmp_486539363 = tree_1191183110(44, []);
     var tmp_486539364 = tree_1191183110(193, []);
-    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762775_486539330[0]) || [])));
+    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762778_486539330[0]) || [])));
     add_1191183047(tmp_486539363, tmp_486539364);
     var tmp_486539369 = tree_1191183110(195, []);
     add_1191183047(tmp_486539369, text_1191183162(makeNimstrLit("Click me (karax)")));
@@ -12840,8 +12839,8 @@ function HEX3Aanonymous_486539371() {
   return result_486539332;
 
 }
-var counter_469762775_486539330 = [0];
-setRenderer_1157629012(createdom_469762772_486539331, toJSStr(rootid_469762773_486539273), null);
+var counter_469762778_486539330 = [0];
+setRenderer_1157629012(createdom_469762775_486539331, toJSStr(rootid_469762776_486539273), null);
 </script>
 <h2>Exercise</h2>
 <p>Modify the counter templates to include a reset button which sets the counter to 0 again like this:</p>
@@ -15799,7 +15798,7 @@ function parseJson_620762310(buffer_620762311) {
   return result_620762312;
 
 }
-var rootid_469762936_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-2\"")));
+var rootid_469762939_486539273 = to_486539266(parseJson_620762310(makeNimstrLit("\"karax-2\"")));
 var gid_1191182943 = [0];
 var vcomponents_1224736781 = [{}];
 var kxi__nimib_kxi_12 = null;
@@ -17151,16 +17150,16 @@ function wrapper_1157629075(ev_1157629076, n_1157629077) {
   
 }
 
-function createdom_469762935_486539331() {
+function createdom_469762938_486539331() {
     
 function HEX3Aanonymous_486539372() {
-        counter_469762938_486539330[0] += 1;
+        counter_469762941_486539330[0] += 1;
 
       
     }
     
 function HEX3Aanonymous_486539377() {
-        counter_469762938_486539330[0] = 0;
+        counter_469762941_486539330[0] = 0;
 
       
     }
@@ -17169,7 +17168,7 @@ function HEX3Aanonymous_486539377() {
 
     var tmp_486539363 = tree_1191183110(44, []);
     var tmp_486539364 = tree_1191183110(193, []);
-    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762938_486539330[0]) || [])));
+    add_1191183047(tmp_486539364, text_1191183162((makeNimstrLit("Counter: ") || []).concat(HEX24_318767107(counter_469762941_486539330[0]) || [])));
     add_1191183047(tmp_486539363, tmp_486539364);
     var tmp_486539369 = tree_1191183110(195, []);
     add_1191183047(tmp_486539369, text_1191183162(makeNimstrLit("Click me (karax)")));
@@ -17184,8 +17183,8 @@ function HEX3Aanonymous_486539377() {
   return result_486539332;
 
 }
-var counter_469762938_486539330 = [0];
-setRenderer_1157629012(createdom_469762935_486539331, toJSStr(rootid_469762936_486539273), null);
+var counter_469762941_486539330 = [0];
+setRenderer_1157629012(createdom_469762938_486539331, toJSStr(rootid_469762939_486539273), null);
 </script>
 <p>If you click &quot;Show source&quot; at the bottom of the page you can find this implemented in Karax in template <code>karaxButtonWithReset</code>.</p>
 </main>

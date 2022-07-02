@@ -109,7 +109,6 @@ a recently declassified top-secret cryptoanalytic weapon:&quot;&quot;&quot;</spa
 nbCode:
   <span class="hljs-keyword">func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
     <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
-    <span class="hljs-comment"># so secret that they do not want me to tell you and they will remove this message!</span>
     <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
       <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
 
@@ -120,12 +119,12 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;
 
 nbCode:
   <span class="hljs-keyword">let</span> msg = decode secret
-  <span class="hljs-keyword">echo</span> msg
+  <span class="hljs-keyword">echo</span> msg  <span class="hljs-comment"># what will it say?</span>
 
 nbText:
   <span class="hljs-string">fmt&quot;_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!&quot;</span>
 
-nbSave <span class="hljs-comment"># use nbShow to automatically open a browser tab with html output</span>
+nbSave
 </code></pre>
 <h3>Other examples of usage</h3>
 <p>in this repo:</p>

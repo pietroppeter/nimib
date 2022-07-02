@@ -23,6 +23,7 @@ proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
     raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
   removeFile(nimfile)
   let jscode = readFile(jsfile)
+  removeFile(jsfile)
   blk.output = jscode
   blk.context["output"] = jscode
 

@@ -38,12 +38,12 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
     of nnkProcDef, nnkIteratorDef, nnkConverterDef:
       if replaceProcs:
         if n[i][0].kind == nnkPostfix: # foo*
-          let oldIdent = n[i][0][1].strVal
+          let oldIdent = n[i][0][1].strVal.nimIdentNormalize
           let newIdent = gensym(ident=oldIdent).repr.ident
           n[i][0][1] = newIdent
           tabMapIdents[oldIdent] = newIdent
         else:
-          let oldIdent = n[i][0].strVal
+          let oldIdent = n[i][0].strVal.nimIdentNormalize
           let newIdent = gensym(ident=oldIdent).repr.ident
           n[i][0] = newIdent
           tabMapIdents[oldIdent] = newIdent
@@ -66,8 +66,9 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
         gensymProcIterConverter(child, replaceProcs)
       n[i] = newStmtList(p, newIdent)
     of nnkSym, nnkIdent:
-      if n[i].strVal in tabMapIdents:
-        n[i] = tabMapIdents[n[i].strVal]
+      let oldIdent = n[i].strVal.nimIdentNormalize
+      if oldIdent in tabMapIdents:
+        n[i] = tabMapIdents[oldIdent]
     of nnkCall:
       # Check if it is karaxHtml:
       # if so set replaceProcs = false for the children
@@ -84,7 +85,7 @@ proc degensymAst(n: NimNode, removeGensym = false) =
     of nnkIdent, nnkSym:
       let str = n[i].strVal
       if "`gensym" in str:
-        let newStr = str.split("`gensym")[0]
+        let newStr = str.split("`gensym")[0].nimIdentNormalize
         var newSym: NimNode
         if removeGensym: # remove gensym all together, useful for removing gensym noise when showing code
           newSym = ident(newStr)

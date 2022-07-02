@@ -8,12 +8,12 @@ suite "nbText":
     nbText: "hi"
     check nb.blk.output == "hi"
 
-  when not defined(nimibPreviewCodeAsInSource):
-    test "single line text string with strformat":
-      let name = "you"
-      nbText: fmt"hi {name}"
-      check nb.blk.output == "hi you"
+  test "single line text string with strformat":
+    let name = "you"
+    nbText: fmt"hi {name}"
+    check nb.blk.output == "hi you"
 
+  when defined(nimibCodeFromAst):
     test "multi line text string":
       nbText: """hi
 how are you?
@@ -39,13 +39,13 @@ suite "nbTextWithCode":
     check nb.blk.code == "\"hi\""
     check nb.blk.output == "hi"
 
-  when not defined(nimibPreviewCodeAsInSource):
-    test "single line text string with strformat":
+  test "single line text string with strformat":
       let name = "you"
       nbTextWithCode: fmt"hi {name}"
       check nb.blk.code == "fmt\"hi {name}\""
       check nb.blk.output == "hi you"
 
+  when defined(nimibCodeFromAst):
     test "multi line text string":
       nbTextWithCode: """hi
 how are you?

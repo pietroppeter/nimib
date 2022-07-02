@@ -29,6 +29,51 @@ macro addInvalid(key: string, s: untyped): untyped =
   if key.strVal notin invalidCodeTable:
     invalidCodeTable[key.strVal] = s
 
+proc gensymProcIterConverter(n: NimNode) =
+  ## By default procs, iterators and converters are injected and will share the same name in the resulting javascript.
+  ## Therefore we gensym them here to give them unique names. Also replace the references to it.
+  for i in 0 ..< n.len:
+    case n[i].kind
+    of nnkProcDef:
+      echo "Procdef found!!!!"
+      if n[i][0].kind == nnkPostfix: # foo*
+        let oldIdent = n[i][0][1].strVal
+        let newIdent = gensym(ident=oldIdent).repr.ident
+        n[i][0][1] = newIdent
+        tabMapIdents[oldIdent] = newIdent
+      else:
+        let oldIdent = n[i][0].strVal
+        let newIdent = gensym(ident=oldIdent).repr.ident
+        n[i][0] = newIdent
+        tabMapIdents[oldIdent] = newIdent
+      # Function might be recursive or contain other procs, loop through it's body as well
+      for child in n[i][6]:
+        gensymProcIterConverter(child)
+    of nnkIteratorDef:
+      discard
+    of nnkConverterDef:
+      discard
+    of nnkLambda:
+      # rewrite from:
+      # proc () = discard
+      # to
+      # block:
+      #   proc lambda_gensym() = discard
+      #   lambda_gensym
+      let p = nnkProcDef.newTree()
+      n[i].copyChildrenTo p
+      let newIdent = gensym(ident="lambda")
+      p[0] = newIdent
+      # loop through proc body as well
+      for child in p[6]:
+        gensymProcIterConverter(child)
+      n[i] = newStmtList(p, newIdent)
+    of nnkSym, nnkIdent:
+      if n[i].strVal in tabMapIdents:
+        n[i] = tabMapIdents[n[i].strVal]
+    else:
+      gensymProcIterConverter(n[i])
+
 proc degensymAst(n: NimNode, removeGensym = false) =
   for i in 0 ..< n.len:
     case n[i].kind
@@ -96,6 +141,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
   # 2. Stringify code
   let code = newStmtList(capAssignments, body).copyNimTree()
+  code.gensymProcIterConverter()
   code.degensymAst()
   var codeText = code.toStrLit
   # 3. Generate code which does the serialization and replacement of placeholders

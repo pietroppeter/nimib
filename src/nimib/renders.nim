@@ -13,13 +13,15 @@ proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
 proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)
-  let nimfile = tempdir / "code.nim"
+  let (dir, filename, ext) = doc.thisFile.splitFile()
+  let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
   let jsfile = tempdir / "out.js"
   writeFile(nimfile, blk.context["transformedCode"].vString)
   let kxiname = "nimib_kxi_" & $doc.newId()
   let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
   if errorCode != 0:
-    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & nimfile)
+    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
+  removeFile(nimfile)
   let jscode = readFile(jsfile)
   blk.output = jscode
   blk.context["output"] = jscode
@@ -49,7 +51,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 {{>nbJsScriptNimSource}}
 {{>nbJsScript}}"""
   doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{>nbCodeSource}}{{/js_show_nim_source}}"
-  doc.partials["nbJsScript"] = "<script>{{&output}}</script>"
+  doc.partials["nbJsScript"] = "<script defer>{{&output}}</script>"
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()

@@ -13,23 +13,22 @@ suite "nbText":
     nbText: fmt"hi {name}"
     check nb.blk.output == "hi you"
 
-  when defined(nimibCodeFromAst):
-    test "multi line text string":
-      nbText: """hi
+  test "multi line text string":
+    nbText: """hi
 how are you?
 """
-      check nb.blk.output == """hi
+    check nb.blk.output == """hi
 how are you?
 """
 
-    test "multi line text string with strformat":
-      let
-        name = "you"
-        answer = "fine"
-      nbText: &"""hi {name}
+  test "multi line text string with strformat":
+    let
+      name = "you"
+      answer = "fine"
+    nbText: &"""hi {name}
 how are you? {answer}
 """
-      check nb.blk.output == """hi you
+    check nb.blk.output == """hi you
 how are you? fine
 """
 
@@ -45,8 +44,28 @@ suite "nbTextWithCode":
       check nb.blk.code == "fmt\"hi {name}\""
       check nb.blk.output == "hi you"
 
+  test "multi line text string - variant 1":
+    nbTextWithCode:
+      """hi
+how are you?
+"""
+    check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
+    check nb.blk.output == """hi
+how are you?
+"""
+
   when defined(nimibCodeFromAst):
-    test "multi line text string":
+    test "multi line text string - variant 2":
+      nbTextWithCode: """
+hi
+how are you?
+"""
+      check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
+      check nb.blk.output == """hi
+how are you?
+"""
+
+    test "multi line text string - variant 3":
       nbTextWithCode: """hi
 how are you?
 """

@@ -31,3 +31,6 @@ template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, 
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock
+
+when defined(nimibPreviewCodeAsInSource):
+  {.warning: "-d:nimibPreviewCodeAsInSource is now default (since 0.3), old default is available with -d:nimibCodeFromAst".}

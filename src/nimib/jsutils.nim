@@ -35,7 +35,7 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
   ## replaceProcs: whether to replace procs names or not. It will replace existing names regardless.
   for i in 0 ..< n.len:
     case n[i].kind
-    of nnkProcDef:
+    of nnkProcDef, nnkIteratorDef, nnkConverterDef:
       if replaceProcs:
         if n[i][0].kind == nnkPostfix: # foo*
           let oldIdent = n[i][0][1].strVal
@@ -50,10 +50,6 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
       # Function might be recursive or contain other procs, loop through it's body as well
       for child in n[i][6]:
         gensymProcIterConverter(child, replaceProcs)
-    of nnkIteratorDef:
-      discard
-    of nnkConverterDef:
-      discard
     of nnkLambda:
       # rewrite from:
       # proc () = discard

@@ -79,7 +79,6 @@ a recently declassified top-secret cryptoanalytic weapon:"""
 nbCode:
   func decode(secret: openArray[int]): string =
     ## classified by NSA as <strong>TOP SECRET</strong>
-    # so secret that they do not want me to tell you and they will remove this message!
     for c in secret:
       result.add char(c)
 
@@ -90,12 +89,12 @@ nbText: """
 
 nbCode:
   let msg = decode secret
-  echo msg
+  echo msg  # what will it say?
 
 nbText:
   fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
 
-nbSave # use nbShow to automatically open a browser tab with html output
+nbSave
 
 ```
 

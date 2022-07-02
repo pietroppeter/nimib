@@ -21,10 +21,10 @@ template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, 
   nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
   when readCode:
     nbBlock.code = nbNormalize:
-      when defined(nimibPreviewCodeAsInSource):
-        getCodeAsInSource(nbDoc.source, cmd, body)
-      else:
+      when defined(nimibCodeFromAst):
         toStr(body)
+      else:
+        getCodeAsInSource(nbDoc.source, cmd, body)
   echo peekFirstLineOf(nbBlock.code)
   blockImpl
   if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)

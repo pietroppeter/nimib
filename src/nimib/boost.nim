@@ -7,7 +7,7 @@ template md*(s: string): string {.deprecated: "use hlMd instead".} =
 
 template fmd*(s: string): string {.deprecated: "use hlMdF instead".} =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Markdown.
-  ## Equivilent to ``&s`` so it applies string interpolation.
+  ## Equivalent to ``&s`` so it applies string interpolation.
   &s
 
 template hlMd*(s: string): string =
@@ -17,7 +17,7 @@ template hlMd*(s: string): string =
 
 template hlMdF*(s: string): string =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Markdown.
-  ## Equivilent to ``&s`` so it applies string interpolation.
+  ## Equivalent to ``&s`` so it applies string interpolation.
   &s
 
 template hlPy*(s: string): string =
@@ -27,7 +27,7 @@ template hlPy*(s: string): string =
 
 template hlPyF*(s: string): string =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Python.
-  ## Equivilent to ``&s`` so it applies string interpolation.
+  ## Equivalent to ``&s`` so it applies string interpolation.
   &s
 
 template hlNim*(s: string): string =
@@ -37,5 +37,5 @@ template hlNim*(s: string): string =
 
 template hlNimF*(s: string): string =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Nim.
-  ## Equivilent to ``&s`` so it applies string interpolation.
+  ## Equivalent to ``&s`` so it applies string interpolation.
   &s

@@ -69,7 +69,7 @@ directly from standard nim files. It currently does not provide any type of inte
 you should be reading one of the two, for the other:</p>
 <ul>
 <li><a href="https://github.com/pietroppeter/nimib">README.md</a></li>
-<li><a href="https://pietroppeter.github.io/nimib">index.html</a></li>
+<li><a href=".">index.html</a></li>
 </ul>
 <p>Nimib was presented in <a href="https://conf.nim-lang.org">NimConf2021</a>,
 see <a href="https://www.youtube.com/watch?v=sWA58Wtk6L8">video</a>
@@ -78,7 +78,7 @@ and <a href="https://github.com/pietroppeter/nimconf2021">slides</a>.</p>
 <a href="https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost">nimiboost</a>
 provides markdown highlighting in nimib file and a preview mechanism.</p>
 <h2>👋 🌍 Example Usage</h2>
-<p>First have a look at the following html document: <a href="https://pietroppeter.github.io/nimib/hello.html">hello.html</a></p>
+<p>First have a look at the following html document: <a href="./hello.html">hello.html</a></p>
 <p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
 <span class="hljs-keyword">import</span> nimib
@@ -130,11 +130,14 @@ nbSave <span class="hljs-comment"># use nbShow to automatically open a browser t
 <h3>Other examples of usage</h3>
 <p>in this repo:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
-<li><a href="https://pietroppeter.github.io/nimib/penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
-<li><a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
-<li><a href="https://pietroppeter.github.io/nimib/cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
-<li><a href="https://pietroppeter.github.io/nimib/mostaccio.html">mostaccio</a>: examples of usage of nim-mustache and of dark mode.</li>
+<li><a href="./index.html">index</a>: generate an HTML and a README.md at the same time (you are reading one of the two)</li>
+<li><a href="./penguins.html">penguins</a>: explore palmer penguins dataset using ggplotnim (example of showing images)</li>
+<li><a href="./numerical.html">numerical</a>: example usage of NumericalNim (example of custom style, usage of latex)</li>
+<li><a href="./cheatsheet.html">cheatsheet</a>: markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)</li>
+<li><a href="./mostaccio.html">mostaccio</a>: examples of usage of nim-mustache and of dark mode.</li>
+<li><a href="./interactivity.html">interactivity</a>: shows the basic API of creating interactive elements using <code>nbCodeToJs</code>.</li>
+<li><a href="./counters.html">counter</a>: shows how to create reusable interactive widgets by creating a counter button.</li>
+<li><a href="./caesar.html">caesar</a>: a Caesar cipher implemented using <code>nbCodeToJs</code> and <code>karax</code>.</li>
 </ul>
 <p>elsewhere:</p>
 <ul>
@@ -170,7 +173,7 @@ and you can pick a different styling (<code>atom-one-light</code> is default for
 <code>NbDoc</code> and <code>NbBlock</code> elements (see below api).
 Currently most of the documentation on customization is given by the examples.</p>
 <h3>latex</h3>
-<p>See <a href="https://pietroppeter.github.io/nimib/numerical.html">numerical</a> for an example of latex usage.</p>
+<p>See <a href="./numerical.html">numerical</a> for an example of latex usage.</p>
 <p>To add latex support:</p>
 <ul>
 <li>add a <code>nb.useLatex</code> command somewhere between <code>nbInit</code> and <code>nbSave</code></li>
@@ -231,8 +234,8 @@ this process can be overriden to create a new &quot;theme&quot; for nimib
 </ul>
 <p>Here are two examples that show how to hijack the api:</p>
 <ul>
-<li><a href="https://pietroppeter.github.io/nimib/nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
-<li><a href="https://pietroppeter.github.io/nimib/pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
+<li><a href="./nolan.html">nolan</a>: how to mess up the timeline of blocks ⏳</li>
+<li><a href="./pythno.html">pythno</a>: a reminder that nim is not python 😜</li>
 </ul>
 <h2>Changelog</h2>
 <h3>0.2</h3>
@@ -312,7 +315,7 @@ nb.title = <span class="hljs-string">&quot;Nimib Docs&quot;</span>
 
 <span class="hljs-keyword">let</span>
   repo = <span class="hljs-string">&quot;https://github.com/pietroppeter/nimib&quot;</span>
-  docs = <span class="hljs-string">&quot;https://pietroppeter.github.io/nimib&quot;</span>
+  docs = <span class="hljs-keyword">if</span> <span class="hljs-keyword">defined</span>(useMdBackend): <span class="hljs-string">&quot;https://pietroppeter.github.io/nimib&quot;</span> <span class="hljs-keyword">else</span>: <span class="hljs-string">&quot;.&quot;</span>
   hello = read(nb.srcDir / <span class="hljs-string">&quot;hello.nim&quot;</span>.<span class="hljs-type">RelativeFile</span>)
   assets = <span class="hljs-string">&quot;docs/static&quot;</span>
   highlight = <span class="hljs-string">&quot;highlight.nim.js&quot;</span>
@@ -390,6 +393,10 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
+* [interactivity]({docs}/interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [counter]({docs}/counters.html): shows how to create reusable interactive widgets by creating a counter button.
+* [caesar]({docs}/caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+
 
 elsewhere:
 

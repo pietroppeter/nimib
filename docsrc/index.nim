@@ -235,7 +235,16 @@ most of the changes break the api
   - `ptest`: print testing for nimib
 * deployed using github pages. html files committed in repo.
 
-for this release, thanks to:
+relevant external examples:
+
+* adventofnim (2020) by @pietroppeter
+  - first appeareance of nimib in public (before 0.1 release), see [commit on Dec 1st, 2020](https://github.com/pietroppeter/adventofnim/commit/973f9a2472d41188bb37650c082f115fc5787687#diff-a21a437c51bd7babb945c8291588853296387c7e1950997e05f1eb62d18b54f7)
+
+Initial commit of nimib was on Nov, 25, 2020.
+On the same day the [first milestone](https://github.com/pietroppeter/nimib/commit/b02ec7be4663956167701a81a96246d8e528fff3)
+reached was the working hello world example.
+
+For this release, thanks to:
 
 * [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
 * [Clonkk](https://github.com/Clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))

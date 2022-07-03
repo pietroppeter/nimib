@@ -210,6 +210,36 @@ most of the changes break the api
   Run any nimib file with option `--nbHelp` to see available options.
 * `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
 
+### 0.1 - March 2021
+
+* initial version with essential templates `nbInit`, `nbText`, `nbCode`, `nbImage`, `nbSave`
+  - capture of output in `nbCode` based on code by @Clonkk
+* html backend based on mustache and markdown by @soasme
+* default theme using water.css
+  - header with home button, minimal title (filename by default), automatic detection of github repo
+  - footer with "made with nimib" and Show Source button
+* static highlighting of nim code (by @yardanico)
+* latex rendering through katex
+* markdown backend
+* essential documentation in `index.nim`
+  - also generates `README.md` and serves as an example of usage of markdown backend
+* possibility to customize theme (dark mode, custom stylesheet, add other scripts, ...)
+* example documents:
+  - `penguins`: data exploration, adding images
+  - `numerical`: latex usage, theme customization
+  - `cheatsheet`: toc creation, new text block which shows source, custom highlighting
+    - also documents the markdown to html generator
+  - `mostaccio`: example of using dark mode
+    - also documents the templating system mustache
+  - `ptest`: print testing for nimib
+* deployed using github pages. html files committed in repo.
+
+for this release, thanks to:
+
+* [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
+* [Clonkk](https://github.com/Clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
+* [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
+
 ## :sunrise: Roadmap
 
 - refactor rendering of blocks and simplify api extensions ([#24](https://github.com/pietroppeter/nimib/issues/24))
@@ -226,9 +256,6 @@ most of the changes break the api
 
 to:
 
-* [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
-* [Clonkk](https://github.com/Clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
-* [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
 * [vindaar](https://github.com/Vindaar),
   [hugogranstrom](https://github.com/HugoGranstrom)
   for their contributions towards version 0.2.

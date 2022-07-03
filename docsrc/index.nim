@@ -222,6 +222,7 @@ most of the changes break the api
 * latex rendering through katex
 * markdown backend
 * essential documentation in `index.nim`
+  - sections: intro, example usage, features, api, roadmap, thanks, Q&A
   - also generates `README.md` and serves as an example of usage of markdown backend
 * possibility to customize theme (dark mode, custom stylesheet, add other scripts, ...)
 * example documents:

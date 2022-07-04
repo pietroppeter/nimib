@@ -97,7 +97,7 @@ proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
     lines[0] = lines[0][startPos.column .. ^1].strip()
 
   var codeText: string
-  if startLine == endLine: # single-line expression 
+  if startLine == endLine and startsOnCommandLine: # single-line expression 
     # remove eventual unneccerary parenthesis
     let line = rawLines[startLine] # includes command and eventual opening parethesises
     var extractedLine = lines[0] # doesn't include command

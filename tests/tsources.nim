@@ -49,3 +49,8 @@ let  # and a comment with nbCode
   nbCode ((echo ("( This is ( weird string)")))
   expected = "echo (\"( This is ( weird string)\")"
   check
+
+  nbTextWithCode: """problem
+solution"""
+  expected = "\"\"\"problem\nsolution\"\"\""
+  check

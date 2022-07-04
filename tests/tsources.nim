@@ -73,3 +73,5 @@ discardBlock:
 end"""
   expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
   check
+
+  

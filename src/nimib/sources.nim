@@ -120,10 +120,11 @@ proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
     codeText = extractedLine
   else: # multi-line expression
     var preserveIndent: bool = false
-    for line in lines.mitems:
+    for i in 0 .. lines.high:
+      let line = lines[i]
       let nonMatching = line.count("\"\"\"") mod 2 == 1
-      if not preserveIndent:
-        line = line.substr(baseIndent)
+      if not preserveIndent and not (i == 0 and startsOnCommandLine): # don't de-indent first line if it starts on command line
+        lines[i] = line.substr(baseIndent)
       if nonMatching: # there is a non-matching triple-quote string
         preserveIndent = not preserveIndent
     codeText = lines.join("\n")

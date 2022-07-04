@@ -54,3 +54,22 @@ let  # and a comment with nbCode
 solution"""
   expected = "\"\"\"problem\nsolution\"\"\""
   check
+
+  template discardBlock(body: untyped) = discard
+
+  nbCode: discardBlock:
+    echo y
+  
+  expected = """
+discardBlock:
+  echo y
+"""
+  check
+
+  nbCode:
+    let garbage = 1
+    let bigString = """start
+  middle
+end"""
+  expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
+  check

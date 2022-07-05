@@ -54,35 +54,35 @@ how are you?
 how are you?
 """
 
-  when defined(nimibCodeFromAst):
-    test "multi line text string - variant 2":
-      nbTextWithCode: """
+
+  test "multi line text string - variant 2":
+    nbTextWithCode: """
 hi
 how are you?
 """
-      check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
-      check nb.blk.output == """hi
+    check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
+    check nb.blk.output == """hi
 how are you?
 """
 
-    test "multi line text string - variant 3":
-      nbTextWithCode: """hi
+  test "multi line text string - variant 3":
+    nbTextWithCode: """hi
 how are you?
 """
-      check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
-      check nb.blk.output == """hi
+    check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
+    check nb.blk.output == """hi
 how are you?
 """
 
-    test "multi line text string with strformat":
-      let
-        name = "you"
-        answer = "fine"
-      nbTextWithCode: &"""hi {name}
+  test "multi line text string with strformat":
+    let
+      name = "you"
+      answer = "fine"
+    nbTextWithCode: &"""hi {name}
 how are you? {answer}
 """
-      check nb.blk.code == "&\"\"\"hi {name}\nhow are you? {answer}\n\"\"\""
-      check nb.blk.output == """hi you
+    check nb.blk.code == "&\"\"\"hi {name}\nhow are you? {answer}\n\"\"\""
+    check nb.blk.output == """hi you
 how are you? fine
 """
 

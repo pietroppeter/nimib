@@ -66,12 +66,6 @@ proc findStartLine*(source: seq[string], command: string, startPos: int): int =
     dec result
 
 proc findEndLine*(source: seq[string], command: string, startLine, endPos: int): int =
-  let baseIndent =
-    if source[startLine].isCommandLine(command):
-      skipWhile(source[startLine], {' '})
-    else:
-      0
-  let baseIndentStr = " ".repeat(baseIndent)
   result = endPos
   # Handle if line is an unclosed triple-quote string
   if source[endPos].count("\"\"\"") mod 2 == 1:
@@ -79,7 +73,19 @@ proc findEndLine*(source: seq[string], command: string, startLine, endPos: int):
     while result < source.high and source[result].count("\"\"\"") mod 2 == 0:
       inc result
   # Handle if there are ending comments
-  #if result > startLine:
+  let startsOnCommandLine = source[startLine].isCommandLine(command)
+  if result > startLine or not startsOnCommandLine:
+    let baseIndent =
+      if source[startLine].isCommandLine(command):
+        skipWhile(source[startLine], {' '}) + 1 # we want to add indent here.
+        # this is problematic because we don't know the indentation of the code block because
+        # we don't know the indentation size used. So we just add 1 and check that it is larger or equal.
+      else:
+        skipWhile(source[startLine], {' '})
+    let baseIndentStr = " ".repeat(baseIndent)
+    while result < source.high and (source[result+1].startsWith(baseIndentStr) or source[result+1].isEmptyOrWhitespace):
+      inc result
+
 
 proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
   ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.

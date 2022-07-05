@@ -74,4 +74,22 @@ end"""
   expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
   check
 
-  
+  when not defined(nimibCodeFromAst):
+    nbCode:
+      echo y
+      # This should be included!
+    expected = "echo y\n# This should be included!"
+    check
+
+    nbCode:
+      echo y
+
+      # Include this as well!
+    expected = "echo y\n\n# Include this as well!"
+    check
+
+    nbCode:
+      echo y
+    # Don't include this!
+    expected = "echo y"
+    check

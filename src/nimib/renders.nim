@@ -51,7 +51,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbCodeToJs"] = """
 {{>nbJsScriptNimSource}}
 {{>nbJsScript}}"""
-  doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{>nbCodeSource}}{{/js_show_nim_source}}"
+  doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{#js_show_nim_source_message}}<p>{{js_show_nim_source_message}}</p>{{/js_show_nim_source_message}}{{>nbCodeSource}}{{/js_show_nim_source}}"
   doc.partials["nbJsScript"] = "<script defer>{{&output}}</script>"
 
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)

@@ -27,9 +27,7 @@ nbCode:
   ## Uncomment this line:
   ##script.addToDocAsJs()
 script.addToDocAsJs()
-
-nbText: "The complete code is:"
-nbCodeToJsShowSource()
+nbCodeToJsShowSource("This is the complete script:")
 
 
 nbText: hlMd"""

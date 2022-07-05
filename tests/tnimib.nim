@@ -60,7 +60,10 @@ how are you?
 hi
 how are you?
 """
-    check nb.blk.code == "\"\"\"\nhi\nhow are you?\n\"\"\""
+    when defined(nimibCodeFromAst):
+      check nb.blk.code == "\"\"\"hi\nhow are you?\n\"\"\""
+    else:
+      check nb.blk.code == "\"\"\"\nhi\nhow are you?\n\"\"\""
     check nb.blk.output == """hi
 how are you?
 """

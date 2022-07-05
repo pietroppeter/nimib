@@ -152,8 +152,10 @@ when moduleAvailable(karax/kbase):
     nbRawOutput: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
-template nbCodeToJsShowSource* =
+template nbCodeToJsShowSource*(message: string = "") =
   nb.blk.context["js_show_nim_source"] = true
+  if message.len > 0:
+    nb.blk.context["js_show_nim_source_message"] = message
 
 
 template nbClearOutput*() =

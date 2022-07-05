@@ -49,3 +49,47 @@ let  # and a comment with nbCode
   nbCode ((echo ("( This is ( weird string)")))
   expected = "echo (\"( This is ( weird string)\")"
   check
+
+  nbTextWithCode: """problem
+solution"""
+  expected = "\"\"\"problem\nsolution\"\"\""
+  check
+
+  template discardBlock(body: untyped) = discard
+
+  nbCode: discardBlock:
+    echo y
+  
+  expected = """
+discardBlock:
+  echo y
+"""
+  check
+
+  nbCode:
+    let garbage = 1
+    let bigString = """start
+  middle
+end"""
+  expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
+  check
+
+  when not defined(nimibCodeFromAst):
+    nbCode:
+      echo y
+      # This should be included!
+    expected = "echo y\n# This should be included!"
+    check
+
+    nbCode:
+      echo y
+
+      # Include this as well!
+    expected = "echo y\n\n# Include this as well!"
+    check
+
+    nbCode:
+      echo y
+    # Don't include this!
+    expected = "echo y"
+    check

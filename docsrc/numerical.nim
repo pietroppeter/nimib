@@ -115,8 +115,7 @@ nbText: "To compute percentage error of each method at $y(5)$ I will use:"
 nbCode:
   proc pe(yApprox: float): string = fmt"{(100.0*abs(yApprox - y5) / abs(y5)):.3f}%"
   echo pe y1hn[^1]  ## used like this
-nbTextWithCode: # note that we need to start the multi line on next line
-  fmt"""
+nbTextWithCode: fmt"""
 The following table is built as a Markdown table in a `nbText` block.
 
 **Table 1.** Percentage errors

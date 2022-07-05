@@ -27,6 +27,8 @@ nbCode:
   ## Uncomment this line:
   ##script.addToDocAsJs()
 script.addToDocAsJs()
+
+nbText: "The complete code is:"
 nbCodeToJsShowSource()
 
 

@@ -89,7 +89,6 @@ proc findEndLine*(source: seq[string], command: string, startLine, endPos: int):
 
 proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
   ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.
-  echo "\n"
   let rawLines = source.split("\n")
   var startLine = findStartLine(rawLines, command, startPos.line - 1)
   var endLine = findEndLine(rawLines, command, startLine, endPos.line - 1)
@@ -100,7 +99,12 @@ proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
 
   let startsOnCommandLine = lines[0].isCommandLine(command) # is it nbCode: code or nbCode: <enter> code
   if startsOnCommandLine: # remove the command
-    lines[0] = lines[0][startPos.column .. ^1].strip()
+    var startColumn = startPos.column
+    # the "import"-part is not included in the startPos
+    let startsWithImport = lines[0].find("import")
+    if startsWithImport != -1:
+      startColumn = startsWithImport
+    lines[0] = lines[0][startColumn .. ^1].strip()
 
   var codeText: string
   if startLine == endLine and startsOnCommandLine: # single-line expression 
@@ -134,7 +138,6 @@ proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
       if nonMatching: # there is a non-matching triple-quote string
         preserveIndent = not preserveIndent
     codeText = lines.join("\n")
-  echo "\n"
   result = codeText
 
 

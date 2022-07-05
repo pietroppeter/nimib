@@ -25,7 +25,8 @@ proc startPos*(node: NimNode): Pos =
   case node.kind:
     of nnkNone .. nnkNilLit, nnkDiscardStmt, nnkCommentStmt:
       result = toPos(node.lineInfoObj())
-
+    of nnkBlockStmt:
+      result = node[1].startPos()
     else:
       result = node[0].startPos()
 

@@ -74,6 +74,12 @@ end"""
   expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
   check
 
+  nbCode:
+    block:
+      echo y
+  expected = "block:\n  echo y"
+  check
+
   when not defined(nimibCodeFromAst):
     nbCode:
       echo y
@@ -93,3 +99,5 @@ end"""
     # Don't include this!
     expected = "echo y"
     check
+
+  

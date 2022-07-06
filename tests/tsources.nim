@@ -100,4 +100,11 @@ end"""
     expected = "echo y"
     check
 
+    nbCode:
+
+      echo y
+    # The newline at the beginning of the block!
+    expected = "echo y"
+    check
+
   

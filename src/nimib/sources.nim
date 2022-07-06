@@ -65,6 +65,9 @@ proc findStartLine*(source: seq[string], command: string, startPos: int): int =
   result = startPos
   while not source[result-1].isCommandLine(command):
     dec result
+  # Remove empty lines at the beginning of the block
+  while source[result].isEmptyOrWhitespace:
+    inc result
 
 proc findEndLine*(source: seq[string], command: string, startLine, endPos: int): int =
   result = endPos

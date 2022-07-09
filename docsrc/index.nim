@@ -195,7 +195,7 @@ Here are two examples that show how to hijack the api:
 * [nolan]({docs}/nolan.html): how to mess up the timeline of blocks :hourglass_flowing_sand:
 * [pythno]({docs}/pythno.html): a reminder that nim is not python :stuck_out_tongue_winking_eye:
 
-## Changelog
+## Changelog and :pray: Thanks
 
 ### 0.2 "Theme Maker" (November 2021)
 
@@ -242,6 +242,10 @@ changes:
 * 0.1.4: fix for `nbImage` path (#56)
 * 0.1.5: new template `nbCodeInBlock` (#59)
 * 0.1.6: added `nimib / boost` module with `md` and `fmd` helpers to support markdown highlight with nimiboost
+
+Thanks for this release series to @Vindaar, @Clonkk and @HugoGranstrom who decided to adopt
+nimib in scinim/getting-started and motivated and directly contributed to nimib and nimibook development
+to support this use case.
 
 ### 0.1 (March 2021)
 
@@ -294,14 +298,6 @@ For this release, thanks to:
 - server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
 - possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
 - ...
-
-## :pray: Thanks
-
-to:
-
-* [vindaar](https://github.com/Vindaar),
-  [hugogranstrom](https://github.com/HugoGranstrom)
-  for their contributions towards version 0.2.
 
 ## :question: :exclamation: Q & A
 

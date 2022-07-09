@@ -13,15 +13,24 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 ## 0.3
 
-## 0.2.x
+## 0.2.x (November 2021)
 
-### 0.2.4
+### 0.2.4 - CodeAsInSource
+
+* Update penguins example which now uses datamancer and shows Simpson's paradaox, by by @Vindaar (#70)
+* code as in source for nbCode (`-d:nimibPreviewCodeAsInSource`) by @HugoGranstrom (#63): with this option the code shown is not derived from Ast but it is read from source code.
 
 ### 0.2.3
 
-### 0.2.2
+* align version in nimble file and tagged version 
+
+### 0.2.2 - nbFile
+
+* add `nbFile` by @Clonkk (#64)
 
 ### 0.2.1
+
+* fix to `path_to_root` (renamed from `home_path`, also `here_path` renamed to `path_to_here`) (#67)
 
 ## 0.2 "Theme Maker" (November 2021)
 

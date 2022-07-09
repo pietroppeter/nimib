@@ -37,21 +37,39 @@ as maintainer and co-creator of nimib! 🥳
 
 List of detailed changes:
 
-* refactoring of `NbBlock` type and rendering of blocks (#80):
+* refactoring of `NbBlock` type and rendering of blocks (#78, fixes #24):
   * `NbBlock` type is completely refactored. Instead of having a `kind` with a fixed
     number of values, a block behaviour is specified by a `command` string
     which is set to the name of the command template used to create a block
     (e.g. `nbCode`, `nbText`, `nbImage`, ...) - 
+  * `newNbBlock` is now the main template to create a new block
   * Every block now has a `context` field and the rendering backend (either html or markdown)
     has a mechanism to retrieve a `partial` for every command.
   * as an additional mechanism to be able to perform other computations when rendering,
     a sequence of `renderProc`s can be assigned for every command (for a specific backend).
+  * `nimib / renders` module completely refactored to take into account the above changes
   * some other accidental or not so welcome changes that happened during the refactoring:
     - `sugar` is now exported _(accidental)_
     - `nb: NbDoc` is mutated when rendered _(unwelcome, will be changed later)_
     - cannot use both Html and Md backend at the same time _(unwelcome, will be changed later)_
-* fixed cheatsheet document (fixed #52)
-* ptest document is removed (#80)
+* logging has been improved (see changes in `nimib.blocks.newNbBlock`) (#78)
+* new `main` partial introduced (#78)
+* fixed cheatsheet document (#78, fixes #52)
+* tests are added and ptest document is removed (#78)
+* aliases to minimize breaking changes that happened in 0.2 (`nbDoc`, `nbBlock`, `nbHomeDir`) are noew removed (#78)
+* added a new `readCode: bool` parameter to `newNbBlock` (with an overload that sets it as true) (#80)
+* new template `nbRawOutput` that renders raw html (#80)
+* new command `nbClearOutput` that removes output from last block processed (#80)
+* new templates for creating code blocks `newNbCodeBlock` and `newNbSlimBlock`
+  for creating custom blocks and related changes (#81):
+  - `newNbCodeBlock`: captures source code of `body`
+  - `newNbSlimBlock`: block without a `body` (and in particular no capture of source)
+  - all nimib "native" blocks now use one of the two mechanism above
+  - now `nbText` does NOT contain its source
+  - new `nbTextWithCode` that does contain code source
+* untyped version of `nbFile` removed, new example document `files.nim`, changed the rendering of `nbFile`
+  (no more "writing file ..." only the name of file is added) (#81)
+* added `loadNimibCfg` proc that can be used for themes (used by nimibook) (#81)
 
 Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
 

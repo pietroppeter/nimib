@@ -11,7 +11,57 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 * _insert here next change_
 
-## 0.3
+## 0.3 "Block Maker" (July 2022)
+
+This release started with the aim of making the construction of custom blocks as easy as the construction of native blocks.
+A wide refactoring of the codebase was required for this (#78)
+and further adjustments were made along the way (#80, #81).
+Some new blocks are introduced taking advantage of this (e.g. `nbRawOutput`, `nbPython`) (#80, #83).
+
+Contributing to the codebase is made easier through introduction of proper testing (#80)
+and deploy previews (#89, #90, #91, #92, #93). Documentation has been updated to include all changes so far
+and contextually the changelog has been updated (#103).
+
+A big milestone is reached (#88) by introducing templates to add interactivity to documents
+taking advantage of nim js backend (`nbCodeToJs` allows to incorporate javascript scripts in the document derived from nim code).
+In particular templates to reduce boilerplate when developing karax based apps or
+widgets are introduced (`nbKaraxCode`, `karaxHtml`).
+Three new example documents are introduced for documenting this change (`interactivity`, `counters`, `caesar`).
+
+Another major change is setting as default the `CodeAsInSource` introduced in 0.2.4
+(a number of fixes are made: #105, #106, #108).
+
+Most of these contributions are due to @HugoGranstrom
+(thanks for all the awesome work on this ❤️) which joins @pietroppeter
+as maintainer and co-creator of nimib! 🥳
+
+List of detailed changes:
+
+* refactoring of `NbBlock` type and rendering of blocks (#80):
+  * `NbBlock` type is completely refactored. Instead of having a `kind` with a fixed
+    number of values, a block behaviour is specified by a `command` string
+    which is set to the name of the command template used to create a block
+    (e.g. `nbCode`, `nbText`, `nbImage`, ...) - 
+  * Every block now has a `context` field and the rendering backend (either html or markdown)
+    has a mechanism to retrieve a `partial` for every command.
+  * as an additional mechanism to be able to perform other computations when rendering,
+    a sequence of `renderProc`s can be assigned for every command (for a specific backend).
+  * some other accidental or not so welcome changes that happened during the refactoring:
+    - `sugar` is now exported _(accidental)_
+    - `nb: NbDoc` is mutated when rendered _(unwelcome, will be changed later)_
+    - cannot use both Html and Md backend at the same time _(unwelcome, will be changed later)_
+* fixed cheatsheet document (fixed #52)
+* ptest document is removed (#80)
+
+Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
+
+Relevant examples of usage:
+
+* [nimislides](https://github.com/HugoGranstrom/nimib-reveal): a new nimib theme that allows to create
+  slides using [reveal.js](https://revealjs.com) html presentation framework
+* some posts in nblog are relevant example of new blocks and customization of nimib:
+  - [Making Diagrams using mermaid.js](https://pietroppeter.github.io/nblog/drafts/mermaid_diagram.html)
+  - [Plotly in nimib](https://pietroppeter.github.io/nblog/drafts/show_plotly.html)
 
 ## 0.2.x (November 2021)
 
@@ -19,6 +69,7 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 * Update penguins example which now uses datamancer and shows Simpson's paradaox, by by @Vindaar (#70)
 * code as in source for nbCode (`-d:nimibPreviewCodeAsInSource`) by @HugoGranstrom (#63): with this option the code shown is not derived from Ast but it is read from source code.
+* ptest document is turned off from CI
 
 ### 0.2.3
 
@@ -53,7 +104,7 @@ relevant external example:
 
 * [norm](https://norm.nim.town) starts to use nimibook for its documentation
 
-Special thanks again to to @Vindaar, @Clonkk and @HugoGranstrom
+Special thanks again to to @Vindaar, @Clonkk and @HugoGranstrom for this release.
 
 ## 0.1.x (March-June 2021)
 
@@ -83,6 +134,8 @@ changes:
 Thanks for this release series to @Vindaar, @Clonkk and @HugoGranstrom who decided to adopt
 nimib in scinim/getting-started and motivated and directly contributed to nimib and nimibook development
 to support this use case.
+
+At the end June 2021, nimib was presented at [NimConf2021](https://conf.nim-lang.org).
 
 ## 0.1 (March 2021)
 

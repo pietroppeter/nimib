@@ -197,10 +197,11 @@ Here are two examples that show how to hijack the api:
 
 ## Changelog
 
-### 0.2 (November 2021)
+### 0.2 "Theme Maker" (November 2021)
 
-most of the changes break the api
+this release aims to simplify creating Nimib themes such as nimibook.
 
+It does this through the following changes:
 * instead of creating and injecting multiple variables
   (`nbDoc`, `nbBlock`, `nbHomeDir`, ...), nimib now only injects a `nb` variable
   that is a `NbDoc`. Some aliases are provided to minimize breakage.
@@ -208,7 +209,14 @@ most of the changes break the api
   of a new config file `nimib.toml`
 * command line options are now processed and can be used to skip/override the config process.
   Run any nimib file with option `--nbHelp` to see available options.
+* note in particular new `--nbShow` option which will automatically open the file in your default browser.
 * `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
+* documentation has been updated to reflect the above changes and also to add other Nimib references (NimConf video, nimibook, getting-started, ...)
+most of the changes break the api
+
+relevant external example:
+
+* [norm](https://norm.nim.town) starts to use nimibook for its documentation
 
 ### 0.1.x (March-June 2021)
 

@@ -19,7 +19,8 @@ and further adjustments were made along the way (#80, #81).
 Some new blocks are introduced taking advantage of this (e.g. `nbRawOutput`, `nbPython`) (#80, #83).
 
 Contributing to the codebase is made easier through introduction of proper testing (#80)
-and deploy previews (#89, #90, #91, #92, #93). Documentation has been updated to include all changes so far
+docs are now built in CI (#89, #90, #91) and deploy previews have been added (#92, #93).
+Documentation has been updated to include all changes so far
 and contextually the changelog has been updated (#103).
 
 A big milestone is reached (#88) by introducing templates to add interactivity to documents
@@ -70,6 +71,27 @@ List of detailed changes:
 * untyped version of `nbFile` removed, new example document `files.nim`, changed the rendering of `nbFile`
   (no more "writing file ..." only the name of file is added) (#81)
 * added `loadNimibCfg` proc that can be used for themes (used by nimibook) (#81)
+* added `nbInitPython` and `nbPython` templates to support running python in nimib documents using `nimpy` (#83)
+  - `md` and `fmd` from `nimib / boost` now deprecated and replaced by `hlMd` and `hlMdF`
+  - new `hlPy` and `hlPyF` in `nimib / boost`
+* docs now are built in CI (#89, #90, #91)
+  - sources of docs are now in folder `docsrc`
+  - outputs are in `docs`
+* add deploy preview through netlify (#92, #93)
+* new templates to introduce interactivity in documents taking advantage of nim's javascript backend (#88)
+  - `nbCodeToJs`: a block of nim code is compiled to javascript and added as a script to html file (and allows capturing of variables)
+  - `nbCodeToJsInit`, `addCodeToJs`, `addToDocAsJs`: templates to allow splitting in multiple blocks the code in `nbCodeToJs`
+  - `nbCodeToJsShowSource`: template to show the nim source of a `nbCodeToJs` block.
+  - `nbKaraxCode` (with `karaxHtml`): template to create a karax app/widget with minimal boilerplate (based on `nbCodeToJs`)
+  - new example document `interactivity.nim`: explains the basic of `nbCodeToJs` and related templates
+  - new example document `counters.nim`: shows how to create counter widgets using `nbCodeToJs`
+  - new example document `caesar.nim`: a caesar cipher app built using `nbKaraxCode`
+  - new module `nimib / jsutils` to support the implementation of the above 
+* `newId` proc for `NbDoc` that gives a new incremental integer every time it is called (#88)
+* `CodeAsInSource` is made default:
+  - new `nimibCodeFromAst` flag to revert to old default
+  - added a warning to `nimibPreviewCodeAsInSource` (now obsolete)
+* various fixes to `CodeAsInSource` (#105, #106, #108)
 
 Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
 

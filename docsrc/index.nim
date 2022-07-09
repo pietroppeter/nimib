@@ -197,7 +197,7 @@ Here are two examples that show how to hijack the api:
 
 ## Changelog
 
-### 0.2
+### 0.2 (November 2021)
 
 most of the changes break the api
 
@@ -210,7 +210,32 @@ most of the changes break the api
   Run any nimib file with option `--nbHelp` to see available options.
 * `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
 
-### 0.1 - March 2021
+### 0.1.x (March-June 2021)
+
+a growing ecosystem drives most of the development of the 0.1.x series:
+
+* [intro to binarylang](https://ajusa.github.io/binarylang-fun/intro.html) by @ajusa (March 2021): first public use of nimib by someone other than @pietroppeter 
+* [SciNim Getting Started](https://scinim.github.io/getting-started/) decided to use nimib and for that purpose
+  [nimibook](https://github.com/pietroppeter/nimibook), a book theme (based of mdbook) developments was started
+* [nblog](https://github.com/pietroppeter/nblog), a nimib blog, was started as a way to use nimib to explore nim ecosystem and experiment
+  the various features of nimib
+* [nimiboost](https://github.com/HugoGranstrom/nimiBoost) is a vs code extension to provide
+  markdown highlighting and a preview mechanism.
+
+changes:
+
+*  0.1.1:
+  - add nbPostInit mechanism to customize document (#32)
+  - fix (breaking): code output is escaped by default
+  - fix (breaking): code output is not stripped anymore
+  - fix: nbDoc.write will create directories if not existing (#44)
+* 0.1.2: release to align tag and nimble version
+* 0.1.3: added compile-time switches to override nbHomeDir (#53)
+* 0.1.4: fix for `nbImage` path (#56)
+* 0.1.5: new template `nbCodeInBlock` (#59)
+* 0.1.6: added `nimib / boost` module with `md` and `fmd` helpers to support markdown highlight with nimiboost
+
+### 0.1 (March 2021)
 
 * initial version with essential templates `nbInit`, `nbText`, `nbCode`, `nbImage`, `nbSave`
   - capture of output in `nbCode` based on code by @Clonkk

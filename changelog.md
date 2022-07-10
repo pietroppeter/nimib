@@ -68,7 +68,7 @@ List of detailed changes:
   - all nimib "native" blocks now use one of the two mechanism above
   - now `nbText` does NOT contain its source
   - new `nbTextWithCode` that does contain code source
-* untyped version of `nbFile` removed, new example document `files.nim`, changed the rendering of `nbFile`
+* new example document `files.nim`, changed the rendering of `nbFile`
   (no more "writing file ..." only the name of file is added) (#81)
 * added `loadNimibCfg` proc that can be used for themes (used by nimibook) (#81)
 * added `nbInitPython` and `nbPython` templates to support running python in nimib documents using `nimpy` (#83)
@@ -113,7 +113,7 @@ Relevant examples of usage:
 
 ### 0.2.4 - CodeAsInSource
 
-* Update penguins example which now uses datamancer and shows Simpson's paradaox, by by @Vindaar (#70)
+* Update penguins example which now uses datamancer and shows Simpson's paradaox, by @Vindaar (#70)
 * code as in source for nbCode (`-d:nimibPreviewCodeAsInSource`) by @HugoGranstrom (#63): with this option the code shown is not derived from Ast but it is read from source code.
 * ptest document is turned off from CI
 

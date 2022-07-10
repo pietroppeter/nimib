@@ -148,7 +148,7 @@ Currently most of the documentation on customization is given by the examples.
   Example blocks created with `newNbCodeBlock` are `nbCode` and `nbTextWithCode`.
 * `newNbSlimBlock(cmd: string, blockImpl: untyped)`: template that can be used to create
   a custom block that does not need a separate `body`.
-  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage` and `nbFile`.
+  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage`.
 
 See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
 
@@ -272,7 +272,7 @@ Here are two examples that show how to hijack the api:
 
 ## Changelog and :pray: Thanks
 
-In the [changelog](changelog.md) you find all recent changes, some early history of nimib, pointers to relevant
+In the [changelog]({repo}/blob/main/changelog.md) you find all recent changes, some early history of nimib, pointers to relevant
 examples of usage of nimib and heartfelt thanks to some of the fine folks that
 made this development possible.
 

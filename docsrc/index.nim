@@ -136,6 +136,9 @@ Currently most of the documentation on customization is given by the examples.
   at the end of the source in `numerical.nim` linked above.
 * `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;
   requires [nimpy](https://github.com/yglukhov/nimpy).
+* `nbClearOutput`: clears the output of preceding code block,
+  useful in case a previous command has produced output that you do not want to show for some reason.
+
 
 ### creating custom blocks
 

@@ -1,4 +1,4 @@
-import std / [strutils, tables, sugar, os, strformat, random, sequtils]
+import std / [strutils, tables, sugar, os, strformat, sequtils]
 import types, markdown, mustache
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import highlight

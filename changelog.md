@@ -95,6 +95,7 @@ List of detailed changes:
 * changelog updated and separated from documentation (#103)
 * updated documentation to include most recent changes (#103)
 * fix md output of `index.nim` (#103)
+* turned off warning for unused imports in `nimib.nim` (#103)
 
 Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
 

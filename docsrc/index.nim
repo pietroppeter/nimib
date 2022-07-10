@@ -11,7 +11,7 @@ nb.title = "Nimib Docs"
 
 let
   repo = "https://github.com/pietroppeter/nimib"
-  docs = if defined(useMdBackend): "https://pietroppeter.github.io/nimib" else: "."
+  docs = if defined(mdOutput): "https://pietroppeter.github.io/nimib" else: "."
   hello = read(nb.srcDir / "hello.nim".RelativeFile)
 
 nbText: hlMdF"""

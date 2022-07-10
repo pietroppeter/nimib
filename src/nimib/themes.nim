@@ -156,3 +156,6 @@ proc useLatex*(doc: var NbDoc) =
 proc `title=`*(doc: var NbDoc, text: string) =
   # to deprecate?
   doc.context["title"] = text
+
+proc noTheme*(doc: var NbDoc) =
+  discard

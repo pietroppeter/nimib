@@ -1,7 +1,10 @@
-import nimib, strformat, nimoji, nimib / renders
+import nimib, strformat, nimoji
+from nimib / renders import useMdBackend
+from nimib / themes import noTheme
 
 when defined(mdOutput):
-  nbInit(backend=useMdBackend)
+  echo "using Markdown backend"
+  nbInit(backend=useMdBackend, theme=noTheme)
 else:
   nbInit
 nb.title = "Nimib Docs"
@@ -206,7 +209,7 @@ All the options available can be seen by running any nimib file with option `nbH
 nbCode:
   import osproc
   withDir nb.srcDir:
-    echo execProcess("nim r --verbosity:0 --hints:off --warning:UnusedImport:off hello --nbHelp")
+    echo execProcess("nim r --verbosity:0 --hints:off hello --nbHelp")
 
 nbText: hlMdF"""
 

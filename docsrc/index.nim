@@ -11,7 +11,7 @@ let
   highlight = "highlight.nim.js"
   defaultHighlightCss = "atom-one-light.css"
 
-nbText: fmd"""
+nbText: hlMdF"""
 # nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
 
 Nimib provides an API to convert your Nim code and its outputs to html documents.
@@ -73,7 +73,7 @@ else:
 ```"""
 
 
-nbText: fmd"""
+nbText: hlMdF"""
 ### Other examples of usage
 
 in this repo:
@@ -159,8 +159,20 @@ Inside a config file you can define two special directory:
 
 `nbInit` also parses command line options that start with `nb` or `nimib`
 that allow to override the above value, skip the config file or other options.
-To see all the options execute any nimib file with option `nbHelp`.
 
+All the options available can be seen by running any nimib file with option `nbHelp`
+(execution will stop after `nbInit`).
+"""
+
+nbCode:
+  import osproc
+  withDir nb.srcDir:
+    echo execProcess("nim r --verbosity:0 --hints:off hello --nbHelp")
+
+nbText: hlMdF"""
+
+The value of options are available in `nb.options` field which also
+tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]`.
 
 ## :honeybee: API <!-- Api means bees in Italian -->
 

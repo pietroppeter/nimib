@@ -4,7 +4,7 @@ from nimib / themes import noTheme
 
 when defined(mdOutput):
   echo "using Markdown backend"
-  nbInit(backend=useMdBackend, theme=noTheme)
+  nbInitMd
 else:
   nbInit
 nb.title = "Nimib Docs"
@@ -13,9 +13,6 @@ let
   repo = "https://github.com/pietroppeter/nimib"
   docs = if defined(useMdBackend): "https://pietroppeter.github.io/nimib" else: "."
   hello = read(nb.srcDir / "hello.nim".RelativeFile)
-  assets = "docs/static"
-  highlight = "highlight.nim.js"
-  defaultHighlightCss = "atom-one-light.css"
 
 nbText: hlMdF"""
 # nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
@@ -155,6 +152,9 @@ Currently most of the documentation on customization is given by the examples.
 
 See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
 
+* a `newId` proc is available for `nb: NbDoc` object and provides an incremental integer.
+  It can be used in some custom blocks (it is used in `nbCodeToJs` described below).
+
 ### interactivity using nim js backend
 
 Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
@@ -211,6 +211,8 @@ nbCode:
   withDir nb.srcDir:
     echo execProcess("nim r --verbosity:0 --hints:off hello --nbHelp")
 
+let renderProcType = "type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}"
+
 nbText: hlMdF"""
 
 The value of options are available in `nb.options` field which also
@@ -236,29 +238,37 @@ can happen in two different ways:
   these objects are added to a sequence of blocks accessible in `nb.blocks`
 * the last processed block is available as `nb.blk`
 * `nb.blk.output` contains the (non rendered) output of block
-* `nb.blk.code` contains the source code of the block
-* Work is ongoing to have the code source exactly as in source file (see PR ([#63](https://github.com/pietroppeter/nimib/pull/63)))
+* `nb.blk.code` contains the source code of the block (if it was created with `newNbCodeBlock`)
 * `NbBlock` is a ref object, so changing `nb.blk`, changes the last block in `nb.blocks`.
-* rendering happens during the call of `nbSave` and and calls a `nb.render` proc
-  that can be overriden
-* two render procs are available in nimib, one to produce a html, one to produce markdown
-* the default html render proc uses [nim-mustache](https://github.com/soasme/nim-mustache)
-  to produce the final document starting from a `document` template available in memory
-* the main template (`document`) or all the other templates can be ovveriden in memory or
-  providing an ovveride in a template directory
-  (defaults are `.` and `templates`, can be overriden with `nb.templateDirs`)
-* the templates in memory are available as `nb.partials`
-  (partial is another name for a mustache template)
-* to fill in all details, mustache starts from a `Context` object, that is initialized during `nbInit`
-  and can be updated later (accessible as `nb.context`)
-* during `nbInit` a default theme is called that initializes all partials and the context.
-  this process can be overriden to create a new "theme" for nimib
-  (see for example [nimibook](https://github.com/pietroppeter/nimibook))
 
 Here are two examples that show how to hijack the api:
 
 * [nolan]({docs}/nolan.html): how to mess up the timeline of blocks :hourglass_flowing_sand:
 * [pythno]({docs}/pythno.html): a reminder that nim is not python :stuck_out_tongue_winking_eye:
+
+## Rendering
+
+* rendering is currently based on [nim-mustache](https://github.com/soasme/nim-mustache).
+  This will likely be changed in a next release and in fact refactoring the rendering part of nimib
+  is the main target for next breaking change, see [#111](https://github.com/pietroppeter/nimib/issues/111)
+* there are two rendering backends, a html one and a markdown backend.
+  In order to use the markdown backend one must initialize its document with `nbInitMd` instead of `nbInit`
+* rendering happens during the call to `nbSave`, and two steps are performed:
+  1. rendering all blocks and adding them to a sequence of blocks (added to `nb.context["blocks"]`)
+  2. rendering the document starting from `document` partial using 
+* rendering of a single block depends
+  on a number of fields of `nb` object:
+  - `partials`: a `Table[string, string]` that contains the templates/partials for every command (e.g. `nb.partials["nbCode"]`);
+  - `templateDirs`: a `seq[string]` of folders where to look for `.mustache` templates that can complement/override
+    the templates in `partials`.
+    A common usage is to add a `head_other.mustache` template that contain additional content added to head section 
+    of **every** document (in many repositories - including nimib - it is used to add a [plausible analytics](https://plausible.io) script)
+  - `renderPlans`: a `Table[string, seq[string]]` that contains the render plan (a `seq[string]`) for every step of render plan
+    an associated `renderProc` is called;
+  - `renderProcs`: a `Table[string, NbRenderProc]` that contains all available render procs by name.
+     (`{renderProcType}`)
+* the above fields are initialized during `nbInit` with a call to `render` backend and can
+  be customized by a call to `theme` (`render` and `theme` have default values).
 
 ## Changelog and :pray: Thanks
 

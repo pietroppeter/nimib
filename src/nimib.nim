@@ -58,6 +58,8 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   # apply theme
   theme nb
 
+template nbInitMd* = nbInit(backend=renders.useMdBackend, theme=themes.noTheme)
+
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
   newNbBlock(cmd, true, nb, nb.blk, body, blockImpl)

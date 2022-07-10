@@ -94,8 +94,10 @@ List of detailed changes:
 * various fixes to `CodeAsInSource` (#105, #106, #108)
 * changelog updated and separated from documentation (#103)
 * updated documentation to include most recent changes (#103)
-* fix md output of `index.nim` (#103)
 * turned off warning for unused imports in `nimib.nim` (#103)
+* fix markdown backend, it was broken since html theme was overiding render backend (#103):
+  - new `nbInitMd` to use markdown backend
+  - new `themes.noTheme` for empty theme (used by `nbInitMd`)
 
 Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
 

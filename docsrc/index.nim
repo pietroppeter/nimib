@@ -107,9 +107,11 @@ you are welcome to add here what you have built with nimib!
 The following are the main elements of a default nimib document:
 
 * `nbInit`: initializes a nimib document, required for all other commands to work.
-* `nbCode`: code blocks with automatic stdout capture
+  In particular it creates and injects into scope a `nb` object used by all other blocks
+  (see below section API for internal details).
+* `nbCode`: code blocks with automatic stdout capture and capture of code source
 * `nbText`: text blocks with automatic conversion from markdown to html (thanks to [nim-markdown](https://github.com/soasme/nim-markdown))
-* `nbImage`: image command to show images
+* `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbSave`: save the document (by default to html)
 * styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nb.darkMode` after `nbInit`).
 * static highlighting of nim code. Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
@@ -122,6 +124,10 @@ The following are the main elements of a default nimib document:
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).
 Currently most of the documentation on customization is given by the examples.
+
+### other templates
+
+* `nbFile`: content (string or untyped) is saved to file (see example document [files]({docs}/files.html))
 
 ### latex
 
@@ -174,6 +180,19 @@ nbText: hlMdF"""
 The value of options are available in `nb.options` field which also
 tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]`.
 
+### Code capture
+
+The code capture of a block like `nbCode` (or other custom blocks)
+can happen in two different ways:
+
+* `CodeAsInSource` (default since version 0.3): code for a single block
+  is parsed from file source (available in `nb.source`).
+* `CodeFromAst` (default in versions 0.1 and 0.2): code for a single block
+  is rendered from AST of body. This means that only documentation comments
+  are shown (since normal comments are not part of the AST) and that the source show
+  might be different from original source.
+  Since version 0.3 this is available through compile time switch `nimibCodeFromAst`.
+
 ## :honeybee: API <!-- Api means bees in Italian -->
 
 * `nbInit` template creates and injects a `nb` variable of type `NbDoc`.
@@ -182,8 +201,6 @@ tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, 
 * the last processed block is available as `nb.blk`
 * `nb.blk.output` contains the (non rendered) output of block
 * `nb.blk.code` contains the source code of the block
-* currently the source code is a stringification of AST and as such it might be
-  formatted differently than the actual source
 * Work is ongoing to have the code source exactly as in source file (see PR ([#63](https://github.com/pietroppeter/nimib/pull/63)))
 * `NbBlock` is a ref object, so changing `nb.blk`, changes the last block in `nb.blocks`.
 * rendering happens during the call of `nbSave` and and calls a `nb.render` proc

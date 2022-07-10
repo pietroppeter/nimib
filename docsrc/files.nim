@@ -1,14 +1,14 @@
 import nimib
 
 nbInit
-nbText: """## Files in nimib
+nbText: """## `nbFile`
 
-Here is a short example of using files in nimib.
-The api to use is `nbFile`.
+The template `nbFile` can be called with a string
+or with an untyped body.
+
 """
-nbFile("module.nim"): """
-const myNumber* = 42
-"""
+nbFile("module.nim"):
+  const myNumber* = 42
 
 nbFile("main.nim"): """
 import module

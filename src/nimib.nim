@@ -187,5 +187,5 @@ template nbShow* =
   nbSave
   open nb
 
-# should we use this? currently a run of index will show unused random, sequtils, strutils
-# {. warning[UnusedImport]:off .}
+# the following does not affect user imports but only imports not exported in this module
+{. warning[UnusedImport]:off .}

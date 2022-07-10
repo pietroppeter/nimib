@@ -15,7 +15,7 @@ requires "mustache >= 0.2.1"
 requires "toml_serialization >= 0.2.0"
 
 task docsdeps, "install dependendencies required for doc building":
-  exec "nimble -y install ggplotnim@0.4.9 numericalnim@0.6.1 nimoji nimpy karax@#head"
+  exec "nimble -y install ggplotnim@0.4.9 numericalnim@0.6.1 nimoji nimpy karax@1.2.2"
 
 task test, "General tests":
   exec "nim r tests/tsources.nim"

@@ -27,7 +27,7 @@ task test, "General tests":
   exec "nim r -d:nimibCodeFromAst tests/trenders.nim"
 
 task readme, "update readme":
-  exec "nim -d:useMdBackend r docsrc/index.nim"  
+  exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
   exec "nim r docsrc/hello.nim"

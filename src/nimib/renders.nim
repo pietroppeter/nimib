@@ -77,14 +77,18 @@ proc useMdBackend*(doc: var NbDoc) =
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSource"] = """
+
 ```nim
 {{code}}
 ```
+
 """
   doc.partials["nbCodeOutput"] = """{{#output}}
+
 ```
 {{output}}
 ```
+
 {{/output}}
 """
   doc.partials["nbImage"] = """
@@ -107,16 +111,23 @@ proc useMdBackend*(doc: var NbDoc) =
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderProcs = initTable[string, NbRenderProc]()
 
+template debugRender(message: string) =
+  when defined(nimibDebugRender):
+    echo "[nimib.debugRender] ", message
+
 proc render*(nb: var NbDoc, blk: var NbBlock): string =
+  debugRender "rendering block " & blk.command
   if blk.command not_in nb.partials:
     echo "[nimib.warning] no partial found for block ", blk.command
     return
   else:
     if blk.command in nb.renderPlans:
+      debugRender "renderPlan " & $nb.renderPlans[blk.command]
       for step in nb.renderPlans[blk.command]:
         if step in nb.renderProcs:
           nb.renderProcs[step](nb, blk)
     blk.context.searchTable(nb.partials)
+    debugRender "partial " & nb.partials[blk.command]
     result = nb.partials[blk.command].render(blk.context)
 
 proc render*(nb: var NbDoc): string =

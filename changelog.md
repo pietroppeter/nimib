@@ -92,6 +92,9 @@ List of detailed changes:
   - new `nimibCodeFromAst` flag to revert to old default
   - added a warning to `nimibPreviewCodeAsInSource` (now obsolete)
 * various fixes to `CodeAsInSource` (#105, #106, #108)
+* changelog updated and separated from documentation (#103)
+* updated documentation to include most recent changes (#103)
+* fix md output of `index.nim` (#103)
 
 Thanks to @metagn for improving our CI/nimble file! Every contribution counts!
 

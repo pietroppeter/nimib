@@ -1,6 +1,9 @@
 import nimib, strformat, nimoji, nimib / renders
 
-nbInit
+when defined(mdOutput):
+  nbInit(backend=useMdBackend)
+else:
+  nbInit
 nb.title = "Nimib Docs"
 
 let
@@ -200,7 +203,7 @@ All the options available can be seen by running any nimib file with option `nbH
 nbCode:
   import osproc
   withDir nb.srcDir:
-    echo execProcess("nim r --verbosity:0 --hints:off hello --nbHelp")
+    echo execProcess("nim r --verbosity:0 --hints:off --warning:UnusedImport:off hello --nbHelp")
 
 nbText: hlMdF"""
 
@@ -310,9 +313,8 @@ because [someone made it into an art form](https://github.com/oakes/vim_cubed#q-
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
 """.emojize
 
-when not defined(useMdBackend):
+when defined(mdOutput):
+  nb.filename = "../README.md"
   nbSave
 else:
-  nb.useMdBackend
-  nb.filename = "../README.md"
   nbSave

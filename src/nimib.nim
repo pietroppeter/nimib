@@ -1,4 +1,4 @@
-import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils, random]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
 export jsonutils
 import nimib / [types, blocks, docs, boost, config, options, capture, jsutils]
 export types, blocks, docs, boost, sugar, jsutils
@@ -186,3 +186,6 @@ template nbHomeDir*: AbsoluteDir = nb.homeDir
 template nbShow* =
   nbSave
   open nb
+
+# should we use this? currently a run of index will show unused random, sequtils, strutils
+# {. warning[UnusedImport]:off .}

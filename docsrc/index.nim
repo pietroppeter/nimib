@@ -111,7 +111,6 @@ The following are the main elements of a default nimib document:
   (see below section API for internal details).
 * `nbCode`: code blocks with automatic stdout capture and capture of code source
 * `nbText`: text blocks with automatic conversion from markdown to html (thanks to [nim-markdown](https://github.com/soasme/nim-markdown))
-* `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbSave`: save the document (by default to html)
 * styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nb.darkMode` after `nbInit`).
 * static highlighting of nim code. Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
@@ -127,7 +126,35 @@ Currently most of the documentation on customization is given by the examples.
 
 ### other templates
 
+* `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files]({docs}/files.html))
+* `nbRawOutput`: called with string content, it will add the raw content to document (html backend)
+* `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
+  at the end of the source in `numerical.nim` linked above.
+* `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;
+  requires [nimpy](https://github.com/yglukhov/nimpy).
+
+### creating custom blocks
+
+* `newNbCodeBlock(cmd: string, body, blockImpl: untyped)`: template that can be used to create custom
+  code block that will need both a `body` and an implementation which might make use of `body`.
+  Also, the source code in `body` is read.
+  Example blocks created with `newNbCodeBlock` are `nbCode` and `nbTextWithCode`.
+* `newNbSlimBlock(cmd: string, blockImpl: untyped)`: template that can be used to create
+  a custom block that does not need a separate `body`.
+  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage` and `nbFile`.
+
+See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
+
+### interactivity using nim js backend
+
+Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
+It also provides a template `nbKaraxCode` to add code based on [karax](https://github.com/karaxnim/karax).
+
+See [interactivity]({docs}/interactivity.html) for an explanation of the api
+and [counter]({docs}/counters.html) for examples of how to create widgets using it.
+In [caesar]({docs}/caesar.html) we have an example of a karax app
+that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
 ### latex
 
@@ -168,7 +195,7 @@ that allow to override the above value, skip the config file or other options.
 
 All the options available can be seen by running any nimib file with option `nbHelp`
 (execution will stop after `nbInit`).
-"""
+""".emojize
 
 nbCode:
   import osproc

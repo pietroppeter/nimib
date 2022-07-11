@@ -79,7 +79,7 @@ and <a href="https://github.com/pietroppeter/nimconf2021">slides</a>.</p>
 provides markdown highlighting in nimib file and a preview mechanism.</p>
 <h2>👋 🌍 Example Usage</h2>
 <p>First have a look at the following html document: <a href="./hello.html">hello.html</a></p>
-<p>This was produced with <code>nim r docs/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim">docs/hello.nim</a> is:</p>
+<p>This was produced with <code>nim r docsrc/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim">docsrc/hello.nim</a> is:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
 <span class="hljs-keyword">import</span> nimib
 
@@ -167,7 +167,7 @@ and you can pick a different styling (<code>atom-one-light</code> is default for
 <li>(optional) latex rendering through <a href="https://katex.org/">katex</a> (see below)</li>
 <li>a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)</li>
 <li>a footer with a &quot;made with nimib&quot; line and a <code>Show source</code> button that shows the full source to create the document.</li>
-<li>(optional) possibility to create a markdown version of the same document (see this document for an example: <a href="https://github.com/pietroppeter/nimib/blob/main/docs/index.nim">docs/index.nim</a>)</li>
+<li>(optional) possibility to create a markdown version of the same document (see this document for an example: <a href="https://github.com/pietroppeter/nimib/blob/main/docsrc/index.nim">docsrc/index.nim</a>)</li>
 </ul>
 <p>Customization over the default is mostly achieved through nim-mustache or changing
 <code>NbDoc</code> and <code>NbBlock</code> elements (see below api).
@@ -428,11 +428,11 @@ provides markdown highlighting in nimib file and a preview mechanism.
 
 First have a look at the following html document: [hello.html]({docs}/hello.html)
 
-This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/main/docs/hello.nim) is:
+This was produced with `nim r {nb.cfg.srcDir}/hello`, where [{nb.cfg.srcDir}/hello.nim]({repo}/blob/main/{nb.cfg.srcDir}/hello.nim) is:
 &quot;&quot;&quot;</span>.emojize
 
 
-<span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(useMdBackend):
+<span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(mdOutput):
   nbCode: <span class="hljs-keyword">discard</span>
   nb.blk.code = hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
 <span class="hljs-keyword">else</span>:
@@ -487,7 +487,7 @@ The following are the main elements of a default nimib document:
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
 * a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
 * a footer with a &quot;made with nimib&quot; line and a `Show source` button that shows the full source to create the document.
-* (optional) possibility to create a markdown version of the same document (see this document for an example: [docs/index.nim]({repo}/blob/main/docs/index.nim))
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [{nb.cfg.srcDir}/index.nim]({repo}/blob/main/{nb.cfg.srcDir}/index.nim))
 
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).

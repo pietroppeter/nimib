@@ -32,7 +32,7 @@ This document is generated though nimib both as an index.html file and as a READ
 you should be reading one of the two, for the other:
 
 * [README.md](https://github.com/pietroppeter/nimib)
-* [index.html](https://pietroppeter.github.io/nimib)
+* [index.html](.)
 
 Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
@@ -44,70 +44,32 @@ provides markdown highlighting in nimib file and a preview mechanism.
 
 ## 👋 🌍 Example Usage
 
-First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
+First have a look at the following html document: [hello.html](./hello.html)
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
 
 
+
 ```nim
-import strformat, strutils
-import nimib
-
-nbInit
-
-nbText: """
-## Secret talk with a computer
-Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
-and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
-### A secret message
-Inside this document is hidden a secret message. I will ask the computer to spit it out:
-"""
-
-let secret = [104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
-
-nbCode:
-  echo secret
-
-nbText: fmt"""
-what does this integer sequence mean?
-Am I supposed to [recognize it](https://oeis.org/search?q={secret.join("%2C+")}&language=english&go=Search)?
-
-### A cryptoanalytic weapon
-Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
-a recently declassified top-secret cryptoanalytic weapon:"""
-
-nbCode:
-  func decode(secret: openArray[int]): string =
-    ## classified by NSA as <strong>TOP SECRET</strong>
-    for c in secret:
-      result.add char(c)
-
-nbText: """
-  ### The great revelation
-  Now I can just apply it to my secret message and
-  finally decrypt what the computer wants to tell me:"""
-
-nbCode:
-  let msg = decode secret
-  echo msg  # what will it say?
-
-nbText:
-  fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
-
-nbSave
-
+discard
 ```
+
+
 
 
 ### Other examples of usage
 
 in this repo:
 
-* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
-* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
-* [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
-* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
-* [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
+* [index](./index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
+* [penguins](./penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [numerical](./numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
+* [cheatsheet](./cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [mostaccio](./mostaccio.html): examples of usage of nim-mustache and of dark mode.
+* [interactivity](./interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [counter](./counters.html): shows how to create reusable interactive widgets by creating a counter button.
+* [caesar](./caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+
 
 elsewhere:
 
@@ -128,9 +90,10 @@ you are welcome to add here what you have built with nimib!
 The following are the main elements of a default nimib document:
 
 * `nbInit`: initializes a nimib document, required for all other commands to work.
-* `nbCode`: code blocks with automatic stdout capture
+  In particular it creates and injects into scope a `nb` object used by all other blocks
+  (see below section API for internal details).
+* `nbCode`: code blocks with automatic stdout capture and capture of code source
 * `nbText`: text blocks with automatic conversion from markdown to html (thanks to [nim-markdown](https://github.com/soasme/nim-markdown))
-* `nbImage`: image command to show images
 * `nbSave`: save the document (by default to html)
 * styling with [water.css](https://watercss.kognise.dev/), light mode is default, dark mode available (`nb.darkMode` after `nbInit`).
 * static highlighting of nim code. Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
@@ -144,9 +107,47 @@ Customization over the default is mostly achieved through nim-mustache or changi
 `NbDoc` and `NbBlock` elements (see below api).
 Currently most of the documentation on customization is given by the examples.
 
+### other templates
+
+* `nbImage`: image command to show images (see `penguins.nim` example linked above)
+* `nbFile`: content (string or untyped) is saved to file (see example document [files](./files.html))
+* `nbRawOutput`: called with string content, it will add the raw content to document (html backend)
+* `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
+  at the end of the source in `numerical.nim` linked above.
+* `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;
+  requires [nimpy](https://github.com/yglukhov/nimpy).
+* `nbClearOutput`: clears the output of preceding code block,
+  useful in case a previous command has produced output that you do not want to show for some reason.
+
+
+### creating custom blocks
+
+* `newNbCodeBlock(cmd: string, body, blockImpl: untyped)`: template that can be used to create custom
+  code block that will need both a `body` and an implementation which might make use of `body`.
+  Also, the source code in `body` is read.
+  Example blocks created with `newNbCodeBlock` are `nbCode` and `nbTextWithCode`.
+* `newNbSlimBlock(cmd: string, blockImpl: untyped)`: template that can be used to create
+  a custom block that does not need a separate `body`.
+  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage` and `nbFile`.
+
+See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
+
+* a `newId` proc is available for `nb: NbDoc` object and provides an incremental integer.
+  It can be used in some custom blocks (it is used in `nbCodeToJs` described below).
+
+### interactivity using nim js backend
+
+Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
+It also provides a template `nbKaraxCode` to add code based on [karax](https://github.com/karaxnim/karax).
+
+See [interactivity](./interactivity.html) for an explanation of the api
+and [counter](./counters.html) for examples of how to create widgets using it.
+In [caesar](./caesar.html) we have an example of a karax app
+that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
+
 ### latex
 
-See [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an example of latex usage.
+See [numerical](./numerical.html) for an example of latex usage.
 
 To add latex support:
 
@@ -180,8 +181,50 @@ Inside a config file you can define two special directory:
 
 `nbInit` also parses command line options that start with `nb` or `nimib`
 that allow to override the above value, skip the config file or other options.
-To see all the options execute any nimib file with option `nbHelp`.
 
+All the options available can be seen by running any nimib file with option `nbHelp`
+(execution will stop after `nbInit`).
+
+
+
+```nim
+import osproc
+withDir nb.srcDir:
+  echo execProcess(&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;)
+```
+
+
+```
+Nimib options:
+
+  --nbHelp,     --nimibHelp                 print this help
+  --nbSkipCfg,  --nimibSkipCfg              skip nimib config file
+  --nbCfgName,  --nimibCfgName              change name of config file (default &quot;nimib.toml&quot;)
+  --nbSrcDir,   --nimibSrcDir               set srcDir as relative (to CfgDir) or absolute; overrides config 
+  --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
+  --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
+  --nbShow,     --nimibShow                 open in browser at the end of nbSave
+```
+
+
+
+
+
+The value of options are available in `nb.options` field which also
+tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]`.
+
+### Code capture
+
+The code capture of a block like `nbCode` (or other custom blocks)
+can happen in two different ways:
+
+* `CodeAsInSource` (default since version 0.3): code for a single block
+  is parsed from file source (available in `nb.source`).
+* `CodeFromAst` (default in versions 0.1 and 0.2): code for a single block
+  is rendered from AST of body. This means that only documentation comments
+  are shown (since normal comments are not part of the AST) and that the source show
+  might be different from original source.
+  Since version 0.3 this is available through compile time switch `nimibCodeFromAst`.
 
 ## 🐝 API <!-- Api means bees in Italian -->
 
@@ -190,69 +233,57 @@ To see all the options execute any nimib file with option `nbHelp`.
   these objects are added to a sequence of blocks accessible in `nb.blocks`
 * the last processed block is available as `nb.blk`
 * `nb.blk.output` contains the (non rendered) output of block
-* `nb.blk.code` contains the source code of the block
-* currently the source code is a stringification of AST and as such it might be
-  formatted differently than the actual source
-* Work is ongoing to have the code source exactly as in source file (see PR ([#63](https://github.com/pietroppeter/nimib/pull/63)))
+* `nb.blk.code` contains the source code of the block (if it was created with `newNbCodeBlock`)
 * `NbBlock` is a ref object, so changing `nb.blk`, changes the last block in `nb.blocks`.
-* rendering happens during the call of `nbSave` and and calls a `nb.render` proc
-  that can be overriden
-* two render procs are available in nimib, one to produce a html, one to produce markdown
-* the default html render proc uses [nim-mustache](https://github.com/soasme/nim-mustache)
-  to produce the final document starting from a `document` template available in memory
-* the main template (`document`) or all the other templates can be ovveriden in memory or
-  providing an ovveride in a template directory
-  (defaults are `.` and `templates`, can be overriden with `nb.templateDirs`)
-* the templates in memory are available as `nb.partials`
-  (partial is another name for a mustache template)
-* to fill in all details, mustache starts from a `Context` object, that is initialized during `nbInit`
-  and can be updated later (accessible as `nb.context`)
-* during `nbInit` a default theme is called that initializes all partials and the context.
-  this process can be overriden to create a new "theme" for nimib
-  (see for example [nimibook](https://github.com/pietroppeter/nimibook))
 
 Here are two examples that show how to hijack the api:
 
-* [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
-* [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
+* [nolan](./nolan.html): how to mess up the timeline of blocks ⏳
+* [pythno](./pythno.html): a reminder that nim is not python 😜
 
-## Changelog
+## Rendering
 
-### 0.2
+* rendering is currently based on [nim-mustache](https://github.com/soasme/nim-mustache).
+  This will likely be changed in a next release and in fact refactoring the rendering part of nimib
+  is the main target for next breaking change, see [#111](https://github.com/pietroppeter/nimib/issues/111)
+* there are two rendering backends, a html one and a markdown backend.
+  In order to use the markdown backend one must initialize its document with `nbInitMd` instead of `nbInit`
+* rendering happens during the call to `nbSave`, and two steps are performed:
+  1. rendering all blocks and adding them to a sequence of blocks (added to `nb.context["blocks"]`)
+  2. rendering the document starting from `document` partial using 
+* rendering of a single block depends
+  on a number of fields of `nb` object:
+  - `partials`: a `Table[string, string]` that contains the templates/partials for every command (e.g. `nb.partials["nbCode"]`);
+  - `templateDirs`: a `seq[string]` of folders where to look for `.mustache` templates that can complement/override
+    the templates in `partials`.
+    A common usage is to add a `head_other.mustache` template that contain additional content added to head section 
+    of **every** document (in many repositories - including nimib - it is used to add a [plausible analytics](https://plausible.io) script)
+  - `renderPlans`: a `Table[string, seq[string]]` that contains the render plan (a `seq[string]`) for every step of render plan
+    an associated `renderProc` is called;
+  - `renderProcs`: a `Table[string, NbRenderProc]` that contains all available render procs by name.
+     (`type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}`)
+* the above fields are initialized during `nbInit` with a call to `render` backend and can
+  be customized by a call to `theme` (`render` and `theme` have default values).
 
-most of the changes break the api
+## Changelog and 🙏 Thanks
 
-* instead of creating and injecting multiple variables
-  (`nbDoc`, `nbBlock`, `nbHomeDir`, ...), nimib now only injects a `nb` variable
-  that is a `NbDoc`. Some aliases are provided to minimize breakage.
-* handling of paths (`srcDir` and `homeDir`) is changed and is based on the presence
-  of a new config file `nimib.toml`
-* command line options are now processed and can be used to skip/override the config process.
-  Run any nimib file with option `--nbHelp` to see available options.
-* `nbPostInit` and `nbPreSave` customization mechanism based on includes are now removed 
+In the [changelog](changelog.md) you find all recent changes, some early history of nimib, pointers to relevant
+examples of usage of nimib and heartfelt thanks to some of the fine folks that
+made this development possible.
 
 ## 🌅 Roadmap
 
-- refactor rendering of blocks and simplify api extensions ([#24](https://github.com/pietroppeter/nimib/issues/24))
 - add more themes such as [nimibook](https://github.com/pietroppeter/nimibook).
   In particular themes for blogging and for creating general websites.
-- client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
-- can I use nimib to build a library directly from documentation?
+- can I use nimib to build a library directly from documentation (like in [nbdev](https://github.com/fastai/nbdev))?
 - nimib executable for scaffolding and to support different publishing workflows
 - server-side dynamic sites (streamlit style? take advantage of caching instead of hot code reloading)
 - possibility of editing document in the browser (similar to jupyter UI, not necessarily taking advantage of hot code reloading)
 - ...
 
-## 🙏 Thanks
-
-to:
-
-* [soasme](https://github.com/soasme) for the excellent libraries nim-markdown and nim-mustache, which provide the backbone of nimib rendering and customization
-* [Clonkk](https://github.com/Clonkk) for help in a critical piece of code early on (see [this Stack Overflow answer](https://stackoverflow.com/a/64032172/4178189))
-* [yardanico](https://github.com/yardanico) for being the first contributor and great sponsor of this library, even before an official release
-* [vindaar](https://github.com/Vindaar),
-  [hugogranstrom](https://github.com/HugoGranstrom)
-  for their contributions towards version 0.2.
+completed in 0.3:
+- [x] refactor rendering of blocks and simplify api extensions ([#24](https://github.com/pietroppeter/nimib/issues/24))
+- [x] client-side dynamic site: interactivity of documents, e.g. a dahsboard (possibly taking advantage of nim js backend)
 
 ## ❓ ❗ Q & A
 

@@ -1,4 +1,4 @@
-import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils, random]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
 export jsonutils
 import nimib / [types, blocks, docs, boost, config, options, capture, jsutils]
 export types, blocks, docs, boost, sugar, jsutils
@@ -57,6 +57,8 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
 
   # apply theme
   theme nb
+
+template nbInitMd* = nbInit(backend=renders.useMdBackend, theme=themes.noTheme)
 
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
@@ -188,3 +190,6 @@ template nbHomeDir*: AbsoluteDir = nb.homeDir
 template nbShow* =
   nbSave
   open nb
+
+# the following does not affect user imports but only imports not exported in this module
+{. warning[UnusedImport]:off .}

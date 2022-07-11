@@ -46,7 +46,7 @@ provides markdown highlighting in nimib file and a preview mechanism.
 
 First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
 
-This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
+This was produced with `nim r docsrc/hello`, where [docsrc/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim) is:
 
 
 ```nim
@@ -143,7 +143,7 @@ The following are the main elements of a default nimib document:
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
 * a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
 * a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
-* (optional) possibility to create a markdown version of the same document (see this document for an example: [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim))
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [docsrc/index.nim](https://github.com/pietroppeter/nimib/blob/main/docsrc/index.nim))
 
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).

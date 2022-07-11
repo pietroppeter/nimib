@@ -46,15 +46,57 @@ provides markdown highlighting in nimib file and a preview mechanism.
 
 First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
 
-This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
-
+This was produced with `nim r docsrc/hello`, where [docsrc/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim) is:
 
 
 ```nim
-discard
+import strformat, strutils
+import nimib
+
+nbInit
+
+nbText: """
+## Secret talk with a computer
+Let me show you how to talk with the computer like a [real hacker](https://mango.pdf.zone/)
+and incidentally you might learn the basics of [nimib](https://github.com/pietroppeter/nimib).
+### A secret message
+Inside this document is hidden a secret message. I will ask the computer to spit it out:
+"""
+
+let secret = [104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]
+
+nbCode:
+  echo secret
+
+nbText: fmt"""
+what does this integer sequence mean?
+Am I supposed to [recognize it](https://oeis.org/search?q={secret.join("%2C+")}&language=english&go=Search)?
+
+### A cryptoanalytic weapon
+Luckily I happen to have a [nim](https://nim-lang.org/) implementation of
+a recently declassified top-secret cryptoanalytic weapon:"""
+
+nbCode:
+  func decode(secret: openArray[int]): string =
+    ## classified by NSA as <strong>TOP SECRET</strong>
+    for c in secret:
+      result.add char(c)
+
+nbText: """
+  ### The great revelation
+  Now I can just apply it to my secret message and
+  finally decrypt what the computer wants to tell me:"""
+
+nbCode:
+  let msg = decode secret
+  echo msg  # what will it say?
+
+nbText:
+  fmt"_Hey_, there must be a bug somewhere, the message (`{msg}`) is not even addressed to me!"
+
+nbSave
+
 ```
-
-
 
 
 ### Other examples of usage
@@ -101,7 +143,7 @@ The following are the main elements of a default nimib document:
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
 * a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
 * a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
-* (optional) possibility to create a markdown version of the same document (see this document for an example: [docs/index.nim](https://github.com/pietroppeter/nimib/blob/main/docs/index.nim))
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [docsrc/index.nim](https://github.com/pietroppeter/nimib/blob/main/docsrc/index.nim))
 
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).

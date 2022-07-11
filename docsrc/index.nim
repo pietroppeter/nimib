@@ -66,7 +66,7 @@ This was produced with `nim r docs/hello`, where [docs/hello.nim]({repo}/blob/ma
 """.emojize
 
 
-when not defined(useMdBackend):
+when not defined(mdOutput):
   nbCode: discard
   nb.blk.code = hello  # "\n" should not be needed here (fix required in rendering)
 else:

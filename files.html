@@ -39,12 +39,11 @@ section#source {
 </div>
 <hr>
 </header><main>
-<h2>Files in nimib</h2>
-<p>Here is a short example of using files in nimib.
-The api to use is <code>nbFile</code>.</p>
+<h2><code>nbFile</code></h2>
+<p>The template <code>nbFile</code> can be called with a string
+or with an untyped body.</p>
 <pre>module.nim</pre>
-<pre><code class="nim hljs">const myNumber* = 42
-</code></pre>
+<pre><code class="nim hljs">const myNumber* = 42</code></pre>
 
 <pre>main.nim</pre>
 <pre><code class="nim hljs">import module
@@ -67,14 +66,14 @@ echo myNumber
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
 
 nbInit
-nbText: <span class="hljs-string">&quot;&quot;&quot;## Files in nimib
+nbText: <span class="hljs-string">&quot;&quot;&quot;## `nbFile`
 
-Here is a short example of using files in nimib.
-The api to use is `nbFile`.
+The template `nbFile` can be called with a string
+or with an untyped body.
+
 &quot;&quot;&quot;</span>
-nbFile(<span class="hljs-string">&quot;module.nim&quot;</span>): <span class="hljs-string">&quot;&quot;&quot;
-const myNumber* = 42
-&quot;&quot;&quot;</span>
+nbFile(<span class="hljs-string">&quot;module.nim&quot;</span>):
+  <span class="hljs-keyword">const</span> myNumber* = <span class="hljs-number">42</span>
 
 nbFile(<span class="hljs-string">&quot;main.nim&quot;</span>): <span class="hljs-string">&quot;&quot;&quot;
 import module

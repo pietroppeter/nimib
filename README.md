@@ -32,7 +32,7 @@ This document is generated though nimib both as an index.html file and as a READ
 you should be reading one of the two, for the other:
 
 * [README.md](https://github.com/pietroppeter/nimib)
-* [index.html](.)
+* [index.html](https://pietroppeter.github.io/nimib)
 
 Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
@@ -44,7 +44,7 @@ provides markdown highlighting in nimib file and a preview mechanism.
 
 ## 👋 🌍 Example Usage
 
-First have a look at the following html document: [hello.html](./hello.html)
+First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
 
 This was produced with `nim r docs/hello`, where [docs/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docs/hello.nim) is:
 
@@ -61,14 +61,14 @@ discard
 
 in this repo:
 
-* [index](./index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
-* [penguins](./penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
-* [numerical](./numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
-* [cheatsheet](./cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
-* [mostaccio](./mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [interactivity](./interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
-* [counter](./counters.html): shows how to create reusable interactive widgets by creating a counter button.
-* [caesar](./caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
+* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
+* [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
+* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
+* [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [counter](https://pietroppeter.github.io/nimib/counters.html): shows how to create reusable interactive widgets by creating a counter button.
+* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
 
 
 elsewhere:
@@ -110,7 +110,7 @@ Currently most of the documentation on customization is given by the examples.
 ### other templates
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
-* `nbFile`: content (string or untyped) is saved to file (see example document [files](./files.html))
+* `nbFile`: content (string or untyped) is saved to file (see example document [files](https://pietroppeter.github.io/nimib/files.html))
 * `nbRawOutput`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
@@ -128,7 +128,7 @@ Currently most of the documentation on customization is given by the examples.
   Example blocks created with `newNbCodeBlock` are `nbCode` and `nbTextWithCode`.
 * `newNbSlimBlock(cmd: string, blockImpl: untyped)`: template that can be used to create
   a custom block that does not need a separate `body`.
-  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage` and `nbFile`.
+  Example blocks created with `newNbSlimBlock` are `nbText`, `nbImage`.
 
 See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
 
@@ -140,14 +140,14 @@ See `src/nimib.nim` for examples on nimib blocks that are built using these two 
 Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
 It also provides a template `nbKaraxCode` to add code based on [karax](https://github.com/karaxnim/karax).
 
-See [interactivity](./interactivity.html) for an explanation of the api
-and [counter](./counters.html) for examples of how to create widgets using it.
-In [caesar](./caesar.html) we have an example of a karax app
+See [interactivity](https://pietroppeter.github.io/nimib/interactivity.html) for an explanation of the api
+and [counter](https://pietroppeter.github.io/nimib/counters.html) for examples of how to create widgets using it.
+In [caesar](https://pietroppeter.github.io/nimib/caesar.html) we have an example of a karax app
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
 ### latex
 
-See [numerical](./numerical.html) for an example of latex usage.
+See [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an example of latex usage.
 
 To add latex support:
 
@@ -238,8 +238,8 @@ can happen in two different ways:
 
 Here are two examples that show how to hijack the api:
 
-* [nolan](./nolan.html): how to mess up the timeline of blocks ⏳
-* [pythno](./pythno.html): a reminder that nim is not python 😜
+* [nolan](https://pietroppeter.github.io/nimib/nolan.html): how to mess up the timeline of blocks ⏳
+* [pythno](https://pietroppeter.github.io/nimib/pythno.html): a reminder that nim is not python 😜
 
 ## Rendering
 
@@ -267,7 +267,7 @@ Here are two examples that show how to hijack the api:
 
 ## Changelog and 🙏 Thanks
 
-In the [changelog](changelog.md) you find all recent changes, some early history of nimib, pointers to relevant
+In the [changelog](https://github.com/pietroppeter/nimib/blob/main/changelog.md) you find all recent changes, some early history of nimib, pointers to relevant
 examples of usage of nimib and heartfelt thanks to some of the fine folks that
 made this development possible.
 

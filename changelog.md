@@ -9,7 +9,8 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 ## 0.3.x
 
-* _insert here next change_
+* fix "Did not parse stylesheet at 'https://unpkg.com/normalize.css/' in strict mode" (#120)
+* _add next change here_
 
 ## 0.3 "Block Maker" (July 2022)
 

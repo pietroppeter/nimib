@@ -185,12 +185,16 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
   let key = body.repr
 
   result = newStmtList()
-  result.add quote do:
-    when checkIsValidCode(`body`):
-      addValid(`key`, `body`)
-      addInvalid(`key`, `body`) # Add this here as we want to keep the untyped body as well
-    else:
+  when defined(nimibJsutilsSkipCheckIsValidCode):
+    result.add quote do:
       addInvalid(`key`, `body`)
+  else:
+    result.add quote do:
+      when checkIsValidCode(`body`):
+        addValid(`key`, `body`)
+        addInvalid(`key`, `body`) # Add this here as we want to keep the untyped body as well
+      else:
+        addInvalid(`key`, `body`)
   var nextArgs = @[newLit(key)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)

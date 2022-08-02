@@ -19,6 +19,7 @@ macro checkIsValidCode(n: untyped): untyped =
     else:
       false
 
+# remove this
 macro addValid(key: string, s: typed): untyped =
   # If it is valid we want it typed
   if key.strVal notin validCodeTable:

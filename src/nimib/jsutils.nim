@@ -210,11 +210,19 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   let newBody = quote do:
     import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils, kdom]
 
+    var postRenderCallback: proc () = nil
+
+    template postRender(body: untyped) =
+      ## Must be called before karaxHtml!!!
+      proc tempProc () =
+        body
+      postRenderCallback = tempProc
+
     template karaxHtml(body: untyped) =
       proc createDom(): VNode =
         result = buildHtml(tdiv):
           body # html karax code
-      setRenderer(createDom, root=`rootId`.cstring)
+      setRenderer(createDom, root=`rootId`.cstring, clientPostRenderCallback = postRenderCallback)
 
     `body`
 

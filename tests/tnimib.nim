@@ -195,3 +195,22 @@ when moduleAvailable(karax/kbase):
             text message
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+    
+    test "Interlaced nbJsFromCode":
+      template foo() =
+        let script1 = nbJsFromCodeInit:
+          let a = 1
+        let script2 = nbJsFromCodeInit:
+          let b = 2
+        script1.addCodeToJs:
+          echo a
+        script2.addCodeToJs:
+          echo b
+
+        echo script1.context["transformedCode"]
+        echo script2.context["transformedCode"]
+        for script in [script1, script2]:
+          let code = script.context["transformedCode"].vString # eg. "\nlet a_469764253 = 1\n\necho a_469764292"
+          let splits = code.splitWhitespace() # @["let", "a_469764257", "=", "1", "echo", "a_469764296"]
+          check splits[1] == splits[5]
+      foo()

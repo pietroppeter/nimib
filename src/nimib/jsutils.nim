@@ -167,7 +167,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
     
 macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
-    error("nbCodeToJs needs a code block to be passed", args)
+    error("nbJsFromCode needs a code block to be passed", args)
   
   # If new script, clear the table.
   if isNewScript:
@@ -230,6 +230,6 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   callArgs.add captureVars
   callArgs.add newBody
 
-  let call = newCall(ident"nbCodeToJs", callArgs)
+  let call = newCall(ident"nbJsFromCode", callArgs)
 
   result = call

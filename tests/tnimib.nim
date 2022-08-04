@@ -151,9 +151,9 @@ print(a)
       check nb.blk.output == "[0, 2, 4]\n3.14\n"
 
 when moduleAvailable(karax/kbase):
-  suite "nbCodeToJs":
-    test "nbCodeToJs - string":
-      nbCodeToJs: hlNim"""
+  suite "nbJs":
+    test "nbJsFromString":
+      nbJsFromString: hlNim"""
   let a = 1
   echo a
   """
@@ -163,22 +163,22 @@ when moduleAvailable(karax/kbase):
   """
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJs - untyped":
-      nbCodeToJs:
+    test "nbJsFromCode":
+      nbJsFromCode:
         let a = 1
         echo a
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJs - untyped, capture variable":
+    test "nbJsFromCode, capture variable":
       let a = 1
-      nbCodeToJs(a):
+      nbJsFromCode(a):
         echo a
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJsInit + addCodeToJs":
-      let script = nbCodeToJsInit:
+    test "nbJsFromCodeInit + addCodeToJs":
+      let script = nbJsFromCodeInit:
         let a = 1
       script.addCodeToJs:
         echo a

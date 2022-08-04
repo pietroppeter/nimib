@@ -7,28 +7,27 @@ proc contains(tab: CacheTable, keyToCheck: string): bool =
       return true
   return false
 
-const validCodeTable = CacheTable"validCodeTable"
-const invalidCodeTable = CacheTable"invalidCodeTable"
+#const validCodeTable = CacheTable"validCodeTable"
+const bodyCache = CacheTable"bodyCache"
 var tabMapIdents {.compiletime.}: Table[string, NimNode]
 
-macro typedChecker(n: typed): untyped = discard
+#[ macro typedChecker(n: typed): untyped = discard
 macro checkIsValidCode(n: untyped): untyped =
   result = quote do:
     when compiles(typedChecker(`n`)):
       true
     else:
-      false
+      false ]#
 
 # remove this
-macro addValid(key: string, s: typed): untyped =
+#[ macro addValid(key: string, s: typed): untyped =
   # If it is valid we want it typed
   if key.strVal notin validCodeTable:
-    validCodeTable[key.strVal] = s
+    validCodeTable[key.strVal] = s ]#
 
-macro addInvalid(key: string, s: untyped): untyped =
-  # If it is invalid we want it untyped
-  if key.strVal notin invalidCodeTable:
-    invalidCodeTable[key.strVal] = s
+macro addBody(key: string, s: untyped): untyped =
+  if key.strVal notin bodyCache:
+    bodyCache[key.strVal] = s
 
 proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
   ## By default procs, iterators and converters are injected and will share the same name in the resulting javascript.
@@ -124,21 +123,8 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   # dispatch either to string based if the body has type string
   # or to typed version otherwise.
   var body: NimNode
-  if key in validCodeTable: # type information is available in this branch
-    body = validCodeTable[key]
-    if captureVars.len == 0 and body.getType.typeKind == ntyString:
-      # It is a string, return it as is is.
-      result = nnkTupleConstr.newTree(body, body) #body # return tuple of (body, body)
-      return
-    elif captureVars.len > 0 and body.getType.typeKind == ntyString:
-        error("When passing in a string capturing variables is not supported!", body)
-    #elif body.getType.typeKind != ntyVoid:
-    #  error("Script expression must be discarded", body)
-    else:
-      # It is not a string, get the untyped body instead then
-      body = invalidCodeTable[key]
-  elif key in invalidCodeTable:
-    body = invalidCodeTable[key]
+  if key in bodyCache:
+    body = bodyCache[key]
   else:
     error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with a minimal reproducible example")
   # Now we have the body!
@@ -187,11 +173,7 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
 
   result = newStmtList()
   result.add quote do:
-    when checkIsValidCode(`body`):
-      addValid(`key`, `body`)
-      addInvalid(`key`, `body`) # Add this here as we want to keep the untyped body as well
-    else:
-      addInvalid(`key`, `body`)
+    addBody(`key`, `body`)
   var nextArgs = @[newLit(key)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)

@@ -41,6 +41,6 @@ task docs, "Build documentation":
   exec "nim r docsrc/interactivity.nim"
   exec "nim r docsrc/counters.nim"
   exec "nim r docsrc/caesar.nim"
-  when not defined(nimibDocsSkipPenguins):
-    exec "nim r docsrc/penguins.nim"
+  #when not defined(nimibDocsSkipPenguins):
+  #  exec "nim r docsrc/penguins.nim"
   exec "nimble readme"  

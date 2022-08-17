@@ -37,6 +37,7 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
     case n[i].kind
     of nnkProcDef, nnkIteratorDef, nnkConverterDef:
       if replaceProcs:
+        # add check for {.exportc.} here
         if n[i][0].kind == nnkPostfix: # foo*
           let oldIdent = n[i][0][1].strVal.nimIdentNormalize
           let newIdent = gensym(ident=oldIdent).repr.ident

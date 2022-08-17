@@ -1,5 +1,5 @@
 import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar]
-import ./types
+
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:
@@ -9,10 +9,7 @@ proc contains(tab: CacheTable, keyToCheck: string): bool =
 
 #const validCodeTable = CacheTable"validCodeTable"
 const bodyCache = CacheTable"bodyCache"
-var tabMapIdents {.compileTime.}: Table[string, NimNode]
-var scriptSymbols {.compileTime.}: seq[NimNode]
-var mapIdents {.compileTime.}: seq[Table[string, NimNode]]
-var exportcSymbols {.compileTime.}: seq[string]
+var tabMapIdents {.compiletime.}: Table[string, NimNode]
 
 #[ macro typedChecker(n: typed): untyped = discard
 macro checkIsValidCode(n: untyped): untyped =
@@ -39,7 +36,6 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
   for i in 0 ..< n.len:
     case n[i].kind
     of nnkProcDef, nnkIteratorDef, nnkConverterDef:
-      # check for {.exportc.}!!!
       if replaceProcs:
         if n[i][0].kind == nnkPostfix: # foo*
           let oldIdent = n[i][0][1].strVal.nimIdentNormalize
@@ -117,9 +113,8 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tupl
       result.code.add quote do:
         let `cap` = parseJson(`placeholder`).to(`capType`)
 
-macro nimToJsStringSecondStage*(key: static string, script: NbBlock, captureVars: varargs[typed]): untyped =
+macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
-  echo "Script kind: ", script.kind
 
   let captureTypes = collect:
     for cap in captureVars:
@@ -156,7 +151,7 @@ macro nimToJsStringSecondStage*(key: static string, script: NbBlock, captureVars
   body.degensymAst(removeGenSym=true) # remove `gensym if code was written in a template
   result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
     
-macro nimToJsString*(isNewScript: static bool, script: NbBlock, args: varargs[untyped]): untyped =
+macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
     error("nbJsFromCode needs a code block to be passed", args)
   
@@ -179,7 +174,7 @@ macro nimToJsString*(isNewScript: static bool, script: NbBlock, args: varargs[un
   result = newStmtList()
   result.add quote do:
     addBody(`key`, `body`)
-  var nextArgs = @[newLit(key), script]
+  var nextArgs = @[newLit(key)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)
 

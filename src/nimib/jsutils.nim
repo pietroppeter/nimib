@@ -29,6 +29,17 @@ macro addBody(key: string, s: untyped): untyped =
   if key.strVal notin bodyCache:
     bodyCache[key.strVal] = s
 
+proc isPragmaExportc(n: NimNode): bool =
+  ## Returns whether pragma contains exportc
+  n.expectKind(nnkPragma)
+  for child in n:
+    if child.kind == nnkExprColonExpr: # {.exportc: "newName".}
+      if child[0].eqIdent("exportc"):
+        result = true
+    elif child.kind == nnkIdent:
+      if child.eqIdent("exportc"): # {.exportc.}
+        result = true
+
 proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
   ## By default procs, iterators and converters are injected and will share the same name in the resulting javascript.
   ## Therefore we gensym them here to give them unique names. Also replace the references to it.
@@ -38,16 +49,22 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
     of nnkProcDef, nnkIteratorDef, nnkConverterDef:
       if replaceProcs:
         # add check for {.exportc.} here
-        if n[i][0].kind == nnkPostfix: # foo*
-          let oldIdent = n[i][0][1].strVal.nimIdentNormalize
-          let newIdent = gensym(ident=oldIdent).repr.ident
-          n[i][0][1] = newIdent
-          tabMapIdents[oldIdent] = newIdent
-        else:
-          let oldIdent = n[i][0].strVal.nimIdentNormalize
-          let newIdent = gensym(ident=oldIdent).repr.ident
-          n[i][0] = newIdent
-          tabMapIdents[oldIdent] = newIdent
+        var isExportc: bool
+        let pragmas = n[i][4]
+        if pragmas.kind == nnkPragma:
+          isExportc = isPragmaExportc(pragmas)
+        # Do not gensym if proc is exportc'ed
+        if not isExportc:
+          if n[i][0].kind == nnkPostfix: # foo*
+            let oldIdent = n[i][0][1].strVal.nimIdentNormalize
+            let newIdent = gensym(ident=oldIdent).repr.ident
+            n[i][0][1] = newIdent
+            tabMapIdents[oldIdent] = newIdent
+          else:
+            let oldIdent = n[i][0].strVal.nimIdentNormalize
+            let newIdent = gensym(ident=oldIdent).repr.ident
+            n[i][0] = newIdent
+            tabMapIdents[oldIdent] = newIdent
       # Function might be recursive or contain other procs, loop through it's body as well
       for child in n[i][6]:
         gensymProcIterConverter(child, replaceProcs)
@@ -99,6 +116,15 @@ proc degensymAst(n: NimNode, removeGensym = false) =
             tabMapIdents[newStr] = newSym
         n[i] = newSym
         echo "Swapped ", str, " for ", newSym.repr
+    of nnkPragmaExpr:
+      let identifier = n[i][0]
+      let pragmas = n[i][1]
+      if pragmas.isPragmaExportc: # varName {.exportc.}
+        echo "Saved: ", identifier.repr, " -> ", identifier.strVal.split("`gensym")[0].ident.repr
+        n[i][0] = identifier.strVal.split("`gensym")[0].ident
+      else:
+        degensymAst(identifier, removeGensym)
+        degensymAst(pragmas, removeGensym)
     else:
       degensymAst(n[i], removeGenSym)
 

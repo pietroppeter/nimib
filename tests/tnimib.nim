@@ -186,6 +186,13 @@ when moduleAvailable(karax/kbase):
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
 
+    test "nbJsFromCode + exportc":
+      let script = nbJsFromCodeInit:
+        proc setup() {.exportc.} =
+          echo 1
+      script.addToDocAsJs
+      check "setup()" in nb.blk.context["transformedCode"].vString
+
     test "nbKaraxCode":
       let x = 3.14
       nbKaraxCode(x):

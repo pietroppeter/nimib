@@ -151,9 +151,9 @@ print(a)
       check nb.blk.output == "[0, 2, 4]\n3.14\n"
 
 when moduleAvailable(karax/kbase):
-  suite "nbCodeToJs":
-    test "nbCodeToJs - string":
-      nbCodeToJs: hlNim"""
+  suite "nbJs":
+    test "nbJsFromString":
+      nbJsFromString: hlNim"""
   let a = 1
   echo a
   """
@@ -163,28 +163,35 @@ when moduleAvailable(karax/kbase):
   """
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJs - untyped":
-      nbCodeToJs:
+    test "nbJsFromCode":
+      nbJsFromCode:
         let a = 1
         echo a
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJs - untyped, capture variable":
+    test "nbJsFromCode, capture variable":
       let a = 1
-      nbCodeToJs(a):
+      nbJsFromCode(a):
         echo a
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
 
-    test "nbCodeToJsInit + addCodeToJs":
-      let script = nbCodeToJsInit:
+    test "nbJsFromCodeInit + addCodeToJs":
+      let script = nbJsFromCodeInit:
         let a = 1
       script.addCodeToJs:
         echo a
       script.addToDocAsJs
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+
+    test "nbJsFromCode + exportc":
+      let script = nbJsFromCodeInit:
+        proc setup() {.exportc.} =
+          echo 1
+      script.addToDocAsJs
+      check "setup()" in nb.blk.context["transformedCode"].vString
 
     test "nbKaraxCode":
       let x = 3.14
@@ -195,3 +202,22 @@ when moduleAvailable(karax/kbase):
             text message
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+    
+    #[ test "Interlaced nbJsFromCode": # failing because of #118
+      template foo() =
+        let script1 = nbJsFromCodeInit:
+          let a = 1
+        let script2 = nbJsFromCodeInit:
+          let b = 2
+        script1.addCodeToJs:
+          echo a
+        script2.addCodeToJs:
+          echo b
+
+        echo script1.context["transformedCode"]
+        echo script2.context["transformedCode"]
+        for script in [script1, script2]:
+          let code = script.context["transformedCode"].vString # eg. "\nlet a_469764253 = 1\n\necho a_469764292"
+          let splits = code.splitWhitespace() # @["let", "a_469764257", "=", "1", "echo", "a_469764296"]
+          check splits[1] == splits[5]
+      foo() ]#

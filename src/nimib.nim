@@ -126,26 +126,43 @@ template nbRawOutput*(content: string) =
   newNbSlimBlock("nbRawOutput"):
     nb.blk.output = content
 
+template nbJsFromStringInit*(body: string): NbBlock =
+  var result = NbBlock(command: "nbCodeToJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = body
+  result
 
-template nbCodeToJsInit*(args: varargs[untyped]): NbBlock =
+template nbJsFromCodeInit*(args: varargs[untyped]): NbBlock =
   let (code, originalCode) = nimToJsString(true, args)
   var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result
+
+template nbCodeToJsInit*(args: varargs[untyped]): NbBlock {.deprecated: "Use nbJsFromCodeInit or nbJsFromStringInit instead".} =
+  nbJsFromCodeInit(args)
 
 template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(false, args)
   script.code &= "\n" & originalCode
   script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & code
 
+template addStringToJs*(script: NbBlock, body: string) =
+  script.code &= "\n" & body
+  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & body
 
 template addToDocAsJs*(script: NbBlock) =
   nb.blocks.add script
   nb.blk = script
 
-template nbCodeToJs*(args: varargs[untyped]) =
-  let script = nbCodeToJsInit(args)
+template nbJsFromString*(body: string) =
+  let script = nbJsFromStringInit(body)
   script.addToDocAsJs
+
+template nbJsFromCode*(args: varargs[untyped]) =
+  let script = nbJsFromCodeInit(args)
+  script.addToDocAsJs
+
+template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
+  nbJsFromCode(args)
 
 
 when moduleAvailable(karax/kbase):
@@ -154,10 +171,13 @@ when moduleAvailable(karax/kbase):
     nbRawOutput: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
-template nbCodeToJsShowSource*(message: string = "") =
+template nbJsShowSource*(message: string = "") =
   nb.blk.context["js_show_nim_source"] = true
   if message.len > 0:
     nb.blk.context["js_show_nim_source_message"] = message
+
+template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbJsShowSource instead".} =
+  nbJsShowSource(message)
 
 
 template nbClearOutput*() =

@@ -7,27 +7,38 @@ proc contains(tab: CacheTable, keyToCheck: string): bool =
       return true
   return false
 
-const validCodeTable = CacheTable"validCodeTable"
-const invalidCodeTable = CacheTable"invalidCodeTable"
+#const validCodeTable = CacheTable"validCodeTable"
+const bodyCache = CacheTable"bodyCache"
 var tabMapIdents {.compiletime.}: Table[string, NimNode]
 
-macro typedChecker(n: typed): untyped = discard
+#[ macro typedChecker(n: typed): untyped = discard
 macro checkIsValidCode(n: untyped): untyped =
   result = quote do:
     when compiles(typedChecker(`n`)):
       true
     else:
-      false
+      false ]#
 
-macro addValid(key: string, s: typed): untyped =
+# remove this
+#[ macro addValid(key: string, s: typed): untyped =
   # If it is valid we want it typed
   if key.strVal notin validCodeTable:
-    validCodeTable[key.strVal] = s
+    validCodeTable[key.strVal] = s ]#
 
-macro addInvalid(key: string, s: untyped): untyped =
-  # If it is invalid we want it untyped
-  if key.strVal notin invalidCodeTable:
-    invalidCodeTable[key.strVal] = s
+macro addBody(key: string, s: untyped): untyped =
+  if key.strVal notin bodyCache:
+    bodyCache[key.strVal] = s
+
+proc isPragmaExportc(n: NimNode): bool =
+  ## Returns whether pragma contains exportc
+  n.expectKind(nnkPragma)
+  for child in n:
+    if child.kind == nnkExprColonExpr: # {.exportc: "newName".}
+      if child[0].eqIdent("exportc"):
+        result = true
+    elif child.kind == nnkIdent:
+      if child.eqIdent("exportc"): # {.exportc.}
+        result = true
 
 proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
   ## By default procs, iterators and converters are injected and will share the same name in the resulting javascript.
@@ -37,16 +48,23 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
     case n[i].kind
     of nnkProcDef, nnkIteratorDef, nnkConverterDef:
       if replaceProcs:
-        if n[i][0].kind == nnkPostfix: # foo*
-          let oldIdent = n[i][0][1].strVal.nimIdentNormalize
-          let newIdent = gensym(ident=oldIdent).repr.ident
-          n[i][0][1] = newIdent
-          tabMapIdents[oldIdent] = newIdent
-        else:
-          let oldIdent = n[i][0].strVal.nimIdentNormalize
-          let newIdent = gensym(ident=oldIdent).repr.ident
-          n[i][0] = newIdent
-          tabMapIdents[oldIdent] = newIdent
+        # add check for {.exportc.} here
+        var isExportc: bool
+        let pragmas = n[i][4]
+        if pragmas.kind == nnkPragma:
+          isExportc = isPragmaExportc(pragmas)
+        # Do not gensym if proc is exportc'ed
+        if not isExportc:
+          if n[i][0].kind == nnkPostfix: # foo*
+            let oldIdent = n[i][0][1].strVal.nimIdentNormalize
+            let newIdent = gensym(ident=oldIdent).repr.ident
+            n[i][0][1] = newIdent
+            tabMapIdents[oldIdent] = newIdent
+          else:
+            let oldIdent = n[i][0].strVal.nimIdentNormalize
+            let newIdent = gensym(ident=oldIdent).repr.ident
+            n[i][0] = newIdent
+            tabMapIdents[oldIdent] = newIdent
       # Function might be recursive or contain other procs, loop through it's body as well
       for child in n[i][6]:
         gensymProcIterConverter(child, replaceProcs)
@@ -98,6 +116,15 @@ proc degensymAst(n: NimNode, removeGensym = false) =
             tabMapIdents[newStr] = newSym
         n[i] = newSym
         echo "Swapped ", str, " for ", newSym.repr
+    of nnkPragmaExpr:
+      let identifier = n[i][0]
+      let pragmas = n[i][1]
+      if pragmas.isPragmaExportc: # varName {.exportc.}
+        echo "Saved: ", identifier.repr, " -> ", identifier.strVal.split("`gensym")[0].ident.repr
+        n[i][0] = identifier.strVal.split("`gensym")[0].ident
+      else:
+        degensymAst(identifier, removeGensym)
+        degensymAst(pragmas, removeGensym)
     else:
       degensymAst(n[i], removeGenSym)
 
@@ -123,21 +150,8 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
   # dispatch either to string based if the body has type string
   # or to typed version otherwise.
   var body: NimNode
-  if key in validCodeTable: # type information is available in this branch
-    body = validCodeTable[key]
-    if captureVars.len == 0 and body.getType.typeKind == ntyString:
-      # It is a string, return it as is is.
-      result = nnkTupleConstr.newTree(body, body) #body # return tuple of (body, body)
-      return
-    elif captureVars.len > 0 and body.getType.typeKind == ntyString:
-        error("When passing in a string capturing variables is not supported!", body)
-    #elif body.getType.typeKind != ntyVoid:
-    #  error("Script expression must be discarded", body)
-    else:
-      # It is not a string, get the untyped body instead then
-      body = invalidCodeTable[key]
-  elif key in invalidCodeTable:
-    body = invalidCodeTable[key]
+  if key in bodyCache:
+    body = bodyCache[key]
   else:
     error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with a minimal reproducible example")
   # Now we have the body!
@@ -166,7 +180,7 @@ macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed])
     
 macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
-    error("nbCodeToJs needs a code block to be passed", args)
+    error("nbJsFromCode needs a code block to be passed", args)
   
   # If new script, clear the table.
   if isNewScript:
@@ -186,11 +200,7 @@ macro nimToJsString*(isNewScript: static bool, args: varargs[untyped]): untyped 
 
   result = newStmtList()
   result.add quote do:
-    when checkIsValidCode(`body`):
-      addValid(`key`, `body`)
-      addInvalid(`key`, `body`) # Add this here as we want to keep the untyped body as well
-    else:
-      addInvalid(`key`, `body`)
+    addBody(`key`, `body`)
   var nextArgs = @[newLit(key)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)
@@ -209,11 +219,19 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   let newBody = quote do:
     import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils, kdom]
 
+    var postRenderCallback: proc () = nil
+
+    template postRender(body: untyped) =
+      ## Must be called before karaxHtml!!!
+      proc tempProc () =
+        body
+      postRenderCallback = tempProc
+
     template karaxHtml(body: untyped) =
       proc createDom(): VNode =
         result = buildHtml(tdiv):
           body # html karax code
-      setRenderer(createDom, root=`rootId`.cstring)
+      setRenderer(createDom, root=`rootId`.cstring, clientPostRenderCallback = postRenderCallback)
 
     `body`
 
@@ -221,6 +239,6 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   callArgs.add captureVars
   callArgs.add newBody
 
-  let call = newCall(ident"nbCodeToJs", callArgs)
+  let call = newCall(ident"nbJsFromCode", callArgs)
 
   result = call

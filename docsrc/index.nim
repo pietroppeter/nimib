@@ -86,9 +86,9 @@ in this repo:
 * [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [interactivity]({docs}/interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [interactivity]({docs}/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter]({docs}/counters.html): shows how to create reusable interactive widgets by creating a counter button.
-* [caesar]({docs}/caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+* [caesar]({docs}/caesar.html): a Caesar cipher implemented using `nbJsFromCode` and `karax`.
 
 
 elsewhere:
@@ -153,11 +153,11 @@ Currently most of the documentation on customization is given by the examples.
 See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
 
 * a `newId` proc is available for `nb: NbDoc` object and provides an incremental integer.
-  It can be used in some custom blocks (it is used in `nbCodeToJs` described below).
+  It can be used in some custom blocks (it is used in `nbJsFromCode` described below).
 
 ### interactivity using nim js backend
 
-Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
+Nimib can incorporate javascript code generated from nim code using template `nbJsFromCode`.
 It also provides a template `nbKaraxCode` to add code based on [karax](https://github.com/karaxnim/karax).
 
 See [interactivity]({docs}/interactivity.html) for an explanation of the api

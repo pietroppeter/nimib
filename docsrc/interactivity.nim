@@ -6,20 +6,20 @@ nbText: hlMd"""
 # Creating interactive components in Nimib
 
 Nimib can easily be used to create static content with `nbText` and `nbCode`, but did you know that you can create interactive
-content as well? And that you can do it all in Nim even! This can be achieved using either the `nbCodeToJs`-API or `nbKaraxCode`.
+content as well? And that you can do it all in Nim even! This can be achieved using either the `nbJsFromCode`-API or `nbKaraxCode`.
 They work by compiling Nim code into javascript and adding it to the resulting HTML file.
 This means that arbitrary Javascript can be written but also that Karax, which compiles to javascript, also can be used.
 
-## nbCodeToJsInit
+## nbJsFromCodeInit
 This is the fundamental API used for compiling Nim-snippets to javascript. It consists of three templates:
-- `nbCodeToJsInit` - Creates a new code script that further code can be added to later.
+- `nbJsFromCodeInit` - Creates a new code script that further code can be added to later.
 - `addCodeToJs` - Adds to an existing code script
 - `addToDocAsJs` - Takes the Nim code in a script and compiles it to javascript. 
 Here is a basic example:
 """
 
 nbCode:
-  let script = nbCodeToJsInit:
+  let script = nbJsFromCodeInit:
     echo "Hello world!"
   let x = 3.14
   script.addCodeToJs(x):
@@ -27,7 +27,7 @@ nbCode:
   ## Uncomment this line:
   ##script.addToDocAsJs()
 script.addToDocAsJs()
-nbCodeToJsShowSource("This is the complete script:")
+nbJsShowSource("This is the complete script:")
 
 
 nbText: hlMd"""
@@ -38,8 +38,8 @@ to be able to use it in the javascript. The code block will basically be copy-pa
 compiled into javascript. And `x` isn't defined there so we have to capture it. This is true for any variable that
 we want to use that is defined outside the script blocks.
 
-## nbCodeToJs
-This is basically a shorthand for running `nbCodeToJsInit` and `addToDocAsJs` in a single call:
+## nbJsFromCode
+This is basically a shorthand for running `nbJsFromCodeInit` and `addToDocAsJs` in a single call:
 ```nim
 let x = 3.14
 nbJsCode(x):
@@ -51,7 +51,7 @@ nbJsCode(x):
 If you want to write a component using karax this is the template for you!
 A normal karax program has the following structure:
 ```nim
-nbCodeToJs(rootId):
+nbJsFromCode(rootId):
   import karax / [kbase, karax, karaxdsl, vdom, compact, jstrutils, kdom]
 
   karaxCode  # some code, set up global variables for example

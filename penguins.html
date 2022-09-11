@@ -49,29 +49,29 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="h
 <p>we read the penguins csv into a Datamancer <code>DataFrame</code></p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
 <p>let us see how it looks</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span></code></pre><pre><samp>Dataframe with 7 columns and 344 rows:
-                  Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
-               dtype:               string               string               object               object               object               object               string
-                    0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
-                    1               Adelie            Torgersen                 39.5                 17.4                  186                 3800               FEMALE
-                    2               Adelie            Torgersen                 40.3                   18                  195                 3250               FEMALE
-                    3               Adelie            Torgersen                   NA                   NA                   NA                   NA                   NA
-                    4               Adelie            Torgersen                 36.7                 19.3                  193                 3450               FEMALE
-                    5               Adelie            Torgersen                 39.3                 20.6                  190                 3650                 MALE
-                    6               Adelie            Torgersen                 38.9                 17.8                  181                 3625               FEMALE
-                    7               Adelie            Torgersen                 39.2                 19.6                  195                 4675                 MALE
-                    8               Adelie            Torgersen                 34.1                 18.1                  193                 3475                   NA
-                    9               Adelie            Torgersen                   42                 20.2                  190                 4250                   NA
-                   10               Adelie            Torgersen                 37.8                 17.1                  186                 3300                   NA
-                   11               Adelie            Torgersen                 37.8                 17.3                  180                 3700                   NA
-                   12               Adelie            Torgersen                 41.1                 17.6                  182                 3200               FEMALE
-                   13               Adelie            Torgersen                 38.6                 21.2                  191                 3800                 MALE
-                   14               Adelie            Torgersen                 34.6                 21.1                  198                 4400                 MALE
-                   15               Adelie            Torgersen                 36.6                 17.8                  185                 3700               FEMALE
-                   16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
-                   17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
-                   18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
-                   19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span></code></pre><pre><samp>DataFrame with 7 columns and 344 rows:
+     Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
+  dtype:               string               string               object               object               object               object               string
+       0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
+       1               Adelie            Torgersen                 39.5                 17.4                  186                 3800               FEMALE
+       2               Adelie            Torgersen                 40.3                   18                  195                 3250               FEMALE
+       3               Adelie            Torgersen                   NA                   NA                   NA                   NA                   NA
+       4               Adelie            Torgersen                 36.7                 19.3                  193                 3450               FEMALE
+       5               Adelie            Torgersen                 39.3                 20.6                  190                 3650                 MALE
+       6               Adelie            Torgersen                 38.9                 17.8                  181                 3625               FEMALE
+       7               Adelie            Torgersen                 39.2                 19.6                  195                 4675                 MALE
+       8               Adelie            Torgersen                 34.1                 18.1                  193                 3475                   NA
+       9               Adelie            Torgersen                   42                 20.2                  190                 4250                   NA
+      10               Adelie            Torgersen                 37.8                 17.1                  186                 3300                   NA
+      11               Adelie            Torgersen                 37.8                 17.3                  180                 3700                   NA
+      12               Adelie            Torgersen                 41.1                 17.6                  182                 3200               FEMALE
+      13               Adelie            Torgersen                 38.6                 21.2                  191                 3800                 MALE
+      14               Adelie            Torgersen                 34.6                 21.1                  198                 4400                 MALE
+      15               Adelie            Torgersen                 36.6                 17.8                  185                 3700               FEMALE
+      16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
+      17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
+      18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
+      19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
 <p>Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
 The remaining 4 are numeric but they have datatype object. Why?</p>
 <p>Because that there are null values in those columns (interpreted as strings):</p>
@@ -87,7 +87,7 @@ VString</samp></pre>
 <p>Let's see how many penguins by species we have (and how do they relate to islands)
 by plotting the species count per island using ggplotnim:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim
-ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() + ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)</code></pre><pre><samp>StatusSuccess output of write_to_png</samp></pre>
+ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() + ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)</code></pre>
 <figure>
 <img src="./images/penguins_count_species.png" alt="Count of penguins by species">
 <figcaption>Count of penguins by species</figcaption>
@@ -110,8 +110,7 @@ from where this dataset comes from:</p>
 well as their species:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
 ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-StatusSuccess output of write_to_png</samp></pre>
+INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
 <figure>
 <img src="./images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
 <figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
@@ -131,8 +130,7 @@ as reported by <a href="https://twitter.com/andrewheiss/status/13011667926274211
               smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
   geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth without classification by species</span>
   ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-StatusSuccess output of write_to_png</samp></pre>
+INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
 <figure>
 <img src="./images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill">

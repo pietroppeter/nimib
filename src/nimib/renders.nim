@@ -38,7 +38,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <img src="{{url}}" alt="{{caption}}">
 <figcaption>{{caption}}</figcaption>
 </figure>"""
-  doc.partials["nbRawOutput"] = "{{&output}}"
+  doc.partials["nbRawHtml"] = "{{&output}}"
   doc.partials["nbPython"] = """
 <pre><code class="python hljs">{{&code}}</code></pre>
 {{#output}}<pre><samp>{{&output}}</samp></pre>{{/output}}

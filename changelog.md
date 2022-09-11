@@ -9,11 +9,15 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 ## 0.3.x
 
+* _add next change here_
+
+## 0.3.1
+
 * fix "Did not parse stylesheet at 'https://unpkg.com/normalize.css/' in strict mode" (#120)
 * Split untyped and string versions of `nbCodeToJs` into `nbJsFromCode` and `nbJsFromString`. Same for `nbCodeToJsInit` → `nbJsFromCodeInit`, `nbJsFromStringInit` (#125)
 * Add `postRender` template to `nbKaraxCode` (#125)
 * `nbJsFromCode` now respects `exportc` pragma (#125)
-* _add next change here_
+* rename `rawOutput` (deprecated) to `rawHtml`
 
 ## 0.3 "Block Maker" (July 2022)
 

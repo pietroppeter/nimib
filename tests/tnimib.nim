@@ -100,14 +100,14 @@ suite "nbCode":
     check nb.blk.code == "echo \"hi\""
     check nb.blk.output == "hi\n"
 
-suite "nbRawOutput":
+suite "nbRawHtml":
   test "pure text":
-    nbRawOutput: "Hello world!"
+    nbRawHtml: "Hello world!"
     check nb.blk.code == ""
     check nb.blk.output == "Hello world!"
   
   test "html tags":
-    nbRawOutput: "<div> <span> div-span </span> </div>"
+    nbRawHtml: "<div> <span> div-span </span> </div>"
     check nb.blk.code == ""
     check nb.blk.output == "<div> <span> div-span </span> </div>"
 
@@ -115,9 +115,9 @@ suite "nbRawOutput":
     # codeAsInSource can't read the correct line if block is used inside a template
     # check that readCode is having effect and preventing the reading of code.
     template slide(body: untyped) =
-      nbRawOutput: "<slide>"
+      nbRawHtml: "<slide>"
       body
-      nbRawOutput: "</slide>"
+      nbRawHtml: "</slide>"
     
     slide:
       check nb.blk.code == ""

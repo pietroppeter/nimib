@@ -122,8 +122,11 @@ when moduleAvailable(nimpy):
         captureStdout(nb.blk.output):
           discard nbPythonBuiltins.exec(pythonStr)
 
-template nbRawOutput*(content: string) =
-  newNbSlimBlock("nbRawOutput"):
+template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
+  nbRawHtml(content)
+
+template nbRawHtml*(content: string) =
+  newNbSlimBlock("nbRawHtml"):
     nb.blk.output = content
 
 template nbJsFromStringInit*(body: string): NbBlock =

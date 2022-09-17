@@ -54,9 +54,9 @@ Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
 and [slides](https://github.com/pietroppeter/nimconf2021). 
 
-The vs code extension
-[nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost)
-provides markdown highlighting in nimib file and a preview mechanism.
+The VS Codium / Code extension
+[nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost) ([Open VSX](https://open-vsx.org/extension/hugogranstrom/nimiboost))
+provides syntax highlighting of embedded languages in nimib documents (eg. markdown, python, html) and a preview window of nimib documents inside the editor.
 
 ## :wave: :earthAfrica: Example Usage
 

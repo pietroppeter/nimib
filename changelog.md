@@ -9,6 +9,7 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 ## 0.3.x
 
+* Add `hlHtml` and `hlHtml` to nimiBoost
 * _add next change here_
 
 ## 0.3.1

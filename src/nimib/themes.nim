@@ -64,6 +64,10 @@ button.nb-small {
 section#source {
   display:none
 }
+
+body {
+  line-height: 1.15;
+}
 </style>"""
 
 const header* = """

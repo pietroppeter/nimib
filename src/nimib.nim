@@ -73,6 +73,7 @@ template nbCode*(body: untyped) =
   newNbCodeBlock("nbCode", body):
     captureStdout(nb.blk.output):
       body
+      flushFile stdout
 
 template nbCodeInBlock*(body: untyped): untyped =
   block:

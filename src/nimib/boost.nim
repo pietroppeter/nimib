@@ -39,3 +39,13 @@ template hlNimF*(s: string): string =
   ## Template for use with NimiBoost to mark strings to be syntax-highlighted as Nim.
   ## Equivalent to ``&s`` so it applies string interpolation.
   &s
+
+template hlHtml*(s: string): string =
+  ## Template for use with NimiBoost to mark strings to be syntax-highlighted as HTML.
+  ## It is a no-op and returns the orginal string.
+  s
+
+template hlHtmlF*(s: string): string =
+  ## Template for use with NimiBoost to mark strings to be syntax-highlighted as HTML.
+  ## Equivalent to ``&s`` so it applies string interpolation.
+  &s

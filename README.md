@@ -38,9 +38,9 @@ Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
 and [slides](https://github.com/pietroppeter/nimconf2021). 
 
-The vs code extension
-[nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost)
-provides markdown highlighting in nimib file and a preview mechanism.
+The VS Codium / Code extension
+[nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost) ([Open VSX](https://open-vsx.org/extension/hugogranstrom/nimiboost))
+provides syntax highlighting of embedded languages in nimib documents (eg. markdown, python, html) and a preview window of nimib documents inside the editor.
 
 ## 👋 🌍 Example Usage
 
@@ -108,9 +108,9 @@ in this repo:
 * [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
 * [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
 * [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
-* [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbCodeToJs`.
+* [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter](https://pietroppeter.github.io/nimib/counters.html): shows how to create reusable interactive widgets by creating a counter button.
-* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbCodeToJs` and `karax`.
+* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbJsFromCode` and `karax`.
 
 
 elsewhere:
@@ -175,11 +175,11 @@ Currently most of the documentation on customization is given by the examples.
 See `src/nimib.nim` for examples on nimib blocks that are built using these two templates.
 
 * a `newId` proc is available for `nb: NbDoc` object and provides an incremental integer.
-  It can be used in some custom blocks (it is used in `nbCodeToJs` described below).
+  It can be used in some custom blocks (it is used in `nbJsFromCode` described below).
 
 ### interactivity using nim js backend
 
-Nimib can incorporate javascript code generated from nim code using template `nbCodeToJs`.
+Nimib can incorporate javascript code generated from nim code using template `nbJsFromCode`.
 It also provides a template `nbKaraxCode` to add code based on [karax](https://github.com/karaxnim/karax).
 
 See [interactivity](https://pietroppeter.github.io/nimib/interactivity.html) for an explanation of the api

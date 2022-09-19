@@ -11,6 +11,7 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 * Add `hlHtml` and `hlHtml` to nimiBoost
 * fix rarely occuring issue of terminal output not being captured (windows only, see example in https://github.com/pietroppeter/nimib/pull/132)
+* compress line height in nbCode output (using class `nb-output`), see #133
 * _add next change here_
 
 ## 0.3.1

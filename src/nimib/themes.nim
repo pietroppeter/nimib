@@ -65,7 +65,7 @@ section#source {
   display:none
 }
 
-body {
+.nb-output {
   line-height: 1.15;
 }
 </style>"""

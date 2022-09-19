@@ -9,6 +9,8 @@ When contributing a fix, feature or example please add a new line to briefly exp
 
 ## 0.3.x
 
+* Add `hlHtml` and `hlHtml` to nimiBoost
+* fix rarely occuring issue of terminal output not being captured (windows only, see example in https://github.com/pietroppeter/nimib/pull/132)
 * _add next change here_
 
 ## 0.3.1

@@ -20,6 +20,7 @@ template captureStdout*(ident: untyped, body: untyped) =
   discard dup2(tmpFileFd, stdoutFileno)  # writing to stdoutFileno now writes to tmpFile
 
   body
+  flushFile stdout
 
   # before reading tmpFile, flush and close
   tmpFile.flushFile()  

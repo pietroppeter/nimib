@@ -33,7 +33,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSource"] = "<pre><code class=\"nim hljs\">{{&codeHighlighted}}</code></pre>"
-  doc.partials["nbCodeOutput"] = "{{#output}}<pre><samp>{{output}}</samp></pre>{{/output}}"
+  doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output"><samp>{{output}}</samp></pre>{{/output}}"""
   doc.partials["nbImage"] = """<figure>
 <img src="{{url}}" alt="{{caption}}">
 <figcaption>{{caption}}</figcaption>

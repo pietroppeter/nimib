@@ -26,6 +26,10 @@ button.nb-small {
 section#source {
   display:none
 }
+
+.nb-output {
+  line-height: 1.15;
+}
 </style>
   
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
@@ -44,7 +48,7 @@ section#source {
 and incidentally you might learn the basics of <a href="https://github.com/pietroppeter/nimib">nimib</a>.</p>
 <h3>A secret message</h3>
 <p>Inside this document is hidden a secret message. I will ask the computer to spit it out:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> secret</code></pre><pre><samp>[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]</samp></pre>
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> secret</code></pre><pre class="nb-output"><samp>[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]</samp></pre>
 <p>what does this integer sequence mean?
 Am I supposed to <a href="https://oeis.org/search?q=104%2C+101%2C+108%2C+108%2C+111%2C+44%2C+32%2C+119%2C+111%2C+114%2C+108%2C+100&language=english&go=Search">recognize it</a>?</p>
 <h3>A cryptoanalytic weapon</h3>
@@ -58,7 +62,7 @@ a recently declassified top-secret cryptoanalytic weapon:</p>
 <p>Now I can just apply it to my secret message and
 finally decrypt what the computer wants to tell me:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> msg = decode secret
-<span class="hljs-keyword">echo</span> msg  <span class="hljs-comment"># what will it say?</span></code></pre><pre><samp>hello, world</samp></pre>
+<span class="hljs-keyword">echo</span> msg  <span class="hljs-comment"># what will it say?</span></code></pre><pre class="nb-output"><samp>hello, world</samp></pre>
 <p><em>Hey</em>, there must be a bug somewhere, the message (<code>hello, world</code>) is not even addressed to me!</p>
 </main>
 <footer>

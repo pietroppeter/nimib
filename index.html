@@ -26,6 +26,10 @@ button.nb-small {
 section#source {
   display:none
 }
+
+.nb-output {
+  line-height: 1.15;
+}
 </style>
   
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
@@ -241,7 +245,7 @@ that allow to override the above value, skip the config file or other options.</
 (execution will stop after <code>nbInit</code>).</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> osproc
 withDir nb.srcDir:
-  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;</span>)</code></pre><pre><samp>/home/runner/work/nimib/nimib/src/nimib.nim(174, 5) Warning: Use nbRawHtml instead; nbRawOutput is deprecated [Deprecated]
+  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output"><samp>/home/runner/work/nimib/nimib/src/nimib.nim(174, 5) Warning: Use nbRawHtml instead; nbRawOutput is deprecated [Deprecated]
 Nimib options:
 
   --nbHelp,     --nimibHelp                 print this help

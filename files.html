@@ -26,6 +26,10 @@ button.nb-small {
 section#source {
   display:none
 }
+
+.nb-output {
+  line-height: 1.15;
+}
 </style>
   
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
@@ -52,7 +56,7 @@ echo myNumber
 </code></pre>
 
 <pre><code class="nim hljs"><span class="hljs-keyword">import</span> osproc
-<span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off main&quot;</span>)</code></pre><pre><samp>42</samp></pre>
+<span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off main&quot;</span>)</code></pre><pre class="nb-output"><samp>42</samp></pre>
 </main>
 <footer>
 <hr>

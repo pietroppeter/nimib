@@ -26,6 +26,10 @@ button.nb-small {
 section#source {
   display:none
 }
+
+.nb-output {
+  line-height: 1.15;
+}
 </style>
   
   <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
@@ -49,7 +53,7 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="h
 <p>we read the penguins csv into a Datamancer <code>DataFrame</code></p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
 <p>let us see how it looks</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span></code></pre><pre><samp>DataFrame with 7 columns and 344 rows:
+<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span></code></pre><pre class="nb-output"><samp>DataFrame with 7 columns and 344 rows:
      Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
   dtype:               string               string               object               object               object               object               string
        0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
@@ -79,7 +83,7 @@ The remaining 4 are numeric but they have datatype object. Why?</p>
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
-<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind</code></pre><pre><samp>VFloat
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind</code></pre><pre class="nb-output"><samp>VFloat
 VFloat
 VString
 VInt
@@ -109,7 +113,7 @@ from where this dataset comes from:</p>
 <p>To plot this we need to remove all <code>NA</code> and then classify the points both by the penguins sex as
 well as their species:</p>
 <pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
-ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre class="nb-output"><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
 INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
 <figure>
 <img src="./images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
@@ -129,7 +133,7 @@ as reported by <a href="https://twitter.com/andrewheiss/status/13011667926274211
   geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>),       <span class="hljs-comment"># and smooth classified by species</span>
               smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
   geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth without classification by species</span>
-  ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre><samp>INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+  ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre class="nb-output"><samp>INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
 INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
 <figure>
 <img src="./images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,

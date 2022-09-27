@@ -136,9 +136,18 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tupl
       import std/json
     for (cap, capType) in zip(capturedVariables, capturedTypes):
       let placeholder = gensym(ident="placeholder")
+      var newSym: NimNode
+      if "`gensym" notin cap.strVal:
+        newSym = gensym(NimSymKind.nskLet, ident=cap.strVal)
+        # add to tab[cap] = cap.gensym?
+        tabMapIdents[cap.strVal.nimIdentNormalize] = newSym.repr.ident
+      else:
+        newSym = cap
+      echo "In: ", cap.repr, " Out: ", newSym.repr
       result.placeholders.add placeholder
       result.code.add quote do:
-        let `cap` = parseJson(`placeholder`).to(`capType`)
+        let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
+      
 
 macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)

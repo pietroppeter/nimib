@@ -115,12 +115,10 @@ proc degensymAst(n: NimNode, removeGensym = false) =
             newSym = gensym(ident=newStr).repr.ident
             tabMapIdents[newStr] = newSym
         n[i] = newSym
-        echo "Swapped ", str, " for ", newSym.repr
     of nnkPragmaExpr:
       let identifier = n[i][0]
       let pragmas = n[i][1]
       if pragmas.isPragmaExportc: # varName {.exportc.}
-        echo "Saved: ", identifier.repr, " -> ", identifier.strVal.split("`gensym")[0].ident.repr
         n[i][0] = identifier.strVal.split("`gensym")[0].ident
       else:
         degensymAst(identifier, removeGensym)
@@ -136,9 +134,17 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tupl
       import std/json
     for (cap, capType) in zip(capturedVariables, capturedTypes):
       let placeholder = gensym(ident="placeholder")
+      var newSym: NimNode
+      if "`gensym" notin cap.strVal:
+        newSym = gensym(NimSymKind.nskLet, ident=cap.strVal)
+        # add to tab[cap] = cap.gensym?
+        tabMapIdents[cap.strVal.nimIdentNormalize] = newSym.repr.ident
+      else:
+        newSym = cap
       result.placeholders.add placeholder
       result.code.add quote do:
-        let `cap` = parseJson(`placeholder`).to(`capType`)
+        let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
+      
 
 macro nimToJsStringSecondStage*(key: static string, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)

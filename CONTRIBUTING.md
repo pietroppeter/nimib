@@ -40,3 +40,7 @@ There are 4 main folders in the project:
 - add a mention of the new block in the readme
   - ⚠️ currently `README.md` depends on `docsrc\index.nim`, you will have to modify `docsrc\index.nim` and run `nimble readme` to update the readme. we will remove thsi dependency see https://github.com/pietroppeter/nimib/issues/141 
 - add a line in the `CHANGELOG.md`
+
+## CI and deploy preview
+
+documentation is built in CI and we have **deploy preview** built with netlify. Once all checks have run succesfully the last one will contain a link to the deploy preview. This is very useful to make sure the documents still build so make sure to check it when you work on the internals of nimib.

@@ -13,6 +13,8 @@ A button which increases a counter each time you click it. We will do this in tw
 The first method is to use Nim like you would have used Javascript using `getElementById` and `addEventListener`: 
 """
 nbCode:
+  nbJsFromCodeGlobal:
+    import std/dom
   ## 1:
   template counterButton(id: string) =
     let labelId = "label-" & id
@@ -24,7 +26,6 @@ nbCode:
 """ % [labelId, buttonId]
     ## 3:
     nbJsFromCode(labelId, buttonId):
-      import std/dom
       ## 4:
       var label = getElementById(labelId.cstring)
       var button = getElementById(buttonId.cstring)

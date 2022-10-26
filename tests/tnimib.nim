@@ -176,7 +176,7 @@ when moduleAvailable(karax/kbase):
         echo a
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
-
+    #[
     test "nbJsFromCodeInit + addCodeToJs":
       let script = nbJsFromCodeInit:
         let a = 1
@@ -185,12 +185,11 @@ when moduleAvailable(karax/kbase):
       script.addToDocAsJs
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
-
+    ]#
     test "nbJsFromCode + exportc":
-      let script = nbJsFromCodeInit:
+      nbJsFromCodeOwnFile:
         proc setup() {.exportc.} =
           echo 1
-      script.addToDocAsJs
       check "setup()" in nb.blk.context["transformedCode"].vString
 
     test "nbKaraxCode":

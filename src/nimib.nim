@@ -135,7 +135,7 @@ template nbJsFromStringInit*(body: string): NbBlock =
   result
 
 template nbJsFromCodeInit*(args: varargs[untyped]): NbBlock =
-  let (code, originalCode) = nimToJsString(true, args)
+  let (code, originalCode) = nimToJsString(false, args)
   var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result
@@ -161,8 +161,21 @@ template nbJsFromString*(body: string) =
   script.addToDocAsJs
 
 template nbJsFromCode*(args: varargs[untyped]) =
-  let script = nbJsFromCodeInit(args)
-  script.addToDocAsJs
+  let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=true, args)
+  nb.nbJsScript.add "\n" & code
+  #var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  #result.context["transformedCode"] = code
+  #result.addToDocAsJs
+
+template nbJsFromCodeGlobal*(args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=false, args)
+  nb.nbJsGlobalScript.add "\n" & code
+
+template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(compileToOwnFile=true, putCodeInBlock=false, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = "import std / json\n" & code
+  result.addToDocAsJs
 
 template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
   nbJsFromCode(args)
@@ -192,7 +205,19 @@ template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
   #   - in memory partial contains default mustache assets
   #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
-  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
+  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling 
+  nb.nbJsGlobalScript = "import std / json\n" & nb.nbJsGlobalScript
+  let completeJsCode = nb.nbJsGlobalScript & "\n" & nb.nbJsScript
+  echo "Complete Js Code: \n", completeJsCode
+  var jsBlock = NbBlock(
+    command: "nbCodeToJs",
+    code: completeJsCode,
+    context: newContext(searchDirs = @[], partials = nb.partials),
+    output: ""
+  )
+  jsBlock.context["transformedCode"] = completeJsCode
+  jsBlock.addToDocAsJs
+
   nb.context.searchDirs(nb.templateDirs)
   nb.context.searchTable(nb.partials)
 

@@ -97,7 +97,7 @@ proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
     else:
       gensymProcIterConverter(n[i], replaceProcs)
 
-proc degensymAst(n: NimNode, removeGensym: bool) =
+proc degensymAstOld(n: NimNode, removeGensym: bool) =
   for i in 0 ..< n.len:
     case n[i].kind
     of nnkIdent, nnkSym:
@@ -121,12 +121,24 @@ proc degensymAst(n: NimNode, removeGensym: bool) =
       if pragmas.isPragmaExportc: # varName {.exportc.}
         n[i][0] = identifier.strVal.split("`gensym")[0].ident
       else:
-        degensymAst(identifier, removeGensym)
-        degensymAst(pragmas, removeGensym)
+        degensymAstOld(identifier, removeGensym)
+        degensymAstOld(pragmas, removeGensym)
     else:
-      degensymAst(n[i], removeGenSym)
+      degensymAstOld(n[i], removeGenSym)
 
-proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode], removeGensym: bool): tuple[code: NimNode, placeholders: seq[NimNode]] =
+proc degensymAst(n: NimNode) =
+  for i in 0 ..< n.len:
+    case n[i].kind
+    of nnkIdent, nnkSym:
+      let str = n[i].strVal
+      if "`gensym" in str:
+        let newStr = str.split("`gensym")[0]
+        let newSym = ident(newStr)
+        n[i] = newSym
+    else:
+      degensymAst(n[i])
+
+proc genCapturedAssignmentOld(capturedVariables, capturedTypes: seq[NimNode], removeGensym: bool): tuple[code: NimNode, placeholders: seq[NimNode]] =
   result.code = newStmtList()
   # generate fromJSON loading and then add entire body afterwards
   if capturedVariables.len > 0:
@@ -148,7 +160,65 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode], remov
       result.placeholders.add placeholder
       result.code.add quote do:
         let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
+
+proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tuple[code: NimNode, placeholders: seq[NimNode]] =
+  result.code = newStmtList()
+  # generate fromJSON loading and then add entire body afterwards
+  if capturedVariables.len > 0:
+    #result.code.add quote do:
+    #  import std/json
+    for (cap, capType) in zip(capturedVariables, capturedTypes):
+      let placeholder = gensym(ident="placeholder")
       
+      let newSym = cap
+      result.placeholders.add placeholder
+      result.code.add quote do:
+        let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
+      
+
+macro nimToJsStringSecondStageOld*(key: static string, compileToOwnFile: static bool, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
+  let captureVars = toSeq(captureVars)
+
+  let captureTypes = collect:
+    for cap in captureVars:
+      cap.getTypeInst
+
+  # Get the untyped body from CacheTable
+  var body: NimNode
+  if key in bodyCache:
+    body = bodyCache[key]
+  else:
+    error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with a minimal reproducible example")
+  # Now we have the body!
+  body = body.copyNimTree()
+  # 1. Generate the captured variable assignments and return placeholders
+  let (capAssignments, placeholders) = genCapturedAssignmentOld(captureVars, captureTypes, removeGensym = not compileToOwnFile)
+  # 2. Stringify code
+  var code = newStmtList(capAssignments, body).copyNimTree()
+  # Only do this if compiling to its own file, blocks will cover this for us in the other case.
+  if compileToOwnFile:
+    code.gensymProcIterConverter(replaceProcs=true)
+  # If we want to compile the script to its own file, then we want to re-gensym it.
+  # If not, then we want to degensym it entirely and instead but it inside a block
+  code.degensymAstOld(removeGenSym = not compileToOwnFile)
+  # Put the code inside a block if not compileToOwnFile
+  if putCodeInBlock:
+    code = newBlockStmt(code)
+  var codeText = code.toStrLit
+  # 3. Generate code which does the serialization and replacement of placeholders
+  let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
+  result = newStmtList()
+  result.add newVarStmt(codeTextIdent, codeText)
+  for i in 0 .. captureVars.high:
+    let placeholder = placeholders[i].repr.newLit
+    let varIdent = captureVars[i]
+    let serializedValue = quote do:
+      $(toJson(`varIdent`))
+    result.add quote do:
+      `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
+  # return tuple of the transformed code to be compiled and the prettified code for visualization
+  body.degensymAstOld(removeGenSym=true) # remove `gensym if code was written in a template
+  result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
 
 macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static bool, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
@@ -166,15 +236,15 @@ macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static boo
   # Now we have the body!
   body = body.copyNimTree()
   # 1. Generate the captured variable assignments and return placeholders
-  let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes, removeGensym = not compileToOwnFile)
+  let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
   # 2. Stringify code
   var code = newStmtList(capAssignments, body).copyNimTree()
   # Only do this if compiling to its own file, blocks will cover this for us in the other case.
-  if compileToOwnFile:
-    code.gensymProcIterConverter(replaceProcs=true)
+  #if compileToOwnFile:
+  #  code.gensymProcIterConverter(replaceProcs=true)
   # If we want to compile the script to its own file, then we want to re-gensym it.
   # If not, then we want to degensym it entirely and instead but it inside a block
-  code.degensymAst(removeGenSym = not compileToOwnFile)
+  code.degensymAst()
   # Put the code inside a block if not compileToOwnFile
   if putCodeInBlock:
     code = newBlockStmt(code)
@@ -191,7 +261,7 @@ macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static boo
     result.add quote do:
       `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
   # return tuple of the transformed code to be compiled and the prettified code for visualization
-  body.degensymAst(removeGenSym=true) # remove `gensym if code was written in a template
+  body.degensymAst() # remove `gensym if code was written in a template
   result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
     
 macro nimToJsString*(compileToOwnFile: static bool, putCodeInBlock: static bool, args: varargs[untyped]): untyped =

@@ -16,7 +16,19 @@ proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
   let (dir, filename, ext) = doc.thisFile.splitFile()
   let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
   let jsfile = tempdir / "out.js"
-  writeFile(nimfile, blk.context["transformedCode"].vString)
+  var codeText = blk.context["transformedCode"].vString
+  if blk.context["isOwnFile"].vBool:
+    var bumpGensymString = """
+import macros
+
+macro bumpGensym() =
+  let _ = gensym()
+
+""" 
+    for i in 0 .. doc.newId():
+      bumpGensymString.add "bumpGensym()\n"
+    codeText = bumpGensymString & codeText
+  writeFile(nimfile, codeText)
   let kxiname = "nimib_kxi_" & $doc.newId()
   let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
   if errorCode != 0:

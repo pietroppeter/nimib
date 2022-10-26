@@ -134,6 +134,7 @@ template nbJsFromStringInit*(body: string): NbBlock =
   result.context["transformedCode"] = body
   result
 
+#[
 template nbJsFromCodeInit*(args: varargs[untyped]): NbBlock =
   let (code, originalCode) = nimToJsString(false, args)
   var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
@@ -147,6 +148,7 @@ template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(false, args)
   script.code &= "\n" & originalCode
   script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & code
+]#
 
 template addStringToJs*(script: NbBlock, body: string) =
   script.code &= "\n" & body
@@ -175,6 +177,7 @@ template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(compileToOwnFile=true, putCodeInBlock=false, args)
   var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = "import std / json\n" & code
+  result.context["isOwnFile"] = true
   result.addToDocAsJs
 
 template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
@@ -216,6 +219,7 @@ template nbSave* =
     output: ""
   )
   jsBlock.context["transformedCode"] = completeJsCode
+  jsBlock.context["isOwnFile"] = false
   jsBlock.addToDocAsJs
 
   nb.context.searchDirs(nb.templateDirs)

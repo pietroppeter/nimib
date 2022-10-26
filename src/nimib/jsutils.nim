@@ -7,124 +7,11 @@ proc contains(tab: CacheTable, keyToCheck: string): bool =
       return true
   return false
 
-#const validCodeTable = CacheTable"validCodeTable"
 const bodyCache = CacheTable"bodyCache"
-var tabMapIdents {.compiletime.}: Table[string, NimNode]
-
-#[ macro typedChecker(n: typed): untyped = discard
-macro checkIsValidCode(n: untyped): untyped =
-  result = quote do:
-    when compiles(typedChecker(`n`)):
-      true
-    else:
-      false ]#
-
-# remove this
-#[ macro addValid(key: string, s: typed): untyped =
-  # If it is valid we want it typed
-  if key.strVal notin validCodeTable:
-    validCodeTable[key.strVal] = s ]#
 
 macro addBody(key: string, s: untyped): untyped =
   if key.strVal notin bodyCache:
     bodyCache[key.strVal] = s
-
-proc isPragmaExportc(n: NimNode): bool =
-  ## Returns whether pragma contains exportc
-  n.expectKind(nnkPragma)
-  for child in n:
-    if child.kind == nnkExprColonExpr: # {.exportc: "newName".}
-      if child[0].eqIdent("exportc"):
-        result = true
-    elif child.kind == nnkIdent:
-      if child.eqIdent("exportc"): # {.exportc.}
-        result = true
-
-proc gensymProcIterConverter(n: NimNode, replaceProcs: bool) =
-  ## By default procs, iterators and converters are injected and will share the same name in the resulting javascript.
-  ## Therefore we gensym them here to give them unique names. Also replace the references to it.
-  ## replaceProcs: whether to replace procs names or not. It will replace existing names regardless.
-  for i in 0 ..< n.len:
-    case n[i].kind
-    of nnkProcDef, nnkIteratorDef, nnkConverterDef:
-      if replaceProcs:
-        # add check for {.exportc.} here
-        var isExportc: bool
-        let pragmas = n[i][4]
-        if pragmas.kind == nnkPragma:
-          isExportc = isPragmaExportc(pragmas)
-        # Do not gensym if proc is exportc'ed
-        if not isExportc:
-          if n[i][0].kind == nnkPostfix: # foo*
-            let oldIdent = n[i][0][1].strVal.nimIdentNormalize
-            let newIdent = gensym(ident=oldIdent).repr.ident
-            n[i][0][1] = newIdent
-            tabMapIdents[oldIdent] = newIdent
-          else:
-            let oldIdent = n[i][0].strVal.nimIdentNormalize
-            let newIdent = gensym(ident=oldIdent).repr.ident
-            n[i][0] = newIdent
-            tabMapIdents[oldIdent] = newIdent
-      # Function might be recursive or contain other procs, loop through it's body as well
-      for child in n[i][6]:
-        gensymProcIterConverter(child, replaceProcs)
-    of nnkLambda:
-      # rewrite from:
-      # proc () = discard
-      # to
-      # block:
-      #   proc lambda_gensym() = discard
-      #   lambda_gensym
-      let p = nnkProcDef.newTree()
-      n[i].copyChildrenTo p
-      let newIdent = gensym(ident="lambda")
-      p[0] = newIdent
-      # loop through proc body as well
-      for child in p[6]:
-        gensymProcIterConverter(child, replaceProcs)
-      n[i] = newStmtList(p, newIdent)
-    of nnkSym, nnkIdent:
-      let oldIdent = n[i].strVal.nimIdentNormalize
-      if oldIdent in tabMapIdents:
-        n[i] = tabMapIdents[oldIdent]
-    of nnkCall:
-      # Check if it is karaxHtml:
-      # if so set replaceProcs = false for the children
-      if n[i][0].eqIdent("karaxHtml"):
-        gensymProcIterConverter(n[i][1], false)
-      else:
-        gensymProcIterConverter(n[i], replaceProcs)
-    else:
-      gensymProcIterConverter(n[i], replaceProcs)
-
-proc degensymAstOld(n: NimNode, removeGensym: bool) =
-  for i in 0 ..< n.len:
-    case n[i].kind
-    of nnkIdent, nnkSym:
-      let str = n[i].strVal
-      if "`gensym" in str:
-        let newStr = str.split("`gensym")[0].nimIdentNormalize
-        var newSym: NimNode
-        if removeGensym: # remove gensym all together, useful for removing gensym noise when showing code
-          newSym = ident(newStr)
-        else: # replace gensym with one that is accepted by the parser
-           # If this symbol is already used in this script, use the gensym'd symbol from tabMapIdents
-          if newStr in tabMapIdents:
-            newSym = tabMapIdents[newStr]
-          else: # else create a gensym'd symbol and add it to the table
-            newSym = gensym(ident=newStr).repr.ident
-            tabMapIdents[newStr] = newSym
-        n[i] = newSym
-    of nnkPragmaExpr:
-      let identifier = n[i][0]
-      let pragmas = n[i][1]
-      if pragmas.isPragmaExportc: # varName {.exportc.}
-        n[i][0] = identifier.strVal.split("`gensym")[0].ident
-      else:
-        degensymAstOld(identifier, removeGensym)
-        degensymAstOld(pragmas, removeGensym)
-    else:
-      degensymAstOld(n[i], removeGenSym)
 
 proc degensymAst(n: NimNode) =
   for i in 0 ..< n.len:
@@ -138,35 +25,10 @@ proc degensymAst(n: NimNode) =
     else:
       degensymAst(n[i])
 
-proc genCapturedAssignmentOld(capturedVariables, capturedTypes: seq[NimNode], removeGensym: bool): tuple[code: NimNode, placeholders: seq[NimNode]] =
-  result.code = newStmtList()
-  # generate fromJSON loading and then add entire body afterwards
-  if capturedVariables.len > 0:
-    #result.code.add quote do:
-    #  import std/json
-    for (cap, capType) in zip(capturedVariables, capturedTypes):
-      let placeholder = gensym(ident="placeholder")
-      var newSym: NimNode
-      if "`gensym" in cap.strVal and removeGensym:
-        let newStr = cap.strVal.split("`gensym")[0]
-        newSym = ident(newStr)
-      elif "`gensym" notin cap.strVal and (not removeGensym):
-        # as it's not gensym'd and we don't want to remove gensym, we want to generate a unique variable name for this
-        newSym = gensym(NimSymKind.nskLet, ident=cap.strVal)
-        # add to tab[cap] = cap.gensym?
-        tabMapIdents[cap.strVal.nimIdentNormalize] = newSym.repr.ident
-      else:
-        newSym = cap
-      result.placeholders.add placeholder
-      result.code.add quote do:
-        let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
-
 proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tuple[code: NimNode, placeholders: seq[NimNode]] =
   result.code = newStmtList()
   # generate fromJSON loading and then add entire body afterwards
   if capturedVariables.len > 0:
-    #result.code.add quote do:
-    #  import std/json
     for (cap, capType) in zip(capturedVariables, capturedTypes):
       let placeholder = gensym(ident="placeholder")
       
@@ -174,51 +36,6 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tupl
       result.placeholders.add placeholder
       result.code.add quote do:
         let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
-      
-
-macro nimToJsStringSecondStageOld*(key: static string, compileToOwnFile: static bool, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
-  let captureVars = toSeq(captureVars)
-
-  let captureTypes = collect:
-    for cap in captureVars:
-      cap.getTypeInst
-
-  # Get the untyped body from CacheTable
-  var body: NimNode
-  if key in bodyCache:
-    body = bodyCache[key]
-  else:
-    error(&"Nimib error: key {key} not in any of the tables. Please open an issue on Github with a minimal reproducible example")
-  # Now we have the body!
-  body = body.copyNimTree()
-  # 1. Generate the captured variable assignments and return placeholders
-  let (capAssignments, placeholders) = genCapturedAssignmentOld(captureVars, captureTypes, removeGensym = not compileToOwnFile)
-  # 2. Stringify code
-  var code = newStmtList(capAssignments, body).copyNimTree()
-  # Only do this if compiling to its own file, blocks will cover this for us in the other case.
-  if compileToOwnFile:
-    code.gensymProcIterConverter(replaceProcs=true)
-  # If we want to compile the script to its own file, then we want to re-gensym it.
-  # If not, then we want to degensym it entirely and instead but it inside a block
-  code.degensymAstOld(removeGenSym = not compileToOwnFile)
-  # Put the code inside a block if not compileToOwnFile
-  if putCodeInBlock:
-    code = newBlockStmt(code)
-  var codeText = code.toStrLit
-  # 3. Generate code which does the serialization and replacement of placeholders
-  let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
-  result = newStmtList()
-  result.add newVarStmt(codeTextIdent, codeText)
-  for i in 0 .. captureVars.high:
-    let placeholder = placeholders[i].repr.newLit
-    let varIdent = captureVars[i]
-    let serializedValue = quote do:
-      $(toJson(`varIdent`))
-    result.add quote do:
-      `codeTextIdent` = `codeTextIdent`.replace(`placeholder`, "\"\"\"" & `serializedValue` & "\"\"\"")
-  # return tuple of the transformed code to be compiled and the prettified code for visualization
-  body.degensymAstOld(removeGenSym=true) # remove `gensym if code was written in a template
-  result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
 
 macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static bool, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
@@ -239,18 +56,13 @@ macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static boo
   let (capAssignments, placeholders) = genCapturedAssignment(captureVars, captureTypes)
   # 2. Stringify code
   var code = newStmtList(capAssignments, body).copyNimTree()
-  # Only do this if compiling to its own file, blocks will cover this for us in the other case.
-  #if compileToOwnFile:
-  #  code.gensymProcIterConverter(replaceProcs=true)
-  # If we want to compile the script to its own file, then we want to re-gensym it.
-  # If not, then we want to degensym it entirely and instead but it inside a block
   code.degensymAst()
-  # Put the code inside a block if not compileToOwnFile
+
   if putCodeInBlock:
     code = newBlockStmt(code)
   var codeText = code.toStrLit
   # 3. Generate code which does the serialization and replacement of placeholders
-  let codeTextIdent = genSym(NimSymKind.nskVar ,ident="codeText")
+  let codeTextIdent = genSym(NimSymKind.nskVar, ident="codeText")
   result = newStmtList()
   result.add newVarStmt(codeTextIdent, codeText)
   for i in 0 .. captureVars.high:
@@ -267,8 +79,6 @@ macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static boo
 macro nimToJsString*(compileToOwnFile: static bool, putCodeInBlock: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
     error("nbJsFromCode needs a code block to be passed", args)
-  
-  tabMapIdents.clear()
 
   let body = args[^1]
   let captureVars =

@@ -13,6 +13,7 @@ A button which increases a counter each time you click it. We will do this in tw
 The first method is to use Nim like you would have used Javascript using `getElementById` and `addEventListener`: 
 """
 nbCode:
+  ## 0:
   nbJsFromCodeGlobal:
     import std/dom
   ## 1:
@@ -39,10 +40,11 @@ nbCode:
 
 nbText: hlMd"""
 Let's explain each part of the code:
+0. We import `std/dom` in a `nbJsFromCodeGlobal` block. `std/dom` is where many dom-manipulation functions are located.
 1. We define a template called `counterButton` which will create a new counter button. So if you call it somewhere it will
 place the widget there, that's the reusable part done. But it also takes an input `id: string`. This is to solve the problem of each widget needing unique ids. It can also be done with `nb.newId` as will be used in the Karax example.
 2. Here we emit the `<label>` and `<button>` tags and insert their ids.
-3. `nbJsFromCode` is the template that will turn our Nim code into Javascript and we are capturing `labelId` and `buttonId` (Important that you capture all used variables defined outside the code block). `std/dom` is where many dom-manipulation functions are located.
+3. `nbJsFromCode` is the template that will turn our Nim code into Javascript and we are capturing `labelId` and `buttonId` (Important that you capture all used variables defined outside the code block).
 4. We fetch the elements we emitted above by their ids. Remember that most javascript functions want `cstring`s!
 5. We create a variable `counter` to keep track of the counter and add the eventlistener to the `button` element. There we increase the counter and update the `innerHtml` of the `label`.
 

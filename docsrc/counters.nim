@@ -20,7 +20,7 @@ nbCode:
     let labelId = "label-" & id
     let buttonId = "button-" & id
     ## 2:
-    nbRawOutput: """
+    nbRawHtml: """
 <label id="$1">0</label>
 <button id="$2">Click me</button>
 """ % [labelId, buttonId]

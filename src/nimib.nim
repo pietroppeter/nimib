@@ -132,6 +132,7 @@ template nbRawHtml*(content: string) =
 template nbJsFromStringInit*(body: string): NbBlock =
   var result = NbBlock(command: "nbCodeToJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = body
+  result.context["isOwnFile"] = true
   result
 
 #[
@@ -165,9 +166,6 @@ template nbJsFromString*(body: string) =
 template nbJsFromCode*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=true, args)
   nb.nbJsScript.add "\n" & code
-  #var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  #result.context["transformedCode"] = code
-  #result.addToDocAsJs
 
 template nbJsFromCodeGlobal*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=false, args)
@@ -187,7 +185,7 @@ template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or 
 when moduleAvailable(karax/kbase):
   template nbKaraxCode*(args: varargs[untyped]) =
     let rootId = "karax-" & $nb.newId()
-    nbRawOutput: "<div id=\"" & rootId & "\"></div>"
+    nbRawHtml: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
 template nbJsShowSource*(message: string = "") =
@@ -208,19 +206,20 @@ template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
   #   - in memory partial contains default mustache assets
   #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
-  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling 
-  nb.nbJsGlobalScript = "import std / json\n" & nb.nbJsGlobalScript
-  let completeJsCode = nb.nbJsGlobalScript & "\n" & nb.nbJsScript
-  echo "Complete Js Code: \n", completeJsCode
-  var jsBlock = NbBlock(
-    command: "nbCodeToJs",
-    code: completeJsCode,
-    context: newContext(searchDirs = @[], partials = nb.partials),
-    output: ""
-  )
-  jsBlock.context["transformedCode"] = completeJsCode
-  jsBlock.context["isOwnFile"] = false
-  jsBlock.addToDocAsJs
+  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling
+  if nb.nbJsGlobalScript.len > 0 or nb.nbJsScript.len > 0:
+    nb.nbJsGlobalScript = "import std / json\n" & nb.nbJsGlobalScript
+    let completeJsCode = nb.nbJsGlobalScript & "\n" & nb.nbJsScript
+    echo "Complete Js Code: \n", completeJsCode
+    var jsBlock = NbBlock(
+      command: "nbCodeToJs",
+      code: completeJsCode,
+      context: newContext(searchDirs = @[], partials = nb.partials),
+      output: ""
+    )
+    jsBlock.context["transformedCode"] = completeJsCode
+    jsBlock.context["isOwnFile"] = false
+    jsBlock.addToDocAsJs
 
   nb.context.searchDirs(nb.templateDirs)
   nb.context.searchTable(nb.partials)

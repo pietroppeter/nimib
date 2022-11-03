@@ -6,7 +6,7 @@ nbInit
 nbText: hlMd"""
 # Counters - Creating reusable widgets
 
-This document will show you how to create reusable widgets using `nbJsFromCode`. Specifically we will make a counter:
+This document will show you how to create reusable widgets using `nbJsFromCodeInBlock`. Specifically we will make a counter:
 A button which increases a counter each time you click it. We will do this in two different ways, using `std/dom` and `karax`.
 ## std/dom
 
@@ -26,7 +26,7 @@ nbCode:
 <button id="$2">Click me</button>
 """ % [labelId, buttonId]
     ## 3:
-    nbJsFromCode(labelId, buttonId):
+    nbJsFromCodeInBlock(labelId, buttonId):
       ## 4:
       var label = getElementById(labelId.cstring)
       var button = getElementById(buttonId.cstring)
@@ -44,7 +44,8 @@ Let's explain each part of the code:
 1. We define a template called `counterButton` which will create a new counter button. So if you call it somewhere it will
 place the widget there, that's the reusable part done. But it also takes an input `id: string`. This is to solve the problem of each widget needing unique ids. It can also be done with `nb.newId` as will be used in the Karax example.
 2. Here we emit the `<label>` and `<button>` tags and insert their ids.
-3. `nbJsFromCode` is the template that will turn our Nim code into Javascript and we are capturing `labelId` and `buttonId` (Important that you capture all used variables defined outside the code block).
+3. `nbJsFromCodeInBlock` is the template that will turn our Nim code into Javascript and we are capturing `labelId` and `buttonId` (Important that you capture all used variables defined outside the code block).
+The reason we are using `nbJsFromCodeInBlock` instead of `nbJsFromCode` is that we need to put the code of the different components in different blocks to avoid errors like `redefinition of label`.
 4. We fetch the elements we emitted above by their ids. Remember that most javascript functions want `cstring`s!
 5. We create a variable `counter` to keep track of the counter and add the eventlistener to the `button` element. There we increase the counter and update the `innerHtml` of the `label`.
 

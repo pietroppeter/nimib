@@ -1,5 +1,5 @@
-import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar]
-
+import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, os]
+import ./types
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:
@@ -37,7 +37,7 @@ proc genCapturedAssignment(capturedVariables, capturedTypes: seq[NimNode]): tupl
       result.code.add quote do:
         let `newSym` = parseJson(`placeholder`).to(`capType`) # we must gensym `cap` as well!
 
-macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static bool, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
+macro nimToJsStringSecondStage*(key: static string, putCodeInBlock: static bool, captureVars: varargs[typed]): untyped =
   let captureVars = toSeq(captureVars)
 
   let captureTypes = collect:
@@ -76,7 +76,7 @@ macro nimToJsStringSecondStage*(key: static string, compileToOwnFile: static boo
   body.degensymAst() # remove `gensym if code was written in a template
   result.add nnkTupleConstr.newTree(codeTextIdent, body.toStrLit)
     
-macro nimToJsString*(compileToOwnFile: static bool, putCodeInBlock: static bool, args: varargs[untyped]): untyped =
+macro nimToJsString*(putCodeInBlock: static bool, args: varargs[untyped]): untyped =
   if args.len == 0:
     error("nbJsFromCode needs a code block to be passed", args)
 
@@ -95,7 +95,7 @@ macro nimToJsString*(compileToOwnFile: static bool, putCodeInBlock: static bool,
   result = newStmtList()
   result.add quote do:
     addBody(`key`, `body`)
-  var nextArgs = @[newLit(key), newLit(compileToOwnFile), newLit(putCodeInBlock)]
+  var nextArgs = @[newLit(key), newLit(putCodeInBlock)]
   nextArgs.add captureVars
   result.add newCall("nimToJsStringSecondStage", nextArgs)
 
@@ -136,3 +136,51 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   let call = newCall(ident"nbJsFromCodeOwnFile", callArgs)
 
   result = call
+
+proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
+  let tempdir = getTempDir() / "nimib"
+  createDir(tempdir)
+  let (dir, filename, ext) = doc.thisFile.splitFile()
+  let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
+  let jsfile = tempdir / "out.js"
+  var codeText = blk.context["transformedCode"].vString
+  let nbJsCounter = doc.nbJsCounter
+  doc.nbJsCounter += 1
+  var bumpGensymString = """
+import std/[macros, json]
+
+macro bumpGensym(n: static int) =
+  for i in 0 .. n:
+    let _ = gensym()
+
+"""
+  bumpGensymString.add &"bumpGensym({nbJsCounter})\n"
+  codeText = bumpGensymString & codeText
+  writeFile(nimfile, codeText)
+  let kxiname = "nimib_kxi_" & $doc.newId()
+  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
+  if errorCode != 0:
+    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
+  removeFile(nimfile)
+  let jscode = readFile(jsfile)
+  removeFile(jsfile)
+  blk.output = jscode
+  blk.context["output"] = jscode
+
+proc nbCollectAllNbJs*(doc: var NbDoc) =
+  var topCode = "" # placed at the top (nbJsFromCodeGlobal)
+  var code = ""
+  for blk in doc.blocks:
+    if blk.command == "nbCodeToJs":
+      if blk.context["putAtTop"].vBool:
+        topCode.add "\n" & blk.context["transformedCode"].vString
+      else:
+        code.add "\n" & blk.context["transformedCode"].vString
+  code = topCode & "\n" & code
+  echo "Collected code:"
+  echo code
+  # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
+  var blk = NbBlock(command: "nbCodeToJsOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
+  blk.context["transformedCode"] = code
+  doc.blocks.add blk
+  doc.blk = blk

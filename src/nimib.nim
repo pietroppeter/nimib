@@ -132,24 +132,8 @@ template nbRawHtml*(content: string) =
 template nbJsFromStringInit*(body: string): NbBlock =
   var result = NbBlock(command: "nbCodeToJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = body
-  result.context["isOwnFile"] = true
+  result.context["putAtTop"] = false
   result
-
-#[
-template nbJsFromCodeInit*(args: varargs[untyped]): NbBlock =
-  let (code, originalCode) = nimToJsString(false, args)
-  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = code
-  result
-
-template nbCodeToJsInit*(args: varargs[untyped]): NbBlock {.deprecated: "Use nbJsFromCodeInit or nbJsFromStringInit instead".} =
-  nbJsFromCodeInit(args)
-
-template addCodeToJs*(script: NbBlock, args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(false, args)
-  script.code &= "\n" & originalCode
-  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & code
-]#
 
 template addStringToJs*(script: NbBlock, body: string) =
   script.code &= "\n" & body
@@ -164,18 +148,30 @@ template nbJsFromString*(body: string) =
   script.addToDocAsJs
 
 template nbJsFromCode*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=true, args)
-  nb.nbJsScript.add "\n" & code
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
+  result.context["putAtTop"] = false
+  result.addToDocAsJs
+
+template nbJsFromCodeInBlock*(args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(putCodeInBlock=true, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
+  result.context["putAtTop"] = false
+  result.addToDocAsJs
 
 template nbJsFromCodeGlobal*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(compileToOwnFile=false, putCodeInBlock=false, args)
-  nb.nbJsGlobalScript.add "\n" & code
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
+  result.context["putAtTop"] = true
+  result.addToDocAsJs
 
 template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(compileToOwnFile=true, putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = "import std / json\n" & code
-  result.context["isOwnFile"] = true
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  var result = NbBlock(command: "nbCodeToJsOwnFile", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  result.context["transformedCode"] = code
   result.addToDocAsJs
 
 template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
@@ -206,20 +202,8 @@ template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:
   #   - in memory partial contains default mustache assets
   #   - to override/customize (for a bunch of documents) the best way is to modify a version on file
-  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling
-  if nb.nbJsGlobalScript.len > 0 or nb.nbJsScript.len > 0:
-    nb.nbJsGlobalScript = "import std / json\n" & nb.nbJsGlobalScript
-    let completeJsCode = nb.nbJsGlobalScript & "\n" & nb.nbJsScript
-    echo "Complete Js Code: \n", completeJsCode
-    var jsBlock = NbBlock(
-      command: "nbCodeToJs",
-      code: completeJsCode,
-      context: newContext(searchDirs = @[], partials = nb.partials),
-      output: ""
-    )
-    jsBlock.context["transformedCode"] = completeJsCode
-    jsBlock.context["isOwnFile"] = false
-    jsBlock.addToDocAsJs
+  #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
+  nb.nbCollectAllNbJs()
 
   nb.context.searchDirs(nb.templateDirs)
   nb.context.searchTable(nb.partials)

@@ -164,25 +164,35 @@ when moduleAvailable(karax/kbase):
       check nb.blk.context["transformedCode"].vString.len > 0
 
     test "nbJsFromCode":
-      let startLen = nb.nbJsScript.len
       nbJsFromCode:
         let a = 1
         echo a
-      check nb.nbJsScript.len > startLen
+      check nb.blk.context["transformedCode"].vString.len > 0
+      check "a = 1" in nb.blk.context["transformedCode"].vString
+      check "block:" notin nb.blk.context["transformedCode"].vString
 
     test "nbJsFromCode, capture variable":
-      let startLen = nb.nbJsScript.len
       let a = 1
       nbJsFromCode(a):
         echo a
-      check nb.nbJsScript.len > startLen
+      check nb.blk.context["transformedCode"].vString.len > 0
+      check "a = parseJson" in nb.blk.context["transformedCode"].vString
 
     test "nbJsFromCodeGlobal":
-      let startLen = nb.nbJsGlobalScript.len
       nbJsFromCodeGlobal:
         import std / dom
         var x = 1
-      check nb.nbJsGlobalScript.len > startLen
+      check nb.blk.context["transformedCode"].vString.len > 0
+      check "x = 1" in nb.blk.context["transformedCode"].vString
+      check "block:" notin nb.blk.context["transformedCode"].vString
+
+    test "nbJsFromCodeInBlock":
+      nbJsFromCodeInBlock:
+        let x = 3.14
+        echo x
+      check nb.blk.context["transformedCode"].vString.len > 0
+      check "x = 3.14" in nb.blk.context["transformedCode"].vString
+      check "block:" in nb.blk.context["transformedCode"].vString
 
     test "nbJsFromCodeOwnFile + exportc":
       nbJsFromCodeOwnFile:

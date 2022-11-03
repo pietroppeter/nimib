@@ -17,7 +17,7 @@ Here is a basic example:
 
 nbCode:
   let x = 3.14
-  nbJsFromCode(x):
+  nbJsFromCodeInBlock(x):
     echo "Hello world!"
     echo "Pi is roughly ", x
 

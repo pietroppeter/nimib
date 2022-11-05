@@ -2,14 +2,6 @@ import nimib
 
 nbInit
 
-template nimibCode*(body: untyped) =
-  newNbCodeBlock("nimibCode", body):
-    discard
-  body
-
-nb.partials["nimibCode"] = nb.partials["nbCode"]
-nb.renderPlans["nimibCode"] = nb.renderPlans["nbCode"]
-
 nbText: hlMd"""
 # Creating interactive components in nimib
 

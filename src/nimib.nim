@@ -79,6 +79,11 @@ template nbCodeInBlock*(body: untyped): untyped =
     nbCode:
       body
 
+template nimibCode*(body: untyped) =
+  newNbCodeBlock("nimibCode", body):
+    discard
+  body
+
 template nbText*(text: string) =
   newNbSlimBlock("nbText"):
     nb.blk.output = text

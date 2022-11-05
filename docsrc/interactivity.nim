@@ -16,17 +16,23 @@ nbText: hlMd"""
 Nimib can easily be used to create static content with `nbText` and `nbCode`, but did you know that you can create interactive
 content as well? And that you can do it all in Nim even! This can be achieved using either the `nbJsFromCode`-API or `nbKaraxCode`.
 They work by compiling Nim code into javascript and adding it to the resulting HTML file.
-This means that arbitrary Javascript can be written but also that Karax, which compiles to javascript, also can be used.
-The available template are:
-- `nbJsFromCode`: compile the code to js.
-- `nbJsFromCodeInBlock`: compile to js and put it inside a `block`.
-- `nbJsFromCodeGlobal`: compile to js and place at the top of the generated file.
-- `nbJsFromCodeOwnFile`: compile to js as its own file. (The blocks above are cumulated into a single big file)
-- `nbKaraxCode`: Sugar on top of `nbJsFromCodeOwnFile` for writing Karax components.
+This means that arbitrary Javascript can be written but also that Karax, which compiles to javascript, can be used.
 
-It's important to note that code inside `nbJsFromCode/InBlock/Global` will be pasted into a single file and compiled together.
-This has consequences which will be discussed further below, but the main advantages is that it reduces build times and allows
-for interactions between nbJs-blocks. 
+In the same way that code from nbCode blocks are all compiled into a single file,
+all code to be compiled in javascript will be put in a single file. 
+This has the advantage that a single compilation is performed
+and code from a previous block can be used in subsequent blocks.
+The api looks like this:
+
+- `nbJsFromCode`: nim code will be appended to the file and compiled during `nbSave`.
+- `nbJsFromCodeInBlock`: same as `nbJsFromCode` but the code is put inside a `block`.
+- `nbJsFromCodeGlobal`: the code here will be put at the top of the file.
+
+If you wish to compile to a separate file you can do that.
+Indeed this is what is done for a special block that allows you to use karax without boilerplate:
+
+- `nbJsFromCodeOwnFile`: compile to js as its own file.
+- `nbKaraxCode`: Sugar on top of `nbJsFromCodeOwnFile` for writing Karax components.
 
 ## nbJsFromCode
 This is the fundamental API used for compiling Nim-snippets to javascript.
@@ -54,7 +60,11 @@ nimibCode:
     echo "Pi is roughly ", captureVariable
 nbText: hlMd"""
 If you look at the console you should see that it prints out `Pi is roughly 3.14`.
-The capturing is done by serializng the variable to JSON, so the captured type has to support it.
+The capturing is done by serializing the variable to JSON, so the captured type has to support it.
+
+Capturing variables is especially important when creating reusable components as they allow you to
+generate the HTML using `nbRawHtml` and then pass in the ids of the elements by capturing them.
+Examples of this can be seen in the [counters tutorial](counters.html).
 
 
 ## nbJsFromCodeInBlock
@@ -110,7 +120,7 @@ nimibCode:
 
 nbText: hlMd"""
 ## nbJsFromCodeOwnFile
-The above-mentioned nbJs blocks are all compiled in the same file. But if you want to comile a code block
+The above-mentioned nbJs blocks are all compiled in the same file. But if you want to compile a code block
 in its own file you can use `nbJsFromCodeOwnFile`. This also means you can't access any variables defined
 in for example `nbJsFromCodeGlobal`.
 

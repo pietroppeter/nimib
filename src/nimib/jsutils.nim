@@ -177,8 +177,7 @@ proc nbCollectAllNbJs*(doc: var NbDoc) =
       else:
         code.add "\n" & blk.context["transformedCode"].vString
   code = topCode & "\n" & code
-  echo "Collected code:"
-  echo code
+
   # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
   var blk = NbBlock(command: "nbCodeToJsOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
   blk.context["transformedCode"] = code

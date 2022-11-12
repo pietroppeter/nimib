@@ -10,6 +10,9 @@ When contributing a fix, feature or example please add a new line to briefly exp
 ## 0.3.x
 
 * _add next change here_
+* Refactored nbJs (#148)
+  * **Breaking**: All `nbJsFromCode` blocks are now inserted into the same file (Compared to previously when each block was compiled as its own file).
+  So this will break any reusable components as you will get `redefinition of variable` errors. The solution is to use `nbJsFromCodeInBlock` which puts the code inside a `block`. Imports can't be done in there though so you must do them in a separate `nbJsFromCode` or `nbJsFromCodeGlobal` before.
 
 ## 0.3.2
 

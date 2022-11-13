@@ -110,7 +110,7 @@ in this repo:
 * [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
 * [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter](https://pietroppeter.github.io/nimib/counters.html): shows how to create reusable interactive widgets by creating a counter button.
-* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbJsFromCode` and `karax`.
+* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbKaraxCode` and `karax`.
 
 
 elsewhere:

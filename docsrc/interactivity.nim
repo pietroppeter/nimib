@@ -121,7 +121,7 @@ in for example `nbJsFromCodeGlobal`.
 If you want to write a component using karax this is the template for you!
 A normal karax program has the following structure:
 ```nim
-nbJsFromCode(rootId):
+nbJsFromCodeOwnFile(rootId):
   include karax / prelude
 
   karaxCode  # some code, set up global variables for example

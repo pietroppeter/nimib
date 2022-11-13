@@ -135,7 +135,7 @@ template nbRawHtml*(content: string) =
     nb.blk.output = content
 
 template nbJsFromStringInit*(body: string): NbBlock =
-  var result = NbBlock(command: "nbCodeFromJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbJsFromCode", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = body
   result.context["putAtTop"] = false
   result
@@ -154,28 +154,28 @@ template nbJsFromString*(body: string) =
 
 template nbJsFromCode*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result.context["putAtTop"] = false
   result.addToDocAsJs
 
 template nbJsFromCodeInBlock*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(putCodeInBlock=true, args)
-  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result.context["putAtTop"] = false
   result.addToDocAsJs
 
 template nbJsFromCodeGlobal*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbCodeToJs", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result.context["putAtTop"] = true
   result.addToDocAsJs
 
 template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbCodeToJsOwnFile", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbJsFromCodeOwnFile", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
   result.addToDocAsJs
 

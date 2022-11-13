@@ -33,8 +33,8 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <pre><code class="{{ext}} hljs">{{content}}</code></pre>
 """
 
-  doc.partials["nbCodeToJs"] = "{{>nbJsScriptNimSource}}" # the script is handled by collector block
-  doc.partials["nbCodeToJsOwnFile"] = """
+  doc.partials["nbJsFromCode"] = "{{>nbJsScriptNimSource}}" # the script is handled by collector block
+  doc.partials["nbJsFromCodeOwnFile"] = """
 {{>nbJsScriptNimSource}}
 {{>nbJsScript}}"""
   doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{#js_show_nim_source_message}}<p>{{js_show_nim_source_message}}</p>{{/js_show_nim_source_message}}{{>nbCodeSource}}{{/js_show_nim_source}}"
@@ -44,8 +44,8 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
   doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
-  doc.renderPlans["nbCodeToJsOwnFile"] = @["compileNimToJs", "highlightCode"]
-  doc.renderPlans["nbCodeFromJs"] = @["highlightCode"]
+  doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
+  doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
   doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()

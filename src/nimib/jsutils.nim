@@ -171,7 +171,7 @@ proc nbCollectAllNbJs*(doc: var NbDoc) =
   var topCode = "" # placed at the top (nbJsFromCodeGlobal)
   var code = ""
   for blk in doc.blocks:
-    if blk.command == "nbCodeToJs":
+    if blk.command == "nbJsFromCode":
       if blk.context["putAtTop"].vBool:
         topCode.add "\n" & blk.context["transformedCode"].vString
       else:
@@ -179,7 +179,7 @@ proc nbCollectAllNbJs*(doc: var NbDoc) =
   code = topCode & "\n" & code
 
   # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
-  var blk = NbBlock(command: "nbCodeToJsOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
+  var blk = NbBlock(command: "nbJsFromCodeOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
   blk.context["transformedCode"] = code
   doc.blocks.add blk
   doc.blk = blk

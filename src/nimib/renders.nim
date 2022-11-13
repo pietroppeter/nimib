@@ -45,7 +45,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
   doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
   doc.renderPlans["nbCodeToJsOwnFile"] = @["compileNimToJs", "highlightCode"]
-  doc.renderPlans["nbCodeToJs"] = @["highlightCode"]
+  doc.renderPlans["nbCodeFromJs"] = @["highlightCode"]
   doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()

@@ -38,6 +38,10 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <img src="{{url}}" alt="{{caption}}">
 <figcaption>{{caption}}</figcaption>
 </figure>"""
+  doc.partials["nbVideo"] = """<video controls>
+  <source src="{{url}}" type="video/{{ext}}">
+Your browser does not support the video element.
+</video>"""
   doc.partials["nbRawHtml"] = "{{&output}}"
   doc.partials["nbPython"] = """
 <pre><code class="python hljs">{{&code}}</code></pre>

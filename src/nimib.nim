@@ -89,12 +89,13 @@ template nbTextWithCode*(body: untyped) =
 
 template nbImage*(url: string, caption = "") =
   newNbSlimBlock("nbImage"):
-    nb.blk.context["url"] =
-      if isAbsolute(url) or url[0..3] == "http":
-        url
-      else:
-        nb.context["path_to_root"].vString / url
+    nb.blk.context["url"] = nb.relToRoot(url)
     nb.blk.context["caption"] = caption
+
+template nbVideo*(url: string) =
+  newNbSlimBlock("nbVideo"):
+    nb.blk.context["url"] = nb.relToRoot(url)
+    nb.blk.context["ext"] = url.splitFile.ext
 
 template nbFile*(name: string, content: string) =
   ## Generic string file

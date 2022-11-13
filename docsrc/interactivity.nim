@@ -160,6 +160,8 @@ nbText: "This is the output this code produces when called:"
 
 karaxExample()
 
+nbText: "Another example on how to use `nbKaraxCode` can be found in the [caesar document](./caesar.html) by clicking the `Show Source` button at the bottom."
+
 nbText: hlMd"""
 ## Internal workings
 ### nbJsFromCode

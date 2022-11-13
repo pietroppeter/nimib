@@ -167,30 +167,37 @@ when moduleAvailable(karax/kbase):
       nbJsFromCode:
         let a = 1
         echo a
-      check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+      check "a = 1" in nb.blk.context["transformedCode"].vString
+      check "block:" notin nb.blk.context["transformedCode"].vString
 
     test "nbJsFromCode, capture variable":
       let a = 1
       nbJsFromCode(a):
         echo a
-      check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+      check "a = parseJson" in nb.blk.context["transformedCode"].vString
 
-    test "nbJsFromCodeInit + addCodeToJs":
-      let script = nbJsFromCodeInit:
-        let a = 1
-      script.addCodeToJs:
-        echo a
-      script.addToDocAsJs
-      check nb.blk.code.len > 0
+    test "nbJsFromCodeGlobal":
+      nbJsFromCodeGlobal:
+        import std / dom
+        var x = 1
       check nb.blk.context["transformedCode"].vString.len > 0
+      check "x = 1" in nb.blk.context["transformedCode"].vString
+      check "block:" notin nb.blk.context["transformedCode"].vString
 
-    test "nbJsFromCode + exportc":
-      let script = nbJsFromCodeInit:
+    test "nbJsFromCodeInBlock":
+      nbJsFromCodeInBlock:
+        let x = 3.14
+        echo x
+      check nb.blk.context["transformedCode"].vString.len > 0
+      check "x = 3.14" in nb.blk.context["transformedCode"].vString
+      check "block:" in nb.blk.context["transformedCode"].vString
+
+    test "nbJsFromCodeOwnFile + exportc":
+      nbJsFromCodeOwnFile:
         proc setup() {.exportc.} =
           echo 1
-      script.addToDocAsJs
       check "setup()" in nb.blk.context["transformedCode"].vString
 
     test "nbKaraxCode":
@@ -202,22 +209,3 @@ when moduleAvailable(karax/kbase):
             text message
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
-    
-    #[ test "Interlaced nbJsFromCode": # failing because of #118
-      template foo() =
-        let script1 = nbJsFromCodeInit:
-          let a = 1
-        let script2 = nbJsFromCodeInit:
-          let b = 2
-        script1.addCodeToJs:
-          echo a
-        script2.addCodeToJs:
-          echo b
-
-        echo script1.context["transformedCode"]
-        echo script2.context["transformedCode"]
-        for script in [script1, script2]:
-          let code = script.context["transformedCode"].vString # eg. "\nlet a_469764253 = 1\n\necho a_469764292"
-          let splits = code.splitWhitespace() # @["let", "a_469764257", "=", "1", "echo", "a_469764296"]
-          check splits[1] == splits[5]
-      foo() ]#

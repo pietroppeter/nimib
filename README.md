@@ -110,7 +110,7 @@ in this repo:
 * [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
 * [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter](https://pietroppeter.github.io/nimib/counters.html): shows how to create reusable interactive widgets by creating a counter button.
-* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbJsFromCode` and `karax`.
+* [caesar](https://pietroppeter.github.io/nimib/caesar.html): a Caesar cipher implemented using `nbKaraxCode` and `karax`.
 
 
 elsewhere:
@@ -153,7 +153,7 @@ Currently most of the documentation on customization is given by the examples.
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files](https://pietroppeter.github.io/nimib/files.html))
-* `nbRawOutput`: called with string content, it will add the raw content to document (html backend)
+* `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
 * `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;

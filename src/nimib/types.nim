@@ -33,6 +33,7 @@ type
     renderPlans*: Table[string, seq[string]]
     renderProcs*: Table[string, NbRenderProc]
     id: int
+    nbJsCounter*: int 
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

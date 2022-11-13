@@ -8,8 +8,16 @@ made this development possible.
 When contributing a fix, feature or example please add a new line to briefly explain the changes. It will be used as release documentation here: https://github.com/pietroppeter/nimib/releases
 
 ## 0.3.x
-
 * _add next change here_
+
+## 0.3.3
+
+* Refactored nbJs (#148)
+  * **Breaking**: All `nbJsFromCode` blocks are now inserted into the same file (Compared to previously when each block was compiled as its own file).
+  So this will break any reusable components as you will get `redefinition of variable` errors. The solution is to use `nbJsFromCodeInBlock` which puts the code inside a `block`. Imports can't be done in there though so you must do them in a separate `nbJsFromCode` or `nbJsFromCodeGlobal` before. 
+  * See [https://pietroppeter.github.io/nimib/interactivity.html](https://pietroppeter.github.io/nimib/interactivity.html) for a more detailed guide on how to use the new API.
+* Added `nimibCode` template. One problem with using `nbCode` is that you can't show *nimib* code using it because it nests blocks and wrecks havoc.
+So `nimibCode` allows you to show *nimib* code but at the cost of not capturing output of the code.
 
 ## 0.3.2
 

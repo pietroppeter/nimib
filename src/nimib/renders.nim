@@ -1,5 +1,5 @@
 import std / [strutils, tables, sugar, os, strformat, sequtils]
-import types, markdown, mustache
+import ./types, ./jsutils, markdown, mustache
 export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
 import highlight
 import mustachepkg/values
@@ -10,22 +10,6 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
-proc compileNimToJs(doc: var NbDoc, blk: var NbBlock) =
-  let tempdir = getTempDir() / "nimib"
-  createDir(tempdir)
-  let (dir, filename, ext) = doc.thisFile.splitFile()
-  let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
-  let jsfile = tempdir / "out.js"
-  writeFile(nimfile, blk.context["transformedCode"].vString)
-  let kxiname = "nimib_kxi_" & $doc.newId()
-  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
-  if errorCode != 0:
-    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
-  removeFile(nimfile)
-  let jscode = readFile(jsfile)
-  removeFile(jsfile)
-  blk.output = jscode
-  blk.context["output"] = jscode
 
 proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbText"] = "{{&outputToHtml}}"
@@ -34,6 +18,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSource"] = "<pre><code class=\"nim hljs\">{{&codeHighlighted}}</code></pre>"
   doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output"><samp>{{output}}</samp></pre>{{/output}}"""
+  doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """<figure>
 <img src="{{url}}" alt="{{caption}}">
 <figcaption>{{caption}}</figcaption>
@@ -48,7 +33,8 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <pre><code class="{{ext}} hljs">{{content}}</code></pre>
 """
 
-  doc.partials["nbCodeToJs"] = """
+  doc.partials["nbJsFromCode"] = "{{>nbJsScriptNimSource}}" # the script is handled by collector block
+  doc.partials["nbJsFromCodeOwnFile"] = """
 {{>nbJsScriptNimSource}}
 {{>nbJsScript}}"""
   doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{#js_show_nim_source_message}}<p>{{js_show_nim_source_message}}</p>{{/js_show_nim_source_message}}{{>nbCodeSource}}{{/js_show_nim_source}}"
@@ -58,7 +44,9 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
   doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
-  doc.renderPlans["nbCodeToJs"] = @["compileNimToJs", "highlightCode"]
+  doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
+  doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
+  doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
@@ -91,6 +79,7 @@ proc useMdBackend*(doc: var NbDoc) =
 
 {{/output}}
 """
+  doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """
 ![{{caption}}]({{url}})
 

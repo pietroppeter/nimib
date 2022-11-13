@@ -12,7 +12,8 @@ When contributing a fix, feature or example please add a new line to briefly exp
 * _add next change here_
 * Refactored nbJs (#148)
   * **Breaking**: All `nbJsFromCode` blocks are now inserted into the same file (Compared to previously when each block was compiled as its own file).
-  So this will break any reusable components as you will get `redefinition of variable` errors. The solution is to use `nbJsFromCodeInBlock` which puts the code inside a `block`. Imports can't be done in there though so you must do them in a separate `nbJsFromCode` or `nbJsFromCodeGlobal` before.
+  So this will break any reusable components as you will get `redefinition of variable` errors. The solution is to use `nbJsFromCodeInBlock` which puts the code inside a `block`. Imports can't be done in there though so you must do them in a separate `nbJsFromCode` or `nbJsFromCodeGlobal` before. 
+  * See [https://pietroppeter.github.io/nimib/interactivity.html](https://pietroppeter.github.io/nimib/interactivity.html) for a more detailed guide on how to use the new API.
 
 ## 0.3.2
 

@@ -34,7 +34,10 @@ you should be reading one of the two, for the other:
 * [README.md](https://github.com/pietroppeter/nimib)
 * [index.html](https://pietroppeter.github.io/nimib)
 
-Nimib was presented in [NimConf2021](https://conf.nim-lang.org),
+Nimib was presented at [NimConf2022](https://nim-lang.org/nimconf2022/), see the [slides](https://github.com/pietroppeter/nimconf22-nimib/) and click thumbnail to see video.
+[![nimib nimconf2022 thumbnail](https://github.com/pietroppeter/nimib/raw/d4399747aa4c4435d27e0038046ad0311a92f21d/assets/nimib-nimconf-thumbnail.png)](https://www.youtube.com/watch?v=hZ7wX1kgnuc)
+
+Nimib was also presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
 and [slides](https://github.com/pietroppeter/nimconf2021). 
 
@@ -364,4 +367,7 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
+
+
+
 

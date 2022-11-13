@@ -135,7 +135,7 @@ template nbRawHtml*(content: string) =
     nb.blk.output = content
 
 template nbJsFromStringInit*(body: string): NbBlock =
-  var result = NbBlock(command: "nbCodeToJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
+  var result = NbBlock(command: "nbCodeFromJs", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = body
   result.context["putAtTop"] = false
   result

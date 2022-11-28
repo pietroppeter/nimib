@@ -197,6 +197,11 @@ template nbJsShowSource*(message: string = "") =
 template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbJsShowSource instead".} =
   nbJsShowSource(message)
 
+template nbCodeDisplay*(tmplCall: untyped, body: untyped) =
+  newNbCodeBlock("nbCode", body):
+    discard
+  tmplCall:
+    body
 
 template nbClearOutput*() =
   if not nb.blk.isNil:

@@ -189,14 +189,27 @@ when moduleAvailable(karax/kbase):
     nbRawHtml: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
-template nbJsShowSource*(message: string = "") =
+template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
   nb.blk.context["js_show_nim_source"] = true
   if message.len > 0:
     nb.blk.context["js_show_nim_source_message"] = message
 
-template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbJsShowSource instead".} =
+template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
   nbJsShowSource(message)
 
+template nbCodeDisplay*(tmplCall: untyped, body: untyped) =
+  ## display codes used in a template (e.g. nbJsFromCode) after the template call
+  tmplCall:
+    body
+  newNbCodeBlock("nbCode", body):
+    discard
+
+template nbCodeAnd*(tmplCall: untyped, body: untyped) =
+  ## can be used to run code both in c and js backends (e.g. nbCodeAnd(nbJsFromCode))
+  nbCode: # this should work because template name starts with nbCode
+    body
+  tmplCall:
+    body
 
 template nbClearOutput*() =
   if not nb.blk.isNil:

@@ -198,8 +198,16 @@ template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbJsShow
   nbJsShowSource(message)
 
 template nbCodeDisplay*(tmplCall: untyped, body: untyped) =
+  ## display codes used in a template (e.g. nbJsFromCode) after the template call
+  tmplCall:
+    body
   newNbCodeBlock("nbCode", body):
     discard
+
+template nbCodeAnd*(tmplCall: untyped, body: untyped) =
+  ## can be used to run code both in c and js backends (e.g. nbCodeAnd(nbJsFromCode))
+  nbCode: # this should work because template name starts with nbCode
+    body
   tmplCall:
     body
 

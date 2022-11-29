@@ -209,3 +209,30 @@ when moduleAvailable(karax/kbase):
             text message
       check nb.blk.code.len > 0
       check nb.blk.context["transformedCode"].vString.len > 0
+
+    test "nbCodeDisplay":
+      nbCodeDisplay(nbJsFromCode):
+        import p5
+        echo "hi p5"
+        draw:
+          ellipse(mouseX, mouseY, 20)
+      check nb.blocks[^1].command == "nbCode"
+      check nb.blocks[^2].command == "nbJsFromCode"
+      check nb.blocks[^2].context["transformedCode"].vString.len > 0
+      check "ellipse(mouseX, mouseY, 20)" in nb.blocks[^2].context["transformedCode"].vString
+      when defined(nimibCodeFromAst):
+        check nb.blocks[^1].code.startsWith("import\n  p5")
+      else:
+        check nb.blocks[^1].code.startsWith("import p5")
+      check nb.blocks[^1].output == ""
+
+    test "nbCodeAnd":
+      nbCodeAnd(nbJsFromCode):
+        let you = "me"
+        echo "hi ", you
+      check nb.blocks[^2].command == "nbCode"
+      check nb.blocks[^1].command == "nbJsFromCode"
+      check nb.blocks[^1].context["transformedCode"].vString.len > 0
+      check "you = \"me\"" in nb.blocks[^1].context["transformedCode"].vString
+      check nb.blocks[^2].code.startsWith("let you =")
+      check nb.blocks[^2].output == "hi me\n"

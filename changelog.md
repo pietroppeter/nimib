@@ -10,6 +10,15 @@ When contributing a fix, feature or example please add a new line to briefly exp
 ## 0.3.x
 * _add next change here_
 
+## 0.3.4
+
+* added `nbCodeDisplay` and `nbCodeAnd` (#158).
+  They provide an easy way to:
+    - display code in `nbJsFromCode` and friends
+    - run code both in js and c backend
+  They are also generic templates that can be used with other templates
+  and do not depend on any specificities of `nbJsFromCode` templates.
+
 ## 0.3.3
 
 * Refactored nbJs (#148)

@@ -163,6 +163,36 @@ karaxExample()
 nbText: "Another example on how to use `nbKaraxCode` can be found in the [caesar document](./caesar.html) by clicking the `Show Source` button at the bottom."
 
 nbText: hlMd"""
+## nbCodeDisplay and nbCodeAnd
+
+We introduce in this section two generic templates that can be useful when used with the
+templates of `nbJsFromCode` family.
+
+### Display code in nbJsFromCode with nbCodeDisplay
+
+If you wish to display the code used in one of `nbJsFromCode`, `nbJsFromCodeInBlock`, `nbJsFromCodeGlobal`
+you can use `nbCodeDisplay` (which can be used in general with any template that does not show code by itself):
+"""
+nimibCode:
+  nbCodeDisplay(nbJsFromCodeInBlock):
+    echo "hi nbCodeDisplay"
+nbText: hlMd"""
+
+Note that in this same document we gave examples of two other methods
+to show code:
+
+- `nimibCode`: to show the code as you would use it in a nimib file
+- `nbCode` + template: create a template (e.g. `karaxExample`) inside a `nbCode` and call the template later.
+
+### Running the same code with both c and js backends using nbCodeAnd
+
+If you want to run some code both in C and js backends, you can use `nbCodeAnd`:
+"""
+nimibCode:
+  nbCodeAnd(nbJsFromCodeInBlock):
+    echo "hi nbCodeAnd"
+
+nbText: hlMd"""
 ## Internal workings
 ### nbJsFromCode
 Any code defined in `nbJsFromCode`, `nbJsFromCodeInBlock` and `nbJsFromCodeGlobal` will be pasted into a common file.

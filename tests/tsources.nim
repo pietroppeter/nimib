@@ -126,5 +126,13 @@ end"""
     expected = "echo y"
     check
 
+    template `&`(a,b: int) = discard
+
+    nbCode:
+      1 &
+        2
+
+    expected = "1 &\n  2"
+    check
 
   

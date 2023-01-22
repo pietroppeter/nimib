@@ -135,4 +135,10 @@ end"""
     expected = "1 &\n  2"
     check
 
+    nbCode:
+      nb.context["no_source"] = true
+
+    expected = "nb.context[\"no_source\"] = true"
+    check
+
   

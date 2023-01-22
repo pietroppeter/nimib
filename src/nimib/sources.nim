@@ -41,7 +41,7 @@ proc startPos*(node: NimNode): Pos =
       result = node[0].startPos()
 
 proc startPosNew(node: NimNode): Pos =
-  if node.kind in {nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit}:
+  if node.kind in {nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit, nnkAsgn, nnkDotExpr, nnkBracketExpr}:
     # needed for it to work in templates.
     return node[0].startPosNew()
   elif node.kind in {nnkInfix}:

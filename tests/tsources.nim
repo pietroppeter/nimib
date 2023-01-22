@@ -7,8 +7,9 @@ suite "test sources":
     # the replace stuff needed on windows where the lines read from file will have windows native new lines
     test $currentTest:
       actual = nbBlock.code
-      echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
       check actual.nbNormalize == expected.nbNormalize
+      if actual.nbNormalize != expected.nbNormalize:
+        echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
     currentTest += 1
 
   var currentTest: int
@@ -106,5 +107,24 @@ end"""
     # The newline at the beginning of the block!
     expected = "echo y"
     check
+
+    nbCode:
+      block:
+        let
+          b = 1
+
+    expected = "block:\n  let\n    b = 1"
+    check
+
+    template notNbCode(body: untyped) =
+      nbCode:
+        body
+
+    notNbCode:
+      echo y
+
+    expected = "echo y"
+    check
+
 
   

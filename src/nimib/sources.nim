@@ -11,6 +11,16 @@ import types
 # And credits to @Yardanico for making a previous attempt which @hugogranstrom have taken much inspiration from
 # when implementing this.
 
+## TODO:
+## Use add filename to LineInfo
+## Use a table[filename, filecontent] to query for the lines of code.
+## Find startLine is easy now, but we need to still do some analysis.
+## Look to the left on the start line:
+##  if empty: we are in a multiline block, check above for empty lines and comments until we reach non-empty non-comment line.
+##  if something there: we start on the same line as command
+## What if we have multiline expr that starts on the command line? Indentation?
+## Are there cases other than triple-qouted strings that we won't catch using finishPos? If not, we check for unclosed strings.
+
 type
   Pos* = object
     line*: int
@@ -29,6 +39,12 @@ proc startPos*(node: NimNode): Pos =
       result = node[1].startPos()
     else:
       result = node[0].startPos()
+
+proc startPosNew(node: NimNode): Pos =
+  if node.kind in {nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit}:
+    # needed for it to work in templates.
+    return node[0].startPosNew()
+  return toPos(node.lineInfoObj())
 
 proc finishPos*(node: NimNode): Pos =
   ## Get the ending position of a NimNode. Corrections will be needed for certains cases though.
@@ -56,6 +72,8 @@ proc finishPos*(node: NimNode): Pos =
 proc isCommandLine*(s: string, command: string): bool =
   nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command))
 
+proc isCommentLine*(s: string): bool =
+  s.strip.startsWith('#')
 
 proc findStartLine*(source: seq[string], command: string, startPos: int): int =
   if source[startPos].isCommandLine(command):
@@ -68,6 +86,22 @@ proc findStartLine*(source: seq[string], command: string, startPos: int): int =
   # Remove empty lines at the beginning of the block
   while source[result].isEmptyOrWhitespace:
     inc result
+
+proc findStartLineNew*(source: seq[string], startPos: Pos): int =
+  let line = source[startPos.line - 1]
+  let preline = line[0 ..< startPos.column - 1]
+  # Multiline, we need to check further up for comments
+  if preline.isEmptyOrWhitespace:
+    result = startPos.line - 1
+    # Make sure we catch all comments
+    while source[result-1].isCommentLine() or source[result-1].isEmptyOrWhitespace():
+      dec result
+    # Now remove all empty lines
+    while source[result].isEmptyOrWhitespace():
+      inc result
+  else: # starts on same line as command
+    return startPos.line - 1
+
 
 proc findEndLine*(source: seq[string], command: string, startLine, endPos: int): int =
   result = endPos
@@ -89,6 +123,41 @@ proc findEndLine*(source: seq[string], command: string, startLine, endPos: int):
     let baseIndentStr = " ".repeat(baseIndent)
     while result < source.high and (source[result+1].startsWith(baseIndentStr) or source[result+1].isEmptyOrWhitespace):
       inc result
+
+proc getCodeBlockNew*(source, command: string, startPos, endPos: Pos): string =
+  ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.
+  let rawLines = source.splitLines()
+  let rawStartLine = startPos.line - 1
+  let rawStartCol = startPos.column - 1
+  var startLine = findStartLineNew(rawLines, startPos)
+  var endLine = findEndLine(rawLines, command, startLine, endPos.line - 1)
+
+  var lines = rawLines[startLine .. endLine]
+
+  let startsOnCommandLine = startLine == rawStartLine and not lines[0][0 ..< rawStartCol].isEmptyOrWhitespace
+  if startsOnCommandLine:
+    lines[0] = lines[0][rawStartCol .. ^1].strip()
+  
+  if startLine == endLine and startsOnCommandLine:
+    # single line expression
+    var line = lines[0] # doesn't include command, includes opening parenthesis
+    while line.startsWith('(') and line.endsWith(')'):
+      line = line[1 .. ^2].strip()
+
+    result = line
+  else: # multi-line expression
+    let baseIndent = skipWhile(rawLines[startLine], {' '})
+    var preserveIndent: bool = false
+    for i in 0 .. lines.high:
+      let line = lines[i]
+      let nonMatching = line.count("\"\"\"") mod 2 == 1
+      if not preserveIndent and not (i == 0 and startsOnCommandLine): # don't de-indent first line if it starts on command line
+        lines[i] = line.substr(baseIndent)
+      if nonMatching: # there is a non-matching triple-quote string
+        preserveIndent = not preserveIndent
+    result = lines.join("\n")
+      
+    
 
 
 proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
@@ -227,7 +296,7 @@ func getCodeBlockOld*(source: string, command: string, startPos, endPos: Pos): s
 macro getCodeAsInSource*(source: string, command: static string, body: untyped): string =
   ## Returns string for the code in body from source. 
   # substitute for `toStr` in blocks.nim
-  let startPos = startPos(body)
+  let startPos = startPosNew(body)
   let endPos = finishPos(body)
   result = quote do:
-    getCodeBlock(`source`, `command`, `startPos`, `endPos`)
+    getCodeBlockNew(`source`, `command`, `startPos`, `endPos`)

@@ -23,11 +23,12 @@ import types
 
 type
   Pos* = object
+    filename*: string
     line*: int
     column*: int
 
 proc toPos*(info: LineInfo): Pos =
-  Pos(line: info.line, column: info.column)
+  Pos(line: info.line, column: info.column, filename: info.filename)
 
 proc startPos*(node: NimNode): Pos =
   ## Get the starting position of a NimNode. Corrections will be needed for certains cases though.
@@ -299,6 +300,9 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
   ## Returns string for the code in body from source. 
   # substitute for `toStr` in blocks.nim
   let startPos = startPosNew(body)
+  let filename = startPos.filename.newLit
   let endPos = finishPos(body)
   result = quote do:
-    getCodeBlockNew(`source`, `command`, `startPos`, `endPos`)
+    if `filename` notin nb.sourceFiles:
+      nb.sourceFiles[`filename`] = readFile(`filename`)
+    getCodeBlockNew(nb.sourceFiles[`filename`], `command`, `startPos`, `endPos`)

@@ -140,7 +140,10 @@ proc getCodeBlockNew*(source, command: string, startPos, endPos: Pos): string =
 
   var lines = rawLines[startLine .. endLine]
 
-  let startsOnCommandLine = startLine == rawStartLine and not lines[0][0 ..< rawStartCol].isEmptyOrWhitespace
+  let startsOnCommandLine = block:
+    let preline = lines[0][0 ..< rawStartCol]
+    startLine == rawStartLine and (not preline.isEmptyOrWhitespace) and (not (preline.nimIdentNormalize.strip() == "for"))
+    
   if startsOnCommandLine:
     lines[0] = lines[0][rawStartCol .. ^1].strip()
   

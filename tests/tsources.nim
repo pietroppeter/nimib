@@ -141,4 +141,8 @@ end"""
     expected = "nb.context[\"no_source\"] = true"
     check
 
+    nbCode: discard
+    expected = "discard"
+    check
+
   

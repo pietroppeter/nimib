@@ -42,12 +42,14 @@ proc startPos*(node: NimNode): Pos =
       result = node[0].startPos()
 
 proc startPosNew(node: NimNode): Pos =
-  if node.kind in {nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit, nnkAsgn, nnkDotExpr, nnkBracketExpr}:
+  case node.kind
+  of nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit, nnkAsgn, nnkDotExpr, nnkBracketExpr:
     # needed for it to work in templates.
     return node[0].startPosNew()
-  elif node.kind in {nnkInfix}:
+  of nnkInfix:
     return node[1].startPosNew()
-  return toPos(node.lineInfoObj())
+  else:
+    return toPos(node.lineInfoObj())
 
 proc finishPos*(node: NimNode): Pos =
   ## Get the ending position of a NimNode. Corrections will be needed for certains cases though.
@@ -90,6 +92,7 @@ proc findStartLine*(source: seq[string], command: string, startPos: int): int =
   while source[result].isEmptyOrWhitespace:
     inc result
 
+
 proc findStartLineNew*(source: seq[string], startPos: Pos): int =
   let line = source[startPos.line - 1]
   let preline = line[0 ..< startPos.column - 1]
@@ -97,7 +100,7 @@ proc findStartLineNew*(source: seq[string], startPos: Pos): int =
   if preline.isEmptyOrWhitespace:
     result = startPos.line - 1
     # Make sure we catch all comments
-    while source[result-1].isCommentLine() or source[result-1].isEmptyOrWhitespace():
+    while source[result-1].isCommentLine() or source[result-1].isEmptyOrWhitespace() or source[result-1].nimIdentNormalize.strip() == "type":
       dec result
     # Now remove all empty lines
     while source[result].isEmptyOrWhitespace():

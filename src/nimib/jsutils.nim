@@ -1,4 +1,4 @@
-import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, os]
+import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, os, hashes]
 import ./types
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
@@ -142,7 +142,7 @@ proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
   createDir(tempdir)
   let (dir, filename, ext) = doc.thisFile.splitFile()
   let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
-  let jsfile = tempdir / "out.js"
+  let jsfile = tempdir / &"out{hash(doc.thisFile)}.js"
   var codeText = blk.context["transformedCode"].vString
   let nbJsCounter = doc.nbJsCounter
   doc.nbJsCounter += 1
@@ -178,8 +178,9 @@ proc nbCollectAllNbJs*(doc: var NbDoc) =
         code.add "\n" & blk.context["transformedCode"].vString
   code = topCode & "\n" & code
 
-  # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
-  var blk = NbBlock(command: "nbJsFromCodeOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
-  blk.context["transformedCode"] = code
-  doc.blocks.add blk
-  doc.blk = blk
+  if not code.isEmptyOrWhitespace:
+    # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
+    var blk = NbBlock(command: "nbJsFromCodeOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
+    blk.context["transformedCode"] = code
+    doc.blocks.add blk
+    doc.blk = blk

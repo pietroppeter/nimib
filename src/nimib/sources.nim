@@ -27,6 +27,9 @@ type
     line*: int
     column*: int
 
+proc `<`*(p1, p2: Pos): bool =
+  (p1.line, p1.column) < (p2.line, p2.column)
+
 proc toPos*(info: LineInfo): Pos =
   Pos(line: info.line, column: info.column, filename: info.filename)
 
@@ -43,13 +46,18 @@ proc startPos*(node: NimNode): Pos =
 
 proc startPosNew(node: NimNode): Pos =
   case node.kind
-  of nnkStmtList, nnkCall, nnkCommand, nnkCallStrLit, nnkAsgn, nnkDotExpr, nnkBracketExpr:
-    # needed for it to work in templates.
+  of nnkStmtList:
     return node[0].startPosNew()
-  of nnkInfix:
-    return node[1].startPosNew()
   else:
-    return toPos(node.lineInfoObj())
+    result = toPos(node.lineInfoObj())
+    for child in node.children:
+      let childPos = child.startPosNew()
+      # If we can't get the line info for some reason, skip it!
+      if childPos.line == 0: continue
+      # Add check for correct file here somewhere
+      if childPos < result:
+        result = childPos
+
 
 proc finishPos*(node: NimNode): Pos =
   ## Get the ending position of a NimNode. Corrections will be needed for certains cases though.

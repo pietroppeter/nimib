@@ -151,4 +151,11 @@ end"""
     expected = "for n in 0 .. 1:\n  discard"
     check
 
+    template nbCodeInTemplate =
+      nbCode:
+        nb.renderPlans["nbText"] = @["mdOutputToHtml"]
+
+    nbCodeInTemplate()
+    expected = """nb.renderPlans["nbText"] = @["mdOutputToHtml"]"""
+    check
   

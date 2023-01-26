@@ -158,4 +158,9 @@ end"""
     nbCodeInTemplate()
     expected = """nb.renderPlans["nbText"] = @["mdOutputToHtml"]"""
     check
+
+    nbCode:
+      type A = object
+    expected = "type A = object"
+    check
   

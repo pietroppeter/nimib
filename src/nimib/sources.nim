@@ -17,6 +17,7 @@ type
     column*: int
 
 proc `<`*(p1, p2: Pos): bool =
+  assert p1.filename == p2.filename, "Code from two different files were compared! Please open an issue on nimib's Github with a minimal reproducible example."
   (p1.line, p1.column) < (p2.line, p2.column)
 
 proc toPos*(info: LineInfo): Pos =

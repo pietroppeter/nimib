@@ -1,7 +1,7 @@
 # Package
 
 version       = "0.3.5"
-author        = "Pietro Peterlongo"
+author        = "Pietro Peterlongo & Hugo Granström"
 description   = "nimib 🐳 - nim 👑 driven ⛵ publishing ✍"
 license       = "MIT"
 srcDir        = "src"

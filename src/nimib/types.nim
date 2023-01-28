@@ -20,6 +20,7 @@ type
     thisFile*: AbsoluteFile
     filename*: string
     source*: string
+    sourceFiles*: Table[string, string]
     initDir*: AbsoluteDir
     options*: NbOptions
     cfg*: NbConfig

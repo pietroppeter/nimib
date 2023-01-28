@@ -7,8 +7,9 @@ suite "test sources":
     # the replace stuff needed on windows where the lines read from file will have windows native new lines
     test $currentTest:
       actual = nbBlock.code
-      echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
       check actual.nbNormalize == expected.nbNormalize
+      if actual.nbNormalize != expected.nbNormalize:
+        echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
     currentTest += 1
 
   var currentTest: int
@@ -107,4 +108,59 @@ end"""
     expected = "echo y"
     check
 
+    nbCode:
+      block:
+        let
+          b = 1
+
+    expected = "block:\n  let\n    b = 1"
+    check
+
+    template notNbCode(body: untyped) =
+      nbCode:
+        body
+
+    notNbCode:
+      echo y
+
+    expected = "echo y"
+    check
+
+    template `&`(a,b: int) = discard
+
+    nbCode:
+      1 &
+        2
+
+    expected = "1 &\n  2"
+    check
+
+    nbCode:
+      nb.context["no_source"] = true
+
+    expected = "nb.context[\"no_source\"] = true"
+    check
+
+    nbCode: discard
+    expected = "discard"
+    check
+
+    nbCode:
+      for n in 0 .. 1:
+        discard
+    expected = "for n in 0 .. 1:\n  discard"
+    check
+
+    template nbCodeInTemplate =
+      nbCode:
+        nb.renderPlans["nbText"] = @["mdOutputToHtml"]
+
+    nbCodeInTemplate()
+    expected = """nb.renderPlans["nbText"] = @["mdOutputToHtml"]"""
+    check
+
+    nbCode:
+      type A = object
+    expected = "type A = object"
+    check
   

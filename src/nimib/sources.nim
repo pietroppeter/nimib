@@ -17,7 +17,10 @@ type
     column*: int
 
 proc `<`*(p1, p2: Pos): bool =
-  assert p1.filename == p2.filename, "Code from two different files were compared! Please open an issue on nimib's Github with a minimal reproducible example."
+  doAssert p1.filename == p2.filename, """
+  Code from two different files were found in the same nbCode!
+  If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
+  If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
   (p1.line, p1.column) < (p2.line, p2.column)
 
 proc toPos*(info: LineInfo): Pos =
@@ -146,7 +149,15 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
   let startPos = startPos(body)
   let filename = startPos.filename.newLit
   let endPos = finishPos(body)
+  let endFilename = endPos.filename.newLit
+
   result = quote do:
     if `filename` notin nb.sourceFiles:
       nb.sourceFiles[`filename`] = readFile(`filename`)
+
+    doAssert `endFilename` == `filename`, """
+    Code from two different files were found in the same nbCode!
+    If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
+    If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
+
     getCodeBlock(nb.sourceFiles[`filename`], `command`, `startPos`, `endPos`)

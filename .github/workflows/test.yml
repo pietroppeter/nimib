@@ -7,11 +7,18 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nim:
+          - '1.6.x'
+          - 'stable'
+          - 'devel'
+    name: Nim ${{ matrix.nim }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: jiro4989/setup-nim-action@v1.3.15
+      - uses: actions/checkout@v3
+      - uses: jiro4989/setup-nim-action@v1.4.3
         with:
-          nim-version: '1.6.x'
+          nim-version: ${{ matrix.nim }}
       - run: nimble -y install
       - run: nimble docsdeps
       - run: nimble test

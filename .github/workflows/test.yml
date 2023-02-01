@@ -13,6 +13,7 @@ jobs:
           - '1.6.x'
           - 'stable'
           - 'devel'
+      fail-fast: false
     name: Nim ${{ matrix.nim }}
     steps:
       - uses: actions/checkout@v3

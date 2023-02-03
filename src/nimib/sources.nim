@@ -151,6 +151,7 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
   let endPos = finishPos(body)
   let endFilename = endPos.filename.newLit
 
+
   let endPosLit = endPos.newLit
   let startPosLit = startPos.newLit
 
@@ -163,4 +164,6 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
     If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
     If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
 
+
     getCodeBlock(nb.sourceFiles[`filename`], `command`, `startPosLit`, `endPosLit`)
+

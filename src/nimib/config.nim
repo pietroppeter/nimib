@@ -17,9 +17,6 @@ proc optOverride*(doc: var NbDoc) =
 proc customToJson*(table: parsetoml.TomlTableRef): JsonNode
 
 proc customToJson*(value: parsetoml.TomlValueRef): JsonNode =
-  ## Converts a TOML value to a JSON node. This uses the format specified in
-  ## the validation suite for it's output:
-  ## https://github.com/BurntSushi/toml-test#example-json-encoding
   case value.kind:
     of TomlValueKind.Int:
       %* value.intVal
@@ -63,9 +60,6 @@ proc customToJson*(value: parsetoml.TomlValueRef): JsonNode =
       %*{"type": "ERROR"}
 
 proc customToJson*(table: parsetoml.TomlTableRef): JsonNode =
-  ## Converts a TOML table to a JSON node. This uses the format specified in
-  ## the validation suite for it's output:
-  ## https://github.com/BurntSushi/toml-test#example-json-encoding
   result = newJObject()
   for key, value in pairs(table):
     result[key] = value.customToJson
@@ -75,8 +69,6 @@ proc loadTomlSection*[T](content, section: string, _: typedesc[T]): T =
   let toml = parsetoml.parseString(content)
   result = T()
   if section in toml:
-    echo toml[section].toJson()
-    echo toml[section].customToJson()
     result = toml[section].customToJson().to(T)
 
 proc loadNimibCfg*(cfgName: string): tuple[found: bool, dir: AbsoluteDir, raw: string, nb: NbConfig] =

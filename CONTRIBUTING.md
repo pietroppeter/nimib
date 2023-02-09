@@ -6,7 +6,16 @@ But this is the guide for contributing code to nimib!
 ## What can I help with?
 Both small and large contributions are welcomed! If you have an idea, open an issue and discuss it with us. Otherwise,
 have a look at the [open issues](https://github.com/pietroppeter/nimib/issues) and see if anything peaks your interest.
+
+There might be some issues marked as [good first issue](https://github.com/pietroppeter/nimib/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22):
+those are issues where we have already a clear idea on what needs to be done and sometimes even code for the fix;
+they are especially good to familiarize oneself with the codebase and the process of contributing to open source.
+
 You can also use github [discussion forum](https://github.com/pietroppeter/nimib/discussions) if you are not sure about what to ask.
+
+We also organize [Nimib speaking hours](https://github.com/pietroppeter/nimib/discussions/categories/nimib-speaking-hours), a semi regular
+meeting of nimib's maintainers (Pietro and Hugo) where we welcome users and contributors (even potential ones).
+These are announced on the discussion forum, [look at the special forum category](https://github.com/pietroppeter/nimib/discussions/categories/nimib-speaking-hours) for when we have the next one (or ask if it is not yet planned).
 
 ## Project Structure
 There are 4 main folders in the project:
@@ -39,7 +48,6 @@ There are 4 main folders in the project:
 - add an example document or modify an existing document to show usage
 - add a mention of the new block in the readme
   - ⚠️ currently `README.md` depends on `docsrc\index.nim`, you will have to modify `docsrc\index.nim` and run `nimble readme` to update the readme. we will remove thsi dependency see https://github.com/pietroppeter/nimib/issues/141 
-- add a line in the `CHANGELOG.md`
 
 ## CI and deploy preview
 

@@ -1,4 +1,4 @@
-import types, parsetoml, std / [json, os, math, sequtils]
+import types, parsetoml, jsony, std / [json, os, math, sequtils]
 
 proc hasCfg*(doc: var NbDoc): bool = doc.cfgDir.string != ""
 
@@ -69,7 +69,7 @@ proc loadTomlSection*[T](content, section: string, _: typedesc[T]): T =
   let toml = parsetoml.parseString(content)
   result = T()
   if section in toml:
-    result = toml[section].customToJson().to(T)
+    result = ($toml[section].customToJson()).fromJson(T)
 
 proc loadNimibCfg*(cfgName: string): tuple[found: bool, dir: AbsoluteDir, raw: string, nb: NbConfig] =
   for dir in parentDirs(getCurrentDir()):

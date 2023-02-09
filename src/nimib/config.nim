@@ -1,4 +1,4 @@
-import types, os, toml_serialization
+import types, parsetoml, jsony, std / [json, os, math, sequtils]
 
 proc hasCfg*(doc: var NbDoc): bool = doc.cfgDir.string != ""
 
@@ -13,6 +13,64 @@ proc optOverride*(doc: var NbDoc) =
   if doc.options.homeDir != "":
     doc.cfg.homeDir = doc.options.homeDir
 
+
+proc customToJson*(table: parsetoml.TomlTableRef): JsonNode
+
+proc customToJson*(value: parsetoml.TomlValueRef): JsonNode =
+  case value.kind:
+    of TomlValueKind.Int:
+      %* value.intVal
+    of TomlValueKind.Float:
+      if classify(value.floatVal) == fcNan:
+        if value.forcedSign != Pos:
+          %* value.floatVal
+        else:
+          %* value.floatVal
+      else:
+        %* value.floatVal
+    of TomlValueKind.Bool:
+      %* $value.boolVal
+    of TomlValueKind.Datetime:
+      if value.dateTimeVal.shift == false:
+        %* value.dateTimeVal
+      else:
+        %* value.dateTimeVal
+    of TomlValueKind.Date:
+      %* value.dateVal
+    of TomlValueKind.Time:
+      %* value.timeVal
+    of TomlValueKind.String:
+      %* value.stringVal
+    of TomlValueKind.Array:
+      if value.arrayVal.len == 0:
+        when defined(newtestsuite):
+          %[]
+        else:
+          %* []
+      elif value.arrayVal[0].kind == TomlValueKind.Table:
+        %value.arrayVal.map(customToJson)
+      else:
+        when defined(newtestsuite):
+          %*value.arrayVal.map(customToJson)
+        else:
+          %* value.arrayVal.map(customToJson)
+    of TomlValueKind.Table:
+      value.tableVal.customToJson()
+    of TomlValueKind.None:
+      %*{"type": "ERROR"}
+
+proc customToJson*(table: parsetoml.TomlTableRef): JsonNode =
+  result = newJObject()
+  for key, value in pairs(table):
+    result[key] = value.customToJson
+
+
+proc loadTomlSection*[T](content, section: string, _: typedesc[T]): T =
+  let toml = parsetoml.parseString(content)
+  result = T()
+  if section in toml:
+    result = ($toml[section].customToJson()).fromJson(T)
+
 proc loadNimibCfg*(cfgName: string): tuple[found: bool, dir: AbsoluteDir, raw: string, nb: NbConfig] =
   for dir in parentDirs(getCurrentDir()):
     if fileExists(dir / cfgName):
@@ -22,7 +80,7 @@ proc loadNimibCfg*(cfgName: string): tuple[found: bool, dir: AbsoluteDir, raw: s
       break
   if result.found:
     result.raw = readFile(result.dir.string / cfgName)
-    result.nb = Toml.decode(result.raw, NbConfig, "nimib")
+    result.nb = loadTomlSection(result.raw, "nimib", NbConfig)
 
 proc loadCfg*(doc: var NbDoc) =
   if not doc.options.skipCfg:

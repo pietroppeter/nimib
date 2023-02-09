@@ -12,7 +12,8 @@ requires "nim >= 1.4.0"
 requires "tempfile >= 0.1.6"
 requires "markdown >= 0.8.1"
 requires "mustache >= 0.2.1"
-requires "toml_serialization >= 0.2.0"
+requires "parsetoml >= 0.7.0"
+requires "jsony >= 1.1.5"
 
 task docsdeps, "install dependendencies required for doc building":
   exec "nimble -y install ggplotnim@0.5.3 numericalnim@0.6.1 nimoji nimpy karax@1.2.2"

@@ -5,10 +5,37 @@ The changelog includes a bit of the early history of nimib, pointers to relevant
 examples of usage of nimib and heartfelt thanks to some of the fine folks that
 made this development possible.
 
-When contributing a fix, feature or example please add a new line to briefly explain the changes. It will be used as release documentation here: https://github.com/pietroppeter/nimib/releases
+For contributors: make sure to have a relevant and clear message for your PR and when merging update the first PR message with relevant notes regarding the PR (these notes will be used by maintainers during release, see below).
 
-## 0.3.x
-* _add next change here_
+Notes for maintainers:
+
+- When a maintainer merges a PR, they should make sure that the squashed commit message is relevant and clear.
+- When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
+- finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
+
+## v0.3.7
+
+_add here from release changelog after next release_
+
+## v0.3.6 - nim 2.0 compatibility!
+
+* Change toml lib + fix macro bug on devel by @HugoGranstrom in https://github.com/pietroppeter/nimib/pull/173
+  with this PR nimib is finally compatible with the upcoming 2.0. Two things needed fixing:
+  - a nim compiler orc macro bug (reported here: https://github.com/nim-lang/Nim/issues/21326), fixed with a [workaround]
+  - there was an issue with toml serialization on orc (reported here: https://github.com/status-im/nim-toml-serialization/issues/62) fixed by removing the dependency from [toml_serialization] and using [parsetoml] instead
+    - some custom code in order to support direct to object conversion was needed, see https://github.com/NimParsers/parsetoml/issues/59
+    - we also added a dependency to [jsony] to support a loose direct to object conversion from toml
+* Adding devel to CI, fix #161, fix #149 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/169
+  - added both stable (which will become 2.0) and devel (which is currently the 2.0 rc) to CI, also update the versions of actions we depend on
+
+**Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.5...v0.3.6
+
+**release discussion**: https://github.com/pietroppeter/nimib/discussions/175
+
+[workaround]: https://github.com/pietroppeter/nimib/pull/173/commits/f1966097da91d4ba7b2711dbe44223e871927b42
+[toml_serialization]: https://github.com/status-im/nim-toml-serialization
+[parsetoml]: https://github.com/NimParsers/parsetoml
+[jsony]: https://github.com/treeform/jsony
 
 ## 0.3.5
 * codeAsInSource has been reworked to work better with templates and uses of `nbCode` in different files.

@@ -52,6 +52,9 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   nb.partials = initTable[string, string]()
   nb.context = newContext(searchDirs = @[]) # templateDirs and partials added during nbSave
 
+  nb.currentStdout = stdout.getFileHandle()
+  nb.originalStdout = dup(nb.currentStdout)
+
   # apply render backend (default backend can be overriden by theme)
   backend nb
 
@@ -67,6 +70,17 @@ template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
 template newNbSlimBlock*(cmd: string, blockImpl: untyped) =
   # a slim block is a block with no body
   newNbBlock(cmd, false, nb, nb.blk, "", blockImpl)
+
+template nbUseCurrentBlockAsContainer*(body: untyped) =
+  let currentBlk = nb.blk
+  let currentBlocks = nb.blocks
+  nb.blocks = @[]
+
+  body
+
+  nb.blk = currentBlk
+  nb.blk.blocks = nb.blocks
+  nb.blocks = currentBlocks
 
 # block templates
 template nbCode*(body: untyped) =

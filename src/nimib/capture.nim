@@ -5,8 +5,18 @@ import tempfile
 # Thanks, Clonk!
 
 # low level, should be Posix only but they happen to work on (my) Windows, too!
-proc dup(oldfd: FileHandle): FileHandle {.importc, header: "unistd.h".}
+proc dup*(oldfd: FileHandle): FileHandle {.importc, header: "unistd.h".}
 proc dup2(oldfd: FileHandle, newfd: FileHandle): cint {.importc, header: "unistd.h".}
+
+template disableCaptureStdout*(body: untyped) =
+  # want to write to stdout but not to our custom file.
+  let currentStdout = dup(nb.currentStdout)
+  discard dup2(nb.originalStdout, nb.currentStdout)
+  flushFile stdout
+  body
+  flushFile stdout
+
+  discard dup2(currentStdout, nb.currentStdout)
 
 template captureStdout*(ident: untyped, body: untyped) =
   ## redirect stdout to a temporary file and captures output of body in ident

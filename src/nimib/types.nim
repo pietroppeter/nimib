@@ -8,6 +8,7 @@ type
     code*: string
     output*: string
     context*: Context
+    blocks*: seq[NbBlock]
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string
@@ -34,7 +35,8 @@ type
     renderPlans*: Table[string, seq[string]]
     renderProcs*: Table[string, NbRenderProc]
     id: int
-    nbJsCounter*: int 
+    nbJsCounter*: int
+    currentStdout*, originalStdout*: FileHandle
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

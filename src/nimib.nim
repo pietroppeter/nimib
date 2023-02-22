@@ -127,6 +127,9 @@ when moduleAvailable(nimpy):
         captureStdout(nb.blk.output):
           discard nbPythonBuiltins.exec(pythonStr)
 
+template nbShow*(obj: untyped) =
+  nbRawHtml(obj.toHtml())
+
 template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
   nbRawHtml(content)
 

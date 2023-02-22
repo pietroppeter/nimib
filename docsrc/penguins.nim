@@ -17,7 +17,10 @@ nbCode:
   let df = readCsv("data/penguins.csv")
 nbText: "let us see how it looks"
 nbCode:
-  echo df # why so wide the first column?
+  echo df
+nbText: "or even nicer using `nbShow(df)`:"
+nbShow(df.head(10))
+
 nbText: """Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
 The remaining 4 are numeric but they have datatype object. Why?
 

@@ -134,6 +134,7 @@ Currently most of the documentation on customization is given by the examples.
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files]({docs}/files.html))
+* `nbShow`: show a variable that has a `toHtml` proc defined. For example to pretty print a dataframe.
 * `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.

@@ -43,6 +43,10 @@ const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/
 const waterDark* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css">"""
 const atomOneLight* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>"""
 const androidStudio* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/androidstudio.css'>"""
+const highlightJs* = """
+<script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+"""
 const latex* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous" onload="renderMathInElement(document.body,{delimiters:[{left: '$$', right: '$$', display: true},{left: '$', right: '$', display: false}]});"></script>"""
@@ -130,7 +134,7 @@ proc useDefault*(doc: var NbDoc) =
   doc.partials["head"] = head
   doc.context["favicon"] = faviconWhale
   doc.context["stylesheet"] = waterLight
-  doc.context["highlight"] = atomOneLight
+  doc.context["highlight"] = atomOneLight & highlightJs
   doc.context["nb_style"] = nbStyle
   # header
   doc.partials["header"] = header
@@ -152,7 +156,7 @@ proc useDefault*(doc: var NbDoc) =
 proc darkMode*(doc: var NbDoc) =
   doc.context["stylesheet"] = waterDark
   doc.context["github_logo"] = githubLogoDark
-  doc.context["highlight"] = androidStudio
+  doc.context["highlight"] = androidStudio & highlightJs
 
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = latex

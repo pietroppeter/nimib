@@ -104,7 +104,7 @@ const footer* = """
 const madeWithNimib* = """<span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span>"""
 const showSourceButton* = """<button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button>"""
 const sourceSection* = """<section id="source">
-<pre><code class="nim hljs">{{{source_highlighted}}}</code></pre>
+<pre><code class="nohighlight nim hljs">{{{source_highlighted}}}</code></pre>
 </section>"""
 const showSourceScript* = """<script>
 function toggleSourceDisplay() {

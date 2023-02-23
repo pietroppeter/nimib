@@ -23,6 +23,9 @@ const head* = """
   {{^no_normalize}}<link rel='stylesheet' href='https://unpkg.com/normalize.css'>{{/no_normalize}}
   {{{stylesheet}}}
   {{{highlight}}}
+  {{^disableHighlightJs}}
+    {{{highlightJs}}}
+  {{/disableHighlightJs}}
   {{{nb_style}}}
   {{{latex}}}
   {{> head_other }}
@@ -43,7 +46,7 @@ const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/
 const waterDark* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css">"""
 const atomOneLight* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>"""
 const androidStudio* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/androidstudio.css'>"""
-const highlightJs* = """
+const highlightJsTags* = """
 <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
 """
@@ -134,7 +137,8 @@ proc useDefault*(doc: var NbDoc) =
   doc.partials["head"] = head
   doc.context["favicon"] = faviconWhale
   doc.context["stylesheet"] = waterLight
-  doc.context["highlight"] = atomOneLight & highlightJs
+  doc.context["highlight"] = atomOneLight
+  doc.context["highlightJs"] = highlightJsTags
   doc.context["nb_style"] = nbStyle
   # header
   doc.partials["header"] = header
@@ -156,10 +160,13 @@ proc useDefault*(doc: var NbDoc) =
 proc darkMode*(doc: var NbDoc) =
   doc.context["stylesheet"] = waterDark
   doc.context["github_logo"] = githubLogoDark
-  doc.context["highlight"] = androidStudio & highlightJs
+  doc.context["highlight"] = androidStudio
 
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = latex
+
+proc disableHighlightJs*(doc: var NbDoc) =
+  doc.context["disableHighlightJs"] = true
 
 proc `title=`*(doc: var NbDoc, text: string) =
   # to deprecate?

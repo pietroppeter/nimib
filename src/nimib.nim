@@ -5,7 +5,7 @@ export types, blocks, docs, boost, sugar, jsutils
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
-export themes.useLatex, themes.darkMode, themes.`title=`
+export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
 
 from nimib / renders import nil
 

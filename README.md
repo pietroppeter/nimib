@@ -191,6 +191,14 @@ and [counter](https://pietroppeter.github.io/nimib/counters.html) for examples o
 In [caesar](https://pietroppeter.github.io/nimib/caesar.html) we have an example of a karax app
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
+### highlighting
+Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using 
+[highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`. 
+The supported languages are the ones listed as "common" [here](https://highlightjs.org/download/) plus Nim, Julia and Latex.
+
+Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
+and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
+
 ### latex
 
 See [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an example of latex usage.

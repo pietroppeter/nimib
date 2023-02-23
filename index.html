@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -86,7 +89,7 @@ provides syntax highlighting of embedded languages in nimib documents (eg. markd
 <h2>👋 🌍 Example Usage</h2>
 <p>First have a look at the following html document: <a href="./hello.html">hello.html</a></p>
 <p>This was produced with <code>nim r docsrc/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim">docsrc/hello.nim</a> is:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> strformat, strutils
 <span class="hljs-keyword">import</span> nimib
 
 nbInit
@@ -182,6 +185,7 @@ Currently most of the documentation on customization is given by the examples.</
 <ul>
 <li><code>nbImage</code>: image command to show images (see <code>penguins.nim</code> example linked above)</li>
 <li><code>nbFile</code>: content (string or untyped) is saved to file (see example document <a href="./files.html">files</a>)</li>
+<li><code>nbShow</code>: show a variable that has a <code>toHtml</code> proc defined. For example to pretty print a dataframe.</li>
 <li><code>nbRawHtml</code>: called with string content, it will add the raw content to document (html backend)</li>
 <li><code>nbTextWithCode</code>: a variant of <code>nbText</code> that also reads nim source. See example of usage
 at the end of the source in <code>numerical.nim</code> linked above.</li>
@@ -212,6 +216,12 @@ It also provides a template <code>nbKaraxCode</code> to add code based on <a hre
 and <a href="./counters.html">counter</a> for examples of how to create widgets using it.
 In <a href="./caesar.html">caesar</a> we have an example of a karax app
 that implements <a href="https://en.wikipedia.org/wiki/Caesar_cipher">Caesar cipher</a>.</p>
+<h3>highlighting</h3>
+<p>Code blocks produced by <code>nbCode</code> are statically highlighted, but code in markdown code blocks are dynamically highlighted using
+<a href="https://highlightjs.org/">highlightjs</a>. The dynamic highlighting can be disabled by running <code>nb.disableHighlightJs()</code>.
+The supported languages are the ones listed as &quot;common&quot; <a href="https://highlightjs.org/download/">here</a> plus Nim, Julia and Latex.</p>
+<p>Highlight styling classes are the same of <a href="https://highlightjs.org/">highlightjs</a>
+and you can pick a different styling (<code>atom-one-light</code> is default for light mode, <code>androidstudio</code> is default for dark mode).</p>
 <h3>latex</h3>
 <p>See <a href="./numerical.html">numerical</a> for an example of latex usage.</p>
 <p>To add latex support:</p>
@@ -245,13 +255,9 @@ As <code>homeDir</code>, it can be set as absolute or relative (to config).</li>
 that allow to override the above value, skip the config file or other options.</p>
 <p>All the options available can be seen by running any nimib file with option <code>nbHelp</code>
 (execution will stop after <code>nbInit</code>).</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> osproc
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> osproc
 withDir nb.srcDir:
-  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output"><samp>/home/runner/work/nimib/nimib/src/nimib/sources.nim(1, 11) Warning: imported and not used: 'sugar' [UnusedImport]
-/home/runner/work/nimib/nimib/src/nimib/renders.nim(1, 12) Warning: imported and not used: 'os' [UnusedImport]
-/home/runner/work/nimib/nimib/src/nimib/renders.nim(1, 12) Warning: imported and not used: 'strformat' [UnusedImport]
-/home/runner/work/nimib/nimib/src/nimib.nim(198, 3) Warning: Use nbCodeDisplay instead; nbJsShowSource is deprecated [Deprecated]
-Nimib options:
+  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output"><samp>Nimib options:
 
   --nbHelp,     --nimibHelp                 print this help
   --nbSkipCfg,  --nimibSkipCfg              skip nimib config file
@@ -374,7 +380,7 @@ and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-t
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, strformat, nimoji
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib, strformat, nimoji
 <span class="hljs-keyword">from</span> nimib / renders <span class="hljs-keyword">import</span> useMdBackend
 <span class="hljs-keyword">from</span> nimib / themes <span class="hljs-keyword">import</span> noTheme
 
@@ -510,6 +516,7 @@ Currently most of the documentation on customization is given by the examples.
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files]({docs}/files.html))
+* `nbShow`: show a variable that has a `toHtml` proc defined. For example to pretty print a dataframe.
 * `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
@@ -543,6 +550,14 @@ See [interactivity]({docs}/interactivity.html) for an explanation of the api
 and [counter]({docs}/counters.html) for examples of how to create widgets using it.
 In [caesar]({docs}/caesar.html) we have an example of a karax app
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
+
+### highlighting
+Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using 
+[highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`. 
+The supported languages are the ones listed as &quot;common&quot; [here](https://highlightjs.org/download/) plus Nim, Julia and Latex.
+
+Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
+and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
 
 ### latex
 
@@ -588,7 +603,7 @@ All the options available can be seen by running any nimib file with option `nbH
 nbCode:
   <span class="hljs-keyword">import</span> osproc
   withDir nb.srcDir:
-    <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;</span>)
+    <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)
 
 <span class="hljs-keyword">let</span> renderProcType = <span class="hljs-string">&quot;type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}&quot;</span>
 

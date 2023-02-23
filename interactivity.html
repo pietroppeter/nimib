@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -67,7 +70,7 @@ Indeed this is what is done for a special block that allows you to use karax wit
 <h2>nbJsFromCode</h2>
 <p>This is the fundamental API used for compiling Nim-snippets to javascript.
 Here is a basic example:</p>
-<pre><code class="nim hljs">nbJsFromCode:
+<pre><code class="nohighlight hljs nim">nbJsFromCode:
   <span class="hljs-keyword">let</span> x = <span class="hljs-string">&quot;Hello world!&quot;</span>
   <span class="hljs-keyword">echo</span> x</code></pre>
 
@@ -76,7 +79,7 @@ So the code we passed to <code>nbJsFromCode</code> has been compiled to Javascri
 <h3>Capturing variables</h3>
 <p>If you have a variable in your code that you want to access inside a
 nbJs-block, you have to capture it. This can be done by passing it to the block like this:</p>
-<pre><code class="nim hljs"><span class="hljs-comment"># This variable is defined in C-land</span>
+<pre><code class="nohighlight hljs nim"><span class="hljs-comment"># This variable is defined in C-land</span>
 <span class="hljs-keyword">let</span> captureVariable = <span class="hljs-number">3.14</span>
 nbJsFromCode(captureVariable): <span class="hljs-comment"># capture it</span>
   <span class="hljs-comment"># use it in JS-land</span>
@@ -93,7 +96,7 @@ This is a feature which is important if you are making a reusable piece of code,
 This is because it allows you to reuse the same variable name in multiple blocks.
 Using <code>nbJsFromCode</code> would yield a <code>redefinition of variable</code> error.
 Here is an example showing how the same variable name can be used:</p>
-<pre><code class="nim hljs">nbJsFromCodeInBlock:
+<pre><code class="nohighlight hljs nim">nbJsFromCodeInBlock:
   <span class="hljs-keyword">let</span> sameVariable = <span class="hljs-string">&quot;First block&quot;</span>
   <span class="hljs-keyword">echo</span> sameVariable
 nbJsFromCodeInBlock:
@@ -102,7 +105,7 @@ nbJsFromCodeInBlock:
 
 
 <p>The case when this is really needed is when you have a <code>nbJsFromCodeInBlock</code> inside a template like this:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">template</span> jsGoodbyeWorld() =
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">template</span> jsGoodbyeWorld() =
   nbJsFromCodeInBlock:
     <span class="hljs-keyword">let</span> s = <span class="hljs-string">&quot;Good bye world&quot;</span>
     <span class="hljs-keyword">echo</span> s
@@ -119,7 +122,7 @@ must be done in a separate <code>nbJsFromCode</code> or <code>nbJsFromCodeGlobal
 <p><code>nbJsFromCodeGlobal</code> works similarly to <code>nbJsFromCode</code>, except that it places the code at the top of the generated js file.
 So it is well suited for <code>import</code>s and defining global variables you want to be able to access in multiple blocks.
 Code defined here is available in all <code>nbJsFromCode</code> and <code>nbJsFromCodeInBlock</code> blocks.</p>
-<pre><code class="nim hljs">nbJsFromCodeGlobal:
+<pre><code class="nohighlight hljs nim">nbJsFromCodeGlobal:
   <span class="hljs-keyword">import</span> std / dom <span class="hljs-comment"># this will be imported for all your nbJs blocks</span>
   <span class="hljs-keyword">var</span> globalVar = <span class="hljs-number">1</span>
 nbJsFromCode:
@@ -156,7 +159,7 @@ A normal karax program has the following structure:</p>
 </code></pre>
 <p>This reduces the boilerplate and makes for more readable code! Karax is automatically imported for you (the modules in <code>karax / prelude</code>) and <code>karaxHtml</code>
 is a template that writes <code>createDom</code> and <code>setRenderer</code> for you so you only have to provide the body of the <code>buildHtml</code> call. Here's a basic example:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">template</span> karaxExample =
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">template</span> karaxExample =
   <span class="hljs-keyword">let</span> x = <span class="hljs-number">3.14</span>
   nbKaraxCode(x):
     <span class="hljs-keyword">var</span> message = <span class="hljs-string">&quot;Pi is roughly &quot;</span> &amp; $x
@@ -4616,10 +4619,10 @@ templates of <code>nbJsFromCode</code> family.</p>
 <h3>Display code in nbJsFromCode with nbCodeDisplay</h3>
 <p>If you wish to display the code used in one of <code>nbJsFromCode</code>, <code>nbJsFromCodeInBlock</code>, <code>nbJsFromCodeGlobal</code>
 you can use <code>nbCodeDisplay</code> (which can be used in general with any template that does not show code by itself):</p>
-<pre><code class="nim hljs">nbCodeDisplay(nbJsFromCodeInBlock):
+<pre><code class="nohighlight hljs nim">nbCodeDisplay(nbJsFromCodeInBlock):
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeDisplay&quot;</span></code></pre>
 
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeDisplay&quot;</span></code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeDisplay&quot;</span></code></pre>
 <p>Note that in this same document we gave examples of two other methods
 to show code:</p>
 <ul>
@@ -4628,9 +4631,9 @@ to show code:</p>
 </ul>
 <h3>Running the same code with both c and js backends using nbCodeAnd</h3>
 <p>If you want to run some code both in C and js backends, you can use <code>nbCodeAnd</code>:</p>
-<pre><code class="nim hljs">nbCodeAnd(nbJsFromCodeInBlock):
+<pre><code class="nohighlight hljs nim">nbCodeAnd(nbJsFromCodeInBlock):
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeAnd&quot;</span></code></pre>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeAnd&quot;</span></code></pre><pre class="nb-output"><samp>hi nbCodeAnd</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi nbCodeAnd&quot;</span></code></pre><pre class="nb-output"><samp>hi nbCodeAnd</samp></pre>
 
 <h2>Internal workings</h2>
 <h3>nbJsFromCode</h3>
@@ -4674,7 +4677,7 @@ one component would change it in the other one as well! The solution we are usin
 <code>nbKaraxCode</code>. So a variable being generated as <code>varName_123456</code> the first time will be generated as <code>varName_123457</code> the second time.</p>
 <p>This works well for most scenarios, but there is still a small risk that it will generate variable names that collide <strong>if</strong>
 you are defining multiple different variables with the same name in your code. For example:</p>
-<pre><code class="nim hljs">nbKaraxCode:
+<pre><code class="nohighlight hljs nim">nbKaraxCode:
   <span class="hljs-keyword">var</span> counter: <span class="hljs-built_in">int</span>
   <span class="hljs-keyword">block</span>:
     <span class="hljs-keyword">var</span> counter: <span class="hljs-built_in">int</span></code></pre>
@@ -8849,7 +8852,7 @@ rawEcho(makeNimstrLit("hi nbCodeAnd"));
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib
 
 nbInit
 

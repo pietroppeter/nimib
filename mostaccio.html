@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/androidstudio.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -56,10 +59,10 @@ specific advantage of its feature for in-memory partials to store default templa
 <p>Below I will show examples of usage of <code>mustache</code> using <code>nim-mustache</code>,
 mostly replicating <a href="https://mustache.github.io/mustache.5.html">mustache(5)</a> man page
 (<a href="https://en.wikipedia.org/wiki/Man_page#Manual_sections">why (5)?</a>).</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> mustache</code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> mustache</code></pre>
 <h2>SYNOPSIS</h2>
 <p>A typical mustache template:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">var</span> tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> tmpl = <span class="hljs-string">&quot;&quot;&quot;
 Hello {{name}}
 You have just won {{value}} dollars!
 {{#in_california}}
@@ -67,13 +70,13 @@ Well, {{taxed_value}} dollars, after taxes.
 {{/in_california}}
 &quot;&quot;&quot;</span></code></pre>
 <p>Given the following context:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">var</span> context = newContext()
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> context = newContext()
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
 context[<span class="hljs-string">&quot;value&quot;</span>] = <span class="hljs-number">10_000</span>
 context[<span class="hljs-string">&quot;taxed_value&quot;</span>] = <span class="hljs-number">10000</span> - (<span class="hljs-number">10000</span> * <span class="hljs-number">0.4</span>)
 context[<span class="hljs-string">&quot;in_california&quot;</span>] = <span class="hljs-literal">true</span></code></pre>
 <p>Will produce the following:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Hello Chris
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Hello Chris
 You have just won 10000 dollars!
 Well, 6000.0 dollars, after taxes.</samp></pre>
 <h2>DESCRIPTION</h2>
@@ -105,18 +108,18 @@ This may be useful when changing delimiters (see &quot;Set Delimiter&quot; below
 This can usually be configured in your Mustache library.
 The Ruby version of Mustache supports raising an exception in this situation, for instance.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 * {{name}}
 * {{age}}
 * {{company}}
 * {{{company}}}
 * {{&amp;company}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
 context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hljs-string">&quot;&lt;b&gt;Github&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>* Chris
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>* Chris
 * 
 * &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
 * &lt;b&gt;Github&lt;/b&gt;
@@ -133,28 +136,28 @@ That is, <code>{{#person}}</code> begins a &quot;person&quot; section while <cod
 <h4>False Values or Empty Lists</h4>
 <p>If the person key exists and has a value of false or an empty list, the HTML between the pound and slash will not be displayed.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 Shown.
 {{#person}}
   Never shown!
 {{/person}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;person&quot;</span>] = <span class="hljs-literal">false</span></code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Shown.</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Shown.</samp></pre>
 <h4>Non-Empty Lists</h4>
 <p>If the <strong>person</strong> key exists and has a non-false value,
 the HTML between the pound and slash will be rendered and displayed one or more times.</p>
 <p>When the value is a non-empty list, the text in the block will be displayed once for each item in the list.
 The context of the block will be set to the current item for each iteration. In this way we can loop over collections.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 {{#repo}}
   &lt;b&gt;{{name}}&lt;/b&gt;
 {{/repo}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> json
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> json
 context = newContext()
 context[<span class="hljs-string">&quot;repo&quot;</span>] = %* [
   { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;resque&quot;</span> },
@@ -162,7 +165,7 @@ context[<span class="hljs-string">&quot;repo&quot;</span>] = %* [
   { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span> }
 ]</code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  &lt;b&gt;resque&lt;/b&gt;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  &lt;b&gt;resque&lt;/b&gt;
   &lt;b&gt;hub&lt;/b&gt;
   &lt;b&gt;rip&lt;/b&gt;</samp></pre>
 <h4>Lambdas</h4>
@@ -170,17 +173,17 @@ context[<span class="hljs-string">&quot;repo&quot;</span>] = %* [
 The text passed is the literal block, unrendered.
 <code>{{tags}}</code> will not have been expanded - the lambda should do that on its own. In this way you can implement filters or caching.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 {{#wrapped}}
   {{name}} is awesome.
 {{/wrapped}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> strutils
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> strutils
 context = newContext()
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
 context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.strip.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>&lt;b&gt;Willy is awesome.&lt;/b&gt;</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>&lt;b&gt;Willy is awesome.&lt;/b&gt;</samp></pre>
 <blockquote>
 <p>note that we need to <code>strutils.strip</code> the string in order to obtain the expected
 whitespace behaviour
@@ -190,15 +193,15 @@ whitespace behaviour
 <p>When the value is non-false but not a list,
 it will be used as the context for a single rendering of the block.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 {{#person?}}
   Hi {{name}}!
 {{/person?}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;person?&quot;</span>] = %* { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Jon&quot;</span> }</code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  Hi Jon!</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  Hi Jon!</samp></pre>
 <h3>Inverted Sections</h3>
 <p>An inverted section begins with a caret (hat) and ends with a slash.
 That is <code>{{^person}}</code> begins a &quot;person&quot; inverted section while <code>{{/person}}</code> ends it.</p>
@@ -206,7 +209,7 @@ That is <code>{{^person}}</code> begins a &quot;person&quot; inverted section wh
 inverted sections may render text once based on the inverse value of the key.
 That is, they will be rendered if the key doesn't exist, is false, or is an empty list.</p>
 <p>Template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 {{#repo}}
   &lt;b&gt;{{name}}&lt;/b&gt;
 {{/repo}}
@@ -214,16 +217,16 @@ That is, they will be rendered if the key doesn't exist, is false, or is an empt
   No repos :(
 {{/repo}}&quot;&quot;&quot;</span></code></pre>
 <p>Context:</p>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nohighlight hljs nim">context = newContext()
 <span class="hljs-keyword">let</span> empty: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[]
 context[<span class="hljs-string">&quot;repo&quot;</span>] = empty  <span class="hljs-comment"># does not work with seq or array or also with %* []</span></code></pre>
 <p>Output:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  No repos :(</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  No repos :(</samp></pre>
 <h3>Comments</h3>
 <p>Comments begin with a bang and are ignored. The following template:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;&lt;h1&gt;Today{{! ignore me }}.&lt;/h1&gt;&quot;&quot;&quot;</span></code></pre>
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;&lt;h1&gt;Today{{! ignore me }}.&lt;/h1&gt;&quot;&quot;&quot;</span></code></pre>
 <p>Will render as follows:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre><pre class="nb-output"><samp>&lt;h1&gt;Today.&lt;/h1&gt;</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre><pre class="nb-output"><samp>&lt;h1&gt;Today.&lt;/h1&gt;</samp></pre>
 <h3>Partials</h3>
 <p>Partials begin with a greater than sign, like <code>{{&gt; box}}</code>.</p>
 <p>Partials are rendered at runtime (as opposed to compile time),
@@ -241,7 +244,7 @@ the size and start methods from the calling context.</p>
 includes, imports, template expansion, nested templates,
 or subtemplates, even though those aren't literally the case here.</p>
 <p>For example, this template and partial:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> base = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> base = <span class="hljs-string">&quot;&quot;&quot;
 &lt;h2&gt;Names&lt;/h2&gt;
 {{#names}}
   {{&gt; user}}
@@ -249,7 +252,7 @@ or subtemplates, even though those aren't literally the case here.</p>
 &quot;&quot;&quot;</span>
 <span class="hljs-keyword">let</span> user = <span class="hljs-string">&quot;&lt;strong&gt;{{name}}&lt;/strong&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span></code></pre>
 <p>Can be thought of as a single, expanded template:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> expanded = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> expanded = <span class="hljs-string">&quot;&quot;&quot;
 &lt;h2&gt;Names&lt;/h2&gt;
 {{#names}}
   &lt;strong&gt;{{name}}&lt;/strong&gt;
@@ -263,7 +266,7 @@ can be fully customized
 (see <a href="https://github.com/soasme/nim-mustache#read-partials-from-memory">here</a>).</p>
 <p>Below we show an example where we only search in-memory.</p>
 </blockquote>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> tables
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> tables
 <span class="hljs-keyword">let</span> partials = {
   <span class="hljs-string">&quot;base&quot;</span>: base,
   <span class="hljs-string">&quot;user&quot;</span>: user,
@@ -281,14 +284,14 @@ context[<span class="hljs-string">&quot;names&quot;</span>] = %* [
   &lt;strong&gt;resque&lt;/strong&gt;
   &lt;strong&gt;hub&lt;/strong&gt;
   &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)</code></pre><pre class="nb-output"><samp>&lt;h2&gt;Names&lt;/h2&gt;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)</code></pre><pre class="nb-output"><samp>&lt;h2&gt;Names&lt;/h2&gt;
   &lt;strong&gt;resque&lt;/strong&gt;
   &lt;strong&gt;hub&lt;/strong&gt;
   &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
 <h3>Set Delimiter</h3>
 <p>Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.</p>
 <p>Consider the following contrived example:</p>
-<pre><code class="nim hljs">tmpl = <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;
 * {{default_tags}}
 {{=&lt;% %&gt;=}}
 * &lt;% erb_style_tags %&gt;
@@ -302,7 +305,7 @@ where double-braces may occur in the text and are awkward to use for markup.&quo
 <blockquote>
 <p>adding an example of usage of set delimiter feature</p>
 </blockquote>
-<pre><code class="nim hljs">context = newContext()
+<pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;default_tags&quot;</span>] = <span class="hljs-string">&quot;one&quot;</span>
 context[<span class="hljs-string">&quot;erb_style_tags&quot;</span>] = <span class="hljs-string">&quot;two&quot;</span>
 context[<span class="hljs-string">&quot;default_tags_again&quot;</span>] = <span class="hljs-string">&quot;three&quot;</span>
@@ -319,7 +322,7 @@ context[<span class="hljs-string">&quot;default_tags_again&quot;</span>] = <span
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib
 
 nbInit
 nb.darkMode

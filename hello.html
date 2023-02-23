@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -48,20 +51,20 @@ section#source {
 and incidentally you might learn the basics of <a href="https://github.com/pietroppeter/nimib">nimib</a>.</p>
 <h3>A secret message</h3>
 <p>Inside this document is hidden a secret message. I will ask the computer to spit it out:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> secret</code></pre><pre class="nb-output"><samp>[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> secret</code></pre><pre class="nb-output"><samp>[104, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100]</samp></pre>
 <p>what does this integer sequence mean?
 Am I supposed to <a href="https://oeis.org/search?q=104%2C+101%2C+108%2C+108%2C+111%2C+44%2C+32%2C+119%2C+111%2C+114%2C+108%2C+100&language=english&go=Search">recognize it</a>?</p>
 <h3>A cryptoanalytic weapon</h3>
 <p>Luckily I happen to have a <a href="https://nim-lang.org/">nim</a> implementation of
 a recently declassified top-secret cryptoanalytic weapon:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
   <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
   <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)</code></pre>
 <h3>The great revelation</h3>
 <p>Now I can just apply it to my secret message and
 finally decrypt what the computer wants to tell me:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> msg = decode secret
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> msg = decode secret
 <span class="hljs-keyword">echo</span> msg  <span class="hljs-comment"># what will it say?</span></code></pre><pre class="nb-output"><samp>hello, world</samp></pre>
 <p><em>Hey</em>, there must be a bug somewhere, the message (<code>hello, world</code>) is not even addressed to me!</p>
 </main>
@@ -74,7 +77,7 @@ finally decrypt what the computer wants to tell me:</p>
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
 <span class="hljs-keyword">import</span> nimib
 
 nbInit

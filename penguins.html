@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -49,11 +52,11 @@ section#source {
 <h1>🐧 Exploring penguins with ggplotnim</h1>
 <p>We will explore the <a href="https://github.com/allisonhorst/palmerpenguins">palmer penguins dataset</a>
 with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="https://github.com/SciNim/Datamancer">datamancer</a>.</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> datamancer</code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> datamancer</code></pre>
 <p>we read the penguins csv into a Datamancer <code>DataFrame</code></p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
 <p>let us see how it looks</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span></code></pre><pre class="nb-output"><samp>DataFrame with 7 columns and 344 rows:
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> df</code></pre><pre class="nb-output"><samp>DataFrame with 7 columns and 344 rows:
      Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
   dtype:               string               string               object               object               object               object               string
        0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
@@ -76,10 +79,36 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="h
       17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
       18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
       19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+<p>or even nicer using <code>nbShow(df.head(10))</code>:</p>
+<table>
+  <thead>
+<tr><th> Index </th><th> species <br><br> string </th><th> island <br><br> string </th><th> culmen_length_mm <br><br> object </th><th> culmen_depth_mm <br><br> object </th><th> flipper_length_mm <br><br> object </th><th> body_mass_g <br><br> object </th><th> sex <br><br> string </th></tr>
+</thead><tbody><tr>
+<td>0</td><td>Adelie</td><td>Torgersen</td><td>39.1</td><td>18.7</td><td>181</td><td>3750</td><td>MALE</td>
+</tr><tr>
+<td>1</td><td>Adelie</td><td>Torgersen</td><td>39.5</td><td>17.4</td><td>186</td><td>3800</td><td>FEMALE</td>
+</tr><tr>
+<td>2</td><td>Adelie</td><td>Torgersen</td><td>40.3</td><td>18</td><td>195</td><td>3250</td><td>FEMALE</td>
+</tr><tr>
+<td>3</td><td>Adelie</td><td>Torgersen</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr>
+<td>4</td><td>Adelie</td><td>Torgersen</td><td>36.7</td><td>19.3</td><td>193</td><td>3450</td><td>FEMALE</td>
+</tr><tr>
+<td>5</td><td>Adelie</td><td>Torgersen</td><td>39.3</td><td>20.6</td><td>190</td><td>3650</td><td>MALE</td>
+</tr><tr>
+<td>6</td><td>Adelie</td><td>Torgersen</td><td>38.9</td><td>17.8</td><td>181</td><td>3625</td><td>FEMALE</td>
+</tr><tr>
+<td>7</td><td>Adelie</td><td>Torgersen</td><td>39.2</td><td>19.6</td><td>195</td><td>4675</td><td>MALE</td>
+</tr><tr>
+<td>8</td><td>Adelie</td><td>Torgersen</td><td>34.1</td><td>18.1</td><td>193</td><td>3475</td><td>NA</td>
+</tr><tr>
+<td>9</td><td>Adelie</td><td>Torgersen</td><td>42</td><td>20.2</td><td>190</td><td>4250</td><td>NA</td>
+</tr></tbody>
+</table>
 <p>Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
 The remaining 4 are numeric but they have datatype object. Why?</p>
 <p>Because that there are null values in those columns (interpreted as strings):</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">1</span>].kind
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">1</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
@@ -90,7 +119,7 @@ VInt
 VString</samp></pre>
 <p>Let's see how many penguins by species we have (and how do they relate to islands)
 by plotting the species count per island using ggplotnim:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> ggplotnim
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> ggplotnim
 ggplot(df, aes(<span class="hljs-string">&quot;species&quot;</span>, fill = <span class="hljs-string">&quot;island&quot;</span>)) + geom_bar() + ggsave(<span class="hljs-string">&quot;images/penguins_count_species.png&quot;</span>)</code></pre>
 <figure>
 <img src="./images/penguins_count_species.png" alt="Count of penguins by species">
@@ -112,7 +141,7 @@ from where this dataset comes from:</p>
 (e.g. flipper length) with males being bigger than females.</p>
 <p>To plot this we need to remove all <code>NA</code> and then classify the points both by the penguins sex as
 well as their species:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
 ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre class="nb-output"><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
 INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
 <figure>
@@ -128,7 +157,7 @@ INFO: The object column `flipper_length_mm` has been automatically determined to
 </ul>
 <p>As a final plot, I would like to (partly, confidence bands are missing) reproduce a plot that &quot;shows&quot; the presence of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson's paradox</a> in this dataset,
 as reported by <a href="https://twitter.com/andrewheiss/status/1301166792627421186">this tweet</a>:</p>
-<pre><code class="nim hljs">ggplot(df1, aes(x=<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y=<span class="hljs-string">&quot;body_mass_g&quot;</span>)) +
+<pre><code class="nohighlight hljs nim">ggplot(df1, aes(x=<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, y=<span class="hljs-string">&quot;body_mass_g&quot;</span>)) +
   geom_point(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>)) +      <span class="hljs-comment"># point...</span>
   geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>),       <span class="hljs-comment"># and smooth classified by species</span>
               smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
@@ -156,7 +185,7 @@ but looking at all species taken together bigger mass is correlated with thinner
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib, nimoji
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib, nimoji
 
 nbInit
 nbText: <span class="hljs-string">&quot;&quot;&quot;
@@ -175,7 +204,10 @@ nbCode:
   <span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)
 nbText: <span class="hljs-string">&quot;let us see how it looks&quot;</span>
 nbCode:
-  <span class="hljs-keyword">echo</span> df <span class="hljs-comment"># why so wide the first column?</span>
+  <span class="hljs-keyword">echo</span> df
+nbText: <span class="hljs-string">&quot;or even nicer using `nbShow(df.head(10))`:&quot;</span>
+nbShow(df.head(<span class="hljs-number">10</span>))
+
 nbText: <span class="hljs-string">&quot;&quot;&quot;Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.
 The remaining 4 are numeric but they have datatype object. Why?
 

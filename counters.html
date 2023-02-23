@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -48,7 +51,7 @@ section#source {
 A button which increases a counter each time you click it. We will do this in two different ways, using <code>std/dom</code> and <code>karax</code>.</p>
 <h2>std/dom</h2>
 <p>The first method is to use Nim like you would have used Javascript using <code>getElementById</code> and <code>addEventListener</code>:</p>
-<pre><code class="nim hljs"><span class="hljs-comment">## 0:</span>
+<pre><code class="nohighlight hljs nim"><span class="hljs-comment">## 0:</span>
 nbJsFromCodeGlobal:
   <span class="hljs-keyword">import</span> std/dom
 <span class="hljs-comment">## 1:</span>
@@ -106,7 +109,7 @@ The reason we are using <code>nbJsFromCodeInBlock</code> instead of <code>nbJsFr
 
 <h2>Karax</h2>
 <p>The second method uses Karax to construct the HTML and attach an eventlistener to the button:</p>
-<pre><code class="nim hljs"><span class="hljs-keyword">template</span> karaxButton() =
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">template</span> karaxButton() =
   <span class="hljs-comment">## 1:</span>
   nbKaraxCode:
     <span class="hljs-comment">## 2:</span>
@@ -15199,7 +15202,7 @@ Label2: do {
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> std / [strutils]
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> std / [strutils]
 <span class="hljs-keyword">import</span> nimib
 
 nbInit

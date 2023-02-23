@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -49,7 +52,7 @@ to modify code and output of a block after it has run.</p>
 <p>The code looks like a repeat function written in python but it is actually written in nim.</p>
 </blockquote>
 <h1>Pythno</h1>
-<pre><code class="nim hljs">def repeat(text: str, num: <span class="hljs-built_in">int</span>) -&gt; str:
+<pre><code class="nohighlight hljs nim">def repeat(text: str, num: <span class="hljs-built_in">int</span>) -&gt; str:
   <span class="hljs-literal">result</span> = <span class="hljs-string">''</span>
   <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num):
     <span class="hljs-literal">result</span> += text
@@ -67,7 +70,7 @@ print(repeat(<span class="hljs-string">&quot;_this_is_not_python&quot;</span>, <
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib
 <span class="hljs-keyword">import</span> strutils
 
 <span class="hljs-keyword">proc</span> camel2snake(ident: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> =

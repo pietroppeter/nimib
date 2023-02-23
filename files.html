@@ -8,6 +8,9 @@
   <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
   <style>
 .nb-box {
   display: flex;
@@ -55,7 +58,7 @@ or with an untyped body.</p>
 echo myNumber
 </code></pre>
 
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> osproc
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> osproc
 <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off main&quot;</span>)</code></pre><pre class="nb-output"><samp>42</samp></pre>
 </main>
 <footer>
@@ -67,7 +70,7 @@ echo myNumber
 </div>
 </footer>
 <section id="source">
-<pre><code class="nim hljs"><span class="hljs-keyword">import</span> nimib
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimib
 
 nbInit
 nbText: <span class="hljs-string">&quot;&quot;&quot;## `nbFile`

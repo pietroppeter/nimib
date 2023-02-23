@@ -13,9 +13,15 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
-## v0.3.7
+## v0.3.8
 
 _add here from release changelog after next release_
+
+## v0.3.7 - All code shall be highlighted
+* Implement nbShow and highlight.js support for code in markdown by @HugoGranstrom in https://github.com/pietroppeter/nimib/pull/179
+  * `nbShow` can be used to pretty print any type which implements a `toHtml` proc that returns a string of HTML to be rendered.
+  * Code blocks in markdown are now highlighted dynamically using [highlight.js](https://highlightjs.org). 
+* updated changelog with 0.3.6 release notes + change in changelog workflow by @pietroppeter in https://github.com/pietroppeter/nimib/pull/176
 
 ## v0.3.6 - nim 2.0 compatibility!
 

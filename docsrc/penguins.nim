@@ -18,7 +18,7 @@ nbCode:
 nbText: "let us see how it looks"
 nbCode:
   echo df
-nbText: "or even nicer using `nbShow(df)`:"
+nbText: "or even nicer using `nbShow(df.head(10))`:"
 nbShow(df.head(10))
 
 nbText: """Note that among the 7 columns of the dataframe, the first 2 and the last one have datatype string.

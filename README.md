@@ -156,6 +156,7 @@ Currently most of the documentation on customization is given by the examples.
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files](https://pietroppeter.github.io/nimib/files.html))
+* `nbShow`: show a variable that has a `toHtml` proc defined. For example to pretty print a dataframe.
 * `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
@@ -240,6 +241,10 @@ withDir nb.srcDir:
 
 
 ```
+/home/hugo/code/nim/nimib/src/nimib/sources.nim(1, 11) Warning: imported and not used: 'sugar' [UnusedImport]
+/home/hugo/code/nim/nimib/src/nimib/renders.nim(1, 12) Warning: imported and not used: 'os' [UnusedImport]
+/home/hugo/code/nim/nimib/src/nimib/renders.nim(1, 12) Warning: imported and not used: 'strformat' [UnusedImport]
+/home/hugo/code/nim/nimib/src/nimib.nim(201, 3) Warning: Use nbCodeDisplay instead; nbJsShowSource is deprecated [Deprecated]
 Nimib options:
 
   --nbHelp,     --nimibHelp                 print this help
@@ -367,7 +372,4 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
-
-
-
 

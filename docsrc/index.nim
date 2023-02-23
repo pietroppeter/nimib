@@ -213,7 +213,7 @@ All the options available can be seen by running any nimib file with option `nbH
 nbCode:
   import osproc
   withDir nb.srcDir:
-    echo execProcess("nim r --verbosity:0 --hints:off hello --nbHelp")
+    echo execProcess("nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp")
 
 let renderProcType = "type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}"
 

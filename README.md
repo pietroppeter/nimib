@@ -156,6 +156,7 @@ Currently most of the documentation on customization is given by the examples.
 
 * `nbImage`: image command to show images (see `penguins.nim` example linked above)
 * `nbFile`: content (string or untyped) is saved to file (see example document [files](https://pietroppeter.github.io/nimib/files.html))
+* `nbShow`: show a variable that has a `toHtml` proc defined. For example to pretty print a dataframe.
 * `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
@@ -189,6 +190,14 @@ See [interactivity](https://pietroppeter.github.io/nimib/interactivity.html) for
 and [counter](https://pietroppeter.github.io/nimib/counters.html) for examples of how to create widgets using it.
 In [caesar](https://pietroppeter.github.io/nimib/caesar.html) we have an example of a karax app
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
+
+### highlighting
+Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using 
+[highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`. 
+The supported languages are the ones listed as "common" [here](https://highlightjs.org/download/) plus Nim, Julia and Latex.
+
+Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
+and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
 
 ### latex
 
@@ -235,7 +244,7 @@ All the options available can be seen by running any nimib file with option `nbH
 ```nim
 import osproc
 withDir nb.srcDir:
-  echo execProcess(&quot;nim r --verbosity:0 --hints:off hello --nbHelp&quot;)
+  echo execProcess(&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;)
 ```
 
 
@@ -367,7 +376,4 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
-
-
-
 

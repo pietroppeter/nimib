@@ -5,7 +5,7 @@ export types, blocks, docs, boost, sugar, jsutils
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
-export themes.useLatex, themes.darkMode, themes.`title=`
+export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
 
 from nimib / renders import nil
 
@@ -126,6 +126,9 @@ when moduleAvailable(nimpy):
         nb.blk.code = pythonStr
         captureStdout(nb.blk.output):
           discard nbPythonBuiltins.exec(pythonStr)
+
+template nbShow*(obj: untyped) =
+  nbRawHtml(obj.toHtml())
 
 template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
   nbRawHtml(content)

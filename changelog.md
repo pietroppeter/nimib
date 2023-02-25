@@ -13,9 +13,14 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
-## v0.3.8
+## v0.3.9
 
 _add here from release changelog after next release_
+
+## v0.3.8 - Fix nim-markdown not exporting escapeTag anymore
+
+* remove export escapeTag by @HugoGranstrom in https://github.com/pietroppeter/nimib/pull/181
+  * [nim-markdown](https://github.com/soasme/nim-markdown) released a new version which doesn't export `escapeTag` anymore, so we remove it. Not sure why we did it to begin with tbh.
 
 ## v0.3.7 - All code shall be highlighted
 * Implement nbShow and highlight.js support for code in markdown by @HugoGranstrom in https://github.com/pietroppeter/nimib/pull/179

@@ -1,6 +1,6 @@
 import std / [strutils, tables, sugar, os, strformat, sequtils]
 import ./types, ./jsutils, markdown, mustache
-export escapeTag # where is this used? why do I export? a better solution is to use xmlEncode
+
 import highlight
 import mustachepkg/values
 

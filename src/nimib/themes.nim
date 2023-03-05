@@ -42,8 +42,8 @@ const main* = """
 
 # https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale
 const faviconWhale* = """<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">"""
-const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">"""
-const waterDark* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css">"""
+const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">"""
+const waterDark* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.min.css">"""
 const atomOneLight* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>"""
 const androidStudio* = """<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/androidstudio.css'>"""
 const highlightJsTags* = """
@@ -74,6 +74,9 @@ section#source {
 
 .nb-output {
   line-height: 1.15;
+}
+samp {
+  display: block;
 }
 </style>"""
 

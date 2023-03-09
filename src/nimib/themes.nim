@@ -75,9 +75,6 @@ section#source {
 .nb-output {
   line-height: 1.15;
 }
-samp {
-  display: block;
-}
 </style>"""
 
 const header* = """

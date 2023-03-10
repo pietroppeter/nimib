@@ -20,7 +20,6 @@ const head* = """
   {{{favicon}}}
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  {{^no_normalize}}<link rel='stylesheet' href='https://unpkg.com/normalize.css'>{{/no_normalize}}
   {{{stylesheet}}}
   {{{highlight}}}
   {{^disableHighlightJs}}

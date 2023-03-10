@@ -16,4 +16,4 @@ suite "render (block), html default backend":
   test "nbCode with output":
     nbCode: echo "hi"
     check nb.render(nb.blk).strip == """
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi&quot;</span></code></pre><pre class="nb-output"><samp>hi</samp></pre>"""
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi&quot;</span></code></pre><pre class="nb-output">hi</pre>"""

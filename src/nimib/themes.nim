@@ -70,7 +70,9 @@ button.nb-small {
 section#source {
   display:none
 }
-
+pre > code {
+  font-size: 1em;
+}
 .nb-output {
   line-height: 1.15;
 }
@@ -94,7 +96,6 @@ const githubLogoDark* = """<svg aria-hidden="true" width="1.2em" height="1.2em" 
 
 const footer* = """
 <footer>
-<hr>
 <div class="nb-box">
   <span>{{> footer_left }}</span>
   <span>{{> footer_center }}</span>

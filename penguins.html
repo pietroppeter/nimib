@@ -5,8 +5,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
     <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
@@ -29,7 +28,9 @@ button.nb-small {
 section#source {
   display:none
 }
-
+pre > code {
+  font-size: 1.2em;
+}
 .nb-output {
   line-height: 1.15;
 }
@@ -56,7 +57,7 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="h
 <p>we read the penguins csv into a Datamancer <code>DataFrame</code></p>
 <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> df = readCsv(<span class="hljs-string">&quot;data/penguins.csv&quot;</span>)</code></pre>
 <p>let us see how it looks</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> df</code></pre><pre class="nb-output"><samp>DataFrame with 7 columns and 344 rows:
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> df</code></pre><pre class="nb-output">DataFrame with 7 columns and 344 rows:
      Idx              species               island     culmen_length_mm      culmen_depth_mm    flipper_length_mm          body_mass_g                  sex
   dtype:               string               string               object               object               object               object               string
        0               Adelie            Torgersen                 39.1                 18.7                  181                 3750                 MALE
@@ -78,7 +79,7 @@ with <a href="https://github.com/Vindaar/ggplotnim">ggplotnim</a> and <a href="h
       16               Adelie            Torgersen                 38.7                   19                  195                 3450               FEMALE
       17               Adelie            Torgersen                 42.5                 20.7                  197                 4500                 MALE
       18               Adelie            Torgersen                 34.4                 18.4                  184                 3325               FEMALE
-      19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</samp></pre>
+      19               Adelie            Torgersen                   46                 21.5                  194                 4200                 MALE</pre>
 <p>or even nicer using <code>nbShow(df.head(10))</code>:</p>
 <table>
   <thead>
@@ -112,11 +113,11 @@ The remaining 4 are numeric but they have datatype object. Why?</p>
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">2</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;culmen_depth_mm&quot;</span>, <span class="hljs-number">3</span>].kind
 <span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">2</span>].kind
-<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind</code></pre><pre class="nb-output"><samp>VFloat
+<span class="hljs-keyword">echo</span> df[<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, <span class="hljs-number">3</span>].kind</code></pre><pre class="nb-output">VFloat
 VFloat
 VString
 VInt
-VString</samp></pre>
+VString</pre>
 <p>Let's see how many penguins by species we have (and how do they relate to islands)
 by plotting the species count per island using ggplotnim:</p>
 <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> ggplotnim
@@ -142,8 +143,8 @@ from where this dataset comes from:</p>
 <p>To plot this we need to remove all <code>NA</code> and then classify the points both by the penguins sex as
 well as their species:</p>
 <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">let</span> df1 = df.filter(f{`body_mass_g` != <span class="hljs-string">&quot;NA&quot;</span>}) <span class="hljs-comment"># c&quot;foo&quot; == `foo` == idx(&quot;foo&quot;) (backtick quotes not usable for columns with spaces)</span>
-ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre class="nb-output"><samp>INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
+ggplot(df1, aes(x=<span class="hljs-string">&quot;body_mass_g&quot;</span>, y=<span class="hljs-string">&quot;flipper_length_mm&quot;</span>, color = <span class="hljs-string">&quot;sex&quot;</span>, shape=<span class="hljs-string">&quot;species&quot;</span>)) + geom_point() + ggsave(<span class="hljs-string">&quot;images/penguins_mass_vs_length_with_sex.png&quot;</span>)</code></pre><pre class="nb-output">INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+INFO: The object column `flipper_length_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</pre>
 <figure>
 <img src="./images/penguins_mass_vs_length_with_sex.png" alt="Penguins' mass vs flipper length (colored by sex)">
 <figcaption>Penguins' mass vs flipper length (colored by sex)</figcaption>
@@ -162,8 +163,8 @@ as reported by <a href="https://twitter.com/andrewheiss/status/13011667926274211
   geom_smooth(aes = aes(color = <span class="hljs-string">&quot;species&quot;</span>),       <span class="hljs-comment"># and smooth classified by species</span>
               smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># polynomial order 1 == line</span>
   geom_smooth(smoother = <span class="hljs-string">&quot;poly&quot;</span>, polyOrder = <span class="hljs-number">1</span>) + <span class="hljs-comment"># and smooth without classification by species</span>
-  ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre class="nb-output"><samp>INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
-INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</samp></pre>
+  ggsave(<span class="hljs-string">&quot;images/penguins_simpson.png&quot;</span>)</code></pre><pre class="nb-output">INFO: The object column `culmen_depth_mm` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.
+INFO: The object column `body_mass_g` has been automatically determined to be continuous. To overwrite this behavior use `scale_x/y_discrete` or apply `factor` to the column name in the `aes` call.</pre>
 <figure>
 <img src="./images/penguins_simpson.png" alt="Simpson's paradox in Penguins' dataset: for every species bigger mass is correlated with thicker bill,
 but looking at all species taken together bigger mass is correlated with thinner bill">
@@ -177,7 +178,6 @@ but looking at all species taken together bigger mass is correlated with thinner
 </figure>
 </main>
 <footer>
-<hr>
 <div class="nb-box">
   <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
   <span></span>

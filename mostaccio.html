@@ -5,8 +5,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/androidstudio.css'>
     <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
@@ -29,7 +28,9 @@ button.nb-small {
 section#source {
   display:none
 }
-
+pre > code {
+  font-size: 1.2em;
+}
 .nb-output {
   line-height: 1.15;
 }
@@ -76,9 +77,9 @@ context[<span class="hljs-string">&quot;value&quot;</span>] = <span class="hljs-
 context[<span class="hljs-string">&quot;taxed_value&quot;</span>] = <span class="hljs-number">10000</span> - (<span class="hljs-number">10000</span> * <span class="hljs-number">0.4</span>)
 context[<span class="hljs-string">&quot;in_california&quot;</span>] = <span class="hljs-literal">true</span></code></pre>
 <p>Will produce the following:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Hello Chris
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">Hello Chris
 You have just won 10000 dollars!
-Well, 6000.0 dollars, after taxes.</samp></pre>
+Well, 6000.0 dollars, after taxes.</pre>
 <h2>DESCRIPTION</h2>
 <p>Mustache can be used for HTML, config files, source code - anything.
 It works by expanding tags in a template using values provided in a context
@@ -119,11 +120,11 @@ The Ruby version of Mustache supports raising an exception in this situation, fo
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Chris&quot;</span>
 context[<span class="hljs-string">&quot;company&quot;</span>] = <span class="hljs-string">&quot;&lt;b&gt;Github&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>* Chris
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">* Chris
 * 
 * &amp;lt;b&amp;gt;Github&amp;lt;/b&amp;gt;
 * &lt;b&gt;Github&lt;/b&gt;
-* &lt;b&gt;Github&lt;/b&gt;</samp></pre>
+* &lt;b&gt;Github&lt;/b&gt;</pre>
 <blockquote>
 <p>added the <code>{{&amp;company}}</code> to clarify that it is just an alternative syntax with the same result
 as the triple mustache.</p>
@@ -145,7 +146,7 @@ Shown.
 <pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;person&quot;</span>] = <span class="hljs-literal">false</span></code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>Shown.</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">Shown.</pre>
 <h4>Non-Empty Lists</h4>
 <p>If the <strong>person</strong> key exists and has a non-false value,
 the HTML between the pound and slash will be rendered and displayed one or more times.</p>
@@ -165,9 +166,9 @@ context[<span class="hljs-string">&quot;repo&quot;</span>] = %* [
   { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span> }
 ]</code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  &lt;b&gt;resque&lt;/b&gt;
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">  &lt;b&gt;resque&lt;/b&gt;
   &lt;b&gt;hub&lt;/b&gt;
-  &lt;b&gt;rip&lt;/b&gt;</samp></pre>
+  &lt;b&gt;rip&lt;/b&gt;</pre>
 <h4>Lambdas</h4>
 <p>When the value is a callable object, such as a function or lambda, the object will be invoked and passed the block of text.
 The text passed is the literal block, unrendered.
@@ -183,7 +184,7 @@ context = newContext()
 context[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-string">&quot;Willy&quot;</span>
 context[<span class="hljs-string">&quot;wrapped&quot;</span>] = <span class="hljs-keyword">proc</span>(s: <span class="hljs-built_in">string</span>, c: <span class="hljs-type">Context</span>): <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&lt;b&gt;&quot;</span> &amp; s.strip.render(c) &amp; <span class="hljs-string">&quot;&lt;/b&gt;&quot;</span></code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>&lt;b&gt;Willy is awesome.&lt;/b&gt;</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">&lt;b&gt;Willy is awesome.&lt;/b&gt;</pre>
 <blockquote>
 <p>note that we need to <code>strutils.strip</code> the string in order to obtain the expected
 whitespace behaviour
@@ -201,7 +202,7 @@ it will be used as the context for a single rendering of the block.</p>
 <pre><code class="nohighlight hljs nim">context = newContext()
 context[<span class="hljs-string">&quot;person?&quot;</span>] = %* { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;Jon&quot;</span> }</code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  Hi Jon!</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">  Hi Jon!</pre>
 <h3>Inverted Sections</h3>
 <p>An inverted section begins with a caret (hat) and ends with a slash.
 That is <code>{{^person}}</code> begins a &quot;person&quot; inverted section while <code>{{/person}}</code> ends it.</p>
@@ -221,12 +222,12 @@ That is, they will be rendered if the key doesn't exist, is false, or is an empt
 <span class="hljs-keyword">let</span> empty: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[]
 context[<span class="hljs-string">&quot;repo&quot;</span>] = empty  <span class="hljs-comment"># does not work with seq or array or also with %* []</span></code></pre>
 <p>Output:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>  No repos :(</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">  No repos :(</pre>
 <h3>Comments</h3>
 <p>Comments begin with a bang and are ignored. The following template:</p>
 <pre><code class="nohighlight hljs nim">tmpl = <span class="hljs-string">&quot;&quot;&quot;&lt;h1&gt;Today{{! ignore me }}.&lt;/h1&gt;&quot;&quot;&quot;</span></code></pre>
 <p>Will render as follows:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre><pre class="nb-output"><samp>&lt;h1&gt;Today.&lt;/h1&gt;</samp></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> tmpl.render(newContext())</code></pre><pre class="nb-output">&lt;h1&gt;Today.&lt;/h1&gt;</pre>
 <h3>Partials</h3>
 <p>Partials begin with a greater than sign, like <code>{{&gt; box}}</code>.</p>
 <p>Partials are rendered at runtime (as opposed to compile time),
@@ -280,14 +281,14 @@ context[<span class="hljs-string">&quot;names&quot;</span>] = %* [
   { <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;rip&quot;</span> }
 ]
 
-<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;base}}&quot;</span>.render(context)</code></pre><pre class="nb-output"><samp>&lt;h2&gt;Names&lt;/h2&gt;
+<span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;base}}&quot;</span>.render(context)</code></pre><pre class="nb-output">&lt;h2&gt;Names&lt;/h2&gt;
   &lt;strong&gt;resque&lt;/strong&gt;
   &lt;strong&gt;hub&lt;/strong&gt;
-  &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)</code></pre><pre class="nb-output"><samp>&lt;h2&gt;Names&lt;/h2&gt;
+  &lt;strong&gt;rip&lt;/strong&gt;</pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;{{&gt;expanded}}&quot;</span>.render(context)</code></pre><pre class="nb-output">&lt;h2&gt;Names&lt;/h2&gt;
   &lt;strong&gt;resque&lt;/strong&gt;
   &lt;strong&gt;hub&lt;/strong&gt;
-  &lt;strong&gt;rip&lt;/strong&gt;</samp></pre>
+  &lt;strong&gt;rip&lt;/strong&gt;</pre>
 <h3>Set Delimiter</h3>
 <p>Set Delimiter tags start with an equal sign and change the tag delimiters from {{ and }} to custom strings.</p>
 <p>Consider the following contrived example:</p>
@@ -309,12 +310,11 @@ where double-braces may occur in the text and are awkward to use for markup.&quo
 context[<span class="hljs-string">&quot;default_tags&quot;</span>] = <span class="hljs-string">&quot;one&quot;</span>
 context[<span class="hljs-string">&quot;erb_style_tags&quot;</span>] = <span class="hljs-string">&quot;two&quot;</span>
 context[<span class="hljs-string">&quot;default_tags_again&quot;</span>] = <span class="hljs-string">&quot;three&quot;</span>
-<span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output"><samp>* one
+<span class="hljs-keyword">echo</span> tmpl.render(context)</code></pre><pre class="nb-output">* one
 * two
-* three</samp></pre>
+* three</pre>
 </main>
 <footer>
-<hr>
 <div class="nb-box">
   <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
   <span></span>

@@ -5,8 +5,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <link rel='stylesheet' href='https://unpkg.com/normalize.css'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
     <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
@@ -29,7 +28,9 @@ button.nb-small {
 section#source {
   display:none
 }
-
+pre > code {
+  font-size: 1.2em;
+}
 .nb-output {
   line-height: 1.15;
 }
@@ -257,7 +258,7 @@ that allow to override the above value, skip the config file or other options.</
 (execution will stop after <code>nbInit</code>).</p>
 <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> osproc
 withDir nb.srcDir:
-  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output"><samp>Nimib options:
+  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output">Nimib options:
 
   --nbHelp,     --nimibHelp                 print this help
   --nbSkipCfg,  --nimibSkipCfg              skip nimib config file
@@ -265,7 +266,7 @@ withDir nb.srcDir:
   --nbSrcDir,   --nimibSrcDir               set srcDir as relative (to CfgDir) or absolute; overrides config 
   --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
   --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
-  --nbShow,     --nimibShow                 open in browser at the end of nbSave</samp></pre>
+  --nbShow,     --nimibShow                 open in browser at the end of nbSave</pre>
 <p>The value of options are available in <code>nb.options</code> field which also
 tracks further options in <code>nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]</code>.</p>
 <h3>Code capture</h3>
@@ -372,7 +373,6 @@ and why <a href="https://www.theatlantic.com/science/archive/2016/01/a-major-cor
 and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can">imitation is the sincerest form of flattery</a></p>
 </main>
 <footer>
-<hr>
 <div class="nb-box">
   <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
   <span></span>

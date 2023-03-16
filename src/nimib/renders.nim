@@ -17,6 +17,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
+  doc.partials["nbCapture"] = """{{>nbCodeOutput}}"""
   doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
   doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
   doc.partials["nimibCode"] = doc.partials["nbCode"]
@@ -67,6 +68,7 @@ proc useMdBackend*(doc: var NbDoc) =
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
+  doc.partials["nbCapture"] = """{{>nbCodeOutput}}"""
   doc.partials["nbCodeSource"] = """
 
 ```nim

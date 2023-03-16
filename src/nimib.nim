@@ -78,6 +78,11 @@ template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
     discard
 
+template nbCapture*(body: untyped) =
+  newNbCodeBlock("nbCapture", body):
+    captureStdout(nb.blk.output):
+      body
+
 template nbCodeInBlock*(body: untyped): untyped =
   block:
     nbCode:

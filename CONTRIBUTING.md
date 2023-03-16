@@ -47,7 +47,7 @@ There are 4 main folders in the project:
 - add some test in `tests` (if it make sense)
 - add an example document or modify an existing document to show usage
 - add a mention of the new block in the readme
-  - ⚠️ currently `README.md` depends on `docsrc\index.nim`, you will have to modify `docsrc\index.nim` and run `nimble readme` to update the readme. we will remove thsi dependency see https://github.com/pietroppeter/nimib/issues/141 
+  - ⚠️ currently `README.md` depends on `docsrc\index.nim`, you will have to modify `docsrc\index.nim` and run `nimble readme` to update the readme. we will remove this dependency see https://github.com/pietroppeter/nimib/issues/141 
 
 ## CI and deploy preview
 

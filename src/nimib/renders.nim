@@ -16,6 +16,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbCode"] = """
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
+  doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
   doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
   doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
   doc.partials["nimibCode"] = doc.partials["nbCode"]
@@ -44,6 +45,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
   doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
+  doc.renderPlans["nbCodeSkip"] = @["highlightCode"]
   doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
   doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
   doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
@@ -64,6 +66,7 @@ proc useMdBackend*(doc: var NbDoc) =
   doc.partials["nbCode"] = """
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
+  doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
   doc.partials["nbCodeSource"] = """
 
 ```nim

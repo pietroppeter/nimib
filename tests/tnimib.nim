@@ -136,6 +136,23 @@ suite "nbClearOutput":
     check nb.blk.output == ""
     check nb.blk.context["output"].vString == ""
 
+suite "nbCodeSkip":
+  test "single line of code with output":
+    nbCodeSkip:
+      echo "random output..."
+
+    check nb.blk.output == ""
+    check nb.blk.code == "echo \"random output...\""
+
+  test "destructive code":
+    # Make sure the code is NOT executed
+
+    nbCodeSkip:
+      fail()
+    
+    check nb.blk.output == ""
+    check nb.blk.code == "fail()"
+
 when moduleAvailable(nimpy) and false:
   nbInitPython()
   suite "nbPython":

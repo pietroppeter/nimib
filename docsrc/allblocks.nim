@@ -1,3 +1,4 @@
+import nimoji
 import nimib
 
 nbInit
@@ -5,7 +6,9 @@ nbInit
 nbText: """
 > This nimib document provides a brief description and example for 
 > all blocks in nimib.
-"""
+
+:warning: **This document is not finished as of now.**
+""".emojize
 
 nbText: """
 ### nbCodeSkip

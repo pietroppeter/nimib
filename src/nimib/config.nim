@@ -2,7 +2,9 @@ import types, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
 
 proc getNimibVersion*(): string = 
   let 
-    # please, an easier way to do this... three. calls. looks ugly
+    # nimib/src/nimib/config.nim -> nimib/src/nimib/ -> nimib/src/ -> nimib/
+    
+    # please, an easier way to do this... three. calls. looks ugly.
     dumpedJson = execProcess("nimble dump --json", currentSourcePath().parentDir().parentDir().parentDir()) 
 
   result = parseJson(dumpedJson)["version"].getStr()

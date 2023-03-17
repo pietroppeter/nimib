@@ -1,5 +1,5 @@
 from mustachepkg/values import castStr
-import types, gits, highlight
+import types, gits, highlight, config
 
 const document* = """
 <!DOCTYPE html>
@@ -20,7 +20,7 @@ const head* = """
   {{{favicon}}}
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib" name="generator">
+  <meta content="nimib {{{version}}}" name="generator">
   {{{stylesheet}}}
   {{{highlight}}}
   {{^disableHighlightJs}}
@@ -136,6 +136,7 @@ proc useDefault*(doc: var NbDoc) =
   doc.partials["main"] = main
   # head
   doc.partials["head"] = head
+  doc.context["version"] = getNimibVersion()
   doc.context["favicon"] = faviconWhale
   doc.context["stylesheet"] = waterLight
   doc.context["highlight"] = atomOneLight

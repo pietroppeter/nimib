@@ -161,6 +161,7 @@ Currently most of the documentation on customization is given by the examples.
 * `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
   at the end of the source in `numerical.nim` linked above.
 * `nbCodeSkip`: a variant of `nbCode` that that displays highlighted code but does not compile or run it.
+* `nbCapture`: a block that only shows the captured output of a code block
 * `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;
   requires [nimpy](https://github.com/yglukhov/nimpy).
 * `nbClearOutput`: clears the output of preceding code block,

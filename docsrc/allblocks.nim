@@ -26,4 +26,15 @@ nbCodeSkip:
 nbCodeSkip:
   exit() # even this won't execute!
 
+nbText: """
+### nbCapture
+
+`nbCapture` is a block that only shows the captured output of a code block.
+
+Example(s):
+"""
+
+nbCapture:
+  echo "Captured!"
+
 nbSave

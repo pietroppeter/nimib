@@ -153,6 +153,19 @@ suite "nbCodeSkip":
     check nb.blk.output == ""
     check nb.blk.code == "fail()"
 
+suite "nbCapture":
+  test "single line of code, with output":
+    nbCapture:
+      echo "captured output"
+
+    check nb.blk.output == "captured output\n"
+
+  test "single line of code, without output":
+    nbCapture:
+      discard
+
+    check nb.blk.output == ""
+
 when moduleAvailable(nimpy) and false:
   nbInitPython()
   suite "nbPython":

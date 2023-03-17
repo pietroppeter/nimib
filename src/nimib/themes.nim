@@ -20,6 +20,7 @@ const head* = """
   {{{favicon}}}
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="nimib" name="generator">
   {{{stylesheet}}}
   {{{highlight}}}
   {{^disableHighlightJs}}

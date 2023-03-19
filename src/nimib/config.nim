@@ -1,4 +1,13 @@
-import types, parsetoml, jsony, std / [json, os, math, sequtils]
+import types, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
+
+proc getNimibVersion*(): string = 
+  let 
+    # nimib/src/nimib/config.nim -> nimib/src/nimib/ -> nimib/src/ -> nimib/
+
+    # please, an easier way to do this...
+    dumpedJson = execProcess("nimble dump --json", currentSourcePath().parentDir().parentDir().parentDir()) 
+
+  result = parseJson(dumpedJson)["version"].getStr()
 
 proc hasCfg*(doc: var NbDoc): bool = doc.cfgDir.string != ""
 

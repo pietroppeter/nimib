@@ -87,6 +87,7 @@ proc useMdBackend*(doc: var NbDoc) =
   doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """
 ![{{&caption}}]({{&url}})
+
 {{#caption}}
 **Figure:** {{&caption}}
 {{/caption}}

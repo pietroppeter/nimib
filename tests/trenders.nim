@@ -17,3 +17,44 @@ suite "render (block), html default backend":
     nbCode: echo "hi"
     check nb.render(nb.blk).strip == """
 <pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi&quot;</span></code></pre><pre class="nb-output">hi</pre>"""
+
+# switch to markdown backend
+useMdBackend nb
+
+suite "render (block), markdown backend":
+  test "nbText":
+    nbText: "hi"
+    check nb.render(nb.blk) == "hi"
+
+  test "nbCode without output":
+    nbCode: discard
+    check nb.render(nb.blk) == """
+
+```nim
+discard
+```
+
+"""
+
+  test "nbCode with output":
+    nbCode: echo "hi"
+    check nb.render(nb.blk) == """
+
+```nim
+echo "hi"
+```
+
+
+```
+hi
+```
+
+"""
+
+  test "nbImage with caption":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", "nim-lang.org favicon")
+    check nb.render(nb.blk) == """
+![nim-lang.org favicon](https://nim-lang.org/assets/img/logo_bw.png)
+
+**Figure:** nim-lang.org favicon
+"""

@@ -58,3 +58,10 @@ hi
 
 **Figure:** nim-lang.org favicon
 """
+
+  test "nbImage without caption":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png")
+    check nb.render(nb.blk) == """
+![](https://nim-lang.org/assets/img/logo_bw.png)
+
+"""

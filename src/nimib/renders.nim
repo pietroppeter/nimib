@@ -72,23 +72,23 @@ proc useMdBackend*(doc: var NbDoc) =
   doc.partials["nbCodeSource"] = """
 
 ```nim
-{{code}}
+{{&code}}
 ```
 
 """
   doc.partials["nbCodeOutput"] = """{{#output}}
 
 ```
-{{output}}
+{{&output}}
 ```
 
 {{/output}}
 """
   doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """
-![{{caption}}]({{url}})
+![{{&caption}}]({{&url}})
 
-**Figure:** {{caption}}
+**Figure:** {{&caption}}
 """
   doc.partials["nbPython"] = """
 ```python

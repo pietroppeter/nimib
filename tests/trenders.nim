@@ -65,3 +65,10 @@ hi
 ![](https://nim-lang.org/assets/img/logo_bw.png)
 
 """
+
+  test "nbImage with alt text":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", alt="nim-lang.org favicon")
+    check nb.render(nb.blk) == """
+![nim-lang.org favicon](https://nim-lang.org/assets/img/logo_bw.png)
+
+"""

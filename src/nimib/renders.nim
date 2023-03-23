@@ -22,7 +22,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
   doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """<figure>
-<img src="{{url}}" alt="{{caption}}">
+<img src="{{url}}" alt="{{alt_text}}">
 <figcaption>{{caption}}</figcaption>
 </figure>"""
   doc.partials["nbRawHtml"] = "{{&output}}"
@@ -86,7 +86,7 @@ proc useMdBackend*(doc: var NbDoc) =
 """
   doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """
-![{{&caption}}]({{&url}})
+![{{&alt_text}}]({{&url}})
 
 {{#caption}}
 **Figure:** {{&caption}}

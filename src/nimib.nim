@@ -101,13 +101,20 @@ template nbTextWithCode*(body: untyped) =
   newNbCodeBlock("nbText", body):
     nb.blk.output = body
 
-template nbImage*(url: string, caption = "") =
+template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
     nb.blk.context["url"] =
       if isAbsolute(url) or url[0..3] == "http":
         url
       else:
         nb.context["path_to_root"].vString / url
+        
+    nb.blk.context["alt_text"] = 
+      if alt == "":
+        caption
+      else:
+        alt
+        
     nb.blk.context["caption"] = caption
 
 template nbFile*(name: string, content: string) =

@@ -29,7 +29,7 @@ _add here from release changelog after next release_
 * Add seperate `alt` param to  `nbImage`, close #193 by @neroist in https://github.com/pietroppeter/nimib/pull/195
 * Fix `getNimibVersion()` by @neroist in https://github.com/pietroppeter/nimib/pull/196
 
-## New Contributors
+### New Contributors
 * @dlesnoff made their first contribution in https://github.com/pietroppeter/nimib/pull/185
 * @neroist made their first contribution in https://github.com/pietroppeter/nimib/pull/187
 

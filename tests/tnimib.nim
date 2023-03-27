@@ -1,4 +1,5 @@
 import std / [unittest, strformat, strutils]
+import nimib/config
 import nimib
 
 nbInit # todo: add a test suite for nbInit
@@ -266,3 +267,8 @@ when moduleAvailable(karax/kbase):
       check "you = \"me\"" in nb.blocks[^1].context["transformedCode"].vString
       check nb.blocks[^2].code.startsWith("let you =")
       check nb.blocks[^2].output == "hi me\n"
+
+test "getNimibVersion()":
+  let version = getNimibVersion()
+
+  check version.count('.') == 2

@@ -13,9 +13,27 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
-## v0.3.9
+## v0.3.10
 
 _add here from release changelog after next release_
+
+## v0.3.9
+
+* Update water.css and fix code output by @dlesnoff in https://github.com/pietroppeter/nimib/pull/185
+* Add `nbCodeSkip` and `allblocks.nim` by @neroist in https://github.com/pietroppeter/nimib/pull/187
+* fix typo in CONTRIBUTING.md by @neroist in https://github.com/pietroppeter/nimib/pull/188
+* Add `nbCapture`, closes #156 by @neroist in https://github.com/pietroppeter/nimib/pull/189
+* Add meta tag with generator, closes #170 by @neroist in https://github.com/pietroppeter/nimib/pull/190
+* Fix special chars escaped by the markdown renderer, close #159 by @neroist in https://github.com/pietroppeter/nimib/pull/191
+* Make "figure:" not show up when using nbImage with no caption by @neroist in https://github.com/pietroppeter/nimib/pull/192
+* Add seperate `alt` param to  `nbImage`, close #193 by @neroist in https://github.com/pietroppeter/nimib/pull/195
+* Fix `getNimibVersion()` by @neroist in https://github.com/pietroppeter/nimib/pull/196
+
+## New Contributors
+* @dlesnoff made their first contribution in https://github.com/pietroppeter/nimib/pull/185
+* @neroist made their first contribution in https://github.com/pietroppeter/nimib/pull/187
+
+**Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.8...v0.3.9
 
 ## v0.3.8 - Fix nim-markdown not exporting escapeTag anymore
 

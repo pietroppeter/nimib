@@ -28,10 +28,13 @@ task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
-  for file in ["hello", "mostaccio", "numerical", "nolan",
+  # Requires numericalnim, datamancer, ggplotnim
+  for file in ["hello", "mostaccio", "nolan",
     "pythno", "cheatsheet", "files", "index",
     "interactivity", "counters", "caesar"]:
     exec "nim r --hints:off docsrc/" & file & ".nim"
+  # This fails due to an error in numericalnim
+  # exec "nim r --hints:off docsrc/numerical.nim" 
   when not defined(nimibDocsSkipPenguins):
     exec "nim r --hints:off docsrc/penguins.nim"
   exec "nimble readme"  

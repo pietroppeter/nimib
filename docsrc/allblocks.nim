@@ -101,4 +101,13 @@ def fib(n):
 fib(1000)
 """
 
+nbText:"""
+### nbClearOutput
+Clears the output of the preceding code block, which is useful if you produce too long output or want to keep it secret.
+"""
+nbPython:"""
+fib(100000)
+"""
+nbClearOutput()
+
 nbSave

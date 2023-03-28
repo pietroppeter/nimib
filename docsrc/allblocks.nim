@@ -103,7 +103,7 @@ fib(1000)
 
 nbText:"""
 ### nbClearOutput
-Clears the output of the preceding code block, which is useful if you produce too long output or want to keep it secret.
+Clears the output of the preceding code block, which is useful if you produce too long output.
 """
 nbPython:"""
 fib(100000)

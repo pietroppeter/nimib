@@ -28,17 +28,10 @@ task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
-  exec "nim r docsrc/hello.nim"
-  exec "nim r docsrc/mostaccio.nim"
-  exec "nim r docsrc/numerical.nim"
-  exec "nim r docsrc/nolan.nim"
-  exec "nim r docsrc/pythno.nim"
-  exec "nim r docsrc/cheatsheet.nim"
-  exec "nim r docsrc/files.nim"
-  exec "nim r docsrc/index.nim"
-  exec "nim r docsrc/interactivity.nim"
-  exec "nim r docsrc/counters.nim"
-  exec "nim r docsrc/caesar.nim"
+  for file in ["hello", "mostaccio", "numerical", "nolan",
+    "pythno", "cheatsheet", "files", "index",
+    "interactivity", "counters", "caesar"]:
+    exec "nim r --hints:off docsrc/" & file & ".nim"
   when not defined(nimibDocsSkipPenguins):
-    exec "nim r docsrc/penguins.nim"
+    exec "nim r --hints:off docsrc/penguins.nim"
   exec "nimble readme"  

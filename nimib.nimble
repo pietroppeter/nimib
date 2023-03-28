@@ -19,13 +19,10 @@ task docsdeps, "install dependendencies required for doc building":
   exec "nimble -y install ggplotnim@0.5.3 numericalnim@0.6.1 nimoji nimpy karax@1.2.2"
 
 task test, "General tests":
-  exec "nim r tests/tsources.nim"
-  exec "nim r tests/tblocks.nim"
-  exec "nim r -d:nimibCodeFromAst tests/tblocks.nim"
-  exec "nim r tests/tnimib.nim"
-  exec "nim r -d:nimibCodeFromAst tests/tnimib.nim"
-  exec "nim r tests/trenders.nim"
-  exec "nim r -d:nimibCodeFromAst tests/trenders.nim"
+  for file in ["tsources.nim", "tblocks.nim", "tnimib.nim", "trenders.nim"]:
+    exec "nim r --hints:off tests/" & file
+  for file in ["tblocks.nim", "tnimib.nim", "trenders.nim"]:
+    exec "nim r --hints:off -d:nimibCodeFromAst tests/" & file
 
 task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  

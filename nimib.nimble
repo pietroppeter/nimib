@@ -31,6 +31,7 @@ task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
+  exec "nim r docsrc/allblocks.nim"
   exec "nim r docsrc/hello.nim"
   exec "nim r docsrc/mostaccio.nim"
   exec "nim r docsrc/numerical.nim"

@@ -1,9 +1,21 @@
 import nimoji
 import nimib
 import nimpy
-import std/[math, strformat]
+import std/[math, strutils, strformat]
 
 nbInit
+
+var nbToc: NbBlock
+
+template addToc =
+  newNbBlock("nbText", false, nb, nbToc, ""):
+    nbToc.output = "## Table of Contents:\n\n"
+
+template nbCodeBlock(name:string) =
+  let anchorName = name.toLower.replace(" ", "-")
+  nbText "<a name = \"" & anchorName & "\"></a>\n### " & name & "\n\n---"
+  # see below, but any number works for a numbered list
+  nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n"
 
 nbText: """
 > This nimib document provides a brief description and example for 
@@ -12,9 +24,10 @@ nbText: """
 :warning: **This document is not finished as of now.**
 """.emojize
 
-nbText: """
-### nbCodeSkip
+addToc()
 
+nbCodeBlock:"nbCodeSkip"
+nbText: """
 Similar to `nbCode`, `nbCodeSkip` is a block that displays 
 highlighted code but does not compile or run it.
 
@@ -28,8 +41,8 @@ nbCodeSkip:
 nbCodeSkip:
   exit() # even this won't execute!
 
+nbCodeBlock:"nbCapture"
 nbText: """
-### nbCapture
 
 `nbCapture` is a block that only shows the captured output of a code block.
 
@@ -46,8 +59,8 @@ And below is the actual block:
 nbCapture:
   echo "Captured!"
 
+nbCodeBlock:"nbImage"
 nbText: """
-### nbImage
 `nbImage` enables to display your favorite pictures.
 ```nim
 nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
@@ -57,8 +70,8 @@ Most formats are accepted. The caption is optional!
 
 nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
 
+nbCodeBlock:"nbTextWithCode"
 nbText:"""
-### nbTextWithCode
 You can run Nim code directly in your markdown text with this block. It may be of use for instance for computation inside tables. See `numerical.nim`.
 You just have to enclose your code into brackets e.g. `{Math.PI}` !.
 """
@@ -67,8 +80,8 @@ nbTextWithCode:fmt"""
 The *fifteen* first digits of pi are {math.PI}. This constant defines the *ratio* between the *diameter* and the *perimeter* of a circle.
 """
 
+nbCodeBlock:"nbRawHtml"
 nbText:"""
-### nbRawHtml
 Certain things are not doable with pure Markdown. You can use raw HTML directly with the `nbRawHtml` block.
 
 For example, you have to use HTML style attribute and inject CSS styling in a HTML tag to center your titles (that is a Markdown limitation).
@@ -82,11 +95,11 @@ and the centered title:
 
 nbRawHtml:"""<h2 style="text-align: center">Centered title</h2>"""
 
+nbCodeBlock:"nbPython"
 nbText:"""
-### nbPython
 Python is supported too !
 There are two requirements for the `nbPython` block.
-First you need to install `nimpy` and import it in your nimib script.
+First you need to install [nimpy](https://github.com/yglukhov/nimpy) and import it in your nimib script.
 Second, you need to call `nbInitPython()`.
 """
 
@@ -101,8 +114,8 @@ def fib(n):
 fib(1000)
 """
 
+nbCodeBlock:"nbClearOutput"
 nbText:"""
-### nbClearOutput
 Clears the output of the preceding code block, which is useful if you produce too long output.
 """
 nbPython:"""

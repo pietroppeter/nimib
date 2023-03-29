@@ -18,7 +18,7 @@ proc introText(defaultStyle = false): string =
 > This nimib example document shows how to:
 >  - apply (or not) a custom style ([latex.css](https://latex.now.sh/)){otherStyle}
 >  - using latex rendering of equations (thanks to [katex](https://katex.org/))
->  - having as output an html table (using standard markdown converter to table) 
+>  - having as output an html table (using standard markdown converter to table)
 >
 > The document itself shows how to use [numericalnim](https://github.com/hugogranstrom/numericalnim)
 > to integrate an ODE.
@@ -53,22 +53,22 @@ We want to find the approximation to the solution and compare it with the analyt
 
 We will use two fixed timestep methods to find the solution:
   - Heun's 2nd order method (`Heun2`)
-  - classic 4th order Runge-Kutta (`RK4`) 
+  - classic 4th order Runge-Kutta (`RK4`)
 
 As timestamps we will use $h=0.1, 0.05, 0.01$.
 """
 nbText: "First we translate the ODE as $y'=f(y,t)$ with $f$:"
 nbCode:
-  proc f(t, y: float, ctx: NumContext[float]): float =
+  proc f(t, y: float, ctx: NumContext[float, float]): float =
     y - 0.5*exp(0.5*t)*sin(5*t) + 5*exp(0.5*t)*cos(5*t)
-  
+
   proc y(t: float): float =
     ## analytical solution
     exp(0.5*t)*sin(5*t)
-  
+
   let y0 = 0.0
   ## we will not be using the NumContext object
-  var ctx = newNumContext[float]()
+  var ctx = newNumContext[float, float]()
   ## first derivative that will be used
   echo "y'(0): ", f(0, y0, ctx)  # "$y'(0)$" will not be converted to latex (katex has a protection not to look into code)
   ## expected solution
@@ -140,5 +140,5 @@ nbSave
 # then save with default style
 blockIntroText.output = introText(default_style=true)
 nb.filename = filename_default_style
-nb.context["stylesheet"] = default_style 
+nb.context["stylesheet"] = default_style
 nbSave

@@ -72,7 +72,7 @@ nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photo
 
 nbCodeBlock:"nbTextWithCode"
 nbText:"""
-You can run Nim code directly in your markdown text with this block. It may be of use for instance for computation inside tables. See `numerical.nim`.
+`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of `numerical.nim` for an example.
 You just have to enclose your code into brackets e.g. `{Math.PI}` !.
 """
 

@@ -1,7 +1,6 @@
 import nimoji
 import nimib
-import nimpy
-import std/[math, strutils, strformat]
+import std/[strutils, strformat]
 
 nbInit
 
@@ -20,107 +19,116 @@ template nbCodeBlock(name:string) =
 nbText: """
 > This nimib document provides a brief description and example for 
 > all blocks in nimib.
-
-:warning: **This document is not finished as of now.**
 """.emojize
 
 addToc()
 
-nbCodeBlock:"nbCodeSkip"
+nbCodeBlock: "nbText"
 nbText: """
-Similar to `nbCode`, `nbCodeSkip` is a block that displays 
-highlighted code but does not compile or run it.
+`nbText` is a block that displays text. It is the one you will use the most.
+You can use markdown syntax to format your text.
+The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html).
+"""
+nimibCode:
+  nbText: """
+  #### Markdown Example
+  My **text** is *formatted* with the 
+  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  """
 
-Example(s):
+nbCodeBlock: "nbCode"
+nbText: """
+You can insert your Nim code in your text using the `nbCode` block.
+It displays your code with highlighting, compiles and runs it.
 """
 
+nimibCode:
+  nbCode:
+    echo "Hello World!"
+
+
+nbCodeBlock: "nbCodeSkip"
+nbText: """
+Similar to `nbCode`, `nbCodeSkip` is a block that displays 
+highlighted code but does not run it.
+It is useful to show erroneous code or code that takes too long to run.
+> :warning: `nbCodeSkip` does not guarantee that the code you show will compile nor run.
+
+Examples:
+""".emojize
+
 nbCodeSkip:
-  echo "Notice how there's no output?"
-  echo "The code is not compiled or executed so no output is generated!"
+  while true:
+    echo "Notice how there's no output?"
+    echo "The code is not compiled or executed so no output is generated!"
 
 nbCodeSkip:
   exit() # even this won't execute!
 
-nbCodeBlock:"nbCapture"
+nbCodeBlock: "nbCapture"
 nbText: """
 
 `nbCapture` is a block that only shows the captured output of a code block.
-
-Example:
-
-The source code is pasted here to avoid you looking it up:
-```nim
-nbCapture:
-  echo "Captured!"
-```
-And below is the actual block:
 """
+nimibCode:
+  nbCapture:
+    echo "Captured!"
 
-nbCapture:
-  echo "Captured!"
-
-nbCodeBlock:"nbImage"
+nbCodeBlock: "nbImage"
 nbText: """
 `nbImage` enables to display your favorite pictures.
-```nim
-nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
-```
-Most formats are accepted. The caption is optional!
+
+Most formats (.jpg, .png) are accepted. The caption is optional!
 """
+nimibCode:
+  nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
 
-nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
-
-nbCodeBlock:"nbTextWithCode"
-nbText:"""
-`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of `numerical.nim` for an example.
-You just have to enclose your code into brackets e.g. `{Math.PI}` !.
+nbCodeBlock: "nbFile"
+nbText: """
+`nbFile` saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+The content can be a string or a code block.
 """
+nimibCode:
+  nbFile("exampleCode.nim"):
+    echo "This code will be saved in the exampleCode.nim file."
 
-nbTextWithCode:fmt"""
-The *fifteen* first digits of pi are {math.PI}. This constant defines the *ratio* between the *diameter* and the *perimeter* of a circle.
-"""
-
-nbCodeBlock:"nbRawHtml"
-nbText:"""
+nbCodeBlock: "nbRawHtml"
+nbText: """
 Certain things are not doable with pure Markdown. You can use raw HTML directly with the `nbRawHtml` block.
 
 For example, you have to use HTML style attribute and inject CSS styling in a HTML tag to center your titles (that is a Markdown limitation).
 
-Here is the source code:
-```html
-<h2 style="text-align: center">Centered title</h2>
-```
-and the centered title:
+Here is the source code and the centered title:
+"""
+nimibCode:
+  nbRawHtml: """<h4 style="text-align: center">Centered title</h4>"""
+
+nbCodeBlock: "nbClearOutput"
+nbText: """
+Clears the output of the preceding code block if you do not want to show it. This block is useful if you produce too long output or you do not want to show it.
+It comes in handy when you want to plot with `ggplotnim` without the additional output that the library produces.
 """
 
-nbRawHtml:"""<h2 style="text-align: center">Centered title</h2>"""
+nimibCode:
+  nbCode:
+    var i = 0
+    while i < 1000:
+      echo i
+      inc i
+  nbClearOutput
 
-nbCodeBlock:"nbPython"
-nbText:"""
-Python is supported too !
-There are two requirements for the `nbPython` block.
-First you need to install [nimpy](https://github.com/yglukhov/nimpy) and import it in your nimib script.
-Second, you need to call `nbInitPython()`.
-"""
-
-nbInitPython()
-nbPython:"""
-def fib(n):
-    a, b = 0, 1
-    while a < n:
-        print(a, end=' ')
-        a, b = b, a+b
-    print()
-fib(1000)
+nbText: """
+No output !!
 """
 
-nbCodeBlock:"nbClearOutput"
-nbText:"""
-Clears the output of the preceding code block, which is useful if you produce too long output.
+nbCodeBlock: "nimibCode"
+nbText: """
+`nimibCode` (do not be confused with `nbCode`) is a special block designed for those that want to spread their love of nimib.
+It displays the code of a nimib document (even nbCode blocks), compiles and runs the block, and displays the potential output.
+
+By clicking on the "Show source" button, you can see the multiple usages of this block in this document.
+
+Happy coding!
 """
-nbPython:"""
-fib(100000)
-"""
-nbClearOutput()
 
 nbSave

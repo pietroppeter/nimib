@@ -77,6 +77,13 @@ pre > code {
 .nb-output {
   line-height: 1.15;
 }
+figure {
+  margin: 2rem 0;
+}
+figcaption {
+  text-align: center;
+}
+  
 </style>"""
 
 const header* = """

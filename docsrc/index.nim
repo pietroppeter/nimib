@@ -55,7 +55,7 @@ Nimib was presented at [NimConf2022](https://nim-lang.org/nimconf2022/), see the
 
 Nimib was also presented in [NimConf2021](https://conf.nim-lang.org),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
-and [slides](https://github.com/pietroppeter/nimconf2021). 
+and [slides](https://github.com/pietroppeter/nimconf2021).
 
 The VS Codium / Code extension
 [nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost) ([Open VSX](https://open-vsx.org/extension/hugogranstrom/nimiboost))
@@ -100,7 +100,7 @@ elsewhere:
 * [intro to binarylang](https://ajusa.github.io/binarylang-fun/intro.html): a introduction to library [binarylang](https://github.com/sealmove/binarylang) (first public usage of nimib I was aware of)
 * [nblog](https://github.com/pietroppeter/nblog): a blog about nimib and its ecosystem
 * [nimibook](https://github.com/pietroppeter/nimibook): a port of mdbook to nim(ib)
-* [SciNim Getting Started](https://scinim.github.io/getting-started/): tutorials for nim in scientific computing 
+* [SciNim Getting Started](https://scinim.github.io/getting-started/): tutorials for nim in scientific computing
 * [Norm documentation](https://norm.nim.town): documentation of a Nim ORM library.
 * [NimiSlides](https://github.com/HugoGranstrom/nimib-reveal): a [reveal.js](https://revealjs.com) theme for nimib.
 
@@ -130,21 +130,9 @@ Customization over the default is mostly achieved through nim-mustache or changi
 `NbDoc` and `NbBlock` elements (see below api).
 Currently most of the documentation on customization is given by the examples.
 
-### other templates
+### other blocks
 
-* `nbImage`: image command to show images (see `penguins.nim` example linked above)
-* `nbFile`: content (string or untyped) is saved to file (see example document [files]({docs}/files.html))
-* `nbShow`: show a variable that has a `toHtml` proc defined. For example to pretty print a dataframe.
-* `nbRawHtml`: called with string content, it will add the raw content to document (html backend)
-* `nbTextWithCode`: a variant of `nbText` that also reads nim source. See example of usage
-  at the end of the source in `numerical.nim` linked above.
-* `nbCodeSkip`: a variant of `nbCode` that that displays highlighted code but does not compile or run it.
-* `nbCapture`: a block that only shows the captured output of a code block
-* `nbPython`:  can be used after calling `nbInitPython()` and it runs and capture output of python code;
-  requires [nimpy](https://github.com/yglukhov/nimpy).
-* `nbClearOutput`: clears the output of preceding code block,
-  useful in case a previous command has produced output that you do not want to show for some reason.
-
+You can find a complete description of the code blocks along with examples in [allblocks.nim](https://pietroppeter.github.io/nimib/allblocks.html)
 
 ### creating custom blocks
 
@@ -172,8 +160,8 @@ In [caesar]({docs}/caesar.html) we have an example of a karax app
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
 ### highlighting
-Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using 
-[highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`. 
+Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using
+[highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`.
 The supported languages are the ones listed as "common" [here](https://highlightjs.org/download/) plus Nim, Julia and Latex.
 
 Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
@@ -269,13 +257,13 @@ Here are two examples that show how to hijack the api:
   In order to use the markdown backend one must initialize its document with `nbInitMd` instead of `nbInit`
 * rendering happens during the call to `nbSave`, and two steps are performed:
   1. rendering all blocks and adding them to a sequence of blocks (added to `nb.context["blocks"]`)
-  2. rendering the document starting from `document` partial using 
+  2. rendering the document starting from `document` partial using
 * rendering of a single block depends
   on a number of fields of `nb` object:
   - `partials`: a `Table[string, string]` that contains the templates/partials for every command (e.g. `nb.partials["nbCode"]`);
   - `templateDirs`: a `seq[string]` of folders where to look for `.mustache` templates that can complement/override
     the templates in `partials`.
-    A common usage is to add a `head_other.mustache` template that contain additional content added to head section 
+    A common usage is to add a `head_other.mustache` template that contain additional content added to head section
     of **every** document (in many repositories - including nimib - it is used to add a [plausible analytics](https://plausible.io) script)
   - `renderPlans`: a `Table[string, seq[string]]` that contains the render plan (a `seq[string]`) for every step of render plan
     an associated `renderProc` is called;

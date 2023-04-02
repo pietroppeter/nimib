@@ -59,7 +59,7 @@ Examples:
 
 nbCodeSkip:
   while true:
-    echo "Notice how there's no output?"
+    echo "Notice how there is no output?"
     echo "The code is not compiled or executed so no output is generated!"
 
 nbCodeSkip:

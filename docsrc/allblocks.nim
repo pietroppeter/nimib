@@ -39,7 +39,7 @@ nimibCode:
 nbCodeBlock: "nbCode"
 nbText: """
 You can insert your Nim code in your text using the `nbCode` block.
-It displays your code with highlighting, compiles and runs it.
+It displays your code with highlighting, compiles and runs it and captures any output that is `echo`'d.
 """
 
 nimibCode:

@@ -57,13 +57,14 @@ It is useful to show erroneous code or code that takes too long to run.
 Examples:
 """.emojize
 
-nbCodeSkip:
-  while true:
-    echo "Notice how there is no output?"
-    echo "The code is not compiled or executed so no output is generated!"
+nimibCode:
+  nbCodeSkip:
+    while true:
+      echo "Notice how there is no output?"
+      echo "The code is not compiled or executed so no output is generated!"
 
-nbCodeSkip:
-  exit() # even this won't execute!
+  nbCodeSkip:
+    exit() # even this won't execute!
 
 nbCodeBlock: "nbCapture"
 nbText: """

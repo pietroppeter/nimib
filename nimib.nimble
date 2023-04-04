@@ -28,7 +28,7 @@ task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
-  for file in ["hello", "mostaccio", "numerical", "nolan",
+  for file in ["allblocks", "hello", "mostaccio", "numerical", "nolan",
     "pythno", "cheatsheet", "files", "index",
     "interactivity", "counters", "caesar"]:
     exec "nim r --hints:off docsrc/" & file & ".nim"

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>allblocks.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="nimib 0.3.10" name="generator">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+  <style>
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+pre > code {
+  font-size: 1.2em;
+}
+.nb-output {
+  line-height: 1.15;
+}
+figure {
+  margin: 2rem 0;
+}
+figcaption {
+  text-align: center;
+}
+  
+</style>
+  
+  <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body>
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>allblocks.nim</code></span>
+  <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+</div>
+<hr>
+</header><main>
+<blockquote>
+<p>This nimib document provides a brief description and example for
+all blocks in nimib.</p>
+</blockquote>
+<h2>Table of Contents:</h2>
+<ol>
+<li><a href="#nbtext">nbText</a></li>
+<li><a href="#nbcode">nbCode</a></li>
+<li><a href="#nbcodeskip">nbCodeSkip</a></li>
+<li><a href="#nbcapture">nbCapture</a></li>
+<li><a href="#nbimage">nbImage</a></li>
+<li><a href="#nbfile">nbFile</a></li>
+<li><a href="#nbrawhtml">nbRawHtml</a></li>
+<li><a href="#nbclearoutput">nbClearOutput</a></li>
+<li><a href="#nimibcode">nimibCode</a></li>
+</ol>
+<p><a name = "nbtext"></a></p>
+<h3>nbText</h3>
+<hr />
+<p><code>nbText</code> is a block that displays text. It is the one you will use the most.
+You can use markdown syntax to format your text.
+The markdown syntax is explained in the <a href="https://pietroppeter.github.io/nimib/cheatsheet.html">Markdown Cheatsheet</a>.</p>
+<pre><code class="nohighlight hljs nim">nbText: <span class="hljs-string">&quot;&quot;&quot;
+  #### Markdown Example
+  My **text** is *formatted* with the 
+  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  &quot;&quot;&quot;</span></code></pre>
+<h4>Markdown Example</h4>
+<p>My <strong>text</strong> is <em>formatted</em> with the
+<a href="https://pietroppeter.github.io/nimib/cheatsheet.html">Markdown</a> syntax.</p>
+<p><a name = "nbcode"></a></p>
+<h3>nbCode</h3>
+<hr />
+<p>You can insert your Nim code in your text using the <code>nbCode</code> block.
+It displays your code with highlighting, compiles it, runs it and captures any output that is <code>echo</code>ed.</p>
+<pre><code class="nohighlight hljs nim">nbCode:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span></code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span></code></pre><pre class="nb-output">Hello World!</pre>
+<p><a name = "nbcodeskip"></a></p>
+<h3>nbCodeSkip</h3>
+<hr />
+<p>Similar to <code>nbCode</code>, <code>nbCodeSkip</code> is a block that displays
+highlighted code but does not run it.
+It is useful to show erroneous code or code that takes too long to run.</p>
+<blockquote>
+<p>⚠️ <code>nbCodeSkip</code> does not guarantee that the code you show will compile nor run.</p>
+</blockquote>
+<p>Examples:</p>
+<pre><code class="nohighlight hljs nim">nbCodeSkip:
+  <span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span>
+
+nbCodeSkip:
+  exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span></code></pre>
+<pre><code class="nohighlight hljs nim">exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
+<p><a name = "nbcapture"></a></p>
+<h3>nbCapture</h3>
+<hr />
+<p><code>nbCapture</code> is a block that only shows the captured output of a code block.</p>
+<pre><code class="nohighlight hljs nim">nbCapture:
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Captured!&quot;</span></code></pre>
+<pre class="nb-output">Captured!</pre>
+<p><a name = "nbimage"></a></p>
+<h3>nbImage</h3>
+<hr />
+<p><code>nbImage</code> enables to display your favorite pictures.</p>
+<p>Most formats (.jpg, .png) are accepted. The caption is optional!</p>
+<pre><code class="nohighlight hljs nim">nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)</code></pre>
+<figure>
+<img src="./images/todd-cravens-nimib-unsplash.jpg" alt="Blue Whale (photograph by Todd Cravens)">
+<figcaption>Blue Whale (photograph by Todd Cravens)</figcaption>
+</figure>
+<p><a name = "nbfile"></a></p>
+<h3>nbFile</h3>
+<hr />
+<p><code>nbFile</code> saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+The content can be a string or a code block.</p>
+<pre><code class="nohighlight hljs nim">nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
+  <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;This code will be saved in the exampleCode.nim file.&quot;</span></code></pre>
+<pre>exampleCode.nim</pre>
+<pre><code class="nim hljs">echo &quot;This code will be saved in the exampleCode.nim file.&quot;</code></pre>
+
+<p><a name = "nbrawhtml"></a></p>
+<h3>nbRawHtml</h3>
+<hr />
+<p>Certain things are not doable with pure Markdown. You can use raw HTML directly with the <code>nbRawHtml</code> block.</p>
+<p>For example, you have to use HTML style attribute and inject CSS styling in a HTML tag to center your titles (that is a Markdown limitation).</p>
+<p>Here is the source code and the centered title:</p>
+<pre><code class="nohighlight hljs nim">nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span></code></pre>
+<h4 style="text-align: center">Centered title</h4>
+<p><a name = "nbclearoutput"></a></p>
+<h3>nbClearOutput</h3>
+<hr />
+<p>Clears the output of the preceding code block if you do not want to show it. This block is useful if you produce too long output or you do not want to show it.
+It comes in handy when you want to plot with <code>ggplotnim</code> without the additional output that the library produces.</p>
+<pre><code class="nohighlight hljs nim">nbCode:
+  <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">1000</span>:
+    <span class="hljs-keyword">echo</span> i
+    inc i
+nbClearOutput</code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
+<span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">1000</span>:
+  <span class="hljs-keyword">echo</span> i
+  inc i</code></pre>
+<p>No output !!</p>
+<p><a name = "nimibcode"></a></p>
+<h3>nimibCode</h3>
+<hr />
+<p><code>nimibCode</code> (do not be confused with <code>nbCode</code>) is a special block designed for those that want to spread their love of nimib.
+It displays the code of a nimib document (even nbCode blocks), compiles and runs the block, and displays the potential output.</p>
+<p>By clicking on the &quot;Show source&quot; button, you can see the multiple usages of this block in this document.</p>
+<p>Happy coding!</p>
+</main>
+<footer>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> nimoji
+<span class="hljs-keyword">import</span> nimib
+<span class="hljs-keyword">import</span> std/[strutils, strformat]
+
+nbInit
+
+<span class="hljs-keyword">var</span> nbToc: <span class="hljs-type">NbBlock</span>
+
+<span class="hljs-keyword">template</span> addToc =
+  newNbBlock(<span class="hljs-string">&quot;nbText&quot;</span>, <span class="hljs-literal">false</span>, nb, nbToc, <span class="hljs-string">&quot;&quot;</span>):
+    nbToc.output = <span class="hljs-string">&quot;## Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+
+<span class="hljs-keyword">template</span> nbCodeBlock(name:<span class="hljs-built_in">string</span>) =
+  <span class="hljs-keyword">let</span> anchorName = name.toLower.replace(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>)
+  nbText <span class="hljs-string">&quot;&lt;a name = </span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">### &quot;</span> &amp; name &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">---&quot;</span>
+  <span class="hljs-comment"># see below, but any number works for a numbered list</span>
+  nbToc.output.add <span class="hljs-string">&quot;1. &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&gt; This nimib document provides a brief description and example for 
+&gt; all blocks in nimib.
+&quot;&quot;&quot;</span>.emojize
+
+addToc()
+
+nbCodeBlock: <span class="hljs-string">&quot;nbText&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbText` is a block that displays text. It is the one you will use the most.
+You can use markdown syntax to format your text.
+The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html).
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbText: <span class="hljs-string">&quot;&quot;&quot;
+  #### Markdown Example
+  My **text** is *formatted* with the 
+  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  &quot;&quot;&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbCode&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+You can insert your Nim code in your text using the `nbCode` block.
+It displays your code with highlighting, compiles it, runs it and captures any output that is `echo`ed.
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  nbCode:
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span>
+
+
+nbCodeBlock: <span class="hljs-string">&quot;nbCodeSkip&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Similar to `nbCode`, `nbCodeSkip` is a block that displays 
+highlighted code but does not run it.
+It is useful to show erroneous code or code that takes too long to run.
+&gt; :warning: `nbCodeSkip` does not guarantee that the code you show will compile nor run.
+
+Examples:
+&quot;&quot;&quot;</span>.emojize
+
+nimibCode:
+  nbCodeSkip:
+    <span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
+      <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
+      <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span>
+
+  nbCodeSkip:
+    exit() <span class="hljs-comment"># even this won't execute!</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbCapture&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+
+`nbCapture` is a block that only shows the captured output of a code block.
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbCapture:
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Captured!&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbImage&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbImage` enables to display your favorite pictures.
+
+Most formats (.jpg, .png) are accepted. The caption is optional!
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)
+
+nbCodeBlock: <span class="hljs-string">&quot;nbFile&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbFile` saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+The content can be a string or a code block.
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;This code will be saved in the exampleCode.nim file.&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbRawHtml&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Certain things are not doable with pure Markdown. You can use raw HTML directly with the `nbRawHtml` block.
+
+For example, you have to use HTML style attribute and inject CSS styling in a HTML tag to center your titles (that is a Markdown limitation).
+
+Here is the source code and the centered title:
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbClearOutput&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Clears the output of the preceding code block if you do not want to show it. This block is useful if you produce too long output or you do not want to show it.
+It comes in handy when you want to plot with `ggplotnim` without the additional output that the library produces.
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  nbCode:
+    <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">1000</span>:
+      <span class="hljs-keyword">echo</span> i
+      inc i
+  nbClearOutput
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+No output !!
+&quot;&quot;&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nimibCode&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nimibCode` (do not be confused with `nbCode`) is a special block designed for those that want to spread their love of nimib.
+It displays the code of a nimib document (even nbCode blocks), compiles and runs the block, and displays the potential output.
+
+By clicking on the &quot;Show source&quot; button, you can see the multiple usages of this block in this document.
+
+Happy coding!
+&quot;&quot;&quot;</span>
+
+nbSave
+</code></pre>
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
+</html>

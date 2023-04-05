@@ -1,0 +1,1 @@
+echo "This code will be saved in the exampleCode.nim file."

@@ -58,7 +58,16 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   # apply theme
   theme nb
 
-template nbInitMd* = nbInit(backend=renders.useMdBackend, theme=themes.noTheme)
+template nbInitMd*(thisFileRel = "") = 
+  var tfr = if thisFileRel == "":
+      instantiationInfo(-1).filename
+    else:
+      thisFileRel
+
+  nbInit(backend=renders.useMdBackend, theme=themes.noTheme, tfr)
+
+  if nb.options.filename == "":
+    nb.filename = nb.filename.splitFile.name & ".md"
 
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =

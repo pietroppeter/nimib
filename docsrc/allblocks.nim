@@ -68,7 +68,7 @@ nimibCode:
 nbCodeBlock: "nbCodeInBlock"
 nbText: """
 Sometimes, you want to show similar code snippets with the same variable names and you need to declare twice the same variables.
-You can do so with `nbCodeInBlock` which nests your snippets inside invisible blocks.
+You can do so with `nbCodeInBlock` which nests your snippet inside a block.
 """
 
 nimibCode:

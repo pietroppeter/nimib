@@ -129,7 +129,7 @@ nimibCode:
 
 nbCodeBlock: "nbShow"
 nbText: """
-Some Nim objects have been designed with an HTML renderer. If the object has an associated `toHtml()` procedure, it can be rendered with the nbShow plot.
+Nimib allows to pretty-print objects by rendering them to HTML. If the object has an associated `toHtml()` procedure, it can be rendered with `nbShow`.
 """
 
 nimibCode:

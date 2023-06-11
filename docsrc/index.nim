@@ -132,7 +132,7 @@ Currently most of the documentation on customization is given by the examples.
 
 ### other blocks
 
-You can find a complete description of the code blocks along with examples in [allblocks]({docs}/allblocks.html.
+You can find a complete description of the code blocks along with examples in [allblocks]({docs}/allblocks.html).
 
 ### creating custom blocks
 

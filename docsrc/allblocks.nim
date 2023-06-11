@@ -27,13 +27,13 @@ nbCodeBlock: "nbText"
 nbText: """
 `nbText` is a block that displays text. It is the one you will use the most.
 You can use markdown syntax to format your text.
-The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html).
+The markdown syntax is explained in the [Markdown Cheatsheet](./cheatsheet.html).
 """
 nimibCode:
   nbText: """
   #### Markdown Example
   My **text** is *formatted* with the 
-  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  [Markdown](./cheatsheet.html) syntax.
   """
 
 nbCodeBlock: "nbCode"
@@ -95,7 +95,8 @@ nimibCode:
 
 nbCodeBlock: "nbTextWithCode"
 nbText: """
-`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of [numerical](https://pietroppeter.github.io/nimib/numerical.html) for an example.
+`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of 
+[numerical](./numerical.html) for an example.
 """
 
 nbCodeBlock: "nbImage"

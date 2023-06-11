@@ -64,10 +64,13 @@ all blocks in nimib.</p>
 <li><a href="#nbtext">nbText</a></li>
 <li><a href="#nbcode">nbCode</a></li>
 <li><a href="#nbcodeskip">nbCodeSkip</a></li>
+<li><a href="#nbcodeinblock">nbCodeInBlock</a></li>
 <li><a href="#nbcapture">nbCapture</a></li>
+<li><a href="#nbtextwithcode">nbTextWithCode</a></li>
 <li><a href="#nbimage">nbImage</a></li>
 <li><a href="#nbfile">nbFile</a></li>
 <li><a href="#nbrawhtml">nbRawHtml</a></li>
+<li><a href="#nbshow">nbShow</a></li>
 <li><a href="#nbclearoutput">nbClearOutput</a></li>
 <li><a href="#nimibcode">nimibCode</a></li>
 </ol>
@@ -76,15 +79,15 @@ all blocks in nimib.</p>
 <hr />
 <p><code>nbText</code> is a block that displays text. It is the one you will use the most.
 You can use markdown syntax to format your text.
-The markdown syntax is explained in the <a href="https://pietroppeter.github.io/nimib/cheatsheet.html">Markdown Cheatsheet</a>.</p>
+The markdown syntax is explained in the <a href="./cheatsheet.html">Markdown Cheatsheet</a>.</p>
 <pre><code class="nohighlight hljs nim">nbText: <span class="hljs-string">&quot;&quot;&quot;
   #### Markdown Example
   My **text** is *formatted* with the 
-  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  [Markdown](./cheatsheet.html) syntax.
   &quot;&quot;&quot;</span></code></pre>
 <h4>Markdown Example</h4>
 <p>My <strong>text</strong> is <em>formatted</em> with the
-<a href="https://pietroppeter.github.io/nimib/cheatsheet.html">Markdown</a> syntax.</p>
+<a href="./cheatsheet.html">Markdown</a> syntax.</p>
 <p><a name = "nbcode"></a></p>
 <h3>nbCode</h3>
 <hr />
@@ -114,6 +117,27 @@ nbCodeSkip:
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span></code></pre>
 <pre><code class="nohighlight hljs nim">exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
+<p><a name = "nbcodeinblock"></a></p>
+<h3>nbCodeInBlock</h3>
+<hr />
+<p>Sometimes, you want to show similar code snippets with the same variable names and you need to declare twice the same variables.
+You can do so with <code>nbCodeInBlock</code> which nests your snippet inside a block.</p>
+<pre><code class="nohighlight hljs nim">nbCode:
+  <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span>
+nbCodeInBlock:
+  <span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
+  <span class="hljs-keyword">echo</span> x, <span class="hljs-string">' '</span>, y <span class="hljs-comment"># The x variable comes from above</span>
+nbCodeInBlock:
+  <span class="hljs-keyword">var</span> y = <span class="hljs-number">3</span> <span class="hljs-comment"># We have to redefine the variable y in this new CodeInBlock</span>
+  <span class="hljs-keyword">echo</span> y
+<span class="hljs-keyword">when</span> <span class="hljs-literal">false</span>:
+  <span class="hljs-keyword">echo</span> y <span class="hljs-comment"># This would fail as defined in another scope</span>
+  <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># This would fail in nbCode, since it is a redefinition</span></code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span></code></pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
+<span class="hljs-keyword">echo</span> x, <span class="hljs-string">' '</span>, y <span class="hljs-comment"># The x variable comes from above</span></code></pre><pre class="nb-output">true 2</pre>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> y = <span class="hljs-number">3</span> <span class="hljs-comment"># We have to redefine the variable y in this new CodeInBlock</span>
+<span class="hljs-keyword">echo</span> y</code></pre><pre class="nb-output">3</pre>
 <p><a name = "nbcapture"></a></p>
 <h3>nbCapture</h3>
 <hr />
@@ -121,6 +145,11 @@ nbCodeSkip:
 <pre><code class="nohighlight hljs nim">nbCapture:
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Captured!&quot;</span></code></pre>
 <pre class="nb-output">Captured!</pre>
+<p><a name = "nbtextwithcode"></a></p>
+<h3>nbTextWithCode</h3>
+<hr />
+<p><code>nbText</code> only stores the string it is given, but it doesn't store the code passed to <code>nbText</code>. For example, <code>nbText: fmt&quot;{1+1}&quot;</code> only stores the string <code>&quot;2&quot;</code> but not the code <code>fmt&quot;{1+1}&quot;</code> that produced that string. <code>nbTextWithCode</code> works like <code>nbText</code> but it also stores the code in the created block. It can be accessed with <code>nb.blk.code</code> right after the <code>nbTextWithCode</code> call. See the end of
+<a href="./numerical.html">numerical</a> for an example.</p>
 <p><a name = "nbimage"></a></p>
 <h3>nbImage</h3>
 <hr />
@@ -149,6 +178,29 @@ The content can be a string or a code block.</p>
 <p>Here is the source code and the centered title:</p>
 <pre><code class="nohighlight hljs nim">nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span></code></pre>
 <h4 style="text-align: center">Centered title</h4>
+<p><a name = "nbshow"></a></p>
+<h3>nbShow</h3>
+<hr />
+<p>Nimib allows to pretty-print objects by rendering them to HTML. If the object has an associated <code>toHtml()</code> procedure, it can be rendered with <code>nbShow</code>.</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> datamancer
+<span class="hljs-keyword">let</span> s1: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">int</span>] = @[<span class="hljs-number">22</span>, <span class="hljs-number">54</span>, <span class="hljs-number">34</span>]
+<span class="hljs-keyword">let</span> s2: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">float</span>] = @[<span class="hljs-number">1.87</span>, <span class="hljs-number">1.75</span>, <span class="hljs-number">1.78</span>]
+<span class="hljs-keyword">let</span> s3: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[<span class="hljs-string">&quot;Mike&quot;</span>, <span class="hljs-string">&quot;Laura&quot;</span>, <span class="hljs-string">&quot;Sue&quot;</span>]
+<span class="hljs-keyword">let</span> df = toDf({ <span class="hljs-string">&quot;Age&quot;</span> : s1,
+                <span class="hljs-string">&quot;Height&quot;</span> : s2,
+                <span class="hljs-string">&quot;Name&quot;</span> : s3 })
+nbShow(df)</code></pre>
+<table>
+  <thead>
+<tr><th> Index </th><th> Age <br><br> int </th><th> Height <br><br> float </th><th> Name <br><br> string </th></tr>
+</thead><tbody><tr>
+<td>0</td><td>22</td><td>1.87</td><td>Mike</td>
+</tr><tr>
+<td>1</td><td>54</td><td>1.75</td><td>Laura</td>
+</tr><tr>
+<td>2</td><td>34</td><td>1.78</td><td>Sue</td>
+</tr></tbody>
+</table>
 <p><a name = "nbclearoutput"></a></p>
 <h3>nbClearOutput</h3>
 <hr />
@@ -210,13 +262,13 @@ nbCodeBlock: <span class="hljs-string">&quot;nbText&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 `nbText` is a block that displays text. It is the one you will use the most.
 You can use markdown syntax to format your text.
-The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html).
+The markdown syntax is explained in the [Markdown Cheatsheet](./cheatsheet.html).
 &quot;&quot;&quot;</span>
 nimibCode:
   nbText: <span class="hljs-string">&quot;&quot;&quot;
   #### Markdown Example
   My **text** is *formatted* with the 
-  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
+  [Markdown](./cheatsheet.html) syntax.
   &quot;&quot;&quot;</span>
 
 nbCodeBlock: <span class="hljs-string">&quot;nbCode&quot;</span>
@@ -229,10 +281,9 @@ nimibCode:
   nbCode:
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span>
 
-
 nbCodeBlock: <span class="hljs-string">&quot;nbCodeSkip&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
-Similar to `nbCode`, `nbCodeSkip` is a block that displays 
+Similar to `nbCode`, `nbCodeSkip` is a block that displays
 highlighted code but does not run it.
 It is useful to show erroneous code or code that takes too long to run.
 &gt; :warning: `nbCodeSkip` does not guarantee that the code you show will compile nor run.
@@ -249,6 +300,25 @@ nimibCode:
   nbCodeSkip:
     exit() <span class="hljs-comment"># even this won't execute!</span>
 
+nbCodeBlock: <span class="hljs-string">&quot;nbCodeInBlock&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Sometimes, you want to show similar code snippets with the same variable names and you need to declare twice the same variables.
+You can do so with `nbCodeInBlock` which nests your snippet inside a block.
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  nbCode:
+    <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span>
+  nbCodeInBlock:
+    <span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
+    <span class="hljs-keyword">echo</span> x, <span class="hljs-string">' '</span>, y <span class="hljs-comment"># The x variable comes from above</span>
+  nbCodeInBlock:
+    <span class="hljs-keyword">var</span> y = <span class="hljs-number">3</span> <span class="hljs-comment"># We have to redefine the variable y in this new CodeInBlock</span>
+    <span class="hljs-keyword">echo</span> y
+  <span class="hljs-keyword">when</span> <span class="hljs-literal">false</span>:
+    <span class="hljs-keyword">echo</span> y <span class="hljs-comment"># This would fail as defined in another scope</span>
+    <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># This would fail in nbCode, since it is a redefinition</span>
+
 nbCodeBlock: <span class="hljs-string">&quot;nbCapture&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 
@@ -257,6 +327,12 @@ nbText: <span class="hljs-string">&quot;&quot;&quot;
 nimibCode:
   nbCapture:
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Captured!&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbTextWithCode&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt&quot;{1+1}&quot;` only stores the string `&quot;2&quot;` but not the code `fmt&quot;{1+1}&quot;` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of 
+[numerical](./numerical.html) for an example.
+&quot;&quot;&quot;</span>
 
 nbCodeBlock: <span class="hljs-string">&quot;nbImage&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
@@ -286,6 +362,21 @@ Here is the source code and the centered title:
 &quot;&quot;&quot;</span>
 nimibCode:
   nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span>
+
+nbCodeBlock: <span class="hljs-string">&quot;nbShow&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Nimib allows to pretty-print objects by rendering them to HTML. If the object has an associated `toHtml()` procedure, it can be rendered with `nbShow`.
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  <span class="hljs-keyword">import</span> datamancer
+  <span class="hljs-keyword">let</span> s1: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">int</span>] = @[<span class="hljs-number">22</span>, <span class="hljs-number">54</span>, <span class="hljs-number">34</span>]
+  <span class="hljs-keyword">let</span> s2: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">float</span>] = @[<span class="hljs-number">1.87</span>, <span class="hljs-number">1.75</span>, <span class="hljs-number">1.78</span>]
+  <span class="hljs-keyword">let</span> s3: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[<span class="hljs-string">&quot;Mike&quot;</span>, <span class="hljs-string">&quot;Laura&quot;</span>, <span class="hljs-string">&quot;Sue&quot;</span>]
+  <span class="hljs-keyword">let</span> df = toDf({ <span class="hljs-string">&quot;Age&quot;</span> : s1,
+                  <span class="hljs-string">&quot;Height&quot;</span> : s2,
+                  <span class="hljs-string">&quot;Name&quot;</span> : s3 })
+  nbShow(df)
 
 nbCodeBlock: <span class="hljs-string">&quot;nbClearOutput&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;

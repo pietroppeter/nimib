@@ -84,10 +84,10 @@ nbText: hlMdF"""
 
 in this repo:
 
-* [index]({docs}/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
-* [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
-* [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
-* [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [index]({docs}/index.html): generate an HTML and a README.md at the same time (you are reading one of the two).
+* [penguins]({docs}/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images).
+* [numerical]({docs}/numerical.html): example usage of NumericalNim (example of custom style, usage of latex).
+* [cheatsheet]({docs}/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC).
 * [mostaccio]({docs}/mostaccio.html): examples of usage of nim-mustache and of dark mode.
 * [interactivity]({docs}/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter]({docs}/counters.html): shows how to create reusable interactive widgets by creating a counter button.
@@ -132,7 +132,7 @@ Currently most of the documentation on customization is given by the examples.
 
 ### other blocks
 
-You can find a complete description of the code blocks along with examples in [allblocks.nim](https://pietroppeter.github.io/nimib/allblocks.html)
+You can find a complete description of the code blocks along with examples in [allblocks]({docs}/allblocks.html.
 
 ### creating custom blocks
 

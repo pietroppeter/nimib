@@ -85,7 +85,6 @@ pre > code {
   border-top-style: none;
 }
 .nb-code { 
-  background: #F3F6F8;
   margin-bottom: 0px;
   border-radius: 6px 6px 0px 0px;
 }

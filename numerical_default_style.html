@@ -84,7 +84,7 @@ to integrate an ODE.</p>
 </ul>
 <p>As timestamps we will use $h=0.1, 0.05, 0.01$.</p>
 <p>First we translate the ODE as $y'=f(y,t)$ with $f$:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(t, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">proc</span> f(t, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
   y - <span class="hljs-number">0.5</span>*exp(<span class="hljs-number">0.5</span>*t)*sin(<span class="hljs-number">5</span>*t) + <span class="hljs-number">5</span>*exp(<span class="hljs-number">0.5</span>*t)*cos(<span class="hljs-number">5</span>*t)
 
 <span class="hljs-keyword">proc</span> y(t: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
@@ -93,7 +93,7 @@ to integrate an ODE.</p>
 
 <span class="hljs-keyword">let</span> y0 = <span class="hljs-number">0.0</span>
 <span class="hljs-comment">## we will not be using the NumContext object</span>
-<span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-built_in">float</span>]()
+<span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
 <span class="hljs-comment">## first derivative that will be used</span>
 <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y'(0): &quot;</span>, f(<span class="hljs-number">0</span>, y0, ctx)  <span class="hljs-comment"># &quot;$y'(0)$&quot; will not be converted to latex (katex has a protection not to look into code)</span>
 <span class="hljs-comment">## expected solution</span>
@@ -256,7 +256,7 @@ As timestamps we will use $h=0.1, 0.05, 0.01$.
 &quot;&quot;&quot;</span>
 nbText: <span class="hljs-string">&quot;First we translate the ODE as $y'=f(y,t)$ with $f$:&quot;</span>
 nbCode:
-  <span class="hljs-keyword">proc</span> f(t, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
+  <span class="hljs-keyword">proc</span> f(t, y: <span class="hljs-built_in">float</span>, ctx: <span class="hljs-type">NumContext</span>[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]): <span class="hljs-built_in">float</span> =
     y - <span class="hljs-number">0.5</span>*exp(<span class="hljs-number">0.5</span>*t)*sin(<span class="hljs-number">5</span>*t) + <span class="hljs-number">5</span>*exp(<span class="hljs-number">0.5</span>*t)*cos(<span class="hljs-number">5</span>*t)
   
   <span class="hljs-keyword">proc</span> y(t: <span class="hljs-built_in">float</span>): <span class="hljs-built_in">float</span> =
@@ -265,7 +265,7 @@ nbCode:
   
   <span class="hljs-keyword">let</span> y0 = <span class="hljs-number">0.0</span>
   <span class="hljs-comment">## we will not be using the NumContext object</span>
-  <span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-built_in">float</span>]()
+  <span class="hljs-keyword">var</span> ctx = newNumContext[<span class="hljs-built_in">float</span>, <span class="hljs-built_in">float</span>]()
   <span class="hljs-comment">## first derivative that will be used</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;y'(0): &quot;</span>, f(<span class="hljs-number">0</span>, y0, ctx)  <span class="hljs-comment"># &quot;$y'(0)$&quot; will not be converted to latex (katex has a protection not to look into code)</span>
   <span class="hljs-comment">## expected solution</span>

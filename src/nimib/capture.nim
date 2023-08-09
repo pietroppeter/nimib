@@ -1,30 +1,40 @@
 ## This submodule implements only one template to temporarily redirect and capture stdout during execution of a chunk of code.
-import tempfile
-
-# see https://stackoverflow.com/questions/64026829/how-to-temporarily-capture-stdout
-# Thanks, Clonk!
-
-# low level, should be Posix only but they happen to work on (my) Windows, too!
-proc dup(oldfd: FileHandle): FileHandle {.importc, header: "unistd.h".}
-proc dup2(oldfd: FileHandle, newfd: FileHandle): cint {.importc, header: "unistd.h".}
+import fusion/ioutils
+import std/os
+import std/tempfiles
 
 template captureStdout*(ident: untyped, body: untyped) =
-  ## redirect stdout to a temporary file and captures output of body in ident
-  let
+    captureStdout(ident, "", body)
+
+template captureStdout*(ident: untyped, filename: string, body: untyped) =
+    ## redirect stdout to a temporary file and captures output of body in ident
     # Duplicate stdout
-    stdoutFileno = stdout.getFileHandle()
-    stdoutDupfd = dup(stdoutFileno)
-    # Create a new temporary file
-    (tmpFile, tmpFilename) = mkstemp(mode=fmWrite)
-    tmpFileFd: FileHandle = tmpFile.getFileHandle()  
-  discard dup2(tmpFileFd, stdoutFileno)  # writing to stdoutFileno now writes to tmpFile
-
-  body
-  flushFile stdout
-
-  # before reading tmpFile, flush and close
-  tmpFile.flushFile()  
-  tmpFile.close()
-  ident = readFile(tmpFileName)
-  # Restore stdout
-  discard dup2(stdoutDupfd, stdoutFileno)
+    let stdoutFileno: FileHandle = stdout.getFileHandle()
+    let stdoutDupFd: FileHandle = stdoutFileno.duplicate()
+    
+    # Create a new temporary file or attemp to open it
+    let (tmpFile, tmpFileName {.used.}) = when filename == "":
+            createTempFile("tmp", "")
+        else:
+            let tmpName = getTempDir() / filename
+            (tmpName.open(fmAppend), tmpName)
+    let tmpFileFd: FileHandle = tmpFile.getFileHandle() 
+    
+    # writing to stdoutFileno now writes to tmpFile
+    tmpFileFd.duplicateTo(stdoutFileno)
+    
+    # Execute body code
+    body
+    
+    # Flush stdout and tmpFile, read tmpFile from start to ident and then close tmpFile
+    stdout.flushFile()
+    tmpFile.flushFile()
+    when filename == "":
+        tmpFile.setFilePos(0)
+    else:
+        discard tmpFile.reopen(tmpFileName)
+    ident = tmpFile.readAll()
+    tmpFile.close()
+    
+    # Restore stdout
+    stdoutDupFd.duplicateTo(stdoutFileno)

@@ -4,11 +4,19 @@ import ./types, ./jsutils, markdown, mustache
 import highlight
 import mustachepkg/values
 
+proc render*(nb: var NbDoc, blk: var NbBlock): string
+
 proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
 
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
+
+proc renderContainer(doc: var NbDoc, blk: var NbBlock) =
+  var children: seq[string]
+  for child in blk.blocks.mitems: 
+    children.add doc.render(child)
+  blk.context["blocks"] = children
 
 
 proc useHtmlBackend*(doc: var NbDoc) =
@@ -55,6 +63,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
   doc.renderProcs["compileNimToJs"] = compileNimToJs
+  doc.renderProcs["renderContainer"] = renderContainer
 
 proc useMdBackend*(doc: var NbDoc) =
   doc.partials["document"] = """

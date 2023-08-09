@@ -3,17 +3,14 @@ import fusion/ioutils
 import std/os
 import std/tempfiles
 
-template captureStdout*(ident: untyped, body: untyped) =
-    captureStdout(ident, "", body)
-
 template captureStdout*(ident: untyped, filename: string, body: untyped) =
     ## redirect stdout to a temporary file and captures output of body in ident
     # Duplicate stdout
     let stdoutFileno: FileHandle = stdout.getFileHandle()
     let stdoutDupFd: FileHandle = stdoutFileno.duplicate()
     
-    # Create a new temporary file or attemp to open it
-    let (tmpFile, tmpFileName {.used.}) = when filename == "":
+    # Create a new temporary file or attempt to open it
+    let (tmpFile, tmpFileName {.used.}) = if filename == "":
             createTempFile("tmp", "")
         else:
             let tmpName = getTempDir() / filename
@@ -29,7 +26,7 @@ template captureStdout*(ident: untyped, filename: string, body: untyped) =
     # Flush stdout and tmpFile, read tmpFile from start to ident and then close tmpFile
     stdout.flushFile()
     tmpFile.flushFile()
-    when filename == "":
+    if filename == "":
         tmpFile.setFilePos(0)
     else:
         discard tmpFile.reopen(tmpFileName)
@@ -38,3 +35,6 @@ template captureStdout*(ident: untyped, filename: string, body: untyped) =
     
     # Restore stdout
     stdoutDupFd.duplicateTo(stdoutFileno)
+
+template captureStdout*(ident: untyped, body: untyped) =
+    captureStdout(ident, "", body)

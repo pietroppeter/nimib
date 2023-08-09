@@ -9,7 +9,7 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.4.0"
-requires "tempfile >= 0.1.6"
+requires "fusion >= 1.2"
 requires "markdown >= 0.8.1"
 requires "mustache >= 0.2.1"
 requires "parsetoml >= 0.7.0"

@@ -18,9 +18,7 @@ proc useHtmlBackend*(doc: var NbDoc) =
 {{>nbCodeOutput}}"""
   doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
   doc.partials["nbCapture"] = """{{>nbCodeOutput}}"""
-  doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
-  doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
-  doc.partials["nbCodeSource"] = "<pre class=\"nb-code\"><code class=\"nohighlight hljs nim nb-code\">{{&codeHighlighted}}</code></pre>"
+  doc.partials["nbCodeSource"] = """<pre class="nb-code-pre {{#output}}nb-code-pre-sharp-corner{{/output}}"><code class="nohighlight hljs nim nb-code">{{&codeHighlighted}}</code></pre>"""
   doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
   doc.partials["nimibCode"] = doc.partials["nbCode"]
   doc.partials["nbImage"] = """<figure>

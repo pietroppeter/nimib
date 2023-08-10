@@ -85,14 +85,20 @@ pre > code {
   border-top-style: none;
 }
 .nb-code { 
-  margin-bottom: 0px;
-  border-radius: 6px 6px 0px 0px;
+  border-radius: inherit;
 }
-pre.nb-code {
+.nb-code-pre {
   border-color: #E8ECF0;
   border-width: 1px;
   border-style: solid;
+  border-radius: 6px 6px 6px 6px;
+  margin-bottom: 0px;
 }
+
+.nb-code-pre-sharp-corner {
+  border-radius: 6px 6px 0px 0px;
+}
+
 figure {
   margin: 2rem 0;
 }

@@ -253,4 +253,53 @@ And here the problem lies: `counter_2` is generated both times we compile the bl
 The solution is stated above: don't name multiple separate variables the same in a `nbKaraxCode` or `nbJsFromCodeOwnFile` block! 
 This isn't a problem for the other nbJs blocks luckily. 
 """
+nbText: hlMd"""
+### nbHappyxCode
+HappyX is an emerging alternative to Jester (on the back-end) and Karax(on the front end). It aims to streamline the syntax for writing full-stack applications and to allow more flexibility in its single page applications, which use a routing mechanism to switch between different pages for the app. It is being actively developed and some of the syntax for the DSL may change, so the introduction will be brief.
+
+The system for HappyX in nimib is analogous to the system for Karax. Note the parts of a typical Karax code block.
+
+```nim
+  template karaxExample =
+    let x = 3.14
+    nbKaraxCode(x):
+      var message = "Pi is roughly " & $x
+      karaxHtml:
+        p:
+          text message
+        button:
+          text "Click me!"
+          proc onClick() =
+            message = "Poof! Gone!"
+```
+Here's how it changes for HappyX:
+
+"""
+nimibCode:
+  template happyxExample =
+    let x = 3.14
+    nbHappyxCode(x):
+      var message = remember fmt"pi is roughly {x}"
+      happyxRoutes:
+        "/":
+          p:
+           {message}
+          tButton:
+            "Click me!"
+            @click(
+              message.set("Poof! Gone!"))
+
+nbText: "This is the output this code produces when called:"
+
+happyxExample()
+
+nbText: hlMd"""
+There are many differences worth noticing, like use embedding of `fmt`'s `{}` to make a text node from data or the more prolific use of the prefix `t` before html tags (which is stylistic, as it's an optional disambiguator in happyX. The key thing to get you going, though, is that:
+
+`nbKaraxCode` becomes `nbHappyxCode` -- obviously
+
+`karaxHtml` becomes `happyxRoutes`  -- this is due to differences in the DSLs. Karax uses a `buildHtml()` macro directly when creating VNodes and components. Happyx, on the other hand, enters into the front end DSL with an `appRoutes()` macro since the blocks beneath it like `"/":` define the different routes or 'subpages' of the app. So `happyxRoutes` imitates the `appRoutes` that it is meant to replace.
+
+There is **one other note for users of happyX**. The event handlers beginning in `@` must be called unambiguously. The more normal block declaration with `:` will not work in the current commit. HappyX does some massaging with its macros to make the syntax work in either case but plain Nim doesn't recognize `@click: <do stuff>` as a call. The best strategy for resolving the inconsistency hasn't been decided yet, and a potential refactor as happyX continues development may resolve it spontaneously.
+"""
 nbSave

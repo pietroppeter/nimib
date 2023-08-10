@@ -9,14 +9,14 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.4.0"
-requires "tempfile >= 0.1.6"
+requires "fusion >= 1.2"
 requires "markdown >= 0.8.1"
 requires "mustache >= 0.2.1"
 requires "parsetoml >= 0.7.0"
 requires "jsony >= 1.1.5"
 
 task docsdeps, "install dependendencies required for doc building":
-  exec "nimble -y install ggplotnim@0.5.3 numericalnim@0.6.1 nimoji nimpy karax@1.2.2"
+  exec "nimble -y install ggplotnim@0.5.9 numericalnim@0.8.8 nimoji nimpy karax@1.2.2"
 
 task test, "General tests":
   for file in ["tsources.nim", "tblocks.nim", "tnimib.nim", "trenders.nim"]:

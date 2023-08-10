@@ -79,11 +79,16 @@ pre > code {
   padding: 0.5rem;
   margin-top: 0px;
   border-color: #E8ECF0;
-  border-radius: 0px 0px 6px 6px;
+  border-radius: 6px 6px 6px 6px;
   border-width: 1px;
   border-style: solid;
+}
+.nb-code-pre + .nb-output {
+  border-radius: 0px 0px 6px 6px;
   border-top-style: none;
 }
+
+
 .nb-code { 
   border-radius: inherit;
 }

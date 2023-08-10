@@ -82,6 +82,7 @@ pre > code {
   border-radius: 6px 6px 6px 6px;
   border-width: 1px;
   border-style: solid;
+  overflow-x: auto;
 }
 .nb-code-pre + .nb-output {
   border-radius: 0px 0px 6px 6px;

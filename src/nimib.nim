@@ -217,6 +217,12 @@ when moduleAvailable(karax/kbase):
     nbRawHtml: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
+when moduleAvailable(happyx):
+  template nbHappyxCode*(args: varargs[untyped]) =
+    let rootId = "happyx-" & $nb.newId()
+    nbRawHtml: "<div id=\"" & rootId & "\"></div>"
+    nbHappyxCodeBackend(rootId, args)
+
 template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
   nb.blk.context["js_show_nim_source"] = true
   if message.len > 0:

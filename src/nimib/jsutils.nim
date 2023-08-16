@@ -137,6 +137,48 @@ macro nbKaraxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
 
   result = call
 
+macro nbHappyxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
+  if args.len == 0:
+    error("nbHappyxCode needs a code block to be passed", args)
+  let body = args[^1]
+  let captureVars =
+    if args.len == 1:
+      @[]
+    else:
+      args[0 ..< ^1]
+
+  let caller = body[^1][0]
+  if caller != ident"happyxRoutes":
+    error(fmt "{caller} != happyxRoutes: a happyxRoutes: block must terminate the nbHappyxCode block")
+
+  let happyxRoutesBody = body[^1][1]
+
+  let preHappyxRoutes =
+    if body.len == 1:
+      @[]
+    else:
+      body[0 ..< ^1]
+
+  var preRoutesCode = newStmtList()
+  for i in preHappyxRoutes.items:
+    preRoutesCode.add(i)
+
+  let imports = quote do:
+    import happyx, std/ strformat
+
+  let newBody = quote do:
+    `imports`
+    `preRoutesCode`
+    appRoutes(`rootId`):
+      `happyxRoutesBody`
+
+  var callArgs = @[rootId]
+  callArgs.add captureVars
+  callArgs.add newBody
+
+  let call = newCall(ident"nbJsFromCodeOwnFile", callArgs)
+  result = call
+
 proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)

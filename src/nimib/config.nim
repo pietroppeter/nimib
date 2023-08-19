@@ -1,4 +1,4 @@
-import types, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
+import types, parsetoml, jsony, std / [json, os, osproc, math, sequtils, re]
 
 proc getNimibVersion*(): string = 
   var dir = currentSourcePath().parentDir().parentDir()
@@ -6,9 +6,14 @@ proc getNimibVersion*(): string =
   if dir.splitPath().tail == "src":
     dir = dir.parentDir()
 
-  let dumpedJson = execProcess("nimble dump --json", dir) 
+  let dumpedJson = execProcess("nimble dump", dir) 
 
-  result = parseJson(dumpedJson)["version"].getStr()
+  let pattern = re("""^version: "(.*)"$""", {reMultiLine})
+  var match: array[1, string]
+
+  discard dumpedJson.find(pattern, match)
+
+  result = match[0]
 
 proc hasCfg*(doc: var NbDoc): bool = doc.cfgDir.string != ""
 

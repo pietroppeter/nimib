@@ -141,6 +141,13 @@ template nbFile*(name: string, body: untyped) =
     nb.blk.context["ext"] = name.getExt
     nb.blk.context["content"] = nb.blk.code
 
+template nbFile*(name: string) =
+  ## Render content of file instead of writing to it
+  newNbSlimBlock("nbFile"):
+    nb.blk.context["filename"] = name
+    nb.blk.context["ext"] = name.getExt
+    nb.blk.context["content"] = readFile(name)
+
 when moduleAvailable(nimpy):
   template nbInitPython*() =
     import nimpy

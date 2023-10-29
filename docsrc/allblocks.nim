@@ -110,12 +110,21 @@ nimibCode:
 
 nbCodeBlock: "nbFile"
 nbText: """
-`nbFile` saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+`nbFile` can save the contents of block into a file or display the contents of a file. 
+
+To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.
 """
 nimibCode:
   nbFile("exampleCode.nim"):
     echo "This code will be saved in the exampleCode.nim file."
+
+nbText: """
+
+To display a file, it takes one argument: the file's path.
+"""
+nimibCode:
+  nbFile("../LICENSE")
 
 nbCodeBlock: "nbRawHtml"
 nbText: """

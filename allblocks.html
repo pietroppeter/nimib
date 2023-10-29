@@ -163,12 +163,39 @@ nbCodeInBlock:
 <p><a name = "nbfile"></a></p>
 <h3>nbFile</h3>
 <hr />
-<p><code>nbFile</code> saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+<p><code>nbFile</code> can save the contents of block into a file or display the contents of a file.</p>
+<p>To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.</p>
 <pre><code class="nohighlight hljs nim">nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;This code will be saved in the exampleCode.nim file.&quot;</span></code></pre>
 <pre>exampleCode.nim</pre>
 <pre><code class="nim hljs">echo &quot;This code will be saved in the exampleCode.nim file.&quot;</code></pre>
+
+<p>To display a file, it takes one argument: the file's path.</p>
+<pre><code class="nohighlight hljs nim">nbFile(<span class="hljs-string">&quot;../LICENSE&quot;</span>)</code></pre>
+<pre>../LICENSE</pre>
+<pre><code class=" hljs">MIT License
+
+Copyright (c) 2020 pietroppeter
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</code></pre>
 
 <p><a name = "nbrawhtml"></a></p>
 <h3>nbRawHtml</h3>
@@ -345,12 +372,21 @@ nimibCode:
 
 nbCodeBlock: <span class="hljs-string">&quot;nbFile&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
-`nbFile` saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+`nbFile` can save the contents of block into a file or display the contents of a file. 
+
+To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.
 &quot;&quot;&quot;</span>
 nimibCode:
   nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;This code will be saved in the exampleCode.nim file.&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+
+To display a file, it takes one argument: the file's path.
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbFile(<span class="hljs-string">&quot;../LICENSE&quot;</span>)
 
 nbCodeBlock: <span class="hljs-string">&quot;nbRawHtml&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;

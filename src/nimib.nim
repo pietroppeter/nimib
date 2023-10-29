@@ -142,7 +142,7 @@ template nbFile*(name: string, body: untyped) =
     nb.blk.context["content"] = nb.blk.code
 
 template nbFile*(name: string) =
-  ## Render content of file instead of writing to it
+  ## Read content from a file instead of writing to it
   newNbSlimBlock("nbFile"):
     nb.blk.context["filename"] = name
     nb.blk.context["ext"] = name.getExt

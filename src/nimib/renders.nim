@@ -11,6 +11,22 @@ proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
 
+# assert addLineNumbersToHighlightedCode("""
+# func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
+#   <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
+#   <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
+#     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
+# """) == """
+# <span class="hljs-comment">1</span> func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
+# <span class="hljs-comment">2</span>   <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
+# <span class="hljs-comment">3</span>   <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
+# <span class="hljs-comment">4</span>     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
+# """
+
+proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
+  if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:
+    blk.context["codeHighlighted"] = addLineNumbersToHIghlightedCode(blk.context["codeHighlighted"].castStr)
+
 proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbText"] = "{{&outputToHtml}}"
   doc.partials["nbCode"] = """

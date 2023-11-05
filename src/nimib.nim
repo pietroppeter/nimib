@@ -69,6 +69,12 @@ template nbInitMd*(thisFileRel = "") =
   if nb.options.filename == "":
     nb.filename = nb.filename.splitFile.name & ".md"
 
+template enableLineNumbersDoc* =
+  nb.context["enableLineNumber"] = true
+
+template enableLineNumbersBlock* =
+  nb.blk.context["enableLineNumber"] = true
+
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
   newNbBlock(cmd, true, nb, nb.blk, body, blockImpl)
@@ -83,9 +89,21 @@ template nbCode*(body: untyped) =
     captureStdout(nb.blk.output):
       body
 
+proc addLineNumbersToHighlightedCode*(codeHl: string): string =
+  let nlines = codeHl.splitLines().len
+  var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
+  for i in 1..nlines:
+    lineNumbers[i] = $i & "<br>"
+  result = """ <span class="hljs-comment">""" & lineNumbers.join("") & """</span>""" & codeHl
+
 template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
     discard
+
+template nbCodeWithNumbers*(body: untyped) =
+  newNbCodeBlock("nbCode", body):
+    captureStdout(nb.blk.output):
+      body
 
 template nbCapture*(body: untyped) =
   newNbCodeBlock("nbCapture", body):

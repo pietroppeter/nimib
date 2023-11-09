@@ -7,7 +7,7 @@ export types, blocks, docs, boost, sugar, jsutils
 from nimib / themes import nil
 export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
 
-from nimib / renders import nil
+from nimib / renders import addLineNumbers
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -58,7 +58,7 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   # apply theme
   theme nb
 
-template nbInitMd*(thisFileRel = "") = 
+template nbInitMd*(thisFileRel = "") =
   var tfr = if thisFileRel == "":
       instantiationInfo(-1).filename
     else:
@@ -88,13 +88,7 @@ template nbCode*(body: untyped) =
   newNbCodeBlock("nbCode", body):
     captureStdout(nb.blk.output):
       body
-
-proc addLineNumbersToHighlightedCode*(codeHl: string): string =
-  let nlines = codeHl.splitLines().len
-  var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
-  for i in 1..nlines:
-    lineNumbers[i] = $i & "<br>"
-  result = """ <span class="hljs-comment">""" & lineNumbers.join("") & """</span>""" & codeHl
+    addLineNumbers(nb, nb.blk)
 
 template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
@@ -135,13 +129,13 @@ template nbImage*(url: string, caption = "", alt = "") =
         url
       else:
         nb.context["path_to_root"].vString / url
-        
-    nb.blk.context["alt_text"] = 
+
+    nb.blk.context["alt_text"] =
       if alt == "":
         caption
       else:
         alt
-        
+
     nb.blk.context["caption"] = caption
 
 template nbFile*(name: string, content: string) =
@@ -173,7 +167,7 @@ when moduleAvailable(nimpy):
 template nbShow*(obj: untyped) =
   nbRawHtml(obj.toHtml())
 
-template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
+template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} =
   nbRawHtml(content)
 
 template nbRawHtml*(content: string) =

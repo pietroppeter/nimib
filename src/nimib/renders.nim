@@ -23,9 +23,16 @@ proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
 # <span class="hljs-comment">4</span>     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
 # """
 
-proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
+func addLineNumbersToHighlightedCode(codeHl: string): string =
+  let nlines = codeHl.splitLines().len
+  var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
+  for i in 1..nlines:
+    lineNumbers[i] = $i & "<br>"
+  result = """ <span class="hljs-comment">""" & lineNumbers.join("") & """</span>""" & codeHl
+
+proc addLineNumbers*(doc: var NbDoc, blk: var NbBlock) =
   if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:
-    blk.context["codeHighlighted"] = addLineNumbersToHIghlightedCode(blk.context["codeHighlighted"].castStr)
+    blk.context["codeHighlighted"] = addLineNumbersToHighlightedCode(blk.context["codeHighlighted"].castStr)
 
 proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbText"] = "{{&outputToHtml}}"

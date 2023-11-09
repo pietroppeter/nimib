@@ -17,7 +17,7 @@ template nbCodeBlock(name:string) =
   nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n"
 
 nbText: """
-> This nimib document provides a brief description and example for 
+> This nimib document provides a brief description and example for
 > all blocks in nimib.
 """.emojize
 
@@ -32,7 +32,7 @@ The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppet
 nimibCode:
   nbText: """
   #### Markdown Example
-  My **text** is *formatted* with the 
+  My **text** is *formatted* with the
   [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
   """
 
@@ -46,10 +46,18 @@ nimibCode:
   nbCode:
     echo "Hello World!"
 
+nbText: """
+You can also display the line numbers on the left thanks to the global document switch:
+"""
+
+nimibCode:
+  enableLineNumbersDoc()
+  nbCode:
+    echo "Hello World!"
 
 nbCodeBlock: "nbCodeSkip"
 nbText: """
-Similar to `nbCode`, `nbCodeSkip` is a block that displays 
+Similar to `nbCode`, `nbCodeSkip` is a block that displays
 highlighted code but does not run it.
 It is useful to show erroneous code or code that takes too long to run.
 > :warning: `nbCodeSkip` does not guarantee that the code you show will compile nor run.

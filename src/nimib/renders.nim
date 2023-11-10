@@ -10,19 +10,6 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
-
-# assert addLineNumbersToHighlightedCode("""
-# func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
-#   <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
-#   <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
-#     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
-# """) == """
-# <span class="hljs-comment">1</span> func</span> decode(secret: openArray[<span class="hljs-built_in">int</span>]): <span class="hljs-built_in">string</span> =
-# <span class="hljs-comment">2</span>   <span class="hljs-comment">## classified by NSA as &lt;strong&gt;TOP SECRET&lt;/strong&gt;</span>
-# <span class="hljs-comment">3</span>   <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> secret:
-# <span class="hljs-comment">4</span>     <span class="hljs-literal">result</span>.add <span class="hljs-built_in">char</span>(c)
-# """
-
 func addLineNumbersToHighlightedCode(codeHl: string): string =
   let nlines = codeHl.splitLines().len
   var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
@@ -30,7 +17,7 @@ func addLineNumbersToHighlightedCode(codeHl: string): string =
     lineNumbers[i] = $i & "<br>"
   result = """ <span class="hljs-comment">""" & lineNumbers.join("") & """</span>""" & codeHl
 
-proc addLineNumbers*(doc: var NbDoc, blk: var NbBlock) =
+proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
   if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:
     blk.context["codeHighlighted"] = addLineNumbersToHighlightedCode(blk.context["codeHighlighted"].castStr)
 
@@ -68,14 +55,15 @@ proc useHtmlBackend*(doc: var NbDoc) =
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
-  doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
-  doc.renderPlans["nbCodeSkip"] = @["highlightCode"]
+  doc.renderPlans["nbCode"] = @["highlightCode", "addLineNumbers"] # default partial automatically escapes output (code is escaped when highlighting)
+  doc.renderPlans["nbCodeSkip"] = @["highlightCode", "addLineNumbers"]
   doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
   doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
   doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
+  doc.renderProcs["addLineNumbers"] = addLineNumbers
   doc.renderProcs["highlightCode"] = highlightCode
   doc.renderProcs["compileNimToJs"] = compileNimToJs
 

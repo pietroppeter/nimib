@@ -70,10 +70,10 @@ template nbInitMd*(thisFileRel = "") =
     nb.filename = nb.filename.splitFile.name & ".md"
 
 template enableLineNumbersDoc* =
-  nb.context["enableLineNumber"] = true
+  nb.context["enableLineNumbers"] = true
 
 template enableLineNumbersBlock* =
-  nb.blk.context["enableLineNumber"] = true
+  nb.blk.context["enableLineNumbers"] = true
 
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =

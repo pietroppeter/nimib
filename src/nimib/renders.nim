@@ -1,4 +1,4 @@
-import std / [strutils, tables, sugar, os, strformat, sequtils]
+import std / [strutils, tables, sugar, sequtils]
 import ./types, ./jsutils, markdown, mustache
 
 import highlight
@@ -10,12 +10,19 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
-func addLineNumbersToHighlightedCode(codeHl: string): string =
-  let nlines = codeHl.splitLines().len
-  var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
+proc addLineNumbersToHighlightedCode(code: string): string =
+  let nlines = code.splitLines().len
+  # var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
   for i in 1..nlines:
-    lineNumbers[i] = $i & "<br>"
-  result = """ <span class="hljs-comment">""" & lineNumbers.join("") & """</span>""" & codeHl
+    ## We have line numbers in the same line than code
+    result.add("""<span class="hljs-comment"> """ & $i & "</span> " & code.splitlines()[i-1] & "\n")
+    ## but we can not copy-paste code without the numbers
+  # The following separates line numbers from code, but display is wrong
+  # result = """ <div>
+  #                 <code>""" & lineNumbers.join("") & """</code>
+  #                 <code>""" & code & """</code>
+  #              </div>
+  #          """
 
 proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
   if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:

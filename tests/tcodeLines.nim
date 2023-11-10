@@ -8,3 +8,4 @@ suite "test sources":
     # a comment
     let
       x = 1
+  nbSave()

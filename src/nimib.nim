@@ -7,7 +7,7 @@ export types, blocks, docs, boost, sugar, jsutils
 from nimib / themes import nil
 export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
 
-from nimib / renders import addLineNumbers
+from nimib / renders import nil
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -88,7 +88,6 @@ template nbCode*(body: untyped) =
   newNbCodeBlock("nbCode", body):
     captureStdout(nb.blk.output):
       body
-    addLineNumbers(nb, nb.blk)
 
 template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):

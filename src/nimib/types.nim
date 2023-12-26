@@ -7,6 +7,7 @@ type
     command*: string
     code*: string
     output*: string
+    language*: string
     context*: Context
   NbOptions* = object
     skipCfg*: bool

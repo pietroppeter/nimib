@@ -125,6 +125,9 @@ proc render*(nb: var NbDoc, blk: var NbBlock): string =
     blk.context.searchTable(nb.partials)
     debugRender "partial " & nb.partials[blk.command]
     result = nb.partials[blk.command].render(blk.context)
+    if blk.language.len > 0:
+      result = result.replace("nohighlight hljs nim", "hljs " & blk.language)
+
 
 proc render*(nb: var NbDoc): string =
   var blocks: seq[string]

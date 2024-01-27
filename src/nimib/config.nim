@@ -6,7 +6,7 @@ proc getNimibVersion*(): string =
   if dir.splitPath().tail == "src":
     dir = dir.parentDir()
 
-  let dumpedJson = execProcess("nimble dump --json", dir) 
+  let dumpedJson = execProcess("nimble dump --silent --json", dir) 
 
   result = parseJson(dumpedJson)["version"].getStr()
 

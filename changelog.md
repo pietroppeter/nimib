@@ -15,7 +15,26 @@ Notes for maintainers:
 
 ## v0.3.10
 
-_add here from release changelog after next release_
+## What's Changed
+* bump 0.3.10 and update changelog with 0.3.9 release notes by @pietroppeter in https://github.com/pietroppeter/nimib/pull/199
+* Enlarge figure and center figure captions by @dlesnoff in https://github.com/pietroppeter/nimib/pull/201
+* Refactor tests and remove hints to better visualize success/failure by @dlesnoff in https://github.com/pietroppeter/nimib/pull/202
+* Complete Allblocks by @dlesnoff in https://github.com/pietroppeter/nimib/pull/203
+* Automatically change file ext to `md` when using `nbInitMd` (and add a `thisFileRel` param) by @neroist in https://github.com/pietroppeter/nimib/pull/206
+* Allblocks: add nbShow, nbCodeWithText, nbCodeInBlock by @dlesnoff in https://github.com/pietroppeter/nimib/pull/208
+* update to numericalnim 0.8.8 by @HugoGranstrom in https://github.com/pietroppeter/nimib/pull/214
+* Fix std/random bug (#204) by @sent44 in https://github.com/pietroppeter/nimib/pull/211
+* Happyx support by @quimt in https://github.com/pietroppeter/nimib/pull/212
+* Add nbFile overload for file embedding by @PhilippMDoerner in https://github.com/pietroppeter/nimib/pull/219
+* fix issue#229: skip nimble INFO logs when dumping json by @lost22git in https://github.com/pietroppeter/nimib/pull/230
+
+## New Contributors :heart: 
+* @sent44 made their first contribution in https://github.com/pietroppeter/nimib/pull/211
+* @quimt made their first contribution in https://github.com/pietroppeter/nimib/pull/212
+* @PhilippMDoerner made their first contribution in https://github.com/pietroppeter/nimib/pull/219
+* @lost22git made their first contribution in https://github.com/pietroppeter/nimib/pull/230
+
+**Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.9...v0.3.10
 
 ## v0.3.9
 

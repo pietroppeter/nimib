@@ -11,12 +11,12 @@ suite "render (block), html default backend":
 
   test "nbCode without output":
     nbCode: discard
-    check nb.render(nb.blk).strip == """<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span></code></pre>"""
+    check nb.render(nb.blk).strip == """<pre class="nb-code-pre "><code class="nohighlight hljs nim nb-code"><span class="hljs-keyword">discard</span></code></pre>"""
 
   test "nbCode with output":
     nbCode: echo "hi"
     check nb.render(nb.blk).strip == """
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi&quot;</span></code></pre><pre class="nb-output">hi</pre>"""
+<pre class="nb-code-pre nb-code-pre-sharp-corner"><code class="nohighlight hljs nim nb-code"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;hi&quot;</span></code></pre><pre class="nb-output">hi</pre>"""
 
 # switch to markdown backend
 useMdBackend nb

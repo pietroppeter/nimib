@@ -12,17 +12,11 @@ proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
 
 proc addLineNumbersToHighlightedCode(code: string): string =
   let nlines = code.splitLines().len
-  # var lineNumbers: seq[string] = @[] # newSeqOfCap(nlines)
-  for i in 1..nlines:
-    ## We have line numbers in the same line than code
-    result.add("""<span class="hljs-comment"> """ & $i & "</span> " & code.splitlines()[i-1] & "\n")
-    ## but we can not copy-paste code without the numbers
-  # The following separates line numbers from code, but display is wrong
-  # result = """ <div>
-  #                 <code>""" & lineNumbers.join("") & """</code>
-  #                 <code>""" & code & """</code>
-  #              </div>
-  #          """
+  result.add("""<span class="hljs-comment">""" & $1 & "\n")
+  for i in 2..<nlines:
+    result.add($i & "\n")
+  result.add($nlines & "</span>")
+  result.add(code)
 
 proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
   if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:

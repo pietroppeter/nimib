@@ -106,10 +106,10 @@ nbSave
 
 in this repo:
 
-* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README.md at the same time (you are reading one of the two)
-* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images)
-* [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex)
-* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC)
+* [index](https://pietroppeter.github.io/nimib/index.html): generate an HTML and a README.md at the same time (you are reading one of the two).
+* [penguins](https://pietroppeter.github.io/nimib/penguins.html): explore palmer penguins dataset using ggplotnim (example of showing images).
+* [numerical](https://pietroppeter.github.io/nimib/numerical.html): example usage of NumericalNim (example of custom style, usage of latex).
+* [cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html): markdown cheatsheet (example of a custom block, custom highlighting and a simple TOC).
 * [mostaccio](https://pietroppeter.github.io/nimib/mostaccio.html): examples of usage of nim-mustache and of dark mode.
 * [interactivity](https://pietroppeter.github.io/nimib/interactivity.html): shows the basic API of creating interactive elements using `nbJsFromCode`.
 * [counter](https://pietroppeter.github.io/nimib/counters.html): shows how to create reusable interactive widgets by creating a counter button.
@@ -154,7 +154,7 @@ Currently most of the documentation on customization is given by the examples.
 
 ### other blocks
 
-You can find a complete description of the code blocks along with examples in [allblocks.nim](https://pietroppeter.github.io/nimib/allblocks.html)
+You can find a complete description of the code blocks along with examples in [allblocks](https://pietroppeter.github.io/nimib/allblocks.html).
 
 ### creating custom blocks
 

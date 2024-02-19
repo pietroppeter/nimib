@@ -59,7 +59,7 @@ As timestamps we will use $h=0.1, 0.05, 0.01$.
 """
 nbText: "First we translate the ODE as $y'=f(y,t)$ with $f$:"
 nbCode:
-  proc f(t, y: float, ctx: NumContext[float]): float =
+  proc f(t, y: float, ctx: NumContext[float, float]): float =
     y - 0.5*exp(0.5*t)*sin(5*t) + 5*exp(0.5*t)*cos(5*t)
   
   proc y(t: float): float =
@@ -68,7 +68,7 @@ nbCode:
   
   let y0 = 0.0
   ## we will not be using the NumContext object
-  var ctx = newNumContext[float]()
+  var ctx = newNumContext[float, float]()
   ## first derivative that will be used
   echo "y'(0): ", f(0, y0, ctx)  # "$y'(0)$" will not be converted to latex (katex has a protection not to look into code)
   ## expected solution

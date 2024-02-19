@@ -27,7 +27,7 @@ nbCodeBlock: "nbText"
 nbText: """
 `nbText` is a block that displays text. It is the one you will use the most.
 You can use markdown syntax to format your text.
-The markdown syntax is explained in the [Markdown Cheatsheet](https://pietroppeter.github.io/nimib/cheatsheet.html).
+The markdown syntax is explained in the [Markdown Cheatsheet](./cheatsheet.html).
 """
 nimibCode:
   nbText: """
@@ -74,6 +74,25 @@ nimibCode:
   nbCodeSkip:
     exit() # even this won't execute!
 
+nbCodeBlock: "nbCodeInBlock"
+nbText: """
+Sometimes, you want to show similar code snippets with the same variable names and you need to declare twice the same variables.
+You can do so with `nbCodeInBlock` which nests your snippet inside a block.
+"""
+
+nimibCode:
+  nbCode:
+    var x = true # x is shared between all code blocks
+  nbCodeInBlock:
+    var y = 2 # y is local to this block
+    echo x, ' ', y # The x variable comes from above
+  nbCodeInBlock:
+    var y = 3 # We have to redefine the variable y in this new CodeInBlock
+    echo y
+  when false:
+    echo y # This would fail as defined in another scope
+    var x = true # This would fail in nbCode, since it is a redefinition
+
 nbCodeBlock: "nbCapture"
 nbText: """
 
@@ -82,6 +101,12 @@ nbText: """
 nimibCode:
   nbCapture:
     echo "Captured!"
+
+nbCodeBlock: "nbTextWithCode"
+nbText: """
+`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of
+[numerical](./numerical.html) for an example.
+"""
 
 nbCodeBlock: "nbImage"
 nbText: """
@@ -94,12 +119,21 @@ nimibCode:
 
 nbCodeBlock: "nbFile"
 nbText: """
-`nbFile` saves the content of the block into a file. It takes two arguments: the name of the file and the content of the file.
+`nbFile` can save the contents of block into a file or display the contents of a file.
+
+To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.
 """
 nimibCode:
   nbFile("exampleCode.nim"):
     echo "This code will be saved in the exampleCode.nim file."
+
+nbText: """
+
+To display a file, it takes one argument: the file's path.
+"""
+nimibCode:
+  nbFile("../LICENSE")
 
 nbCodeBlock: "nbRawHtml"
 nbText: """
@@ -111,6 +145,21 @@ Here is the source code and the centered title:
 """
 nimibCode:
   nbRawHtml: """<h4 style="text-align: center">Centered title</h4>"""
+
+nbCodeBlock: "nbShow"
+nbText: """
+Nimib allows to pretty-print objects by rendering them to HTML. If the object has an associated `toHtml()` procedure, it can be rendered with `nbShow`.
+"""
+
+nimibCode:
+  import datamancer
+  let s1: seq[int] = @[22, 54, 34]
+  let s2: seq[float] = @[1.87, 1.75, 1.78]
+  let s3: seq[string] = @["Mike", "Laura", "Sue"]
+  let df = toDf({ "Age" : s1,
+                  "Height" : s2,
+                  "Name" : s3 })
+  nbShow(df)
 
 nbCodeBlock: "nbClearOutput"
 nbText: """

@@ -152,6 +152,13 @@ template nbFile*(name: string, body: untyped) =
     nb.blk.context["ext"] = name.getExt
     nb.blk.context["content"] = nb.blk.code
 
+template nbFile*(name: string) =
+  ## Read content from a file instead of writing to it
+  newNbSlimBlock("nbFile"):
+    nb.blk.context["filename"] = name
+    nb.blk.context["ext"] = name.getExt
+    nb.blk.context["content"] = readFile(name)
+
 when moduleAvailable(nimpy):
   template nbInitPython*() =
     import nimpy
@@ -227,6 +234,12 @@ when moduleAvailable(karax/kbase):
     let rootId = "karax-" & $nb.newId()
     nbRawHtml: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
+
+when moduleAvailable(happyx):
+  template nbHappyxCode*(args: varargs[untyped]) =
+    let rootId = "happyx-" & $nb.newId()
+    nbRawHtml: "<div id=\"" & rootId & "\"></div>"
+    nbHappyxCodeBackend(rootId, args)
 
 template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
   nb.blk.context["js_show_nim_source"] = true

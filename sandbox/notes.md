@@ -1,3 +1,42 @@
+## Second day - Feb 28
+
+- [x] review Hugo solution for oop
+- define a scope and make explicit goals and assumptions
+- start working on it, starting from api
+
+### scope
+
+- blocks:
+  - nbBlock
+  - nbCode, nbText, nbImage, nbSummaryDetails
+- commands:
+  - nbInit, nbSave
+- output on save:
+  - a basic html document with water.css
+- support all 3 backends: html, json, md
+- support 2 themes: default, debug (json in html)
+- capture? maybe but no capture blocks inside other capture blocks
+- try to minimize use of external templating system
+  - pluggable templating system?
+
+
+
+
+## Pair programming session - Feb 27
+
+GOALS of TODAY: pair program, get ideas and motivation.
+Achieved.
+
+Main highlights:
+- why I want to do OOP? need to be able to answer that
+- start from API (in particular locality of definition of blocks)
+- define a Scope of what I want to support
+- is this an extension of a templating system?
+
+### details
+
+preparation
+
 annoying:
 - just noticed that this PR broke locally my tests: https://github.com/pietroppeter/nimib/pull/211/files
 - I am still using 1.6! not good!

@@ -2,6 +2,7 @@
 
 - [x] review Hugo solution for oop
 - define a scope and make explicit goals and assumptions
+- answer why OOP question
 - start working on it, starting from api
 
 ### scope
@@ -19,8 +20,16 @@
 - try to minimize use of external templating system
   - pluggable templating system?
 
+### minib3
 
+implementation of above scope, structure:
+- minib: main library and example
+- minilib: non focus code that comes from existing nimib
 
+todo:
+- [x] structure
+- [x] implement nbText, nbImage
+- [ ] implement nbSave (html backend, default theme, echo to terminal)
 
 ## Pair programming session - Feb 27
 

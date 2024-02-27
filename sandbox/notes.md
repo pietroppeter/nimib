@@ -1,0 +1,61 @@
+annoying:
+- just noticed that this PR broke locally my tests: https://github.com/pietroppeter/nimib/pull/211/files
+- I am still using 1.6! not good!
+- still do not have a way to switch easily
+
+plan for today:
+- this is a summary of nimib and refactoring: https://gist.github.com/pietroppeter/0a3699531c8059eea9094e076ac15f9f
+- discuss and see critical points
+- if we manage to code stuff, better
+
+plan:
+- let's start in a sandbox environment from scratch
+- a new NbBlock type
+- goals:
+  - support container blocks
+  - inheritance
+  - user can customize method (how? oop? or I just add a closure?)
+  - support json backend
+  - should work well with multi-language support
+    - might come from json backend
+  - improve locality of block definition
+- current mechanism
+  - does not support container blocks
+  - blocks are defined in two places
+- how to handle the customization of backend?
+  - willing to sacrifice this at the moment
+  - but ideally 
+- not in scope
+  - serialization and deserialization through jsony
+    - Hugo will take care of that
+
+
+
+discussion:
+- **decision**: base block should be a containers block?
+  - yes: you mimic html where every node can have children nodes
+  - (argument for no) if yes all blocks inheriting would need to take into account the children blocks in the templating
+  - example of nbImage: argument for no
+- idea: we could start with locality and start from api and work backwards
+
+
+what kind of blocks do we have:
+- a source block: where I need to capture the source code generating the block
+- a capturing block: where stdout is captured
+- a slim block: with no body
+- a block with body:
+  - body can be executed
+  - body can be discarded
+  - (body can be altered) - no example
+- a container block: that can contain other blocks inside
+- blocks can have side effects: e.g. write to a file, read from a file
+- needs rendering procs (postprocess), could be backend specific
+
+examples:
+- nbCode: source, capturing, withBody(executed), needs postprocess (highlighting)
+- nbText: slim block, needs postprocess (mdToHtml)
+- nbImage: slim block
+- nbSummaryDetails: container block
+
+a new minib:
+- skip capturing

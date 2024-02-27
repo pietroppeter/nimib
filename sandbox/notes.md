@@ -31,11 +31,18 @@ todo:
 - [x] implement nbText, nbImage
 - [ ] implement nbSave (html backend, default theme, echo to terminal)
   - [x] refactor NbDoc as NbBlock and add Nb object
-  - [ ] NbRender 
+  - [x] NbRender and NbRenderFunc
+  - [x] single backend (for now)
+  - [x] nb.render blk
+  - [x] nbImageToHtml
+  - [ ] nbTextToHtml
+  - [ ] nbDocToHtml
+
 
 #### key understanding
 
 - I think I want to make NbDoc a NbBlock and basically remove the mustache templating!
+  (could still be reintroduced in a NbLegacyDoc for compatibility reasons)
 
 ## Pair programming session - Feb 27
 

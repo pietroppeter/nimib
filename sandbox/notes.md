@@ -30,6 +30,12 @@ todo:
 - [x] structure
 - [x] implement nbText, nbImage
 - [ ] implement nbSave (html backend, default theme, echo to terminal)
+  - [x] refactor NbDoc as NbBlock and add Nb object
+  - [ ] NbRender 
+
+#### key understanding
+
+- I think I want to make NbDoc a NbBlock and basically remove the mustache templating!
 
 ## Pair programming session - Feb 27
 

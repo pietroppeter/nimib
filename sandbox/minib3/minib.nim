@@ -19,6 +19,8 @@ type
     backend: NbRender
 
 # nimib.nim
+import markdown
+
 template nbInit* =
   var nb {. inject .}: Nb
   nb.doc = NbDoc()
@@ -39,11 +41,17 @@ func nbImageToHtml*(blk: NbBlock): string =
   let blk = blk.NbImage
   "<img src= '" & blk.url & "'>"
 
+func nbTextToHtml*(blk: NbBlock): string =
+  let blk = blk.NbText
+  {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
+    markdown(blk.text, config=initGfmConfig())
+
 template addToBackend*(kind: string, f: NbRenderFunc) =
   nb.backend.funcs[kind] = f
 
 template nbInitBackend* =
-  addToBackend("NbImage", nbImageToHtml) 
+  addToBackend("NbImage", nbImageToHtml)
+  addToBackend("NbText", nbTextToHtml)
 
 func render(nb: Nb, blk: NbBlock): string =
   if blk.kind in nb.backend.funcs:
@@ -58,13 +66,14 @@ when isMainModule:
   import print
   # hello.nim
   nbInit
-  nbText: "hi"
+  nbText: "*hi*"
   nbImage("img.png")
   nbSave
 
   print nb
   print nb.doc.blocks[0]
   print nb.doc.blocks[0].NbText
+  print nb.render nb.doc.blocks[0]
   # print nb.blocks[0].NbImage # correctly fails at runtime
   print nb.doc.blocks[1].NbImage
   print nb.render nb.doc.blocks[1]

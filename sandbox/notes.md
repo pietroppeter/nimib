@@ -1,7 +1,20 @@
+## Naming
+
+- not sure I still like the name backend for the rendering engine
+  that changes from blocks to string (and could be a themed html, a json, markdown...)
+
+### notes on backends
+
+- I could implement specific behaviours:
+  - markdown backend defaults to html backend when not defined
+  - html backend could default to a commented json output when not defined
+  - json backend should always be defined
+    - but stuff can be marked as to be skipped, e.g. the default theme should not be serialized
+
 ## Second day - Feb 28
 
 - [x] review Hugo solution for oop
-- define a scope and make explicit goals and assumptions
+- [x] define a scope and make explicit goals and assumptions
 - answer why OOP question
 - start working on it, starting from api
 
@@ -29,14 +42,28 @@ implementation of above scope, structure:
 todo:
 - [x] structure
 - [x] implement nbText, nbImage
-- [ ] implement nbSave (html backend, default theme, echo to terminal)
+- [x] implement nbSave (html backend, default theme, echo to terminal)
   - [x] refactor NbDoc as NbBlock and add Nb object
   - [x] NbRender and NbRenderFunc
   - [x] single backend (for now)
   - [x] nb.render blk
   - [x] nbImageToHtml
-  - [ ] nbTextToHtml
-  - [ ] nbDocToHtml
+  - [x] nbTextToHtml
+  - [x] nbDocToHtml
+- [ ] implement json backend
+- later:
+  - md backend
+  - nbCode, nbSummaryDetails
+  - sugar for block creation
+  - ...
+
+decisions:
+- 1) what do I pass to the render function?
+  - docs and any container block will need the full backend
+  - currently passing the whole Nb object but it might be an overkill
+- 2) where is the default backend defined?
+  - currently in Nb object (same as before)
+
 
 
 #### key understanding

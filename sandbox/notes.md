@@ -22,10 +22,11 @@
   - in particular this means that block that need an id from global nb object need to generate it at block creation time!
 - reminder for later: to fully support custom container blocks I will need to add in
   Nb object something that tells me where to add next block
+- removed minilib, not useful since I would need import and that's a different problem
 
 todo:
 - [x] restructured minib and added sugar for blocks
-- [ ] json backend
+- [x] json backend (hugo's work is great!)
 
 ## Second day - Feb 28
 

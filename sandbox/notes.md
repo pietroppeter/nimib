@@ -11,6 +11,22 @@
   - json backend should always be defined
     - but stuff can be marked as to be skipped, e.g. the default theme should not be serialized
 
+## Third day - Feb 29
+
+- goal: add json backend
+- useful distraction: added a potential idea for sugar for creating blocks
+- interesting question: now NbDoc is special, what if I make it non special?
+- an idea I am realizing:
+  - all side effects should happen during block creation
+  - block rendering should be kept pure
+  - in particular this means that block that need an id from global nb object need to generate it at block creation time!
+- reminder for later: to fully support custom container blocks I will need to add in
+  Nb object something that tells me where to add next block
+
+todo:
+- [x] restructured minib and added sugar for blocks
+- [ ] json backend
+
 ## Second day - Feb 28
 
 - [x] review Hugo solution for oop
@@ -63,7 +79,6 @@ decisions:
   - currently passing the whole Nb object but it might be an overkill
 - 2) where is the default backend defined?
   - currently in Nb object (same as before)
-
 
 
 #### key understanding

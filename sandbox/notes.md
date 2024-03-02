@@ -11,7 +11,7 @@
   - json backend should always be defined
     - but stuff can be marked as to be skipped, e.g. the default theme should not be serialized
 
-## Fifth day - Martch 2nd
+## Fifth day - March 2nd
 
 what could I work on:
 - on theme

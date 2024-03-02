@@ -11,6 +11,35 @@
   - json backend should always be defined
     - but stuff can be marked as to be skipped, e.g. the default theme should not be serialized
 
+## Fifth day - Martch 2nd
+
+what could I work on:
+- on theme
+  - use the minimal theme
+  - use a theme field that is skipped dring json generation
+- on container blocks
+  - implement summary details
+  - implement a flexbox container!
+    - that and a generic styled span container could allow me to easily create a grid...
+- for later
+  - md backend (and revision of backends)
+  - nbCode
+  - nbJs stuff
+
+more thoughts:
+- can I also use a super method or something to wrap the rendered block in a NbBlock?
+  - for example it could be used to add a class name inside a div
+    - this could be important for example to customize code block appearance
+  - or to add an optional id to a block
+  - (this could anyway be added later)
+  - and it could be added as something that by default a block does during rendering
+  - it might have a different signature (takes rendering of content and outputs new rendering)
+- restriction/variation of render method should be done towards the end,
+  so that I know what multiple blocks should be able to 
+- instead of passing Nb object to render method I could pass a pointer to the current render backend
+  - one could use this to do fun stuff, for example have a container block that chnages the rendering engine, I could show the output of json backend inside a html backend as raw json and so on
+  - oooh coool!
+
 ## Notes from Fourth day - Match 1st
 
 Some notes for me for later while I am on mobile related to NbRender type:
@@ -80,7 +109,7 @@ todo:
   - [x] nbImageToHtml
   - [x] nbTextToHtml
   - [x] nbDocToHtml
-- [ ] implement json backend
+- [x] implement json backend
 - later:
   - md backend
   - nbCode, nbSummaryDetails

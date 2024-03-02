@@ -11,6 +11,19 @@
   - json backend should always be defined
     - but stuff can be marked as to be skipped, e.g. the default theme should not be serialized
 
+## Notes from Fourth day - Match 1st
+
+Some notes for me for later while I am on mobile related to NbRender type:
+- right now NbDoc forced me to change the signature to add also Nb object
+- I think I should change to pass only NbDoc object (type of the root object)
+- also I could have NbRender support two types of functions (one for NbDoc like blocks one for NbText like blocks)
+- I should encode the block type in the base block
+- the general idea is to make the internal api safer (allow only what needs to be allowed)
+- also the idea is to have the NbDoc the unit of serialization and rendering should not access anything outside of that (it will not be accessible from a deserialized version)
+- and in NbDoc the plan is to have a theme field that is skipped on json serialization
+- there is a tension between what you want to be able to serialize (content and specificities of a page) and what you want to be controlled (later) by the SSG (like the theme) and should not be serialized (also because it is redundant). Tension also with a third element which is the fact that rendering does need a theme
+- as another, unrelated note, minimal theme could contain only doctype html and title element (see https://unplannedobsolescence.com/blog/best-hello-world-web-development/)
+
 ## Third day - Feb 29
 
 - goal: add json backend
@@ -87,7 +100,7 @@ decisions:
 - I think I want to make NbDoc a NbBlock and basically remove the mustache templating!
   (could still be reintroduced in a NbLegacyDoc for compatibility reasons)
 
-## Pair programming session - Feb 27
+## Pair programming session - Feb 26
 
 GOALS of TODAY: pair program, get ideas and motivation.
 Achieved.

@@ -13,6 +13,17 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v0.3.11
+
+## What's Changed
+* Update changelog.md and bumping to 3.11 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/231
+* paths.nim: Fix import for FreeBSD by @lbartoletti in https://github.com/pietroppeter/nimib/pull/238
+
+## New Contributors
+* @lbartoletti made their first contribution in https://github.com/pietroppeter/nimib/pull/238
+
+**Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.10...v0.3.11
+
 ## v0.3.10
 
 ## What's Changed

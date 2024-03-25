@@ -6,13 +6,17 @@ type
     kind: string
   NbRenderFunc = proc (blk: NbBlock, nb: Nb): string {. noSideEffect .}
   NbRender = object
-    funcs: Table[string, NbRenderFunc] 
-  NbDoc = ref object of NbBlock
+    funcs: Table[string, NbRenderFunc]
+  NbContainer = ref object of NbBlock
     blocks: seq[NbBlock]
+    parent: NbContainer
+  NbDoc = ref object of NbContainer
+    title: string
   Nb = object
     blk: NbBlock # last block processed
     doc: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
-    backend: NbRender
+    container: NbContainer # current container
+    backend: NbRender # current backend
 
 # this needs to be know for all container blocks not sure whether to put it in types
 func render(nb: Nb, blk: NbBlock): string =
@@ -74,6 +78,7 @@ import markdown
 template nbInit* =
   var nb {. inject .}: Nb
   nb.doc = NbDoc(kind: "NbDoc")
+  nb.container = nb.doc
   nbToHtml.funcs["NbDoc"] = nbDocToHtml
   nb.backend = nbToHtml
 
@@ -87,7 +92,7 @@ type
     text: string
 template nbText*(ttext: string) =
   nb.blk = NbText(text: ttext, kind: "NbText")
-  nb.doc.blocks.add nb.blk
+  nb.container.blocks.add nb.blk
 func nbTextToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbText
   {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
@@ -108,7 +113,7 @@ type
     url: string
 template nbImage*(turl: string) =
   nb.blk = NbImage(url: turl, kind: "NbImage")
-  nb.doc.blocks.add nb.blk
+  nb.container.blocks.add nb.blk
 func nbImageToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbImage
   "<img src= '" & blk.url & "'>"

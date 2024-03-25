@@ -64,12 +64,17 @@ proc dumpHook*(s: var string, v: NbBlock) =
 # themes.nim
 import std / strutils
 
-func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbDoc
-  var blocks: seq[string]
+func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbContainer
   for b in blk.blocks:
-    blocks.add nb.render(b)
-  "<!DOCTYPE html>\n<html><head></head>\n<body>\n" & blocks.join("\n") & "\n</body>\n</html>"
+    result.add nb.render(b).strip & '\n'
+  result.strip
+
+func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
+  "<!DOCTYPE html>\n" &
+  "<title>" & blk.NbDoc.title & "<title>\n" &
+  nbContainerToHtml(blk, nb)
+  
 addNbBlockToJson(NbDoc)
 
 # nimib.nim
@@ -77,7 +82,7 @@ import markdown
 
 template nbInit* =
   var nb {. inject .}: Nb
-  nb.doc = NbDoc(kind: "NbDoc")
+  nb.doc = NbDoc(kind: "NbDoc", title: "a nimib document")
   nb.container = nb.doc
   nbToHtml.funcs["NbDoc"] = nbDocToHtml
   nb.backend = nbToHtml
@@ -107,7 +112,6 @@ newNbBlock(nbText):
       markdown(blk.text, config=initGfmConfig())
 ]#
 
-
 type
   NbImage = ref object of NbBlock
     url: string
@@ -125,6 +129,26 @@ newNbBlock(nbImage):
   toHtml:
     "<img src= '" & blk.url & "'>"
 ]#
+
+type
+  NbDetails = ref object of NbContainer
+    summary: string
+template nbDetails*(tsummary: string, body: untyped) =
+  let blk = NbDetails(summary: tsummary, kind: "NbDetails")
+  blk.parent = nb.container # save current container
+  nb.blk = blk
+  nb.container.blocks.add nb.blk
+  
+  nb.container = blk
+  body
+  nb.container = blk.parent
+
+func NbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbDetails
+  
+nbToHtml.funcs["NbDetails"] = NbDetailsToHtml
+addNbBlockToJson(NbDetails)
+
 
 when isMainModule:
   import print

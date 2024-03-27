@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.3.11"
+version       = "0.3.12"
 author        = "Pietro Peterlongo & Hugo Granström"
 description   = "nimib 🐳 - nim 👑 driven ⛵ publishing ✍"
 license       = "MIT"

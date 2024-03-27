@@ -1,8 +1,12 @@
 ## getting back working on this
 
+### containers
 - added NbContainer type, refactored NbDoc added NbDetails as example
 - FAILURE: serialization to json has issues!
-
+- alternative implementation of containers that does not use circular references
+  (simpler, no issues)
+  - add api a `nb.add` and `nb.withContainer(container)
+: body`
 ---
 ## Naming
 

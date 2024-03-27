@@ -9,13 +9,12 @@ type
     funcs: Table[string, NbRenderFunc]
   NbContainer = ref object of NbBlock
     blocks: seq[NbBlock]
-    parent: NbContainer
   NbDoc = ref object of NbContainer
     title: string
   Nb = object
     blk: NbBlock # last block processed
     doc: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
-    container: NbContainer # current container
+    containers: seq[NbContainer] # current container
     backend: NbRender # current backend
 
 # this needs to be know for all container blocks not sure whether to put it in types
@@ -54,14 +53,6 @@ proc parseHook*(s: string, i: var int, v: var NbBlock) =
   let kind = n.kind
   v = nbToJson[kind](s, i)
 
-# I think these two skipHooks do NOT work since they refer
-# to a ref object while jsony will dump the nonref object (for which I have no name!)
-proc skipHook*(T: typedesc[NbContainer], key: static string): bool =
-  key in ["parent"]
-
-proc skipHook*(T: typedesc[NbDoc], key: static string): bool =
-  key in ["parent"]
-
 method dump(n: NbBlock): string =
     n[].toJson()
 
@@ -71,71 +62,6 @@ proc dumpHook*(s: var string, v: NbBlock) =
 template dumpKey(s: var string, v: string) =
   const v2 = v.toJson() & ":"
   s.add v2
-
-
-proc dumpHook*(s: var string, v: NbContainer) =
-  s.add '{'
-  var i = 0
-  when compiles(for k, e in v.pairs: discard):
-    # Tables and table like objects.
-    for k, e in v.pairs:
-      if i > 0:
-        s.add ','
-      s.dumpHook(k)
-      s.add ':'
-      s.dumpHook(e)
-      inc i
-  else:
-    # Normal objects.
-    for k, e in v[].fieldPairs:
-      when compiles(skipHook(type(v), k)):
-        when skipHook(type(v), k):
-          discard
-        else:
-          if i > 0:
-            s.add ','
-          s.dumpKey(k)
-          s.dumpHook(e)
-          inc i
-      else:
-        if i > 0:
-          s.add ','
-        s.dumpKey(k)
-        s.dumpHook(e)
-        inc i
-  s.add '}'
-
-proc dumpHook*(s: var string, v: NbDoc) =
-  s.add '{'
-  var i = 0
-  when compiles(for k, e in v.pairs: discard):
-    # Tables and table like objects.
-    for k, e in v.pairs:
-      if i > 0:
-        s.add ','
-      s.dumpHook(k)
-      s.add ':'
-      s.dumpHook(e)
-      inc i
-  else:
-    # Normal objects.
-    for k, e in v[].fieldPairs:
-      when compiles(skipHook(type(v), k)):
-        when skipHook(type(v), k):
-          discard
-        else:
-          if i > 0:
-            s.add ','
-          s.dumpKey(k)
-          s.dumpHook(e)
-          inc i
-      else:
-        if i > 0:
-          s.add ','
-        s.dumpKey(k)
-        s.dumpHook(e)
-        inc i
-  s.add '}'
 
 
 # themes.nim
@@ -155,13 +81,26 @@ func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
   
 addNbBlockToJson(NbDoc)
 
+# blocks.nim
+# should I add nb.blk.add blk to both add and with Container
+proc add(nb: var Nb, blk: NbBlock) =
+  if nb.containers.len == 0:
+    nb.doc.blocks.add blk
+  else:
+    nb.containers[^1].blocks.add blk
+
+template withContainer(nb: var Nb, container: NbContainer, body: untyped) =
+  nb.add container
+  nb.containers.add container
+  body
+  discard nb.containers.pop
+
 # nimib.nim
 import markdown
 
 template nbInit* =
   var nb {. inject .}: Nb
   nb.doc = NbDoc(kind: "NbDoc", title: "a nimib document")
-  nb.container = nb.doc
   nbToHtml.funcs["NbDoc"] = nbDocToHtml
   nb.backend = nbToHtml
 
@@ -175,7 +114,7 @@ type
     text: string
 template nbText*(ttext: string) =
   nb.blk = NbText(text: ttext, kind: "NbText")
-  nb.container.blocks.add nb.blk
+  nb.add nb.blk
 func nbTextToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbText
   {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
@@ -195,7 +134,7 @@ type
     url: string
 template nbImage*(turl: string) =
   nb.blk = NbImage(url: turl, kind: "NbImage")
-  nb.container.blocks.add nb.blk
+  nb.add nb.blk
 func nbImageToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbImage
   "<img src= '" & blk.url & "'>"
@@ -213,13 +152,9 @@ type
     summary: string
 template nbDetails*(tsummary: string, body: untyped) =
   let blk = NbDetails(summary: tsummary, kind: "NbDetails")
-  blk.parent = nb.container # save current container
   nb.blk = blk
-  nb.container.blocks.add nb.blk
-  
-  nb.container = blk
-  body
-  nb.container = blk.parent
+  nb.withContainer(blk):
+    body
 
 func NbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbDetails
@@ -280,13 +215,13 @@ when isMainModule:
 </html>
   ]#
 
-  let docToJson = nb.doc.blocks[0].NbDetails.blocks.toJson()
-  print nb.doc.blocks[0].NbDetails
-  echo docToJson
-  print nb.doc.blocks[0].NbDetails.toJson() # fails because of too much recursion
-  # does not fail anymore if I add the specific dumpHook
-  let docFromJson = docToJson.fromJson(seq[NbBlock]) # but now this fails
+  let docToJson = nb.doc.toJson()
+  print docToJson
+  let docFromJson = docToJson.fromJson(NbDoc) # but now this fails
   print docFromJson
+  print docFromJson.blocks[0].NbDetails
+  print docFromJson.blocks[0].NbDetails.blocks[0].NbText
+  print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
   #[
   print docToJson
   print docFromJson

@@ -82,8 +82,8 @@ func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
 addNbBlockToJson(NbDoc)
 
 # blocks.nim
-# should I add nb.blk.add blk to both add and with Container
 proc add(nb: var Nb, blk: NbBlock) =
+  nb.blk = blk
   if nb.containers.len == 0:
     nb.doc.blocks.add blk
   else:
@@ -113,8 +113,8 @@ type
   NbText = ref object of NbBlock
     text: string
 template nbText*(ttext: string) =
-  nb.blk = NbText(text: ttext, kind: "NbText")
-  nb.add nb.blk
+  let blk = NbText(text: ttext, kind: "NbText")
+  nb.add blk
 func nbTextToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbText
   {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
@@ -133,8 +133,8 @@ type
   NbImage = ref object of NbBlock
     url: string
 template nbImage*(turl: string) =
-  nb.blk = NbImage(url: turl, kind: "NbImage")
-  nb.add nb.blk
+  let blk = NbImage(url: turl, kind: "NbImage")
+  nb.add blk
 func nbImageToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbImage
   "<img src= '" & blk.url & "'>"
@@ -152,7 +152,6 @@ type
     summary: string
 template nbDetails*(tsummary: string, body: untyped) =
   let blk = NbDetails(summary: tsummary, kind: "NbDetails")
-  nb.blk = blk
   nb.withContainer(blk):
     body
 
@@ -164,37 +163,6 @@ func NbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
   
 nbToHtml.funcs["NbDetails"] = NbDetailsToHtml
 addNbBlockToJson(NbDetails)
-proc dumpHook*(s: var string, v: NbDetails) =
-  s.add '{'
-  var i = 0
-  when compiles(for k, e in v.pairs: discard):
-    # Tables and table like objects.
-    for k, e in v.pairs:
-      if i > 0:
-        s.add ','
-      s.dumpHook(k)
-      s.add ':'
-      s.dumpHook(e)
-      inc i
-  else:
-    # Normal objects.
-    for k, e in v[].fieldPairs:
-      when compiles(skipHook(type(v), k)):
-        when skipHook(type(v), k):
-          discard
-        else:
-          if i > 0:
-            s.add ','
-          s.dumpKey(k)
-          s.dumpHook(e)
-          inc i
-      else:
-        if i > 0:
-          s.add ','
-        s.dumpKey(k)
-        s.dumpHook(e)
-        inc i
-  s.add '}'
 
 
 when isMainModule:
@@ -203,6 +171,8 @@ when isMainModule:
   nbDetails("Click for details:"):
     nbText: "*hi*"
     nbImage("img.png")
+    nbDetails("go deeper"):
+      nbText("42")
   nbSave
   #[
 <!DOCTYPE html>

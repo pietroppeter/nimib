@@ -1,6 +1,14 @@
 ## getting back working on this
 
-### containers
+### Next steps:
+- implement `nbCode` in minib
+- implement `nbCodeFromJs` in minib
+- think if there are essentially other types of blocks we need to test with the new refactoring
+- if not go ahead and implement sugar to implement custom blocks (and refactor)
+- clean up minib implementation
+- reimplement all of minib starting with the new minib poc
+
+### containers 👌
 - added NbContainer type, refactored NbDoc added NbDetails as example
 - FAILURE: serialization to json has issues!
 - alternative implementation of containers that does not use circular references
@@ -8,7 +16,9 @@
   - add api a `nb.add` and `nb.withContainer(container)
 : body`
 - hidden nb.blk api in nb.add (we might remove it later) [x]
+
 ---
+
 ## Naming
 
 - not sure I still like the name backend for the rendering engine

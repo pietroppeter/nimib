@@ -17,7 +17,7 @@ template nbCodeBlock(name:string) =
   nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n"
 
 nbText: """
-> This nimib document provides a brief description and example for 
+> This nimib document provides a brief description and example for
 > all blocks in nimib.
 """.emojize
 
@@ -32,8 +32,8 @@ The markdown syntax is explained in the [Markdown Cheatsheet](./cheatsheet.html)
 nimibCode:
   nbText: """
   #### Markdown Example
-  My **text** is *formatted* with the 
-  [Markdown](./cheatsheet.html) syntax.
+  My **text** is *formatted* with the
+  [Markdown](https://pietroppeter.github.io/nimib/cheatsheet.html) syntax.
   """
 
 nbCodeBlock: "nbCode"
@@ -43,6 +43,15 @@ It displays your code with highlighting, compiles it, runs it and captures any o
 """
 
 nimibCode:
+  nbCode:
+    echo "Hello World!"
+
+nbText: """
+You can also display the line numbers on the left thanks to the global document switch:
+"""
+
+nimibCode:
+  enableLineNumbersDoc()
   nbCode:
     echo "Hello World!"
 
@@ -95,7 +104,7 @@ nimibCode:
 
 nbCodeBlock: "nbTextWithCode"
 nbText: """
-`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of 
+`nbText` only stores the string it is given, but it doesn't store the code passed to `nbText`. For example, `nbText: fmt"{1+1}"` only stores the string `"2"` but not the code `fmt"{1+1}"` that produced that string. `nbTextWithCode` works like `nbText` but it also stores the code in the created block. It can be accessed with `nb.blk.code` right after the `nbTextWithCode` call. See the end of
 [numerical](./numerical.html) for an example.
 """
 
@@ -110,7 +119,7 @@ nimibCode:
 
 nbCodeBlock: "nbFile"
 nbText: """
-`nbFile` can save the contents of block into a file or display the contents of a file. 
+`nbFile` can save the contents of block into a file or display the contents of a file.
 
 To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.

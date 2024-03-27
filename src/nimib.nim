@@ -58,7 +58,7 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
   # apply theme
   theme nb
 
-template nbInitMd*(thisFileRel = "") = 
+template nbInitMd*(thisFileRel = "") =
   var tfr = if thisFileRel == "":
       instantiationInfo(-1).filename
     else:
@@ -68,6 +68,12 @@ template nbInitMd*(thisFileRel = "") =
 
   if nb.options.filename == "":
     nb.filename = nb.filename.splitFile.name & ".md"
+
+template enableLineNumbersDoc* =
+  nb.context["enableLineNumbers"] = true
+
+template enableLineNumbersBlock* =
+  nb.blk.context["enableLineNumbers"] = true
 
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
@@ -86,6 +92,11 @@ template nbCode*(body: untyped) =
 template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
     discard
+
+template nbCodeWithNumbers*(body: untyped) =
+  newNbCodeBlock("nbCode", body):
+    captureStdout(nb.blk.output):
+      body
 
 template nbCapture*(body: untyped) =
   newNbCodeBlock("nbCapture", body):
@@ -117,13 +128,13 @@ template nbImage*(url: string, caption = "", alt = "") =
         url
       else:
         nb.context["path_to_root"].vString / url
-        
-    nb.blk.context["alt_text"] = 
+
+    nb.blk.context["alt_text"] =
       if alt == "":
         caption
       else:
         alt
-        
+
     nb.blk.context["caption"] = caption
 
 template nbFile*(name: string, content: string) =
@@ -162,7 +173,7 @@ when moduleAvailable(nimpy):
 template nbShow*(obj: untyped) =
   nbRawHtml(obj.toHtml())
 
-template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
+template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} =
   nbRawHtml(content)
 
 template nbRawHtml*(content: string) =

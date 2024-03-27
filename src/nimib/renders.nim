@@ -1,4 +1,4 @@
-import std / [strutils, tables, sugar, os, strformat, sequtils]
+import std / [strutils, tables, sugar, sequtils]
 import ./types, ./jsutils, markdown, mustache
 
 import highlight
@@ -10,6 +10,17 @@ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code)
 
+proc addLineNumbersToHighlightedCode(code: string): string =
+  let nlines = code.splitLines().len
+  result.add("""<span class="hljs-comment">""" & $1 & "\n")
+  for i in 2..<nlines:
+    result.add($i & "\n")
+  result.add($nlines & "</span>")
+  result.add(code)
+
+proc addLineNumbers(doc: var NbDoc, blk: var NbBlock) =
+  if blk.context["enableLineNumbers"].castBool or doc.context["enableLineNumbers"].castBool:
+    blk.context["codeHighlighted"] = addLineNumbersToHighlightedCode(blk.context["codeHighlighted"].castStr)
 
 proc useHtmlBackend*(doc: var NbDoc) =
   doc.partials["nbText"] = "{{&outputToHtml}}"
@@ -45,14 +56,15 @@ proc useHtmlBackend*(doc: var NbDoc) =
   # I prefer to initialize here instead of in nimib (each backend should re-initialize)
   doc.renderPlans = initTable[string, seq[string]]()
   doc.renderPlans["nbText"] = @["mdOutputToHtml"]
-  doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
-  doc.renderPlans["nbCodeSkip"] = @["highlightCode"]
+  doc.renderPlans["nbCode"] = @["highlightCode", "addLineNumbers"] # default partial automatically escapes output (code is escaped when highlighting)
+  doc.renderPlans["nbCodeSkip"] = @["highlightCode", "addLineNumbers"]
   doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
   doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
   doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
 
   doc.renderProcs = initTable[string, NbRenderProc]()
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
+  doc.renderProcs["addLineNumbers"] = addLineNumbers
   doc.renderProcs["highlightCode"] = highlightCode
   doc.renderProcs["compileNimToJs"] = compileNimToJs
 

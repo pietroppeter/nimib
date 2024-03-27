@@ -54,11 +54,88 @@ proc parseHook*(s: string, i: var int, v: var NbBlock) =
   let kind = n.kind
   v = nbToJson[kind](s, i)
 
+# I think these two skipHooks do NOT work since they refer
+# to a ref object while jsony will dump the nonref object (for which I have no name!)
+proc skipHook*(T: typedesc[NbContainer], key: static string): bool =
+  key in ["parent"]
+
+proc skipHook*(T: typedesc[NbDoc], key: static string): bool =
+  key in ["parent"]
+
 method dump(n: NbBlock): string =
     n[].toJson()
 
 proc dumpHook*(s: var string, v: NbBlock) =
   s.add v.dump()
+
+template dumpKey(s: var string, v: string) =
+  const v2 = v.toJson() & ":"
+  s.add v2
+
+
+proc dumpHook*(s: var string, v: NbContainer) =
+  s.add '{'
+  var i = 0
+  when compiles(for k, e in v.pairs: discard):
+    # Tables and table like objects.
+    for k, e in v.pairs:
+      if i > 0:
+        s.add ','
+      s.dumpHook(k)
+      s.add ':'
+      s.dumpHook(e)
+      inc i
+  else:
+    # Normal objects.
+    for k, e in v[].fieldPairs:
+      when compiles(skipHook(type(v), k)):
+        when skipHook(type(v), k):
+          discard
+        else:
+          if i > 0:
+            s.add ','
+          s.dumpKey(k)
+          s.dumpHook(e)
+          inc i
+      else:
+        if i > 0:
+          s.add ','
+        s.dumpKey(k)
+        s.dumpHook(e)
+        inc i
+  s.add '}'
+
+proc dumpHook*(s: var string, v: NbDoc) =
+  s.add '{'
+  var i = 0
+  when compiles(for k, e in v.pairs: discard):
+    # Tables and table like objects.
+    for k, e in v.pairs:
+      if i > 0:
+        s.add ','
+      s.dumpHook(k)
+      s.add ':'
+      s.dumpHook(e)
+      inc i
+  else:
+    # Normal objects.
+    for k, e in v[].fieldPairs:
+      when compiles(skipHook(type(v), k)):
+        when skipHook(type(v), k):
+          discard
+        else:
+          if i > 0:
+            s.add ','
+          s.dumpKey(k)
+          s.dumpHook(e)
+          inc i
+      else:
+        if i > 0:
+          s.add ','
+        s.dumpKey(k)
+        s.dumpHook(e)
+        inc i
+  s.add '}'
 
 
 # themes.nim
@@ -69,6 +146,7 @@ func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
   for b in blk.blocks:
     result.add nb.render(b).strip & '\n'
   result.strip
+# should I add this to the global object?
 
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
   "<!DOCTYPE html>\n" &
@@ -145,16 +223,51 @@ template nbDetails*(tsummary: string, body: untyped) =
 
 func NbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbDetails
+  "<details><summary>" & blk.summary & "</summary>\n" &
+  nbContainerToHtml(blk, nb) &
+  "\n</details>"
   
 nbToHtml.funcs["NbDetails"] = NbDetailsToHtml
 addNbBlockToJson(NbDetails)
+proc dumpHook*(s: var string, v: NbDetails) =
+  s.add '{'
+  var i = 0
+  when compiles(for k, e in v.pairs: discard):
+    # Tables and table like objects.
+    for k, e in v.pairs:
+      if i > 0:
+        s.add ','
+      s.dumpHook(k)
+      s.add ':'
+      s.dumpHook(e)
+      inc i
+  else:
+    # Normal objects.
+    for k, e in v[].fieldPairs:
+      when compiles(skipHook(type(v), k)):
+        when skipHook(type(v), k):
+          discard
+        else:
+          if i > 0:
+            s.add ','
+          s.dumpKey(k)
+          s.dumpHook(e)
+          inc i
+      else:
+        if i > 0:
+          s.add ','
+        s.dumpKey(k)
+        s.dumpHook(e)
+        inc i
+  s.add '}'
 
 
 when isMainModule:
   import print
   nbInit
-  nbText: "*hi*"
-  nbImage("img.png")
+  nbDetails("Click for details:"):
+    nbText: "*hi*"
+    nbImage("img.png")
   nbSave
   #[
 <!DOCTYPE html>
@@ -167,12 +280,22 @@ when isMainModule:
 </html>
   ]#
 
-  let docToJson = nb.doc.toJson()
-  let docFromJson = docToJson.fromJson(NbDoc)
+  let docToJson = nb.doc.blocks[0].NbDetails.blocks.toJson()
+  print nb.doc.blocks[0].NbDetails
+  echo docToJson
+  print nb.doc.blocks[0].NbDetails.toJson() # fails because of too much recursion
+  # does not fail anymore if I add the specific dumpHook
+  let docFromJson = docToJson.fromJson(seq[NbBlock]) # but now this fails
+  print docFromJson
+  #[
   print docToJson
   print docFromJson
-  print docFromJson.blocks[0].NbText
-  print docFromJson.blocks[1].NbImage
+  print docFromJson.blocks[0].NbDetails
+  print docFromJson.blocks[0].NbDetails.blocks[0].NbText
+  print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
+
+  ]#
+
   #[
   docToJson="{"blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"}],"kind":"NbDoc"}"
   docFromJson=NbDoc:ObjectType(blocks: @[NbBlock:ObjectType(kind: "NbText"), NbBlock:ObjectType(kind: "NbImage")], kind: "NbDoc")

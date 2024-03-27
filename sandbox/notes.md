@@ -1,3 +1,9 @@
+## getting back working on this
+
+- added NbContainer type, refactored NbDoc added NbDetails as example
+- FAILURE: serialization to json has issues!
+
+---
 ## Naming
 
 - not sure I still like the name backend for the rendering engine

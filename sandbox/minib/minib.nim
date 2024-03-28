@@ -51,6 +51,8 @@ proc parseHook*(s: string, i: var int, v: var NbBlock) =
   i = current_i
   # Parse the correct type
   let kind = n.kind
+  if kind notIn nbToJson:
+    raise ValueError.newException "cannot find kind in nbToJson: \"" & kind & '"' 
   v = nbToJson[kind](s, i)
 
 method dump(n: NbBlock): string =
@@ -82,6 +84,8 @@ func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
 addNbBlockToJson(NbDoc)
 
 # blocks.nim
+import std / macros
+
 proc add(nb: var Nb, blk: NbBlock) =
   nb.blk = blk
   if nb.containers.len == 0:
@@ -94,6 +98,12 @@ template withContainer(nb: var Nb, container: NbContainer, body: untyped) =
   nb.containers.add container
   body
   discard nb.containers.pop
+
+macro toStr*(body: untyped): string =
+  (body.toStrLit)
+
+# capture.nim
+import capture # imported from old nimib (new nimib does not run locally for me!)
 
 # nimib.nim
 import markdown
@@ -155,15 +165,36 @@ template nbDetails*(tsummary: string, body: untyped) =
   nb.withContainer(blk):
     body
 
-func NbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
+func nbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbDetails
   "<details><summary>" & blk.summary & "</summary>\n" &
   nbContainerToHtml(blk, nb) &
   "\n</details>"
   
-nbToHtml.funcs["NbDetails"] = NbDetailsToHtml
+nbToHtml.funcs["NbDetails"] = nbDetailsToHtml
 addNbBlockToJson(NbDetails)
 
+type
+  NbCode = ref object of NbBlock
+    code: string
+    output: string
+    lang: string
+func nbCodeToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbCode
+  "<pre><code class=\"" & blk.lang & "\">\n" &
+  blk.code & '\n' &
+  "</code></pre>\n" &
+  "<pre>\n" &
+  blk.output & '\n' &
+  "</pre>"
+nbToHtml.funcs["NbCode"] = nbCodeToHtml
+addNbBlockToJson(NbCode)
+template nbCode*(body: untyped) =
+  let blk = NbCode(lang: "nim", kind: "NbCode")
+  nb.add blk
+  blk.code = toStr(body)
+  captureStdout(blk.output):
+    body
 
 when isMainModule:
   import print
@@ -173,16 +204,27 @@ when isMainModule:
     nbImage("img.png")
     nbDetails("go deeper"):
       nbText("42")
+  nbCode:
+    echo "hi"
   nbSave
   #[
 <!DOCTYPE html>
-<html><head></head>
-<body>
+<title>a nimib document<title>
+<details><summary>Click for details:</summary>
 <p><em>hi</em></p>
-
 <img src= 'img.png'>
-</body>
-</html>
+<details><summary>go deeper</summary>
+<p>42</p>
+</details>
+</details>
+<pre><code class="nim">
+
+echo "hi"
+</code></pre>
+<pre>
+hi
+
+</pre>
   ]#
 
   let docToJson = nb.doc.toJson()
@@ -192,18 +234,21 @@ when isMainModule:
   print docFromJson.blocks[0].NbDetails
   print docFromJson.blocks[0].NbDetails.blocks[0].NbText
   print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
+  print docFromJson.blocks[1].NbCode
   #[
-  print docToJson
-  print docFromJson
-  print docFromJson.blocks[0].NbDetails
-  print docFromJson.blocks[0].NbDetails.blocks[0].NbText
-  print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
-
+  docToJson="{"title":"a nimib document","blocks":[{"summary":"Click for details:","blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"},{"summary":"go deeper","blocks":[{"text":"42","kind":"NbText"}],"kind":"NbDetails"}],"kind":"NbDetails"},{"code":"\\necho \\"hi\\"","output":"hi\\n","lang":"nim","kind":"NbCode"}],"kind":"NbDoc"}"
+docFromJson=NbDoc:ObjectType(
+  title: "a nimib document",
+  blocks: @[NbBlock:ObjectType(kind: "NbDetails"), NbBlock:ObjectType(kind: "NbCode")],
+  kind: "NbDoc"
+)
+docFromJson.blocks[0].NbDetails=NbDetails:ObjectType(
+  summary: "Click for details:",
+  blocks: @[NbBlock:ObjectType(kind: "NbText"), NbBlock:ObjectType(kind: "NbImage"), NbBlock:ObjectType(kind: "NbDetails")],
+  kind: "NbDetails"
+)
+docFromJson.blocks[0].NbDetails.blocks[0].NbText=NbText:ObjectType(text: "*hi*", kind: "NbText")
+docFromJson.blocks[0].NbDetails.blocks[1].NbImage=NbImage:ObjectType(url: "img.png", kind: "NbImage")
+docFromJson.blocks[1].NbCode=NbCode:ObjectType(code: "\necho "hi"", output: "hi\n", lang: "nim", kind: "NbCode")
   ]#
 
-  #[
-  docToJson="{"blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"}],"kind":"NbDoc"}"
-  docFromJson=NbDoc:ObjectType(blocks: @[NbBlock:ObjectType(kind: "NbText"), NbBlock:ObjectType(kind: "NbImage")], kind: "NbDoc")
-  docFromJson.blocks[0].NbText=NbText:ObjectType(text: "*hi*", kind: "NbText")
-  docFromJson.blocks[1].NbImage=NbImage:ObjectType(url: "img.png", kind: "NbImage") 
-  ]#

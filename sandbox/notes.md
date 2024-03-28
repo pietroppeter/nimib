@@ -1,11 +1,13 @@
 ## getting back working on this
 
 ### Next steps:
-- implement `nbCode` in minib
+- implement `nbCode` in minib [x]
+  - add (old!) implementation of captureStdout to minib / capture [x]
 - implement `nbCodeFromJs` in minib
 - think if there are essentially other types of blocks we need to test with the new refactoring
 - if not go ahead and implement sugar to implement custom blocks (and refactor)
 - clean up minib implementation
+  - remove previous minibs and rename minib3 to minib [x]
 - reimplement all of minib starting with the new minib poc
 
 ### containers 👌

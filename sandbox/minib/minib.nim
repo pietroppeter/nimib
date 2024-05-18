@@ -202,14 +202,18 @@ type
     code: string
     transformedCode: string
     putAtTop: bool
+    showCode: bool
 func nbJsFromCodeToHtml(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbJsFromCode
-  blk.code
+  if blk.showCode:
+    "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>"
+  else:
+    ""
 nbToHtml.funcs["NbJsFromCode"] = nbJsFromCodeToHtml
 addNbBlockToJson(NbJsFromCode)
 template nbJsFromCode*(args: varargs[untyped]) =
   let (transformedCode, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  let blk = NbJsFromCode(code: originalCode, transformedCode: transformedCode, putAtTop: false, kind: "NbJsFromCode")
+  let blk = NbJsFromCode(code: originalCode, transformedCode: transformedCode, putAtTop: false, showCode: false, kind: "NbJsFromCode")
   nb.add blk
 
 

@@ -1,6 +1,7 @@
 # types.nim
-import tables
-
+import std/[tables, os, strformat, hashes]
+import "$nim/compiler/pathutils"
+import print
 type
   NbBlock = ref object of RootObj
     kind: string
@@ -11,6 +12,8 @@ type
     blocks: seq[NbBlock]
   NbDoc = ref object of NbContainer
     title: string
+    id: int
+    nbJsCounter: int
   Nb = object
     blk: NbBlock # last block processed
     doc: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
@@ -23,6 +26,11 @@ func render(nb: Nb, blk: NbBlock): string =
     nb.backend.funcs[blk.kind](blk, nb)
   else:
     ""
+
+proc newId*(doc: var NbDoc): int =
+  ## Provides a unique integer each time it is called
+  result = doc.id
+  inc doc.id
 
 # globals.nim
 var nbToJson: Table[string, proc (s: string, i: var int): NbBlock]
@@ -78,7 +86,7 @@ func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
 
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
   "<!DOCTYPE html>\n" &
-  "<title>" & blk.NbDoc.title & "<title>\n" &
+  "<title>" & blk.NbDoc.title & "</title>\n" &
   nbContainerToHtml(blk, nb)
   
 addNbBlockToJson(NbDoc)
@@ -116,7 +124,10 @@ template nbInit* =
   nb.backend = nbToHtml
 
 template nbSave* =
+  echo "saving"
+  nbCollectAllNbJs(nb)
   echo nb.render nb.doc
+  writeFile("test.html", nb.render(nb.doc))
 
 # all other blocks are in a sense all custom blocks
 # we could add sugar for common block creation
@@ -216,6 +227,82 @@ template nbJsFromCode*(args: varargs[untyped]) =
   let blk = NbJsFromCode(code: originalCode, transformedCode: transformedCode, putAtTop: false, showCode: false, kind: "NbJsFromCode")
   nb.add blk
 
+type
+  NbJsFromCodeOwnFile = ref object of NbBlock
+    code: string
+    transformedCode: string
+    jsCode: string
+    showCode: bool
+func nbJsFromCodeOwnFileToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbJsFromCodeOwnFile
+  result =
+    if blk.showCode:
+      "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>\n"
+    else:
+      ""
+  result &= &"<script>\n{blk.jsCode}\n</script>"
+nbToHtml.funcs["NbJsFromCodeOwnFile"] = nbJsFromCodeOwnFileToHtml
+addNbBlockToJson(NbJsFromCodeOwnFile)
+template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
+  let (transformedCode, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  let blk = NbJsFromCodeOwnFile(code: originalCode, transformedCode: transformedCode, showCode: false, kind: "NbJsFromCodeOwnFile")
+  nb.add blk
+
+# jsutils.nim (these currently require to know of NbJsFromCode and NbJsFromCodeOwnFile...)
+proc compileNimToJs*(nb: var Nb, blk: NbBlock): string =
+  let blk = blk.NbJsFromCodeOwnFile
+  let tempdir = getTempDir() / "nimib"
+  createDir(tempdir)
+  let (dir, filename, ext) = (getCurrentDir().AbsoluteDir, "js_file", ".nim")#doc.thisFile.splitFile()
+  let nimfile = dir / (filename & "_nbCodeToJs_" & $nb.doc.newId() & ext).RelativeFile
+  let jsfile = tempdir / &"out{hash(nb.doc.title)}.js"
+  var codeText = blk.transformedCode
+  let nbJsCounter = nb.doc.nbJsCounter
+  nb.doc.nbJsCounter += 1
+  var bumpGensymString = """
+import std/[macros, json]
+
+macro bumpGensym(n: static int) =
+  for i in 0 .. n:
+    let _ = gensym()
+
+"""
+  bumpGensymString.add &"bumpGensym({nbJsCounter})\n"
+  codeText = bumpGensymString & codeText
+  writeFile(nimfile, codeText)
+  let kxiname = "nimib_kxi_" & $nb.doc.newId()
+  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
+  if errorCode != 0:
+    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
+  removeFile(nimfile)
+  let jscode = readFile(jsfile)
+  removeFile(jsfile)
+  return jscode
+
+proc nbCollectAllNbJs*(nb: var Nb) =
+  echo "In code!"
+  var topCode = "" # placed at the top (nbJsFromCodeGlobal)
+  var code = ""
+  for blk in nb.doc.blocks: # this won't work for containers, implement nb.flattenBlocks func
+    if blk.kind == "NbJsFromCode":
+      let blk = blk.NbJsFromCode
+      if blk.putAtTop:
+        topCode.add "\n" & blk.transformedCode
+      else:
+        code.add "\n" & blk.transformedCode
+  code = topCode & "\n" & code
+
+  print code
+  if not code.isEmptyOrWhitespace:
+    # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
+    let blk = NbJsFromCodeOwnFile(kind: "NbJsFromCodeOwnFile", code: "", transformedCode: code, showCode: false)
+    nb.add blk
+
+  # loop over all nbJsFromCodeOwnFile and compile them
+  for blk in nb.doc.blocks:
+    if blk.kind == "NbJsFromCodeOwnFile":
+      var blk = blk.NbJsFromCodeOwnFile
+      blk.jsCode = nb.compileNimToJs(blk)
 
 
 when isMainModule:
@@ -260,6 +347,7 @@ hi
   print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
   print docFromJson.blocks[1].NbCode
   print docFromJson.blocks[2].NbJsFromCode
+  print docFromJson.blocks[3].NbJsFromCodeOwnFile
   #[
   docToJson="{"title":"a nimib document","blocks":[{"summary":"Click for details:","blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"},{"summary":"go deeper","blocks":[{"text":"42","kind":"NbText"}],"kind":"NbDetails"}],"kind":"NbDetails"},{"code":"\\necho \\"hi\\"","output":"hi\\n","lang":"nim","kind":"NbCode"}],"kind":"NbDoc"}"
 docFromJson=NbDoc:ObjectType(

@@ -107,6 +107,7 @@ import capture # imported from old nimib (new nimib does not run locally for me!
 
 # nimib.nim
 import markdown
+import jsutils
 
 template nbInit* =
   var nb {. inject .}: Nb
@@ -196,6 +197,23 @@ template nbCode*(body: untyped) =
   captureStdout(blk.output):
     body
 
+type
+  NbJsFromCode = ref object of NbBlock
+    code: string
+    transformedCode: string
+    putAtTop: bool
+func nbJsFromCodeToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbJsFromCode
+  blk.code
+nbToHtml.funcs["NbJsFromCode"] = nbJsFromCodeToHtml
+addNbBlockToJson(NbJsFromCode)
+template nbJsFromCode*(args: varargs[untyped]) =
+  let (transformedCode, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  let blk = NbJsFromCode(code: originalCode, transformedCode: transformedCode, putAtTop: false, kind: "NbJsFromCode")
+  nb.add blk
+
+
+
 when isMainModule:
   import print
   nbInit
@@ -206,6 +224,8 @@ when isMainModule:
       nbText("42")
   nbCode:
     echo "hi"
+  nbJsFromCode:
+    echo "bye"
   nbSave
   #[
 <!DOCTYPE html>
@@ -235,6 +255,7 @@ hi
   print docFromJson.blocks[0].NbDetails.blocks[0].NbText
   print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
   print docFromJson.blocks[1].NbCode
+  print docFromJson.blocks[2].NbJsFromCode
   #[
   docToJson="{"title":"a nimib document","blocks":[{"summary":"Click for details:","blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"},{"summary":"go deeper","blocks":[{"text":"42","kind":"NbText"}],"kind":"NbDetails"}],"kind":"NbDetails"},{"code":"\\necho \\"hi\\"","output":"hi\\n","lang":"nim","kind":"NbCode"}],"kind":"NbDoc"}"
 docFromJson=NbDoc:ObjectType(

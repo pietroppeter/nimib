@@ -32,6 +32,12 @@ proc newId*(doc: var NbDoc): int =
   result = doc.id
   inc doc.id
 
+func blocksFlattened*(doc: NbContainer): seq[NbBlock] =
+  for blk in doc.blocks:
+    result.add blk
+    if blk of NbContainer:
+      result.add blk.NbContainer.blocksFlattened()
+
 # globals.nim
 var nbToJson: Table[string, proc (s: string, i: var int): NbBlock]
 var nbToHtml: NbRender # since we need it for json, let's make it also for html
@@ -280,10 +286,9 @@ macro bumpGensym(n: static int) =
   return jscode
 
 proc nbCollectAllNbJs*(nb: var Nb) =
-  echo "In code!"
   var topCode = "" # placed at the top (nbJsFromCodeGlobal)
   var code = ""
-  for blk in nb.doc.blocks: # this won't work for containers, implement nb.flattenBlocks func
+  for blk in nb.doc.blocksFlattened:
     if blk of NbJsFromCode:
       let blk = blk.NbJsFromCode
       if blk.putAtTop:
@@ -292,14 +297,13 @@ proc nbCollectAllNbJs*(nb: var Nb) =
         code.add "\n" & blk.transformedCode
   code = topCode & "\n" & code
 
-  print code
   if not code.isEmptyOrWhitespace:
     # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
     let blk = NbJsFromCodeOwnFile(kind: "NbJsFromCodeOwnFile", code: "", transformedCode: code, showCode: false)
     nb.add blk
 
   # loop over all nbJsFromCodeOwnFile and compile them
-  for blk in nb.doc.blocks:
+  for blk in nb.doc.blocksFlattened:
     if blk of NbJsFromCodeOwnFile:
       var blk = blk.NbJsFromCodeOwnFile
       blk.jsCode = nb.compileNimToJs(blk)
@@ -315,8 +319,9 @@ when isMainModule:
       nbText("42")
   nbCode:
     echo "hi"
-  nbJsFromCode:
-    echo "bye!"
+  nbDetails("Hide js code:"):
+    nbJsFromCode:
+      echo "bye!"
   nbSave
   #[
 <!DOCTYPE html>
@@ -346,7 +351,7 @@ hi
   print docFromJson.blocks[0].NbDetails.blocks[0].NbText
   print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
   print docFromJson.blocks[1].NbCode
-  print docFromJson.blocks[2].NbJsFromCode
+  print docFromJson.blocks[2].NbDetails.blocks[0].NbJsFromCode
   print docFromJson.blocks[3].NbJsFromCodeOwnFile
   #[
   docToJson="{"title":"a nimib document","blocks":[{"summary":"Click for details:","blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"},{"summary":"go deeper","blocks":[{"text":"42","kind":"NbText"}],"kind":"NbDetails"}],"kind":"NbDetails"},{"code":"\\necho \\"hi\\"","output":"hi\\n","lang":"nim","kind":"NbCode"}],"kind":"NbDoc"}"

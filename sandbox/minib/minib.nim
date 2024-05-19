@@ -284,7 +284,7 @@ proc nbCollectAllNbJs*(nb: var Nb) =
   var topCode = "" # placed at the top (nbJsFromCodeGlobal)
   var code = ""
   for blk in nb.doc.blocks: # this won't work for containers, implement nb.flattenBlocks func
-    if blk.kind == "NbJsFromCode":
+    if blk of NbJsFromCode:
       let blk = blk.NbJsFromCode
       if blk.putAtTop:
         topCode.add "\n" & blk.transformedCode
@@ -300,7 +300,7 @@ proc nbCollectAllNbJs*(nb: var Nb) =
 
   # loop over all nbJsFromCodeOwnFile and compile them
   for blk in nb.doc.blocks:
-    if blk.kind == "NbJsFromCodeOwnFile":
+    if blk of NbJsFromCodeOwnFile:
       var blk = blk.NbJsFromCodeOwnFile
       blk.jsCode = nb.compileNimToJs(blk)
 
@@ -316,7 +316,7 @@ when isMainModule:
   nbCode:
     echo "hi"
   nbJsFromCode:
-    echo "bye"
+    echo "bye!"
   nbSave
   #[
 <!DOCTYPE html>

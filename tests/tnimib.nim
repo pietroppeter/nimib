@@ -268,7 +268,8 @@ when moduleAvailable(karax/kbase):
       check nb.blocks[^2].code.startsWith("let you =")
       check nb.blocks[^2].output == "hi me\n"
 
-test "getNimibVersion()":
-  let version = getNimibVersion()
+suite "test nimib/config":
+  test "getNimibVersion()":
+    let version = getNimibVersion()
 
-  check version.count('.') == 2
+    check version.count('.') == 2

@@ -164,7 +164,7 @@ macro nbHappyxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
     preRoutesCode.add(i)
 
   let imports = quote do:
-    import happyx, std/ strformat
+    import happyx, std / strformat
 
   let newBody = quote do:
     `imports`

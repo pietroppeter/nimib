@@ -1,5 +1,5 @@
 import std / [strutils, tables, sugar, os, strformat, sequtils]
-import ./types, ./jsutils, markdown, mustache
+import ./types, ./jsutils, ./logging, markdown, mustache
 
 import highlight
 import mustachepkg/values
@@ -109,12 +109,12 @@ proc useMdBackend*(doc: var NbDoc) =
 
 template debugRender(message: string) =
   when defined(nimibDebugRender):
-    echo "[nimib.debugRender] ", message
+    log "debugRender", message
 
 proc render*(nb: var NbDoc, blk: var NbBlock): string =
   debugRender "rendering block " & blk.command
   if blk.command not_in nb.partials:
-    echo "[nimib.warning] no partial found for block ", blk.command
+    warning "no partial found for block " & blk.command
     return
   else:
     if blk.command in nb.renderPlans:

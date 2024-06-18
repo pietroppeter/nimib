@@ -220,6 +220,13 @@ nbText: hlMdF"""
 The value of options are available in `nb.options` field which also
 tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]`.
 
+### define flags
+
+nimib's behavior can be further turned via Nim's define flags:
+
+* `-d:nimibNoLog`: Completely disables nimib's logging to stdout
+* `-d:nimibCodeFromAst`: Makes nimib capture block code from AST of body (as opposed to from file source; see next section). Available since version 0.3
+
 ### Code capture
 
 The code capture of a block like `nbCode` (or other custom blocks)
@@ -231,7 +238,6 @@ can happen in two different ways:
   is rendered from AST of body. This means that only documentation comments
   are shown (since normal comments are not part of the AST) and that the source show
   might be different from original source.
-  Since version 0.3 this is available through compile time switch `nimibCodeFromAst`.
 
 ## :honeybee: API <!-- Api means bees in Italian -->
 

@@ -261,7 +261,7 @@ tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, 
 
 nimib's behavior can be further turned via Nim's define flags:
 
-* `-d:nimibNoLog`: Completely disables nimib's logging to stdout
+* `-d:nimibQuiet`: Completely disables nimib's logging to stdout
 * `-d:nimibCodeFromAst`: Makes nimib capture block code from AST of body (as opposed to from file source; see next section). Available since version 0.3
 
 ### Code capture

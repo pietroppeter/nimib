@@ -1,6 +1,6 @@
 import std/strformat
 
-const nimibLog* = not defined(nimibNoLog)
+const nimibLog* = not defined(nimibQuiet)
 
 proc log*(label: string, message: string) =
   when nimibLog:

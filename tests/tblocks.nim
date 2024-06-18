@@ -25,4 +25,6 @@ suite "newNbBlock":
       let b = 3.21
     check blk.code == ""
 
+    fail()
+
 

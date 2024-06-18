@@ -17,7 +17,7 @@ func nbNormalize*(text: string): string =
 # note that: '\c' == '\r' and '\l' == '\n'
 
 template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, blockImpl: untyped) =
-  # stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
+  stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
   nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
   when readCode:
     nbBlock.code = nbNormalize:
@@ -25,9 +25,9 @@ template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, 
         toStr(body)
       else:
         getCodeAsInSource(nbDoc.source, cmd, body)
-  # echo peekFirstLineOf(nbBlock.code)
+  echo peekFirstLineOf(nbBlock.code)
   blockImpl
-  # if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
+  if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock

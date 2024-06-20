@@ -1,6 +1,6 @@
 import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
 export jsonutils
-import nimib / [types, blocks, docs, boost, config, options, capture, jsutils]
+import nimib / [types, blocks, docs, boost, config, options, capture, jsutils, logging]
 export types, blocks, docs, boost, sugar, jsutils
 # types exports mustache, tables, paths
 
@@ -26,12 +26,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
     nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   else:
     nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
-    echo "[nimib] thisFile: ", nb.thisFile
+    log "thisFile: " & $nb.thisFile
 
   try:
     nb.source = read(nb.thisFile)
   except IOError:
-    echo "[nimib] cannot read source"
+    log "cannot read source"
 
   if nb.options.filename == "":
     nb.filename = nb.thisFile.string.splitFile.name & ".html"
@@ -39,12 +39,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
     nb.filename = nb.options.filename
 
   if nb.cfg.srcDir != "":
-    echo "[nimib] srcDir: ", nb.srcDir
+    log "srcDir: " & $nb.srcDir
     nb.filename = (nb.thisDir.relativeTo nb.srcDir).string / nb.filename
-    echo "[nimib] filename: ", nb.filename
+    log "filename: " & nb.filename
 
   if nb.cfg.homeDir != "":
-    echo "[nimib] setting current directory to nb.homeDir: ", nb.homeDir
+    log "setting current directory to nb.homeDir: " & $nb.homeDir
     setCurrentDir nb.homeDir
 
   # can be overriden by theme, but it is better to initialize this anyway

@@ -1,5 +1,5 @@
 import std / [macros, strutils, sugar]
-import types, sources
+import types, sources, logging
 
 macro toStr*(body: untyped): string =
   (body.toStrLit)
@@ -17,7 +17,6 @@ func nbNormalize*(text: string): string =
 # note that: '\c' == '\r' and '\l' == '\n'
 
 template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, blockImpl: untyped) =
-  stdout.write "[nimib] ", nbDoc.blocks.len, " ", cmd, ": "
   nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
   when readCode:
     nbBlock.code = nbNormalize:
@@ -25,9 +24,10 @@ template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, 
         toStr(body)
       else:
         getCodeAsInSource(nbDoc.source, cmd, body)
-  echo peekFirstLineOf(nbBlock.code)
+  log "$1 $2: $3" % [$nbDoc.blocks.len, cmd, peekFirstLineOf(nbBlock.code)]
   blockImpl
-  if len(nbBlock.output) > 0: echo "     -> ", peekFirstLineOf(nbBlock.output)
+  if nimibLog and len(nbBlock.output) > 0:
+    echo "     -> ", peekFirstLineOf(nbBlock.output)
   nbBlock.context["code"] = nbBlock.code
   nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
   nbDoc.blocks.add nbBlock

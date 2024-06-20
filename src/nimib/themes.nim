@@ -76,7 +76,35 @@ pre > code {
 }
 .nb-output {
   line-height: 1.15;
+  padding: 0.5rem;
+  margin-top: 0px;
+  border-color: #E8ECF0;
+  border-radius: 6px 6px 6px 6px;
+  border-width: 1px;
+  border-style: solid;
+  overflow-x: auto;
 }
+.nb-code-pre + .nb-output {
+  border-radius: 0px 0px 6px 6px;
+  border-top-style: none;
+}
+
+
+.nb-code { 
+  border-radius: inherit;
+}
+.nb-code-pre {
+  border-color: #E8ECF0;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 6px 6px 6px 6px;
+  margin-bottom: 0px;
+}
+
+.nb-code-pre-sharp-corner {
+  border-radius: 6px 6px 0px 0px;
+}
+
 figure {
   margin: 2rem 0;
 }

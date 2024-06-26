@@ -112,12 +112,7 @@ template nbTextWithCode*(body: untyped) =
 
 template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
-    nb.blk.context["url"] =
-      if isAbsolute(url) or url[0..3] == "http":
-        url
-      else:
-        nb.context["path_to_root"].vString / url
-        
+    nb.blk.context["url"] = nb.relToRoot(url) 
     nb.blk.context["alt_text"] = 
       if alt == "":
         caption
@@ -125,6 +120,29 @@ template nbImage*(url: string, caption = "", alt = "") =
         alt
         
     nb.blk.context["caption"] = caption
+
+# todo captions and subtitles support maybe?
+template nbVideo*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
+  newNbSlimBlock("nbVideo"):
+    nb.blk.context["url"] = nb.relToRoot(url)
+    nb.blk.context["type"] =
+      if typ == "": "video/" & url.splitFile.ext[1..^1] # remove the leading dot
+      else: typ
+
+    if autoplay: nb.blk.context["autoplay"] = "autoplay"
+    if muted: nb.blk.context["muted"] = "muted"
+    if loop: nb.blk.context["loop"] = "loop"
+
+template nbAudio*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
+  newNbSlimBlock("nbAudio"):
+    nb.blk.context["url"] = nb.relToRoot(url)
+    nb.blk.context["type"] = 
+      if typ == "": "audio/" & url.splitFile.ext[1..^1]
+      else: typ
+
+    if autoplay: nb.blk.context["autoplay"] = "autoplay"
+    if muted: nb.blk.context["muted"] = "muted"
+    if loop: nb.blk.context["loop"] = "loop"
 
 template nbFile*(name: string, content: string) =
   ## Generic string file

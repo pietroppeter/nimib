@@ -113,6 +113,9 @@ nbText: """
 `nbVideo` allows you to display videos within your nimib document. You may choose if the
 video autoplays, loops, and/or is muted.
 
+Pictured below is Bad Apple!! If you aren't sure what it is, or are curious about its
+origins, here's [an explainer](https://www.youtube.com/watch?v=6QY4ekac1_Q).
+
 The `typ` parameter specifies the video's MIME type, and is optional!
 """
 

@@ -44,7 +44,12 @@ template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, th
     log "filename: " & nb.filename
 
   if nb.cfg.homeDir != "":
+    if not dirExists(nb.homeDir):
+      log "creating nb.homeDir: " & $nb.homeDir
+      createDir(nb.homeDir)
+    
     log "setting current directory to nb.homeDir: " & $nb.homeDir
+
     setCurrentDir nb.homeDir
 
   # can be overriden by theme, but it is better to initialize this anyway

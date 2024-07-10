@@ -68,6 +68,8 @@ all blocks in nimib.</p>
 <li><a href="#nbcapture">nbCapture</a></li>
 <li><a href="#nbtextwithcode">nbTextWithCode</a></li>
 <li><a href="#nbimage">nbImage</a></li>
+<li><a href="#nbvideo">nbVideo</a></li>
+<li><a href="#nbaudio">nbAudio</a></li>
 <li><a href="#nbfile">nbFile</a></li>
 <li><a href="#nbrawhtml">nbRawHtml</a></li>
 <li><a href="#nbshow">nbShow</a></li>
@@ -160,6 +162,30 @@ nbCodeInBlock:
 <img src="./images/todd-cravens-nimib-unsplash.jpg" alt="Blue Whale (photograph by Todd Cravens)">
 <figcaption>Blue Whale (photograph by Todd Cravens)</figcaption>
 </figure>
+<p><a name = "nbvideo"></a></p>
+<h3>nbVideo</h3>
+<hr />
+<p><code>nbVideo</code> allows you to display videos within your nimib document. You may choose if the
+video autoplays, loops, and/or is muted.</p>
+<p>Pictured below is Bad Apple!! If you aren't sure what it is, or are curious about its
+origins, here's <a href="https://www.youtube.com/watch?v=6QY4ekac1_Q">an explainer</a>.</p>
+<p>The <code>typ</code> parameter specifies the video's MIME type, and is optional!</p>
+<pre><code class="nohighlight hljs nim">nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, typ=<span class="hljs-string">&quot;video/mp4&quot;</span>)</code></pre>
+<video controls   >
+  <source src="./media/bad_apple!!.mp4" type="video/mp4">
+Your browser does not support the video element.
+</video>
+<p><a name = "nbaudio"></a></p>
+<h3>nbAudio</h3>
+<hr />
+<p><code>nbAudio</code> enables you to play audio in nimib. You may choose if the audio autoplays,
+loops, and/or is muted.</p>
+<p>The <code>typ</code> parameter is similar to <code>nbVideo</code>'s.</p>
+<pre><code class="nohighlight hljs nim">nbAudio(url=<span class="hljs-string">&quot;media/bad_apple!!.webm&quot;</span>, loop=<span class="hljs-literal">true</span>)</code></pre>
+<audio controls loop  >
+  <source src="./media/bad_apple!!.webm" type="audio/webm">
+Your browser does not support the audio element.
+</audio>
 <p><a name = "nbfile"></a></p>
 <h3>nbFile</h3>
 <hr />
@@ -369,6 +395,31 @@ Most formats (.jpg, .png) are accepted. The caption is optional!
 &quot;&quot;&quot;</span>
 nimibCode:
   nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)
+
+nbCodeBlock: <span class="hljs-string">&quot;nbVideo&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbVideo` allows you to display videos within your nimib document. You may choose if the
+video autoplays, loops, and/or is muted.
+
+Pictured below is Bad Apple!! If you aren't sure what it is, or are curious about its
+origins, here's [an explainer](https://www.youtube.com/watch?v=6QY4ekac1_Q).
+
+The `typ` parameter specifies the video's MIME type, and is optional!
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, typ=<span class="hljs-string">&quot;video/mp4&quot;</span>)
+
+nbCodeBlock: <span class="hljs-string">&quot;nbAudio&quot;</span>
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+`nbAudio` enables you to play audio in nimib. You may choose if the audio autoplays,
+loops, and/or is muted.
+
+The `typ` parameter is similar to `nbVideo`'s.
+&quot;&quot;&quot;</span>
+
+nimibCode:
+  nbAudio(url=<span class="hljs-string">&quot;media/bad_apple!!.webm&quot;</span>, loop=<span class="hljs-literal">true</span>)
 
 nbCodeBlock: <span class="hljs-string">&quot;nbFile&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;

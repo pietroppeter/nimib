@@ -13,6 +13,16 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v0.3.12
+
+## What's Changed
+* Update changelog.md with 3.11 release notes and bump 3.12 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/239
+* Make Nimib logging to stdout optional (`-d:nimibQuiet`) by @neroist in https://github.com/pietroppeter/nimib/pull/242
+* Add nbVideo & nbAudio (revive #153) by @neroist in https://github.com/pietroppeter/nimib/pull/244
+* Create homeDir if it doesn't exist alredy by @neroist in https://github.com/pietroppeter/nimib/pull/246
+
+**Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.11...v0.3.12
+
 ## v0.3.11
 
 ## What's Changed

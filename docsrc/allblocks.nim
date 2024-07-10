@@ -108,6 +108,31 @@ Most formats (.jpg, .png) are accepted. The caption is optional!
 nimibCode:
   nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
 
+nbCodeBlock: "nbVideo"
+nbText: """
+`nbVideo` allows you to display videos within your nimib document. You may choose if the
+video autoplays, loops, and/or is muted.
+
+Pictured below is Bad Apple!! If you aren't sure what it is, or are curious about its
+origins, here's [an explainer](https://www.youtube.com/watch?v=6QY4ekac1_Q).
+
+The `typ` parameter specifies the video's MIME type, and is optional!
+"""
+
+nimibCode:
+  nbVideo(url="media/bad_apple!!.mp4", typ="video/mp4")
+
+nbCodeBlock: "nbAudio"
+nbText: """
+`nbAudio` enables you to play audio in nimib. You may choose if the audio autoplays,
+loops, and/or is muted.
+
+The `typ` parameter is similar to `nbVideo`'s.
+"""
+
+nimibCode:
+  nbAudio(url="media/bad_apple!!.webm", loop=true)
+
 nbCodeBlock: "nbFile"
 nbText: """
 `nbFile` can save the contents of block into a file or display the contents of a file. 

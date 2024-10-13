@@ -1,5 +1,5 @@
 # types.nim
-import std/[tables, os, strformat, hashes]
+import std/[tables, os, strformat, hashes, macros, genasts, strutils]
 import "$nim/compiler/pathutils"
 import print
 type
@@ -79,6 +79,81 @@ template dumpKey(s: var string, v: string) =
   const v2 = v.toJson() & ":"
   s.add v2
 
+proc parseCallStmt(n: NimNode): tuple[lhs: string, rhs: NimNode] =
+  n.expectKind nnkCall
+  (n[0].strVal, n[1][0])
+
+# nimibSugar.nim
+macro newNbBlock(typeName: untyped, body: untyped): untyped =
+  # typeName is either `ident` or
+  # Infix
+  #   Ident "of"
+  #   Ident "nbImage"
+  #   Ident "NbBlock"
+
+  let (typeNameStr, parentType) =
+   if typeName.kind == nnkIdent:
+     (typeName.strVal, "NbBlock".ident)
+   else:
+     (typeName[1].strVal, typeName[2])
+
+  let capitalizedTypeName = typeNameStr.capitalizeAscii
+
+  # body is:
+  # StmtList
+  #   Call
+  #     Ident "url"
+  #     StmtList
+  #       Ident "string"
+  #   Call
+  #     Ident "burl"
+  #     StmtList
+  #       Asgn
+  #         Ident "int"
+  #         IntLit 1
+  #   Call
+  #     Ident "toHtml"
+  #     StmtList
+  #       DotExpr
+  #         Ident "blk"
+  #         Ident "url"
+
+  echo "Body:\n", body.treeRepr
+
+  var fields: seq[tuple[fieldName: string, fieldType: NimNode]]
+  var toHtmlBody: NimNode
+  body.expectKind(nnkStmtList)
+  for n in body:
+    let (name, body) = n.parseCallStmt()
+    if eqIdent(name, "toHtml"):
+      toHtmlBody = body
+    else:
+      fields.add (name, body)
+
+  var fieldsList = nnkRecList.newTree()
+  for (fName, fType) in fields:
+    fieldsList.add newIdentDefs(fName.ident, fType)
+  let typeDefinition = nnkTypeSection.newTree(nnkTypeDef.newTree(
+    capitalizedTypeName.ident,
+    newEmptyNode(), # generic
+    nnkRefTy.newTree(
+      nnkObjectTy.newTree(
+        newEmptyNode(), # pragma
+        nnkOfInherit.newTree(
+          parentType
+        ),
+        fieldsList
+      )
+    )
+  ))
+
+  echo "Type:\n", typeDefinition.repr
+
+  # Next: generate initializer with prefilled kind
+  # Be vary of how we write the kind. SHould it be normalized or exactly like the user wrote it?
+  # It's more predictable if it is like the user wrote it
+
+  assert false
 
 # themes.nim
 import std / strutils
@@ -174,6 +249,11 @@ newNbBlock(nbImage):
   toHtml:
     "<img src= '" & blk.url & "'>"
 ]#
+
+newNbBlock(nbImage):
+  url: string
+  toHtml:
+    "<img src= '" & blk.url & "'>"
 
 type
   NbDetails = ref object of NbContainer

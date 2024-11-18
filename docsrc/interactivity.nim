@@ -291,7 +291,7 @@ nimibCode:
 
 nbText: "This is the output this code produces when called:"
 
-happyxExample()
+#happyxExample()
 
 nbText: hlMd"""
 There are many differences worth noticing, like use embedding of `fmt`'s `{}` to make a text node from data or the more prolific use of the prefix `t` before html tags (which is stylistic, as it's an optional disambiguator in happyX. The key thing to get you going, though, is that:

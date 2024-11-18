@@ -1,5 +1,5 @@
 # types.nim
-import std/[tables, os, strformat, hashes, macros, genasts, strutils]
+import std/[tables, os, strformat, hashes, macros, genasts, strutils, sequtils]
 import "$nim/compiler/pathutils"
 import print
 type
@@ -98,6 +98,7 @@ macro newNbBlock(typeName: untyped, body: untyped): untyped =
      (typeName[1].strVal, typeName[2])
 
   let capitalizedTypeName = typeNameStr.capitalizeAscii
+  let lowercasedTypeName = typeNameStr.toLower
 
   # body is:
   # StmtList
@@ -151,9 +152,47 @@ macro newNbBlock(typeName: untyped, body: untyped): untyped =
 
   # Next: generate initializer with prefilled kind
   # Be vary of how we write the kind. SHould it be normalized or exactly like the user wrote it?
-  # It's more predictable if it is like the user wrote it
+  # It's more predictable if it is like the user wrote it. But more reasonable to normalize it...
 
-  assert false
+  var procParams = @[capitalizedTypeName.ident] & toSeq(fieldsList.children)
+  var objectConstructor = nnkObjConstr.newTree(
+    capitalizedTypeName.ident
+  )
+  objectConstructor.add newColonExpr(ident"kind", capitalizedTypeName.newLit)
+  for (fName, _) in fields:
+    objectConstructor.add newColonExpr(fName.ident, fName.ident)
+  var procBody = newStmtList(objectConstructor)
+
+  var procName = ident("new" & capitalizedTypeName)
+  let initializer = newProc(procName, procParams, procBody)
+
+  echo "init:\n", initializer.repr
+
+  # Next: generate nbImageToHtml from toHtmlBody
+  let renderProcName = (lowercasedTypeName & "ToHtml").ident
+  let renderProc = genAst(name = renderProcName, body = toHtmlBody, blk = ident"blk", nb = ident"nb", typeName=capitalizedTypeName.ident):
+    proc name*(blk: NbBlock, nb: Nb): string =
+      let blk = typeName(blk)
+      body
+
+
+  # Next: generate these lines:
+  # nbToHtml.funcs["NbImage"] = nbImageToHtml
+  # addNbBlockToJson(NbImage)
+  let hookAssignements = genAst(key = capitalizedTypeName.newLit, f = renderProcName, typeName = capitalizedTypeName.ident):
+    nbToHtml.funcs[key] = f
+    addNbBlockToJson(typeName)
+
+  result = newStmtList(
+    typeDefinition,
+    initializer,
+    renderProc,
+    hookAssignements
+  )
+
+  echo result.repr
+
+  #assert false
 
 # themes.nim
 import std / strutils
@@ -232,17 +271,17 @@ newNbBlock(nbText):
       markdown(blk.text, config=initGfmConfig())
 ]#
 
-type
-  NbImage = ref object of NbBlock
-    url: string
-template nbImage*(turl: string) =
-  let blk = NbImage(url: turl, kind: "NbImage")
-  nb.add blk
-func nbImageToHtml*(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbImage
-  "<img src= '" & blk.url & "'>"
-nbToHtml.funcs["NbImage"] = nbImageToHtml
-addNbBlockToJson(NbImage)
+# type
+#   NbImage = ref object of NbBlock
+#     url: string
+# template nbImage*(turl: string) =
+#   let blk = NbImage(url: turl, kind: "NbImage")
+#   nb.add blk
+# func nbImageToHtml*(blk: NbBlock, nb: Nb): string =
+#   let blk = blk.NbImage
+#   "<img src= '" & blk.url & "'>"
+# nbToHtml.funcs["NbImage"] = nbImageToHtml
+# addNbBlockToJson(NbImage)
 #[ the above could be shortened with sugar to:
 newNbBlock(nbImage):
   url: string
@@ -254,6 +293,13 @@ newNbBlock(nbImage):
   url: string
   toHtml:
     "<img src= '" & blk.url & "'>"
+
+func image*(nb: var Nb, url: string) =
+  let blk = newNbImage(url=url)
+  nb.add blk
+
+template nbImage*(url: string) =
+  nb.image(url)
 
 type
   NbDetails = ref object of NbContainer

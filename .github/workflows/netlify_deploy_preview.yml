@@ -32,11 +32,18 @@ jobs:
           description: Deploying site to Netlify. Please wait...
           state: pending
       - run: rm -rf docs
+      # - name: 'Download artifacts'
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
+      #     path: docs/
       - name: 'Download artifacts'
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
-          path: docs/
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: netlify_build_docs.yml  # Name of the workflow that created the artifact
+          name: "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"           # Name of the artifact
+          path: docs/      # Optional path to extract to
       # - name: 'Download artifact'
       #   uses: actions/github-script@v3.1.0
       #   with:

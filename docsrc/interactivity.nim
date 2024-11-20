@@ -286,8 +286,8 @@ nimibCode:
            {message}
           tButton:
             "Click me!"
-            @click(
-              message.set("Poof! Gone!"))
+            @click:
+              message.set("Poof! Gone!")
 
 nbText: "This is the output this code produces when called:"
 

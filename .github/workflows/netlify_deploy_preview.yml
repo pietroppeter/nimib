@@ -31,33 +31,45 @@ jobs:
           sha: ${{ steps.source-run-info.outputs.sourceHeadSha }}
           description: Deploying site to Netlify. Please wait...
           state: pending
-      - name: 'Download artifact'
-        uses: actions/github-script@v3.1.0
-        with:
-          script: |
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{github.event.workflow_run.id }},
-            });
-            console.log("Target artifact: " + "build-${{ steps.source-run-info.outputs.sourceHeadSha }}")
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              console.log("Found artifacts: " + artifact.name)
-              return artifact.name == "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
-            })[0];
-            if (matchArtifact == undefined) {
-              core.setFailed('Artifact not found!');
-            }
-            var download = await github.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/docs.zip', Buffer.from(download.data));
       - run: rm -rf docs
-      - run: unzip -d docs/ docs.zip
+      # - name: 'Download artifacts'
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
+      #     path: docs/
+      - name: 'Download artifacts'
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          workflow: netlify_build_docs.yml  # Name of the workflow that created the artifact
+          name: "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"           # Name of the artifact
+          path: docs/      # Optional path to extract to
+      # - name: 'Download artifact'
+      #   uses: actions/github-script@v3.1.0
+      #   with:
+      #     script: |
+      #       var artifacts = await github.actions.listWorkflowRunArtifacts({
+      #          owner: context.repo.owner,
+      #          repo: context.repo.repo,
+      #          run_id: ${{github.event.workflow_run.id }},
+      #       });
+      #       console.log("Target artifact: " + "build-${{ steps.source-run-info.outputs.sourceHeadSha }}")
+      #       var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+      #         console.log("Found artifacts: " + artifact.name)
+      #         return artifact.name == "build-${{ steps.source-run-info.outputs.sourceHeadSha }}"
+      #       })[0];
+      #       if (matchArtifact == undefined) {
+      #         core.setFailed('Artifact not found!');
+      #       }
+      #       var download = await github.actions.downloadArtifact({
+      #          owner: context.repo.owner,
+      #          repo: context.repo.repo,
+      #          artifact_id: matchArtifact.id,
+      #          archive_format: 'zip',
+      #       });
+      #       var fs = require('fs');
+      #       fs.writeFileSync('${{github.workspace}}/docs.zip', Buffer.from(download.data));
+      #- run: unzip -d docs/ docs.zip
       - run: echo Deploy Alias = ${{ env.GITHUB_SHA_SHORT }}
       - uses: jsmrcaga/action-netlify-deploy@master
         with:

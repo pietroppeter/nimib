@@ -19,7 +19,7 @@ jobs:
       - name: build docs
         run: nimble docs
       - run: echo Commit hash = ${{ github.event.pull_request.head.sha }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: build-${{ github.event.pull_request.head.sha }}
           path: docs/

@@ -251,25 +251,31 @@ template nbSave* =
 
 # all other blocks are in a sense all custom blocks
 # we could add sugar for common block creation
-type
-  NbText = ref object of NbBlock
-    text: string
-template nbText*(ttext: string) =
-  let blk = NbText(text: ttext, kind: "NbText")
-  nb.add blk
-func nbTextToHtml*(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbText
-  {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
-    markdown(blk.text, config=initGfmConfig())
-nbToHtml.funcs["NbText"] = nbTextToHtml
-addNbBlockToJson(NbText)
-#[ the above could be shortened with sugar to:
+# type
+#   NbText = ref object of NbBlock
+#     text: string
+# template nbText*(ttext: string) =
+#   let blk = NbText(text: ttext, kind: "NbText")
+#   nb.add blk
+# func nbTextToHtml*(blk: NbBlock, nb: Nb): string =
+#   let blk = blk.NbText
+#   {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
+#     markdown(blk.text, config=initGfmConfig())
+# nbToHtml.funcs["NbText"] = nbTextToHtml
+# addNbBlockToJson(NbText)
+
 newNbBlock(nbText):
   text: string
   toHtml:
     {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
       markdown(blk.text, config=initGfmConfig())
-]#
+
+proc text*(nb: var Nb, text: string) =
+  let blk = newNbText(text=text)
+  nb.add blk
+
+template nbText(ttext: string) =
+  nb.text(ttext)
 
 # type
 #   NbImage = ref object of NbBlock
@@ -301,40 +307,71 @@ func image*(nb: var Nb, url: string) =
 template nbImage*(url: string) =
   nb.image(url)
 
-type
-  NbDetails = ref object of NbContainer
-    summary: string
+# type
+#   NbDetails = ref object of NbContainer
+#     summary: string
+# template nbDetails*(tsummary: string, body: untyped) =
+#   let blk = NbDetails(summary: tsummary, kind: "NbDetails")
+#   nb.withContainer(blk):
+#     body
+
+# func nbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
+#   let blk = blk.NbDetails
+#   "<details><summary>" & blk.summary & "</summary>\n" &
+#   nbContainerToHtml(blk, nb) &
+#   "\n</details>"
+  
+# nbToHtml.funcs["NbDetails"] = nbDetailsToHtml
+# addNbBlockToJson(NbDetails)
+
+newNbBlock(nbDetails of NbContainer):
+  summary: string
+  toHtml:
+    "<details><summary>" & blk.summary & "</summary>\n" &
+    nbContainerToHtml(blk, nb) &
+    "\n</details>"
+
 template nbDetails*(tsummary: string, body: untyped) =
-  let blk = NbDetails(summary: tsummary, kind: "NbDetails")
+  let blk = newNbDetails(summary=tsummary)
   nb.withContainer(blk):
     body
 
-func nbDetailsToHtml*(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbDetails
-  "<details><summary>" & blk.summary & "</summary>\n" &
-  nbContainerToHtml(blk, nb) &
-  "\n</details>"
-  
-nbToHtml.funcs["NbDetails"] = nbDetailsToHtml
-addNbBlockToJson(NbDetails)
+# type
+#   NbCode = ref object of NbBlock
+#     code: string
+#     output: string
+#     lang: string
+# func nbCodeToHtml(blk: NbBlock, nb: Nb): string =
+#   let blk = blk.NbCode
+#   "<pre><code class=\"" & blk.lang & "\">\n" &
+#   blk.code & '\n' &
+#   "</code></pre>\n" &
+#   "<pre>\n" &
+#   blk.output & '\n' &
+#   "</pre>"
+# nbToHtml.funcs["NbCode"] = nbCodeToHtml
+# addNbBlockToJson(NbCode)
+# template nbCode*(body: untyped) =
+#   let blk = NbCode(lang: "nim", kind: "NbCode")
+#   nb.add blk
+#   blk.code = toStr(body)
+#   captureStdout(blk.output):
+#     body
 
-type
-  NbCode = ref object of NbBlock
-    code: string
-    output: string
-    lang: string
-func nbCodeToHtml(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbCode
-  "<pre><code class=\"" & blk.lang & "\">\n" &
-  blk.code & '\n' &
-  "</code></pre>\n" &
-  "<pre>\n" &
-  blk.output & '\n' &
-  "</pre>"
-nbToHtml.funcs["NbCode"] = nbCodeToHtml
-addNbBlockToJson(NbCode)
+newNbBlock(nbCode):
+  code: string
+  output: string
+  lang: string
+  toHtml:
+    "<pre><code class=\"" & blk.lang & "\">\n" &
+    blk.code & '\n' &
+    "</code></pre>\n" &
+    "<pre>\n" &
+    blk.output & '\n' &
+    "</pre>"
+
 template nbCode*(body: untyped) =
-  let blk = NbCode(lang: "nim", kind: "NbCode")
+  let blk = newNbCode(code="", output="", lang="nim")
   nb.add blk
   blk.code = toStr(body)
   captureStdout(blk.output):

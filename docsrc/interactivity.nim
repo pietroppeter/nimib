@@ -303,3 +303,5 @@ There are many differences worth noticing, like use embedding of `fmt`'s `{}` to
 There is **one other note for users of happyX**. The event handlers beginning in `@` must be called unambiguously. The more normal block declaration with `:` will not work in the current commit. HappyX does some massaging with its macros to make the syntax work in either case but plain Nim doesn't recognize `@click: <do stuff>` as a call. The best strategy for resolving the inconsistency hasn't been decided yet, and a potential refactor as happyX continues development may resolve it spontaneously.
 """
 nbSave
+
+

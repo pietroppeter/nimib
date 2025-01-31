@@ -179,6 +179,7 @@ macro newNbBlock(typeName: untyped, body: untyped): untyped =
   # Next: generate these lines:
   # nbToHtml.funcs["NbImage"] = nbImageToHtml
   # addNbBlockToJson(NbImage)
+  # should we make this into a proc instead so it can be used in the non-sugar variant as well?
   let hookAssignements = genAst(key = capitalizedTypeName.newLit, f = renderProcName, typeName = capitalizedTypeName.ident):
     nbToHtml.funcs[key] = f
     addNbBlockToJson(typeName)
@@ -331,9 +332,13 @@ newNbBlock(nbDetails of NbContainer):
     nbContainerToHtml(blk, nb) &
     "\n</details>"
 
-template nbDetails*(tsummary: string, body: untyped) =
+template details*(nb: var Nb, tsummary: string, body: untyped) =
   let blk = newNbDetails(summary=tsummary)
   nb.withContainer(blk):
+    body
+
+template nbDetails*(tsummary: string, body: untyped) =
+  nb.details(tsummary):
     body
 
 # type
@@ -370,14 +375,18 @@ newNbBlock(nbCode):
     blk.output & '\n' &
     "</pre>"
 
-template nbCode*(body: untyped) =
+template code*(nb: var Nb, body: untyped) =
   let blk = newNbCode(code="", output="", lang="nim")
   nb.add blk
   blk.code = toStr(body)
   captureStdout(blk.output):
     body
 
-type
+template nbCode*(body: untyped) =
+  nb.code:
+    body
+
+#[ type
   NbJsFromCode = ref object of NbBlock
     code: string
     transformedCode: string
@@ -390,13 +399,28 @@ func nbJsFromCodeToHtml(blk: NbBlock, nb: Nb): string =
   else:
     ""
 nbToHtml.funcs["NbJsFromCode"] = nbJsFromCodeToHtml
-addNbBlockToJson(NbJsFromCode)
-template nbJsFromCode*(args: varargs[untyped]) =
+addNbBlockToJson(NbJsFromCode) ]#
+
+newNbBlock(NbJsFromCode):
+  code: string
+  transformedCode: string
+  putAtTop: bool
+  showCode: bool
+  toHtml:
+    if blk.showCode:
+      "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>"
+    else:
+      ""
+
+template jsFromCode*(nb: var Nb, args: varargs[untyped]) =
   let (transformedCode, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  let blk = NbJsFromCode(code: originalCode, transformedCode: transformedCode, putAtTop: false, showCode: false, kind: "NbJsFromCode")
+  let blk = newNbJsFromCode(code=originalCode, transformedCode=transformedCode, putAtTop=false, showCode=false)
   nb.add blk
 
-type
+template nbJsFromCode*(args: varargs[untyped]) =
+  nb.jsFromCode(args)
+
+#[ type
   NbJsFromCodeOwnFile = ref object of NbBlock
     code: string
     transformedCode: string
@@ -411,11 +435,28 @@ func nbJsFromCodeOwnFileToHtml(blk: NbBlock, nb: Nb): string =
       ""
   result &= &"<script>\n{blk.jsCode}\n</script>"
 nbToHtml.funcs["NbJsFromCodeOwnFile"] = nbJsFromCodeOwnFileToHtml
-addNbBlockToJson(NbJsFromCodeOwnFile)
-template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
+addNbBlockToJson(NbJsFromCodeOwnFile) ]#
+
+newNbBlock(NbJsFromCodeOwnFile):
+  code: string
+  transformedCode: string
+  jsCode: string
+  showCode: bool
+  toHtml:
+    result =
+      if blk.showCode:
+        "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>\n"
+      else:
+        ""
+    result &= &"<script>\n{blk.jsCode}\n</script>"
+
+template jsFromCodeOwnFile*(nb: var Nb, args: varargs[untyped]) =
   let (transformedCode, originalCode) = nimToJsString(putCodeInBlock=false, args)
   let blk = NbJsFromCodeOwnFile(code: originalCode, transformedCode: transformedCode, showCode: false, kind: "NbJsFromCodeOwnFile")
   nb.add blk
+
+template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
+  nb.jsFromCodeOwnFile(args)
 
 # jsutils.nim (these currently require to know of NbJsFromCode and NbJsFromCodeOwnFile...)
 proc compileNimToJs*(nb: var Nb, blk: NbBlock): string =
@@ -482,6 +523,8 @@ when isMainModule:
       nbText("42")
   nbCode:
     echo "hi"
+  nb.code:
+    echo "nb.code"
   nbDetails("Hide js code:"):
     nbJsFromCode:
       echo "bye!"
@@ -514,8 +557,9 @@ hi
   print docFromJson.blocks[0].NbDetails.blocks[0].NbText
   print docFromJson.blocks[0].NbDetails.blocks[1].NbImage
   print docFromJson.blocks[1].NbCode
-  print docFromJson.blocks[2].NbDetails.blocks[0].NbJsFromCode
-  print docFromJson.blocks[3].NbJsFromCodeOwnFile
+  print docFromJson.blocks[2].NbCode
+  print docFromJson.blocks[3].NbDetails.blocks[0].NbJsFromCode
+  print docFromJson.blocks[4].NbJsFromCodeOwnFile
   #[
   docToJson="{"title":"a nimib document","blocks":[{"summary":"Click for details:","blocks":[{"text":"*hi*","kind":"NbText"},{"url":"img.png","kind":"NbImage"},{"summary":"go deeper","blocks":[{"text":"42","kind":"NbText"}],"kind":"NbDetails"}],"kind":"NbDetails"},{"code":"\\necho \\"hi\\"","output":"hi\\n","lang":"nim","kind":"NbCode"}],"kind":"NbDoc"}"
 docFromJson=NbDoc:ObjectType(

@@ -3,14 +3,14 @@ import browsers
 import types
 import nimib / renders
 
-proc write*(doc: var NbDoc) =
+proc write*(nb: Nb) =
   echo "[nimib] current directory: ", getCurrentDir()
-  let dir = doc.filename.splitFile().dir
+  let dir = nb.doc.filename.splitFile().dir
   if not dir.dirExists:
     echo "[nimib] creating directory: ", dir
     createDir(dir)
-  echo "[nimib] saving file: ", doc.filename
-  writeFile(doc.filename, render(doc))
+  echo "[nimib] saving file: ", nb.doc.filename
+  writeFile(nb.doc.filename, nb.render(nb.doc))
 
 proc open*(doc: NbDoc) =
   openDefaultBrowser(doc.filename)

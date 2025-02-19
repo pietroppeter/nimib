@@ -1,6 +1,109 @@
-from mustachepkg/values import castStr
-import types, gits, highlight, config
+#from mustachepkg/values import castStr
+import std/[json, macros, sequtils, strutils, strformat]
+import types, gits, highlight, config, jsons, globals, nimibSugars
 
+
+func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbContainer
+  for b in blk.blocks.items:
+    result.add nb.render(b).strip & '\n'
+  result.strip
+# should I add this to the global object?
+
+# github light svg adapted from: https://iconify.design/icon-sets/octicon/mark-github.html
+# github dark svg taken directly from github website
+const githubLogoLight* = """<svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg>"""
+const githubLogoDark* = """<svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle; fill: #fff" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>"""
+
+func getTitle*(doc: NbDoc): string =
+  doc.context{"title"}.getStr("nimib document")
+
+
+# All of this should be moved to renders.nim?
+func headToHtml*(doc: NbDoc): string =
+  result = withNewlines:
+    fmt"""
+<head>
+  <title>{doc.getTitle}</title>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="nimib {doc.context.getOrDefault("version").getStr}" name="generator">
+  {doc.context.getOrDefault("stylesheet").getStr}
+  {doc.context.getOrDefault("highlight").getStr}
+  {doc.context.getOrDefault("nb_style").getStr}
+  {doc.context.getOrDefault("latex").getStr}
+    """
+    if not doc.context{"disableHighlightJs"}.getBool(false):
+      doc.context{"highlightJs"}.getStr
+    "</head>"
+    
+
+
+
+func madeWithNimibToHtml*(): string =
+  """<span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span>"""
+
+func homeLinkToHtml*(homePath: string): string =
+  fmt"""<a href="{homePath}">🏡</a>"""
+
+func headerLeftToHtml*(doc: NbDoc): string =
+  homeLinkToHtml(doc.context{"path_to_root"}.getStr("/"))
+
+func headerCenterToHtml*(doc: NbDoc): string =
+  let title = doc.getTitle()
+  fmt"<code>{title}</code>"
+
+func headerRightToHtml*(doc: NbDoc): string =
+  if not isNil(doc.context{"github_remote_url"}):
+    let githubRemoteUrl = doc.context{"github_remote_url"}.getStr
+    let githubLogo = doc.context{"github_logo"}.getStr(githubLogoLight)
+    result = fmt"""<a href="{github_remote_url}">{github_logo}</a>"""
+
+func headerToHtml*(doc: NbDoc): string =
+  result = withNewlines:
+    "<header>"
+    """<div class="nb-box">"""
+    " <span>" & headerLeftToHtml(doc) & "</span>"
+    " <span>" & headerCenterToHtml(doc) & "</span>"
+    " <span>" & headerRightToHtml(doc) & "</span>"
+    "</div>"
+    "<hr>"
+    "</header>"
+
+func leftToHtml*(): string =
+  ""
+
+func mainToHtml*(blk: NbBlock, nb: Nb): string =
+  result = withNewlines:
+    "<main>"
+    nbContainerToHtml(blk, nb)
+    "</main>"
+
+func rightToHtml*(): string =
+  ""
+
+func footerToHtml*(): string =
+  ""
+
+func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbDoc
+  result = withNewlines:
+    "<!DOCTYPE html>"
+    """<html lang="en-us">"""
+    headToHtml(blk)
+    "<body>"
+    headerToHtml(blk)
+    leftToHtml()
+    mainToHtml(blk, nb)
+    rightToHtml()
+    footerToHtml()
+    "</body>"
+  # TODO: Convert all constants below into functions with inputs!
+
+addNbBlockToJson(NbDoc) # should this be here? Probably not!
+nbToHtml.funcs["NbDoc"] = nbDocToHtml
+
+# TODO: Make these old partials into procs with inputs so they can be reused!
 const document* = """
 <!DOCTYPE html>
 <html lang="en-us">
@@ -97,10 +200,6 @@ const header* = """
 </header>"""
 const homeLink* = """<a href="{{path_to_root}}">🏡</a>"""
 const githubLink* = """<a href="{{github_remote_url}}">{{{github_logo}}}</a>"""
-# github light svg adapted from: https://iconify.design/icon-sets/octicon/mark-github.html
-# github dark svg taken directly from github website
-const githubLogoLight* = """<svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg>"""
-const githubLogoDark* = """<svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle; fill: #fff" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>"""
 
 const footer* = """
 <footer>
@@ -135,51 +234,51 @@ proc optOut*(content, keyword: string): string =
   "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}"
 
 proc useDefault*(doc: var NbDoc) =
-  doc.context["path_to_root"] = (doc.srcDirRel).string
-  doc.context["path_to_here"] = (doc.thisFileRel).string
-  doc.context["source"] = doc.source
+  doc.context["path_to_root"] = %(doc.srcDirRel).string
+  doc.context["path_to_here"] = %(doc.thisFileRel).string
+  doc.context["source"] = %doc.source
 
-  doc.partials["document"] = document
-  doc.partials["main"] = main
+  #doc.partials["document"] = document
+  #doc.partials["main"] = main
   # head
-  doc.partials["head"] = head
-  doc.context["version"] = getNimibVersion()
-  doc.context["favicon"] = faviconWhale
-  doc.context["stylesheet"] = waterLight
-  doc.context["highlight"] = atomOneLight
-  doc.context["highlightJs"] = highlightJsTags
-  doc.context["nb_style"] = nbStyle
+  #doc.partials["head"] = head
+  doc.context["version"] = %getNimibVersion()
+  doc.context["favicon"] = %faviconWhale
+  doc.context["stylesheet"] = %waterLight
+  doc.context["highlight"] = %atomOneLight
+  doc.context["highlightJs"] = %highlightJsTags
+  doc.context["nb_style"] = %nbStyle
   # header
-  doc.partials["header"] = header
-  doc.partials["header_left"] = homeLink
+  #doc.partials["header"] = header
+  #doc.partials["header_left"] = homeLink
   doc.context["title"] = doc.context["path_to_here"]
-  doc.partials["header_center"] = "<code>" & doc.context["title"].castStr & "</code>"
+  #doc.partials["header_center"] = "<code>" & doc.context["title"].castStr & "</code>"
   if isGitAvailable() and isOnGithub():
-    doc.partials["header_right"] = githubLink
-    doc.context["github_remote_url"] = getGitRemoteUrl()
-    doc.context["github_logo"] = githubLogoLight
+    #doc.partials["header_right"] = githubLink
+    doc.context["github_remote_url"] = %getGitRemoteUrl()
+    doc.context["github_logo"] = %githubLogoLight
   # footer
-  doc.partials["footer"] = footer
-  doc.partials["footer_left"] = madeWithNimib
-  doc.partials["footer_right"] = optOut(showSourceButton, "no_source")
-  doc.partials["source_section"] = optOut(sourceSection, "no_source")
-  doc.partials["show_source_script"] = optOut(showSourceScript, "no_source")
-  doc.context["source_highlighted"] = highlightNim(doc.context["source"].castStr)
+  # doc.partials["footer"] = footer
+  # doc.partials["footer_left"] = madeWithNimib
+  # doc.partials["footer_right"] = optOut(showSourceButton, "no_source")
+  # doc.partials["source_section"] = optOut(sourceSection, "no_source")
+  # doc.partials["show_source_script"] = optOut(showSourceScript, "no_source")
+  doc.context["source_highlighted"] = %highlightNim(doc.context["source"].getStr)
 
 proc darkMode*(doc: var NbDoc) =
-  doc.context["stylesheet"] = waterDark
-  doc.context["github_logo"] = githubLogoDark
-  doc.context["highlight"] = androidStudio
+  doc.context["stylesheet"] = %waterDark
+  doc.context["github_logo"] = %githubLogoDark
+  doc.context["highlight"] = %androidStudio
 
 proc useLatex*(doc: var NbDoc) =
-  doc.context["latex"] = latex
+  doc.context["latex"] = %latex
 
 proc disableHighlightJs*(doc: var NbDoc) =
-  doc.context["disableHighlightJs"] = true
+  doc.context["disableHighlightJs"] = %true
 
 proc `title=`*(doc: var NbDoc, text: string) =
   # to deprecate?
-  doc.context["title"] = text
+  doc.context["title"] = %text
 
 proc noTheme*(doc: var NbDoc) =
   discard

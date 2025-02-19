@@ -1,7 +1,9 @@
-import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, jsonutils]
+import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
+import std / jsonutils except toJson
 export jsonutils
-import nimib / [types, blocks, docs, boost, config, options, capture, jsutils]
-export types, blocks, docs, boost, sugar, jsutils
+import markdown
+import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars] 
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -15,48 +17,49 @@ export searchTable, searchDirs, castStr
 template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
 
-template nbInit*(theme = themes.useDefault, backend = renders.useHtmlBackend, thisFileRel = "") =
-  var nb {.inject.}: NbDoc
-  nb.initDir = getCurrentDir().AbsoluteDir
-  loadOptions nb
-  loadCfg nb
+template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisFileRel = "") =
+  var nb {.inject.}: Nb
+  nb.doc = NbDoc(kind: "NbDoc")
+  nb.doc.initDir = getCurrentDir().AbsoluteDir
+  loadOptions nb.doc
+  loadCfg nb.doc
 
   # nbInit can be called not from inside the correct file (e.g. when rendering markdown files in nimibook)
   if thisFileRel == "":
-    nb.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
+    nb.doc.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   else:
-    nb.thisFile = nb.srcDir / thisFileRel.RelativeFile
-    echo "[nimib] thisFile: ", nb.thisFile
+    nb.doc.thisFile = nb.doc.srcDir / thisFileRel.RelativeFile
+    echo "[nimib] thisFile: ", nb.doc.thisFile
 
   try:
-    nb.source = read(nb.thisFile)
+    nb.doc.source = read(nb.doc.thisFile)
   except IOError:
     echo "[nimib] cannot read source"
 
-  if nb.options.filename == "":
-    nb.filename = nb.thisFile.string.splitFile.name & ".html"
+  if nb.doc.options.filename == "":
+    nb.doc.filename = nb.doc.thisFile.string.splitFile.name & ".html"
   else:
-    nb.filename = nb.options.filename
+    nb.doc.filename = nb.doc.options.filename
 
-  if nb.cfg.srcDir != "":
-    echo "[nimib] srcDir: ", nb.srcDir
-    nb.filename = (nb.thisDir.relativeTo nb.srcDir).string / nb.filename
-    echo "[nimib] filename: ", nb.filename
+  if nb.doc.cfg.srcDir != "":
+    echo "[nimib] srcDir: ", nb.doc.srcDir
+    nb.doc.filename = (nb.doc.thisDir.relativeTo nb.doc.srcDir).string / nb.doc.filename
+    echo "[nimib] filename: ", nb.doc.filename
 
-  if nb.cfg.homeDir != "":
-    echo "[nimib] setting current directory to nb.homeDir: ", nb.homeDir
-    setCurrentDir nb.homeDir
+  if nb.doc.cfg.homeDir != "":
+    echo "[nimib] setting current directory to nb.doc.homeDir: ", nb.doc.homeDir
+    setCurrentDir nb.doc.homeDir
 
   # can be overriden by theme, but it is better to initialize this anyway
-  nb.templateDirs = @["./", "./templates/"]
-  nb.partials = initTable[string, string]()
-  nb.context = newContext(searchDirs = @[]) # templateDirs and partials added during nbSave
+  #nb.templateDirs = @["./", "./templates/"]
+  #nb.partials = initTable[string, string]()
+  nb.doc.context = newJObject() #newContext(searchDirs = @[]) # templateDirs and partials added during nbSave
 
   # apply render backend (default backend can be overriden by theme)
-  backend nb
+  nb.backend = renderer
 
   # apply theme
-  theme nb
+  theme nb.doc # how do we handle themes?
 
 template nbInitMd*(thisFileRel = "") = 
   var tfr = if thisFileRel == "":
@@ -102,9 +105,25 @@ template nimibCode*(body: untyped) =
     discard
   body
 
-template nbText*(text: string) =
+#[ template nbText*(text: string) =
   newNbSlimBlock("nbText"):
-    nb.blk.output = text
+    nb.blk.output = text ]#
+
+newNbBlock(NbText):
+  text: string
+  toHtml:
+    {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
+      markdown(blk.text, config=initGfmConfig())
+
+proc text*(nb: var Nb, text: string) =
+  let blk = newNbText(text=text)
+  nb.add blk
+
+template nbText*(ttext: string) =
+  nb.text(ttext)
+
+
+
 
 template nbTextWithCode*(body: untyped) =
   newNbCodeBlock("nbText", body):
@@ -264,21 +283,22 @@ template nbSave* =
   #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
   nb.nbCollectAllNbJs()
 
-  nb.context.searchDirs(nb.templateDirs)
-  nb.context.searchTable(nb.partials)
+  echo "nb.doc.blocks: ", nb.doc.blocks
+  #nb.context.searchDirs(nb.templateDirs)
+  #nb.context.searchTable(nb.partials)
 
   write nb
-  if nb.options.show:
-    open nb
+  if nb.doc.options.show:
+    open nb.doc
 
 # how to change this to a better version using nb?
 template relPath*(path: AbsoluteFile | AbsoluteDir): string =
   (path.relativeTo nb.homeDir).string
 
 # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
-template nbDoc*: NbDoc = nb
+#[ template nbDoc*: NbDoc = nb
 template nbBlock*: NbBlock = nb.blk
-template nbHomeDir*: AbsoluteDir = nb.homeDir
+template nbHomeDir*: AbsoluteDir = nb.homeDir ]#
 
 # use --nbShow runtime option instead of this
 template nbShow* =

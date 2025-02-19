@@ -1,13 +1,10 @@
 import mustache, std / tables, nimib / paths, std / parseopt
 export mustache, tables, paths
-import std / [os]
+import std / [os, json]
 
 type
-  NbBlock* = ref object
-    command*: string
-    code*: string
-    output*: string
-    context*: Context
+  NbBlock* = ref object of RootObj
+    kind*: string
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string
@@ -15,8 +12,12 @@ type
     other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
-  NbRenderProc* = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}
-  NbDoc* = object
+  NbRenderFunc* = proc (blk: NbBlock, nb: Nb): string {. noSideEffect .}
+  NbRender* = ref object of RootObj
+    funcs*: Table[string, NbRenderFunc]
+  NbContainer* = ref object of NbBlock
+    blocks*: seq[NbBlock]
+  NbDoc* = ref object of NbContainer
     thisFile*: AbsoluteFile
     filename*: string
     source*: string
@@ -26,15 +27,20 @@ type
     cfg*: NbConfig
     cfgDir*: AbsoluteDir
     rawCfg*: string
-    blk*: NbBlock  ## current block being processed
-    blocks*: seq[NbBlock]
-    context*: Context
-    partials*: Table[string, string]
-    templateDirs*: seq[string]
-    renderPlans*: Table[string, seq[string]]
-    renderProcs*: Table[string, NbRenderProc]
-    id: int
-    nbJsCounter*: int 
+    context*: JsonNode
+    id*: int
+    nbJsCounter*: int
+  Nb* = object
+    # TODO: which fields should be moved from NbDoc to Nb?
+    # As little as possible?
+    # NbDoc should contain all info relevant to rendering the page and
+    # Nb should just contain stuff needed for producing the NbDoc (like id and nbJsCounter)
+    blk*: NbBlock # last block processed
+    doc*: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
+    containers*: seq[NbContainer] # current container
+    backend*: NbRender # current backend
+
+proc `$`*(blk: NbBlock): string  = $blk[]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =
@@ -53,3 +59,10 @@ proc newId*(doc: var NbDoc): int =
   ## Provides a unique integer each time it is called
   result = doc.id
   inc doc.id
+
+func render*(nb: Nb, blk: NbBlock): string =
+  debugecho "REndering block: ", blk[]
+  if blk.kind in nb.backend.funcs:
+    nb.backend.funcs[blk.kind](blk, nb)
+  else:
+    ""

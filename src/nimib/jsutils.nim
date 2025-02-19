@@ -1,5 +1,30 @@
 import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, os, hashes]
-import ./types
+import ./types, ./nimibSugars, ./globals, ./jsons, ./blocks
+
+
+newNbBlock(NbJsFromCode):
+  code: string
+  transformedCode: string
+  putAtTop: bool
+  showCode: bool
+  toHtml:
+    if blk.showCode:
+      "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>"
+    else:
+      ""
+
+newNbBlock(NbJsFromCodeOwnFile):
+  code: string
+  transformedCode: string
+  jsCode: string
+  showCode: bool
+  toHtml:
+    result =
+      if blk.showCode:
+        "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>\n"
+      else:
+        ""
+    result &= &"<script>\n{blk.jsCode}\n</script>"
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:
@@ -179,7 +204,8 @@ macro nbHappyxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   let call = newCall(ident"nbJsFromCodeOwnFile", callArgs)
   result = call
 
-proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
+#[ proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
+  let blk = 
   let tempdir = getTempDir() / "nimib"
   createDir(tempdir)
   let (dir, filename, ext) = doc.thisFile.splitFile()
@@ -225,4 +251,57 @@ proc nbCollectAllNbJs*(doc: var NbDoc) =
     var blk = NbBlock(command: "nbJsFromCodeOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
     blk.context["transformedCode"] = code
     doc.blocks.add blk
-    doc.blk = blk
+    doc.blk = blk ]#
+
+proc compileNimToJs*(nb: var Nb, blk: NbBlock): string =
+  let blk = blk.NbJsFromCodeOwnFile
+  let tempdir = getTempDir() / "nimib"
+  createDir(tempdir)
+  let (dir, filename, ext) = (getCurrentDir().AbsoluteDir, "js_file", ".nim")#doc.thisFile.splitFile()
+  let nimfile = dir / (filename & "_nbCodeToJs_" & $nb.doc.newId() & ext).RelativeFile
+  let jsfile = tempdir / &"out{hash(nb.doc.thisFile)}.js"
+  var codeText = blk.transformedCode
+  let nbJsCounter = nb.doc.nbJsCounter
+  nb.doc.nbJsCounter += 1
+  var bumpGensymString = """
+import std/[macros, json]
+
+macro bumpGensym(n: static int) =
+  for i in 0 .. n:
+    let _ = gensym()
+
+"""
+  bumpGensymString.add &"bumpGensym({nbJsCounter})\n"
+  codeText = bumpGensymString & codeText
+  writeFile(nimfile, codeText)
+  let kxiname = "nimib_kxi_" & $nb.doc.newId()
+  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
+  if errorCode != 0:
+    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
+  removeFile(nimfile)
+  let jscode = readFile(jsfile)
+  removeFile(jsfile)
+  return jscode
+
+proc nbCollectAllNbJs*(nb: var Nb) =
+  var topCode = "" # placed at the top (nbJsFromCodeGlobal)
+  var code = ""
+  for blk in nb.doc.blocksFlattened:
+    if blk of NbJsFromCode:
+      let blk = blk.NbJsFromCode
+      if blk.putAtTop:
+        topCode.add "\n" & blk.transformedCode
+      else:
+        code.add "\n" & blk.transformedCode
+  code = topCode & "\n" & code
+
+  if not code.isEmptyOrWhitespace:
+    # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
+    let blk = NbJsFromCodeOwnFile(kind: "NbJsFromCodeOwnFile", code: "", transformedCode: code, showCode: false)
+    nb.add blk
+
+  # loop over all nbJsFromCodeOwnFile and compile them
+  for blk in nb.doc.blocksFlattened:
+    if blk of NbJsFromCodeOwnFile:
+      var blk = blk.NbJsFromCodeOwnFile
+      blk.jsCode = nb.compileNimToJs(blk)

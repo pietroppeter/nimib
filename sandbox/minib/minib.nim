@@ -265,7 +265,7 @@ template nbSave* =
 # nbToHtml.funcs["NbText"] = nbTextToHtml
 # addNbBlockToJson(NbText)
 
-newNbBlock(nbText):
+newNbBlock(NbText):
   text: string
   toHtml:
     {.cast(noSideEffect).}: # not sure why markdown is marked with side effects

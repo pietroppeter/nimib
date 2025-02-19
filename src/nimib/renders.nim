@@ -1,18 +1,24 @@
 import std / [strutils, tables, sugar, os, strformat, sequtils]
-import ./types, ./jsutils, markdown, mustache
+import ./types, markdown, mustache # ./jsutils,
 
 import highlight
 import mustachepkg/values
 
-proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
+#[ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
 
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
-  blk.context["codeHighlighted"] = highlightNim(blk.code)
+  blk.context["codeHighlighted"] = highlightNim(blk.code) ]#
 
+func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbContainer
+  for b in blk.blocks:
+    result.add nb.render(b).strip & '\n'
+  result.strip
 
 proc useHtmlBackend*(doc: var NbDoc) =
-  doc.partials["nbText"] = "{{&outputToHtml}}"
+  discard
+#[   doc.partials["nbText"] = "{{&outputToHtml}}"
   doc.partials["nbCode"] = """
 {{>nbCodeSource}}
 {{>nbCodeOutput}}"""
@@ -54,9 +60,9 @@ proc useHtmlBackend*(doc: var NbDoc) =
   doc.renderProcs = initTable[string, NbRenderProc]()
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
-  doc.renderProcs["compileNimToJs"] = compileNimToJs
+  doc.renderProcs["compileNimToJs"] = compileNimToJs ]#
 
-proc useMdBackend*(doc: var NbDoc) =
+#[ proc useMdBackend*(doc: var NbDoc) =
   doc.partials["document"] = """
 {{#blocks}}
 
@@ -132,3 +138,4 @@ proc render*(nb: var NbDoc): string =
     blocks.add nb.render(blk)
   nb.context["blocks"] = blocks
   return "{{> document}}".render(nb.context)
+ ]#

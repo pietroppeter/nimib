@@ -1,5 +1,5 @@
-import std / [strutils, tables, sugar, os, strformat, sequtils]
-import ./types, markdown, mustache # ./jsutils,
+import std / [strutils, tables, sugar, os, strformat, sequtils, json]
+import ./types, markdown, mustache, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons
 
 import highlight
 import mustachepkg/values
@@ -10,11 +10,25 @@ import mustachepkg/values
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code) ]#
 
-func nbContainerToHtml(blk: NbBlock, nb: Nb): string =
-  let blk = blk.NbContainer
-  for b in blk.blocks:
-    result.add nb.render(b).strip & '\n'
-  result.strip
+func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
+  let doc = blk.NbDoc
+  result = withNewlines:
+    "<!DOCTYPE html>"
+    """<html lang="en-us">"""
+    headToHtml(doc)
+    "<body>"
+    headerToHtml(doc)
+    leftToHtml()
+    mainToHtml(doc, nb)
+    rightToHtml()
+    footerToHtml(doc)
+    "</body>"
+  # TODO: Convert all constants below into functions with inputs!
+
+addNbBlockToJson(NbDoc) # should this be here?
+nbToHtml.funcs["NbDoc"] = nbDocToHtml
+
+
 
 proc useHtmlBackend*(doc: var NbDoc) =
   discard

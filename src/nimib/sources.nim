@@ -65,7 +65,9 @@ proc finishPos*(node: NimNode): Pos =
         result = toPos(node.lineInfoObj())
 
 proc isCommandLine*(s: string, command: string): bool =
-  nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command))
+  # how do we handle nb.code as well as nbCode?
+  # check for contains instead?
+  nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command)) or nimIdentNormalize(command) in nimIdentNormalize(s.strip())
 
 proc isCommentLine*(s: string): bool =
   s.strip.startsWith('#')
@@ -155,12 +157,12 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
   let startPosLit = startPos.newLit
 
   result = quote do:
-    if `filename` notin nb.sourceFiles:
-      nb.sourceFiles[`filename`] = readFile(`filename`)
+    if `filename` notin nb.doc.sourceFiles:
+      nb.doc.sourceFiles[`filename`] = readFile(`filename`)
 
     doAssert `endFilename` == `filename`, """
     Code from two different files were found in the same nbCode!
     If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
     If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
 
-    getCodeBlock(nb.sourceFiles[`filename`], `command`, `startPosLit`, `endPosLit`)
+    getCodeBlock(nb.doc.sourceFiles[`filename`], `command`, `startPosLit`, `endPosLit`)

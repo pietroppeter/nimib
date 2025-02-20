@@ -1,6 +1,6 @@
 import mustache, std / tables, nimib / paths, std / parseopt
 export mustache, tables, paths
-import std / [os, json]
+import std / [os, json, strutils]
 
 type
   NbBlock* = ref object of RootObj
@@ -66,3 +66,9 @@ func render*(nb: Nb, blk: NbBlock): string =
     nb.backend.funcs[blk.kind](blk, nb)
   else:
     ""
+
+func nbContainerToHtml*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbContainer
+  for b in blk.blocks:
+    result.add nb.render(b).strip & '\n'
+  result.strip

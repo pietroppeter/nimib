@@ -137,10 +137,14 @@ template nbCapture*(body: untyped) =
     captureStdout(nb.blk.output):
       body ]#
 
-template nbCodeInBlock*(body: untyped): untyped =
+template codeInBlock*(nb: Nb, body: untyped) =
   block:
-    nbCode:
+    nb.code:
       body
+
+template nbCodeInBlock*(body: untyped): untyped =
+  nb.codeInBlock:
+    body
 
 template nimibCode*(body: untyped) =
   nbCode:
@@ -161,7 +165,7 @@ newNbBlock(NbText):
     {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
       markdown(blk.text, config=initGfmConfig())
 
-proc text*(nb: var Nb, text: string) =
+func text*(nb: var Nb, text: string) =
   let blk = newNbText(text=text)
   nb.add blk
 
@@ -187,7 +191,33 @@ template nbTextWithCode*(body: untyped) =
   nb.textWithCode:
     body
 
+newNbBlock(NbImage):
+  url: string
+  caption: string
+  alt: string
+  toHtml:
+    &"""
+<figure>
+  <img src="{blk.url}" alt="{blk.alt}">
+  <figcaption>{blk.caption}</figcaption>
+</figure>
+"""
+
+func image*(nb: var Nb, turl: string, tcaption = "", talt = "") =
+  let blk = newNbImage()
+  blk.url = 
+    if isAbsolute(turl) or turl.startsWith("http"):
+      turl
+    else:
+      nb.doc.context{"path_to_root"}.getStr / turl
+  blk.alt = if talt.len == 0: tcaption else: talt
+  blk.caption = tcaption
+  nb.add blk
+
 template nbImage*(url: string, caption = "", alt = "") =
+  nb.image(url, caption, alt)
+
+#[ template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
     nb.blk.context["url"] =
       if isAbsolute(url) or url[0..3] == "http":
@@ -201,9 +231,47 @@ template nbImage*(url: string, caption = "", alt = "") =
       else:
         alt
         
-    nb.blk.context["caption"] = caption
+    nb.blk.context["caption"] = caption ]#
+
+newNbBlock(NbFile):
+  filename: string
+  ext: string
+  content: string
+  toHtml:
+    &"""
+<pre>{blk.filename}</pre>
+<pre><code class="{blk.ext} hljs">{blk.content}</code></pre>
+"""
+
+proc file*(nb: var Nb, tname: string, tcontent: string) =
+  ## Generic string file
+  tname.writeFile tcontent
+  let blk = newNbFile(filename=tname, ext=tname.getExt, content=tcontent)
+  nb.add blk
+
+template file*(nb: Nb, tname: string, body: untyped) =
+  ## Read code and write it to file
+  let content = getCode(body)
+  tname.writeFile content
+  let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
+  nb.add blk
+
+proc file*(nb: var Nb, tname: string) =
+  ## Read content from a file instead of writing to it
+  let content = readFile(tname)
+  let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
+  nb.add blk
 
 template nbFile*(name: string, content: string) =
+  nb.file(name, content)
+
+template nbFile*(name: string, body: untyped) =
+  nb.file(name, body)
+
+template nbFile*(name: string) =
+  nb.file(name)
+
+#[ template nbFile*(name: string, content: string) =
   ## Generic string file
   newNbSlimBlock("nbFile"):
     name.writeFile content
@@ -223,20 +291,55 @@ template nbFile*(name: string) =
   newNbSlimBlock("nbFile"):
     nb.blk.context["filename"] = name
     nb.blk.context["ext"] = name.getExt
-    nb.blk.context["content"] = readFile(name)
+    nb.blk.context["content"] = readFile(name) ]#
 
 when moduleAvailable(nimpy):
+  newNbBlock(NbPython of NbCode):
+    toHtml:
+      withNewlines:
+        if blk.code.len > 0:
+          &"<pre><code class=\"hljs python\">{blk.code}</code></pre>"
+        if blk.output.len > 0:
+          &"<pre class=\"nb-output\">{blk.output}</pre>"
+
   template nbInitPython*() =
     import nimpy
     let nbPythonBuiltins = pyBuiltinsModule()
 
+    proc python(nb: var Nb, pythonStr: string) =
+      let blk = newNbPython(code = pythonStr)
+      captureStdout(blk.output):
+          discard nbPythonBuiltins.exec(pythonStr)
+      nb.add blk
+    
     template nbPython(pythonStr: string) =
+      nb.python(pythonStr)
+
+    #[ template nbPython(pythonStr: string) =
       newNbSlimBlock("nbPython"):
         nb.blk.code = pythonStr
         captureStdout(nb.blk.output):
-          discard nbPythonBuiltins.exec(pythonStr)
+          discard nbPythonBuiltins.exec(pythonStr) ]#
+
+newNbBlock(NbRawHtml):
+  html: string
+  toHtml:
+    blk.html
+
+func rawHtml*(nb: var Nb, content: string) =
+  let blk = newNbRawHtml(html = content)
+  nb.add blk
+
+template nbRawHtml*(content: string) =
+  nb.rawHtml(content)
+
+func show*[T](nb: var Nb, obj: T) =
+  nb.rawHtml(obj.toHtml())
 
 template nbShow*(obj: untyped) =
+  nb.show(obj)
+
+#[ template nbShow*(obj: untyped) =
   nbRawHtml(obj.toHtml())
 
 template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
@@ -244,7 +347,7 @@ template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} =
 
 template nbRawHtml*(content: string) =
   newNbSlimBlock("nbRawHtml"):
-    nb.blk.output = content
+    nb.blk.output = content ]#
 
 template nbJsFromStringInit*(body: string): NbBlock =
   var result = NbBlock(command: "nbJsFromCode", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")

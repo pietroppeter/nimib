@@ -19,7 +19,7 @@ func getTypeFields*(typeSym: NimNode): seq[NimNode] =
   # add all own fields
   # look through typeSym.getImpl and look for OfInherit and recurse!
   let typeDef = typeSym.getImpl
-  debugecho "typeDef of ", typeSym.repr, ":", typedef.repr
+  #debugecho "typeDef of ", typeSym.repr, ":", typedef.repr
   let ofInherit = typeDef[2][0][1]
   if ofInherit.kind == nnkOfInherit:
     let parentTypeSym = ofInherit[0]
@@ -52,7 +52,7 @@ macro generateBlockInitializer*(typeName: typed): untyped =
   for identDef in fieldsList:
     identDef[2] = genAst(fieldType = identDef[1]):
       default(typedesc[fieldType])
-  echo fieldsList.mapIt(it.repr)
+  #echo fieldsList.mapIt(it.repr)
 
   let procParams = @[typeName] & fieldsList
   var objectConstructor = nnkObjConstr.newTree(
@@ -103,7 +103,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   #         Ident "blk"
   #         Ident "url"
 
-  echo "Body:\n", body.treeRepr
+  #echo "Body:\n", body.treeRepr
 
   var fields: seq[tuple[fieldName: string, fieldType: NimNode]]
   var toHtmlBody: NimNode
@@ -139,7 +139,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
     )
   ))
 
-  echo "Type:\n", typeDefinition.repr
+  #echo "Type:\n", typeDefinition.repr
 
   # Next: generate initializer with prefilled kind
   # Be vary of how we write the kind. SHould it be normalized or exactly like the user wrote it?

@@ -1,9 +1,9 @@
 import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
 import std / jsonutils except toJson
-export jsonutils
+export jsonutils except toJson
 import markdown
 import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -86,35 +86,56 @@ template newNbSlimBlock*(cmd: string, blockImpl: untyped) =
     captureStdout(nb.blk.output):
       body ]#
 
-newNbBlock(NbCode):
+newNbBlock(NbCode of NbContainer):
   code: string
   output: string
   toHtml:
     withNewlines:
       # TODO: highlight code statically
-      &"<pre><code class=\"nohighlight hljs nim\">{blk.code.highlightNim}</code></pre>"
+      if blk.code.len > 0:
+        &"<pre><code class=\"nohighlight hljs nim\">{blk.code.highlightNim}</code></pre>"
+      nbContainerToHtml(blk, nb)
       if blk.output.len > 0:
         &"<pre class=\"nb-output\">{blk.output}</pre>"
 
 template code*(nb: Nb, body: untyped) =
-  let blk = newNbCode(code="", output="")
+  let blk = newNbCode()
   blk.code = getCode(body)
-  captureStdout(blk.output):
-    body
+  nb.withContainer(blk):
+    captureStdout(blk.output):
+      body
   nb.add blk
 
 template nbCode*(body: untyped) =
   nb.code:
     body
 
+template codeSkip*(nb: Nb, body: untyped) =
+  let blk = newNbCode()
+  blk.code = getCode(body)
+  nb.add blk
+
 template nbCodeSkip*(body: untyped) =
+  nb.codeSkip(body)
+
+#[ template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
-    discard
+    discard ]#
+
+template capture*(nb: Nb, body: untyped) =
+  let blk = newNbCode()
+  nb.withContainer(blk):
+    captureStdout(blk.output):
+      body
+  nb.add blk
 
 template nbCapture*(body: untyped) =
+  nb.capture(body)
+
+#[ template nbCapture*(body: untyped) =
   newNbCodeBlock("nbCapture", body):
     captureStdout(nb.blk.output):
-      body
+      body ]#
 
 template nbCodeInBlock*(body: untyped): untyped =
   block:
@@ -122,9 +143,13 @@ template nbCodeInBlock*(body: untyped): untyped =
       body
 
 template nimibCode*(body: untyped) =
+  nbCode:
+    body
+
+#[ template nimibCode*(body: untyped) =
   newNbCodeBlock("nimibCode", body):
     discard
-  body
+  body ]#
 
 #[ template nbText*(text: string) =
   newNbSlimBlock("nbText"):

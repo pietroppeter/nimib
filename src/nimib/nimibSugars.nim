@@ -4,6 +4,15 @@ proc parseCallStmt(n: NimNode): tuple[lhs: string, rhs: NimNode] =
   n.expectKind nnkCall
   (n[0].strVal, n[1][0])
 
+#[ this is what fields with default values look like
+Call
+    Ident "a"
+    StmtList
+      Asgn
+        Ident "string"
+        StrLit ""
+]#
+
 func getTypeFields*(typeSym: NimNode): seq[NimNode] =
   ## return seq[nnkIdentDefs]
   typeSym.expectKind nnkSym
@@ -39,7 +48,12 @@ let initializer = newProc(procName, procParams, procBody)
 echo "init:\n", initializer.repr
 ]#
 macro generateBlockInitializer*(typeName: typed): untyped =
-  let fieldsList = typeName.getTypeFields().mapIt(it.removePostfix).filterIt(it[0].strVal != "kind")
+  var fieldsList = typeName.getTypeFields().mapIt(it.removePostfix).filterIt(it[0].strVal != "kind")
+  for identDef in fieldsList:
+    identDef[2] = genAst(fieldType = identDef[1]):
+      default(typedesc[fieldType])
+  echo fieldsList.mapIt(it.repr)
+
   let procParams = @[typeName] & fieldsList
   var objectConstructor = nnkObjConstr.newTree(
     typeName
@@ -177,7 +191,10 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
 
 macro withNewlines*(body: untyped) : string =
   body.expectKind nnkStmtList
-  result = infix(body[0], "&", "\n".newLit)
+  result = body[0]
+  if result.kind == nnkIfStmt and result.findChild(it.kind == nnkElse).isNil:
+    result.add nnkElse.newTree("".newLit)
+  result = infix(result, "&", "\n".newLit)
   if body.len > 1:
     for line in body[1..^1]:
       # TODO: handle for loops

@@ -2,7 +2,7 @@ import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, 
 import ./types, ./nimibSugars, ./globals, ./jsons, ./blocks
 
 
-newNbBlock(NbJsFromCode):
+newNbBlock(NbJsFromCode): # should inherit from nbCode, but it is defined in nimib.nim...
   code: string
   transformedCode: string
   putAtTop: bool
@@ -19,12 +19,10 @@ newNbBlock(NbJsFromCodeOwnFile):
   jsCode: string
   showCode: bool
   toHtml:
-    result =
+    withNewlines:
       if blk.showCode:
         "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>\n"
-      else:
-        ""
-    result &= &"<script>\n{blk.jsCode}\n</script>"
+      &"<script>\n{blk.jsCode}\n</script>"
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:

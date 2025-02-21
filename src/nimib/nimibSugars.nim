@@ -2,7 +2,10 @@ import std / [macros, strutils, sequtils, genasts]
 
 proc parseCallStmt(n: NimNode): tuple[lhs: string, rhs: NimNode] =
   n.expectKind nnkCall
-  (n[0].strVal, n[1][0])
+  if n[1].len > 1: # toHtml case
+    (n[0].strVal, n[1])
+  else: # field case
+    (n[0].strVal, n[1][0])
 
 #[ this is what fields with default values look like
 Call

@@ -349,25 +349,70 @@ template nbRawHtml*(content: string) =
   newNbSlimBlock("nbRawHtml"):
     nb.blk.output = content ]#
 
-template nbJsFromStringInit*(body: string): NbBlock =
+func nbJsFromStringInit*(body: string): NbBlock =
+  newNbJsFromCode(code=body, transformedCode=body, putAtTop=false)
+
+#[ template nbJsFromStringInit*(body: string): NbBlock =
   var result = NbBlock(command: "nbJsFromCode", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = body
   result.context["putAtTop"] = false
-  result
+  result ]#
 
-template addStringToJs*(script: NbBlock, body: string) =
+func addStringToJs*(script: NbJsFromCode or NbJsFromCodeOwnFile, body: string) =
   script.code &= "\n" & body
-  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & body
+  script.transformedCode &= "\n" & body
+
+#[ template addStringToJs*(script: NbBlock, body: string) =
+  script.code &= "\n" & body
+  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & body ]#
+
+#[ func addToDocAsJs*(nb: var Nb, script: NbBlock) =
+  nb.add script
 
 template addToDocAsJs*(script: NbBlock) =
   nb.blocks.add script
-  nb.blk = script
+  nb.blk = script ]#
+
+func jsFromString*(nb: var Nb, body: string) =
+  let script = nbJsFromStringInit(body)
+  nb.add script
 
 template nbJsFromString*(body: string) =
-  let script = nbJsFromStringInit(body)
-  script.addToDocAsJs
+  nb.jsFromString(body)
+
+template jsFromCode*(nb: var Nb, args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  let blk = newNbJsFromCode(code=originalCode, transformedCode=code, putAtTop=false)
+  nb.add blk
 
 template nbJsFromCode*(args: varargs[untyped]) =
+  nb.jsFromCode(args)
+
+template jsFromCodeInBlock*(nb: var Nb, args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(putCodeInBlock=true, args)
+  let blk = newNbJsFromCode(code=originalCode, transformedCode=code, putAtTop=false)
+  nb.add blk
+
+template nbJsFromCodeInBlock*(args: varargs[untyped]) =
+  nb.jsFromCodeInBlock(args)
+
+template jsFromCodeGlobal*(nb: var Nb, args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  let blk = newNbJsFromCode(code=originalCode, transformedCode=code, putAtTop=true)
+  nb.add blk
+
+template nbJsFromCodeGlobal*(args: varargs[untyped]) =
+  nb.jsFromCodeGlobal(args)
+
+template jsFromCodeOwnFile*(nb: var Nb, args: varargs[untyped]) =
+  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
+  let blk = newNbJsFromCodeOwnFile(code=originalCode, transformedCode=code)
+  nb.add blk
+
+template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
+  nb.jsFromCodeOwnFile(args)
+
+#[ template nbJsFromCode*(args: varargs[untyped]) =
   let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
   var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
   result.context["transformedCode"] = code
@@ -395,7 +440,7 @@ template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
   result.addToDocAsJs
 
 template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
-  nbJsFromCode(args)
+  nbJsFromCode(args) ]#
 
 
 when moduleAvailable(karax/kbase):

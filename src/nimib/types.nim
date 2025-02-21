@@ -40,7 +40,7 @@ type
     containers*: seq[NbContainer] # current container
     backend*: NbRender # current backend
 
-proc `$`*(blk: NbBlock): string  = $blk[]
+#proc `$`*(blk: NbBlock): string  = $blk[]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

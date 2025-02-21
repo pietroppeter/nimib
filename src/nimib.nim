@@ -2,8 +2,8 @@ import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
 import std / jsonutils except toJson
 export jsonutils
 import markdown
-import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils
+import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources] 
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -122,12 +122,24 @@ proc text*(nb: var Nb, text: string) =
 template nbText*(ttext: string) =
   nb.text(ttext)
 
+#[ template nbTextWithCode*(body: untyped) =
+  newNbCodeBlock("nbText", body):
+    nb.blk.output = body ]#
 
+newNbBlock(NbTextWithCode of NbText):
+  code: string
+  toHtml:
+    nbTextToHtml(blk, nb)
 
+template textWithCode*(nb: Nb, body: untyped) =
+  let ttext = body
+  let tcode = getCodeAsInSource(nb.doc.source, "textWithCode", body)
+  let blk = newNbTextWithCode(text=ttext, code=tcode)
+  nb.add blk
 
 template nbTextWithCode*(body: untyped) =
-  newNbCodeBlock("nbText", body):
-    nb.blk.output = body
+  nb.textWithCode:
+    body
 
 template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
@@ -283,7 +295,6 @@ template nbSave* =
   #   - in case you need to manage additional exceptions for a specific document add a new set of partials before calling nbSave
   nb.nbCollectAllNbJs()
 
-  echo "nb.doc.blocks: ", nb.doc.blocks
   #nb.context.searchDirs(nb.templateDirs)
   #nb.context.searchTable(nb.partials)
 

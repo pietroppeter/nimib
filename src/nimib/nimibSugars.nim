@@ -4,6 +4,56 @@ proc parseCallStmt(n: NimNode): tuple[lhs: string, rhs: NimNode] =
   n.expectKind nnkCall
   (n[0].strVal, n[1][0])
 
+func getTypeFields*(typeSym: NimNode): seq[NimNode] =
+  ## return seq[nnkIdentDefs]
+  typeSym.expectKind nnkSym
+  # add all own fields
+  # look through typeSym.getImpl and look for OfInherit and recurse!
+  let typeDef = typeSym.getImpl
+  debugecho "typeDef of ", typeSym.repr, ":", typedef.repr
+  let ofInherit = typeDef[2][0][1]
+  if ofInherit.kind == nnkOfInherit:
+    let parentTypeSym = ofInherit[0]
+    if parentTypeSym.strVal != "RootObj":
+      result.add parentTypeSym.getTypeFields
+  let recList = typeDef[2][0][2]
+  result.add recList.children.toSeq
+
+func removePostfix*(identDef: NimNode): NimNode =
+  result = identDef.copyNimTree()
+  if result[0].kind == nnkPostfix:
+    result[0] = result[0][1]
+
+#[ var procParams = @[capitalizedTypeName.ident] & fieldsList
+var objectConstructor = nnkObjConstr.newTree(
+  capitalizedTypeName.ident
+)
+objectConstructor.add newColonExpr(ident"kind", capitalizedTypeName.newLit)
+for (fName, _) in fields:
+  objectConstructor.add newColonExpr(fName.ident, fName.ident)
+var procBody = newStmtList(objectConstructor)
+
+var procName = postfix(ident("new" & capitalizedTypeName), "*")
+let initializer = newProc(procName, procParams, procBody) 
+
+echo "init:\n", initializer.repr
+]#
+macro generateBlockInitializer*(typeName: typed): untyped =
+  let fieldsList = typeName.getTypeFields().mapIt(it.removePostfix).filterIt(it[0].strVal != "kind")
+  let procParams = @[typeName] & fieldsList
+  var objectConstructor = nnkObjConstr.newTree(
+    typeName
+  )
+  objectConstructor.add newColonExpr(ident"kind", typeName.strVal.newLit)
+  for identDef in fieldsList:
+    let fieldName = identDef[0] 
+    objectConstructor.add newColonExpr(fieldName, fieldName)
+  let procBody = newStmtList(objectConstructor)
+  let procName = postfix(ident("new" & typeName.strVal), "*")
+  let initializer = newProc(procName, procParams, procBody)
+  echo "init:\n", initializer.repr
+  return initializer
+
 macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   # typeName is either `ident` or
   # Infix
@@ -51,9 +101,16 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
     else:
       fields.add (name, body)
 
-  var fieldsList = nnkRecList.newTree()
+  var fieldsList: seq[NimNode]
+  var exportedFieldsList = nnkRecList.newTree()
   for (fName, fType) in fields:
     fieldsList.add newIdentDefs(fName.ident, fType)
+    exportedFieldsList.add newIdentDefs(postfix(fName.ident, "*"), fType)
+
+  # TODO: add parent list of fields to fieldsList as well!
+  # This probaly has to be done in a typed macro?
+  # In that case, let the typed macro construct the initializer!
+
   let typeDefinition = nnkTypeSection.newTree(nnkTypeDef.newTree(
     postfix(capitalizedTypeName.ident, "*"),
     newEmptyNode(), # generic
@@ -63,7 +120,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
         nnkOfInherit.newTree(
           parentType
         ),
-        fieldsList
+        exportedFieldsList
       )
     )
   ))
@@ -74,7 +131,10 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   # Be vary of how we write the kind. SHould it be normalized or exactly like the user wrote it?
   # It's more predictable if it is like the user wrote it. But more reasonable to normalize it...
 
-  var procParams = @[capitalizedTypeName.ident] & toSeq(fieldsList.children)
+  let initializer = genAst(typeName = capitalizedTypeName.ident):
+    generateBlockInitializer(typeName)
+
+  #[ var procParams = @[capitalizedTypeName.ident] & fieldsList
   var objectConstructor = nnkObjConstr.newTree(
     capitalizedTypeName.ident
   )
@@ -86,7 +146,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   var procName = postfix(ident("new" & capitalizedTypeName), "*")
   let initializer = newProc(procName, procParams, procBody)
 
-  echo "init:\n", initializer.repr
+  echo "init:\n", initializer.repr ]#
 
   # Next: generate nbImageToHtml from toHtmlBody
   let renderProcName = (lowercasedTypeName & "ToHtml").ident

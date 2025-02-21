@@ -444,43 +444,54 @@ template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or 
 
 
 when moduleAvailable(karax/kbase):
-  template nbKaraxCode*(args: varargs[untyped]) =
-    let rootId = "karax-" & $nb.newId()
-    nbRawHtml: "<div id=\"" & rootId & "\"></div>"
+  template karaxCode*(nb: var Nb, args: varargs[untyped]) =
+    let rootId = "karax-" & $nb.doc.newId()
+    nb.rawHtml: "<div id=\"" & rootId & "\"></div>"
     nbKaraxCodeBackend(rootId, args)
 
+  template nbKaraxCode*(args: varargs[untyped]) =
+    nb.karaxCode(args)
+
 when moduleAvailable(happyx):
-  template nbHappyxCode*(args: varargs[untyped]) =
-    let rootId = "happyx-" & $nb.newId()
+  template happyxCode*(nb: var Nb, args: varargs[untyped]) =
+    let rootId = "happyx-" & $nb.doc.newId()
     nbRawHtml: "<div id=\"" & rootId & "\"></div>"
     nbHappyxCodeBackend(rootId, args)
 
-template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
+  template nbHappyxCode*(args: varargs[untyped]) =
+    nb.happyxCode(args)
+
+#[ template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
   nb.blk.context["js_show_nim_source"] = true
   if message.len > 0:
     nb.blk.context["js_show_nim_source_message"] = message
 
 template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
-  nbJsShowSource(message)
+  nbJsShowSource(message) ]#
+
+template codeDisplay*(nb: var Nb, tmplCall: untyped, body: untyped) =
+  tmplCall:
+    body
+  nb.codeSkip:
+    body
 
 template nbCodeDisplay*(tmplCall: untyped, body: untyped) =
   ## display codes used in a template (e.g. nbJsFromCode) after the template call
+  nb.codeDisplay(tmplCall, body)
+
+template codeAnd*(nb: var Nb, tmplCall: untyped, body: untyped) =
+  ## can be used to run code both in c and js backends (e.g. nbCodeAnd(nbJsFromCode))
+  nb.code: # this should work because template name starts with nbCode
+    body
   tmplCall:
     body
-  newNbCodeBlock("nbCode", body):
-    discard
 
 template nbCodeAnd*(tmplCall: untyped, body: untyped) =
-  ## can be used to run code both in c and js backends (e.g. nbCodeAnd(nbJsFromCode))
-  nbCode: # this should work because template name starts with nbCode
-    body
-  tmplCall:
-    body
+  nb.codeAnd(tmplCall, body)
 
 template nbClearOutput*() =
-  if not nb.blk.isNil:
-    nb.blk.output = ""
-    nb.blk.context["output"] = ""
+  if not nb.blk.isNil and nb.blk of NbCode:
+    nb.blk.NbCode.output = ""
 
 template nbSave* =
   # order if searchDirs/searchTable is relevant: directories have higher priority. rationale:

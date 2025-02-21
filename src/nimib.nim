@@ -2,8 +2,8 @@ import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
 import std / jsonutils except toJson
 export jsonutils
 import markdown
-import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources
+import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight] 
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -81,10 +81,31 @@ template newNbSlimBlock*(cmd: string, blockImpl: untyped) =
   newNbBlock(cmd, false, nb, nb.blk, "", blockImpl)
 
 # block templates
-template nbCode*(body: untyped) =
+#[ template nbCode*(body: untyped) =
   newNbCodeBlock("nbCode", body):
     captureStdout(nb.blk.output):
-      body
+      body ]#
+
+newNbBlock(NbCode):
+  code: string
+  output: string
+  toHtml:
+    withNewlines:
+      # TODO: highlight code statically
+      &"<pre><code class=\"nohighlight hljs nim\">{blk.code.highlightNim}</code></pre>"
+      if blk.output.len > 0:
+        &"<pre class=\"nb-output\">{blk.output}</pre>"
+
+template code*(nb: Nb, body: untyped) =
+  let blk = newNbCode(code="", output="")
+  blk.code = getCode(body)
+  captureStdout(blk.output):
+    body
+  nb.add blk
+
+template nbCode*(body: untyped) =
+  nb.code:
+    body
 
 template nbCodeSkip*(body: untyped) =
   newNbCodeBlock("nbCodeSkip", body):
@@ -133,7 +154,7 @@ newNbBlock(NbTextWithCode of NbText):
 
 template textWithCode*(nb: Nb, body: untyped) =
   let ttext = body
-  let tcode = getCodeAsInSource(nb.doc.source, "textWithCode", body)
+  let tcode = getCode(body)
   let blk = newNbTextWithCode(text=ttext, code=tcode)
   nb.add blk
 

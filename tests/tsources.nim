@@ -1,12 +1,12 @@
-import nimib, strformat
+import nimib, strformat, json
 import unittest
 
 suite "test sources":
-  template check =
+  template checkCode(t: typedesc = NbCode) =
     #echo &"---\n{nbBlock.code}\n"
     # the replace stuff needed on windows where the lines read from file will have windows native new lines
     test $currentTest:
-      actual = nbBlock.code
+      actual = nb.blk.t.code
       check actual.nbNormalize == expected.nbNormalize
       if actual.nbNormalize != expected.nbNormalize:
         echo &"===\n---actual:\n{actual.repr}\n---expected\n{expected.repr}\n---\n==="
@@ -25,7 +25,7 @@ suite "test sources":
 let
   x = 1
 """
-  check
+  checkCode()
 
   nbCode:
     # a comment
@@ -36,25 +36,25 @@ let
 let  # and a comment with nbCode
   y = 1
 """
-  check
+  checkCode()
 
   nbCode echo y
   expected = "echo y"
-  check
+  checkCode()
   nbCode: echo y
   expected = "echo y"
-  check
+  checkCode()
   nbCode(echo y)
   expected = "echo y"
-  check
+  checkCode()
   nbCode ((echo ("( This is ( weird string)")))
   expected = "echo (\"( This is ( weird string)\")"
-  check
+  checkCode()
 
   nbTextWithCode: """problem
 solution"""
   expected = "\"\"\"problem\nsolution\"\"\""
-  check
+  checkCode(NbTextWithCode)
 
   template discardBlock(body: untyped) = discard
 
@@ -65,7 +65,7 @@ solution"""
 discardBlock:
   echo y
 """
-  check
+  checkCode()
 
   nbCode:
     let garbage = 1
@@ -73,40 +73,40 @@ discardBlock:
   middle
 end"""
   expected = "let garbage = 1\nlet bigString = \"\"\"start\n  middle\nend\"\"\""
-  check
+  checkCode()
 
   nbCode:
     block:
       echo y
   expected = "block:\n  echo y"
-  check
+  checkCode()
 
   when not defined(nimibCodeFromAst):
     nbCode:
       echo y
       # This should be included!
     expected = "echo y\n# This should be included!"
-    check
+    checkCode()
 
     nbCode:
       echo y
 
       # Include this as well!
     expected = "echo y\n\n# Include this as well!"
-    check
+    checkCode()
 
     nbCode:
       echo y
     # Don't include this!
     expected = "echo y"
-    check
+    checkCode()
 
     nbCode:
 
       echo y
     # The newline at the beginning of the block!
     expected = "echo y"
-    check
+    checkCode()
 
     nbCode:
       block:
@@ -114,7 +114,7 @@ end"""
           b = 1
 
     expected = "block:\n  let\n    b = 1"
-    check
+    checkCode()
 
     template notNbCode(body: untyped) =
       nbCode:
@@ -124,7 +124,7 @@ end"""
       echo y
 
     expected = "echo y"
-    check
+    checkCode()
 
     template `&`(a,b: int) = discard
 
@@ -133,34 +133,34 @@ end"""
         2
 
     expected = "1 &\n  2"
-    check
+    checkCode()
 
     nbCode:
-      nb.context["no_source"] = true
+      nb.doc.context["no_source"] = %true
 
-    expected = "nb.context[\"no_source\"] = true"
-    check
+    expected = "nb.doc.context[\"no_source\"] = %true"
+    checkCode()
 
     nbCode: discard
     expected = "discard"
-    check
+    checkCode()
 
     nbCode:
       for n in 0 .. 1:
         discard
     expected = "for n in 0 .. 1:\n  discard"
-    check
+    checkCode()
 
     template nbCodeInTemplate =
       nbCode:
-        nb.renderPlans["nbText"] = @["mdOutputToHtml"]
+        nb.doc.context["nbText"] = %["mdOutputToHtml"]
 
     nbCodeInTemplate()
-    expected = """nb.renderPlans["nbText"] = @["mdOutputToHtml"]"""
-    check
+    expected = """nb.doc.context["nbText"] = %["mdOutputToHtml"]"""
+    checkCode()
 
     nbCode:
       type A = object
     expected = "type A = object"
-    check
+    checkCode()
   

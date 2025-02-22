@@ -36,7 +36,7 @@ proc startPos(node: NimNode): Pos =
     for child in node.children:
       let childPos = child.startPos()
       # If we can't get the line info for some reason, skip it!
-      if childPos.line == 0: continue
+      if childPos.line == 0 or result.filename != childPos.filename: continue
       
       if childPos < result:
         result = childPos

@@ -27,6 +27,7 @@ proc toPos*(info: LineInfo): Pos =
   Pos(line: info.line, column: info.column, filename: info.filename)
 
 proc startPos(node: NimNode): Pos =
+  echo "startPos: ", node.repr
   case node.kind
   of nnkStmtList:
     return node[0].startPos()

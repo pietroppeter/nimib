@@ -28,8 +28,8 @@ task readme, "update readme":
   exec "nim -d:mdOutput r docsrc/index.nim"  
 
 task docs, "Build documentation":
-  for file in ["hello", "mostaccio", "numerical", "nolan",
-    "pythno", "index"]: # "allblocks", "cheatsheet", "files", "interactivity", "counters", "caesar"]:
+  for file in ["allblocks", "hello", "mostaccio", "numerical", "nolan",
+    "pythno", "index"]: #, "cheatsheet", "files", "interactivity", "counters", "caesar"]:
     exec "nim r --hints:off docsrc/" & file & ".nim"
   #when not defined(nimibDocsSkipPenguins):
   #  exec "nim r --hints:off docsrc/penguins.nim"

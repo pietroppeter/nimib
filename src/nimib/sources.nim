@@ -159,6 +159,7 @@ macro getCodeAsInSource*(source: string, body: untyped): string =
     if `filename` notin nb.doc.sourceFiles:
       nb.doc.sourceFiles[`filename`] = readFile(`filename`)
 
+    echo "endFilename: ", `endFilename`, " startFilename: ", `filename`
     doAssert `endFilename` == `filename`, """
     Code from two different files were found in the same nbCode!
     If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 

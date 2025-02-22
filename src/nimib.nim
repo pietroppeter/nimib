@@ -261,28 +261,61 @@ proc file*(nb: var Nb, tname: string) =
   let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
   nb.add blk
 
+newNbBlock(NbVideo):
+  url: string
+  filetype: string
+  autoplay: bool
+  muted: bool
+  loop: bool
+  toHtml:
+    withNewLines:
+      "<video controls"
+      if blk.loop: "loop"
+      if blk.autoplay: "autoplay"
+      if blk.muted: "muted"
+      ">"
+      &"""<source src="{blk.url}" """
+      if blk.filetype.len > 0:
+        &"""type="{blk.filetype}" """
+      ">"
+      "Your browser does not support the video element.</video>"
+
+func video*(nb: var Nb, url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
+  let blk = newNbVideo(autoplay=autoplay, muted=muted, loop=loop)
+  blk.url = nb.doc.relToRoot(url)
+  blk.filetype = 
+    if filetype == "": "video/" & url.splitFile.ext[1..^1] # remove the leading dot
+    else: filetype
+  nb.add blk
+  
 # todo captions and subtitles support maybe?
-template nbVideo*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
-  newNbSlimBlock("nbVideo"):
-    nb.blk.context["url"] = nb.relToRoot(url)
-    nb.blk.context["type"] =
-      if typ == "": "video/" & url.splitFile.ext[1..^1] # remove the leading dot
-      else: typ
+template nbVideo*(url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
+  nb.video(url, filetype, autoplay, muted, loop)
 
-    if autoplay: nb.blk.context["autoplay"] = "autoplay"
-    if muted: nb.blk.context["muted"] = "muted"
-    if loop: nb.blk.context["loop"] = "loop"
+newNbBlock(NbAudio of NbVideo):
+  toHtml: 
+    withNewLines:
+      "<audio controls"
+      if blk.loop: "loop"
+      if blk.autoplay: "autoplay"
+      if blk.muted: "muted"
+      ">"
+      &"""<source src="{blk.url}" """
+      if blk.filetype.len > 0:
+        &"""type="{blk.filetype}" """
+      ">"
+      "Your browser does not support the video element.</audio>"
 
-template nbAudio*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
-  newNbSlimBlock("nbAudio"):
-    nb.blk.context["url"] = nb.relToRoot(url)
-    nb.blk.context["type"] = 
-      if typ == "": "audio/" & url.splitFile.ext[1..^1]
-      else: typ
+func audio*(nb: var Nb, url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
+  let blk = newNbAudio(autoplay=autoplay, muted=muted, loop=loop)
+  blk.url = nb.doc.relToRoot(url)
+  blk.filetype = 
+    if filetype == "": "audio/" & url.splitFile.ext[1..^1] # remove the leading dot
+    else: filetype
+  nb.add blk
 
-    if autoplay: nb.blk.context["autoplay"] = "autoplay"
-    if muted: nb.blk.context["muted"] = "muted"
-    if loop: nb.blk.context["loop"] = "loop"
+template nbAudio*(url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
+  nb.audio(url, filetype, autoplay, muted, loop)
 
 template nbFile*(name: string, content: string) =
   nb.file(name, content)

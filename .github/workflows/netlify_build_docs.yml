@@ -8,6 +8,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
+      - name: apt install
+        run: sudo apt install -y libpcre3
       - uses: actions/checkout@v2
       - name: install nim
         id: install_nim

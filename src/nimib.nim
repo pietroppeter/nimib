@@ -49,7 +49,7 @@ template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisF
   if nb.doc.cfg.homeDir != "":
     if not dirExists(nb.doc.homeDir):
       log "creating nb.homeDir: " & $nb.doc.homeDir
-      createDir(nb.homeDir)
+      createDir(nb.doc.homeDir)
 
     log "setting current directory to nb.doc.homeDir: " & $nb.doc.homeDir
     setCurrentDir nb.doc.homeDir

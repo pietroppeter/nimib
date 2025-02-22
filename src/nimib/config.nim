@@ -1,4 +1,4 @@
-import types, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
+import types, logging, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
 
 proc getNimibVersion*(): string = 
   var dir = currentSourcePath().parentDir().parentDir()
@@ -85,7 +85,7 @@ proc loadNimibCfg*(cfgName: string): tuple[found: bool, dir: AbsoluteDir, raw: s
   for dir in parentDirs(getCurrentDir()):
     if fileExists(dir / cfgName):
       result.dir = dir.AbsoluteDir
-      echo "[nimib] config file found: ", dir / cfgName
+      log "config file found: " & dir / cfgName
       result.found = true
       break
   if result.found:
@@ -99,7 +99,7 @@ proc loadCfg*(doc: var NbDoc) =
     doc.rawCfg = cfg.raw
     doc.cfg = cfg.nb
   if not doc.hasCfg:
-    echo "[nimib] using default config"
+    log "using default config"
     doc.useDefaultCfg
   doc.optOverride
 

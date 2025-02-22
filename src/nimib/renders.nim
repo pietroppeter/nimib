@@ -1,5 +1,5 @@
 import std / [strutils, tables, sugar, os, strformat, sequtils, json]
-import ./types, markdown, mustache, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons
+import ./types, markdown, mustache, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons, ./logging
 
 import highlight
 import mustachepkg/values
@@ -45,6 +45,14 @@ proc useHtmlBackend*(doc: var NbDoc) =
 <img src="{{url}}" alt="{{alt_text}}">
 <figcaption>{{caption}}</figcaption>
 </figure>"""
+  doc.partials["nbVideo"] = """<video controls {{loop}} {{autoplay}} {{muted}}>
+  <source src="{{url}}" {{#type}}type="{{type}}"{{/type}}>
+Your browser does not support the video element.
+</video>"""
+  doc.partials["nbAudio"] = """<audio controls {{loop}} {{autoplay}} {{muted}}>
+  <source src="{{url}}" {{#type}}type="{{type}}"{{/type}}>
+Your browser does not support the audio element.
+</audio>"""
   doc.partials["nbRawHtml"] = "{{&output}}"
   doc.partials["nbPython"] = """
 <pre><code class="python hljs">{{&code}}</code></pre>
@@ -129,12 +137,12 @@ proc useHtmlBackend*(doc: var NbDoc) =
 
 template debugRender(message: string) =
   when defined(nimibDebugRender):
-    echo "[nimib.debugRender] ", message
+    log "debugRender", message
 
 proc render*(nb: var NbDoc, blk: var NbBlock): string =
   debugRender "rendering block " & blk.command
   if blk.command not_in nb.partials:
-    echo "[nimib.warning] no partial found for block ", blk.command
+    warning "no partial found for block " & blk.command
     return
   else:
     if blk.command in nb.renderPlans:

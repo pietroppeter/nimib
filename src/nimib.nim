@@ -2,7 +2,7 @@ import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
 import std / jsonutils except toJson
 export jsonutils except toJson
 import markdown
-import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight] 
+import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight, logging] 
 export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons
 # types exports mustache, tables, paths
 
@@ -29,12 +29,12 @@ template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisF
     nb.doc.thisFile = instantiationInfo(-1, true).filename.AbsoluteFile
   else:
     nb.doc.thisFile = nb.doc.srcDir / thisFileRel.RelativeFile
-    echo "[nimib] thisFile: ", nb.doc.thisFile
+    log "thisFile: " & $nb.doc.thisFile
 
   try:
     nb.doc.source = read(nb.doc.thisFile)
   except IOError:
-    echo "[nimib] cannot read source"
+    log "cannot read source"
 
   if nb.doc.options.filename == "":
     nb.doc.filename = nb.doc.thisFile.string.splitFile.name & ".html"
@@ -42,12 +42,16 @@ template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisF
     nb.doc.filename = nb.doc.options.filename
 
   if nb.doc.cfg.srcDir != "":
-    echo "[nimib] srcDir: ", nb.doc.srcDir
+    log "srcDir: " & $nb.doc.srcDir
     nb.doc.filename = (nb.doc.thisDir.relativeTo nb.doc.srcDir).string / nb.doc.filename
-    echo "[nimib] filename: ", nb.doc.filename
+    log "filename: " & nb.doc.filename
 
   if nb.doc.cfg.homeDir != "":
-    echo "[nimib] setting current directory to nb.doc.homeDir: ", nb.doc.homeDir
+    if not dirExists(nb.doc.homeDir):
+      log "creating nb.homeDir: " & $nb.doc.homeDir
+      createDir(nb.homeDir)
+
+    log "setting current directory to nb.doc.homeDir: " & $nb.doc.homeDir
     setCurrentDir nb.doc.homeDir
 
   # can be overriden by theme, but it is better to initialize this anyway
@@ -219,12 +223,7 @@ template nbImage*(url: string, caption = "", alt = "") =
 
 #[ template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
-    nb.blk.context["url"] =
-      if isAbsolute(url) or url[0..3] == "http":
-        url
-      else:
-        nb.context["path_to_root"].vString / url
-        
+    nb.blk.context["url"] = nb.relToRoot(url) 
     nb.blk.context["alt_text"] = 
       if alt == "":
         caption
@@ -261,6 +260,29 @@ proc file*(nb: var Nb, tname: string) =
   let content = readFile(tname)
   let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
   nb.add blk
+
+# todo captions and subtitles support maybe?
+template nbVideo*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
+  newNbSlimBlock("nbVideo"):
+    nb.blk.context["url"] = nb.relToRoot(url)
+    nb.blk.context["type"] =
+      if typ == "": "video/" & url.splitFile.ext[1..^1] # remove the leading dot
+      else: typ
+
+    if autoplay: nb.blk.context["autoplay"] = "autoplay"
+    if muted: nb.blk.context["muted"] = "muted"
+    if loop: nb.blk.context["loop"] = "loop"
+
+template nbAudio*(url: string, typ: string = "", autoplay = false, muted = false, loop: bool = false) =
+  newNbSlimBlock("nbAudio"):
+    nb.blk.context["url"] = nb.relToRoot(url)
+    nb.blk.context["type"] = 
+      if typ == "": "audio/" & url.splitFile.ext[1..^1]
+      else: typ
+
+    if autoplay: nb.blk.context["autoplay"] = "autoplay"
+    if muted: nb.blk.context["muted"] = "muted"
+    if loop: nb.blk.context["loop"] = "loop"
 
 template nbFile*(name: string, content: string) =
   nb.file(name, content)

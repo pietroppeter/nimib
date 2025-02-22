@@ -84,7 +84,9 @@ Your browser does not support the audio element.
   doc.renderProcs["highlightCode"] = highlightCode
   doc.renderProcs["compileNimToJs"] = compileNimToJs ]#
 
-#[ proc useMdBackend*(doc: var NbDoc) =
+proc useMdBackend*(doc: var NbDoc) =
+  discard
+#[
   doc.partials["document"] = """
 {{#blocks}}
 

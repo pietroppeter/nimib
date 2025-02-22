@@ -288,15 +288,27 @@ proc darkMode*(doc: var NbDoc) =
   doc.context["github_logo"] = %githubLogoDark
   doc.context["highlight"] = %androidStudio
 
+proc darkMode*(nb: var Nb) =
+  nb.doc.darkMode()
+
 proc useLatex*(doc: var NbDoc) =
   doc.context["latex"] = %latex
+
+proc useLatex*(nb: var Nb) =
+  nb.doc.useLatex()
 
 proc disableHighlightJs*(doc: var NbDoc) =
   doc.context["disableHighlightJs"] = %true
 
+proc disableHighlightJs*(nb: var Nb) =
+  nb.doc.disableHighlightJs()
+
 proc `title=`*(doc: var NbDoc, text: string) =
   # to deprecate?
   doc.context["title"] = %text
+
+proc `title=`*(nb: var Nb, text: string) =
+  `title=`(nb.doc, text)
 
 proc noTheme*(doc: var NbDoc) =
   discard

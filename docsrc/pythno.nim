@@ -25,8 +25,9 @@ nbCode:
   
   echo repeat("ThisIsNotPython", 6)
 
-nb.blk.context["output"] = camel2snake(nb.blk.output)
-nb.blk.code = nb.blk.code.multiReplace([
+let codeBlock = nb.blk.NbCode
+codeBlock.output = camel2snake(codeBlock.output)
+codeBlock.code = codeBlock.code.multiReplace([
   ("proc", "def"),
   ("string", "str"),
   (";", ","), # tricky one

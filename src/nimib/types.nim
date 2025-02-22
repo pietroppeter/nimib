@@ -60,6 +60,9 @@ proc newId*(doc: var NbDoc): int =
   result = doc.id
   inc doc.id
 
+proc blocks*(nb: var Nb): var seq[NbBlock] =
+  nb.doc.blocks
+
 func render*(nb: Nb, blk: NbBlock): string =
   debugecho "REndering block: ", blk[]
   if blk.kind in nb.backend.funcs:

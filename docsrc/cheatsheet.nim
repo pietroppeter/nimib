@@ -14,8 +14,9 @@ nbText: """
 > Quoted sections will be used to mention differences with the original source.
 """
 
+# is this block needed? for markdown, yes but hljs is already included!
 # customize source highlighting:
-nb.context["highlight"] = """
+nb.doc.context["highlight"] = %"""
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>"""

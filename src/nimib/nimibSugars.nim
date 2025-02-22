@@ -68,7 +68,7 @@ macro generateBlockInitializer*(typeName: typed): untyped =
   let procBody = newStmtList(objectConstructor)
   let procName = postfix(ident("new" & typeName.strVal), "*")
   let initializer = newProc(procName, procParams, procBody)
-  echo "init:\n", initializer.repr
+  #echo "init:\n", initializer.repr
   return initializer
 
 macro newNbBlock*(typeName: untyped, body: untyped): untyped =
@@ -188,7 +188,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
     hookAssignements
   )
 
-  echo result.repr
+  #echo result.repr
 
   #assert false
 

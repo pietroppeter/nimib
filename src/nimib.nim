@@ -3,7 +3,7 @@ import std / jsonutils except toJson
 export jsonutils except toJson
 import markdown
 import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight, logging] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons, json
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
@@ -74,7 +74,7 @@ template nbInitMd*(thisFileRel = "") =
   nbInit(backend=renders.useMdBackend, theme=themes.noTheme, tfr)
 
   if nb.options.filename == "":
-    nb.filename = nb.filename.splitFile.name & ".md"
+    nb.doc.filename = nb.doc.filename.splitFile.name & ".md"
 
 # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
@@ -564,7 +564,7 @@ template nbSave* =
 
 # how to change this to a better version using nb?
 template relPath*(path: AbsoluteFile | AbsoluteDir): string =
-  (path.relativeTo nb.homeDir).string
+  (path.relativeTo nb.doc.homeDir).string
 
 # aliases to minimize breaking changes after refactoring nbDoc -> nb. Should be deprecated at some point?
 #[ template nbDoc*: NbDoc = nb

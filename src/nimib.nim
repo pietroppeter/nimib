@@ -76,13 +76,13 @@ template nbInitMd*(thisFileRel = "") =
   if nb.options.filename == "":
     nb.doc.filename = nb.doc.filename.splitFile.name & ".md"
 
-# block generation templates
+#[ # block generation templates
 template newNbCodeBlock*(cmd: string, body, blockImpl: untyped) =
   newNbBlock(cmd, true, nb, nb.blk, body, blockImpl)
 
 template newNbSlimBlock*(cmd: string, blockImpl: untyped) =
   # a slim block is a block with no body
-  newNbBlock(cmd, false, nb, nb.blk, "", blockImpl)
+  newNbBlock(cmd, false, nb, nb.blk, "", blockImpl) ]#
 
 # block templates
 #[ template nbCode*(body: untyped) =

@@ -1,5 +1,5 @@
 #remember to run also with -d:numericalDefaultStyle
-import nimib, strformat, strutils
+import nimib, strformat, strutils, json
 nbInit
 nb.useLatex
 let

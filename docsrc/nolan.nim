@@ -1,5 +1,5 @@
 import nimib
-import strutils, sequtils, strformat
+import strutils, sequtils, strformat, json
 
 nbInit
 nbText: """

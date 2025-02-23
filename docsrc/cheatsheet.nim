@@ -1,5 +1,5 @@
 ## Markdown cheatsheet with nimib 
-import nimib, std/[strutils, strformat]
+import nimib, std/[strutils, strformat, json]
 
 nbInit
 nbText: """

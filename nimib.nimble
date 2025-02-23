@@ -31,6 +31,6 @@ task docs, "Build documentation":
   for file in ["allblocks", "hello", "mostaccio", "numerical", "nolan",
     "pythno", "index", "cheatsheet", "files", "interactivity", "counters", "caesar"]:
     exec "nim r --hints:off docsrc/" & file & ".nim"
-  #when not defined(nimibDocsSkipPenguins):
-  #  exec "nim r --hints:off docsrc/penguins.nim"
+  when not defined(nimibDocsSkipPenguins):
+    exec "nim r --hints:off docsrc/penguins.nim"
   #exec "nimble readme"  

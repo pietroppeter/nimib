@@ -3,7 +3,7 @@ import std / jsonutils except toJson
 export jsonutils except toJson
 import markdown
 import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight, logging] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons, json
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons
 # types exports mustache, tables, paths
 
 from nimib / themes import nil

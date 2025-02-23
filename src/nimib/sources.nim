@@ -20,14 +20,13 @@ proc `<`*(p1, p2: Pos): bool =
   doAssert p1.filename == p2.filename, """
   Code from two different files were found in the same nbCode!
   If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
-  If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example.""" & " p1: " & p1.filename & " p2: " & p2.filename
+  If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
   (p1.line, p1.column) < (p2.line, p2.column)
 
 proc toPos*(info: LineInfo): Pos =
   Pos(line: info.line, column: info.column, filename: info.filename)
 
 proc startPos(node: NimNode): Pos =
-  echo "startPos: ", node.repr, " treerepr: ", node.treerepr
   case node.kind
   of nnkStmtList:
     return node[0].startPos()

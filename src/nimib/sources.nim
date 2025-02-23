@@ -34,9 +34,10 @@ proc startPos(node: NimNode): Pos =
   else:
     result = toPos(node.lineInfoObj())
     for child in node.children:
+      if child.kind == nnkEmpty: continue
       let childPos = child.startPos()
       # If we can't get the line info for some reason, skip it!
-      if childPos.line == 0 or result.filename != childPos.filename: continue
+      if childPos.line == 0: continue
       
       if childPos < result:
         result = childPos

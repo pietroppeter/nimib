@@ -55,6 +55,16 @@ func nbCodeOutputPartial*(blk: JsonNode, nb: Nb): string =
 
 nbToHtml.partials["nbCodeOutput"] = nbCodeOutputPartial
 
+func markdownToHtml*(markdownText: string): string =
+  {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
+    markdown(markdownText, config=initGfmConfig())
+
+func nbTextPartial*(blk: JsonNode, nb: Nb): string =
+  let text = blk{"text"}.getStr
+  markdownToHtml(text)
+
+nbToHtml.partials["nbText"] = nbTextPartial
+
 
 proc useHtmlBackend*(doc: var NbDoc) =
   discard

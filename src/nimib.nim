@@ -165,8 +165,7 @@ template nimibCode*(body: untyped) =
 newNbBlock(NbText):
   text: string
   toHtml:
-    {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
-      markdown(blk.text, config=initGfmConfig())
+    nb.renderPartial("nbText", jsonutils.toJson(blk))
 
 func text*(nb: var Nb, text: string) =
   let blk = newNbText(text=text)

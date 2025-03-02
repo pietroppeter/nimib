@@ -1,28 +1,21 @@
 import std / [macros, macrocache, tables, strutils, strformat, sequtils, sugar, os, hashes]
-import ./types, ./nimibSugars, ./globals, ./jsons, ./blocks
+import ./types, ./nimibSugars, ./globals, ./jsons, ./blocks, ./renders
+from std/jsonutils import nil
 
 
 newNbBlock(NbJsFromCode): # should inherit from nbCode, but it is defined in nimib.nim...
   code: string
   transformedCode: string
   putAtTop: bool
-  showCode: bool
   toHtml:
-    if blk.showCode:
-      "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>"
-    else:
-      ""
+    ""
 
 newNbBlock(NbJsFromCodeOwnFile):
   code: string
   transformedCode: string
   jsCode: string
-  showCode: bool
   toHtml:
-    withNewlines:
-      if blk.showCode:
-        "<pre><code class=\"nim\">\n" & blk.code & "\n</code></pre>\n"
-      &"<script>\n{blk.jsCode}\n</script>"
+    &"<script>\n{blk.jsCode}\n</script>"
 
 proc contains(tab: CacheTable, keyToCheck: string): bool =
   for key, val in tab:
@@ -295,7 +288,7 @@ proc nbCollectAllNbJs*(nb: var Nb) =
 
   if not code.isEmptyOrWhitespace:
     # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
-    let blk = NbJsFromCodeOwnFile(kind: "NbJsFromCodeOwnFile", code: "", transformedCode: code, showCode: false)
+    let blk = NbJsFromCodeOwnFile(kind: "NbJsFromCodeOwnFile", code: "", transformedCode: code)
     nb.add blk
 
   # loop over all nbJsFromCodeOwnFile and compile them

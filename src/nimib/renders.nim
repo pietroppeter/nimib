@@ -10,6 +10,15 @@ import mustachepkg/values
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code) ]#
 
+func renderPartial*(render: NbRender, name: string, blk: JsonNode, nb: Nb): string =
+  if name in render.partials:
+    render.partials[name](blk, nb)
+  else:
+    ""
+
+func renderPartial*(nb: Nb, name: string, blk: JsonNode): string =
+  nb.backend.renderPartial(name, blk, nb)
+
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
   let doc = blk.NbDoc
   result = withNewlines:
@@ -28,6 +37,23 @@ func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
 addNbBlockToJson(NbDoc) # should this be here?
 nbToHtml.funcs["NbDoc"] = nbDocToHtml
 
+func nbCodeSourcePartial*(blk: JsonNode, nb: Nb): string =
+  let code = blk{"code"}.getStr
+  if code.len > 0:
+    &"<pre><code class=\"nohighlight hljs nim\">{code.highlightNim}</code></pre>"
+  else:
+    ""
+
+nbToHtml.partials["nbCodeSource"] = nbCodeSourcePartial
+
+func nbCodeOutputPartial*(blk: JsonNode, nb: Nb): string =
+  let output = blk{"output"}.getStr
+  if output.len > 0:
+    &"<pre class=\"nb-output\">{output}</pre>"
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeOutputPartial
 
 
 proc useHtmlBackend*(doc: var NbDoc) =

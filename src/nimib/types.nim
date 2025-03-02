@@ -13,8 +13,10 @@ type
   NbConfig* = object
     srcDir*, homeDir*: string
   NbRenderFunc* = proc (blk: NbBlock, nb: Nb): string {. noSideEffect .}
+  NbPartialFunc* = proc (blk: JsonNode, nb: Nb): string {. noSideEffect .}
   NbRender* = ref object of RootObj
     funcs*: Table[string, NbRenderFunc]
+    partials*: Table[string, NbPartialFunc]
   NbContainer* = ref object of NbBlock
     blocks*: seq[NbBlock]
   NbDoc* = ref object of NbContainer

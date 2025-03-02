@@ -9,7 +9,8 @@ export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources
 from nimib / themes import nil
 export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
 
-from nimib / renders import nil
+#from nimib / renders import nil
+import nimib / renders
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -95,12 +96,10 @@ newNbBlock(NbCode of NbContainer):
   output: string
   toHtml:
     withNewlines:
-      # TODO: highlight code statically
-      if blk.code.len > 0:
-        &"<pre><code class=\"nohighlight hljs nim\">{blk.code.highlightNim}</code></pre>"
+      nb.renderPartial("nbCodeSource", jsonutils.toJson(blk))
       nbContainerToHtml(blk, nb)
-      if blk.output.len > 0:
-        &"<pre class=\"nb-output\">{blk.output}</pre>"
+      nb.renderPartial("nbCodeOutput", jsonutils.toJson(blk))
+      
 
 template code*(nb: Nb, body: untyped) =
   let blk = newNbCode()

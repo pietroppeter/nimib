@@ -72,6 +72,15 @@ func render*(nb: Nb, blk: NbBlock): string =
   else:
     ""
 
+func renderPartial*(render: NbRender, name: string, blk: JsonNode, nb: Nb): string =
+  if name in render.partials:
+    render.partials[name](blk, nb)
+  else:
+    ""
+
+func renderPartial*(nb: Nb, name: string, blk: JsonNode): string =
+  nb.backend.renderPartial(name, blk, nb)
+
 func nbContainerToHtml*(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbContainer
   for b in blk.blocks:

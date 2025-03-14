@@ -12,21 +12,21 @@ func getTitle*(doc: NbDoc): string =
 
 
 # All of this should be moved to renders.nim?
-func headToHtml*(doc: NbDoc): string =
+func headToHtml*(blk: JsonNode, nb: Nb): string =
   result = withNewlines:
     fmt"""
 <head>
-  <title>{doc.getTitle}</title>
+  <title>{nb.doc.getTitle}</title>
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib {doc.context.getOrDefault("version").getStr}" name="generator">
-  {doc.context.getOrDefault("stylesheet").getStr}
-  {doc.context.getOrDefault("highlight").getStr}
-  {doc.context.getOrDefault("nb_style").getStr}
-  {doc.context.getOrDefault("latex").getStr}
+  <meta content="nimib {nb.doc.context.getOrDefault("version").getStr}" name="generator">
+  {nb.doc.context.getOrDefault("stylesheet").getStr}
+  {nb.doc.context.getOrDefault("highlight").getStr}
+  {nb.doc.context.getOrDefault("nb_style").getStr}
+  {nb.doc.context.getOrDefault("latex").getStr}
     """
-    if not doc.context{"disableHighlightJs"}.getBool(false):
-      doc.context{"highlightJs"}.getStr
+    if not nb.doc.context{"disableHighlightJs"}.getBool(false):
+      nb.doc.context{"highlightJs"}.getStr
     "</head>"
     
 
@@ -36,31 +36,31 @@ func madeWithNimibToHtml*(): string =
 func homeLinkToHtml*(homePath: string): string =
   fmt"""<a href="{homePath}">🏡</a>"""
 
-func headerLeftToHtml*(doc: NbDoc): string =
-  homeLinkToHtml(doc.context{"path_to_root"}.getStr("/"))
+func headerLeftToHtml*(blk: JsonNode, nb: Nb): string =
+  homeLinkToHtml(nb.doc.context{"path_to_root"}.getStr("/"))
 
-func headerCenterToHtml*(doc: NbDoc): string =
-  let title = doc.getTitle()
+func headerCenterToHtml*(blk: JsonNode, nb: Nb): string =
+  let title = nb.doc.getTitle()
   fmt"<code>{title}</code>"
 
-func headerRightToHtml*(doc: NbDoc): string =
-  if not isNil(doc.context{"github_remote_url"}):
-    let githubRemoteUrl = doc.context{"github_remote_url"}.getStr
-    let githubLogo = doc.context{"github_logo"}.getStr(githubLogoLight)
+func headerRightToHtml*(blk: JsonNode, nb: Nb): string =
+  if not isNil(nb.doc.context{"github_remote_url"}):
+    let githubRemoteUrl = nb.doc.context{"github_remote_url"}.getStr
+    let githubLogo = nb.doc.context{"github_logo"}.getStr(githubLogoLight)
     result = fmt"""<a href="{github_remote_url}">{github_logo}</a>"""
 
-func headerToHtml*(doc: NbDoc): string =
+func headerToHtml*(blk: JsonNode, nb: Nb): string =
   result = withNewlines:
     "<header>"
     """<div class="nb-box">"""
-    " <span>" & headerLeftToHtml(doc) & "</span>"
-    " <span>" & headerCenterToHtml(doc) & "</span>"
-    " <span>" & headerRightToHtml(doc) & "</span>"
+    " <span>" & nb.renderPartial("header_left", blk) & "</span>"
+    " <span>" & nb.renderPartial("header_center", blk) & "</span>"
+    " <span>" & nb.renderPartial("header_right", blk) & "</span>"
     "</div>"
     "<hr>"
     "</header>"
 
-func leftToHtml*(): string =
+func leftToHtml*(blk: JsonNode, nb: Nb): string =
   ""
 
 func mainToHtml*(blk: NbBlock, nb: Nb): string =
@@ -69,29 +69,29 @@ func mainToHtml*(blk: NbBlock, nb: Nb): string =
     nbContainerToHtml(blk, nb)
     "</main>"
 
-func rightToHtml*(): string =
+func rightToHtml*(blk: JsonNode, nb: Nb): string =
   ""
 
-func footerLeftToHtml*(): string =
+func footerLeftToHtml*(blk: JsonNode, nb: Nb): string =
   madeWithNimibToHtml()
 
-func footerCenterToHtml*(): string =
+func footerCenterToHtml*(blk: JsonNode, nb: Nb): string =
   ""
 
-func showSourceButtonToHtml*(): string =
+func showSourceButtonToHtml*(blk: JsonNode, nb: Nb): string =
   """<button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button>"""
 
-func footerRightToHtml*(): string =
-  showSourceButtonToHtml()
+func footerRightToHtml*(blk: JsonNode, nb: Nb): string =
+  showSourceButtonToHtml(blk, nb)
 
-func sourceSectionToHtml*(doc: NbDoc): string =
+func sourceSectionToHtml*(blk: JsonNode, nb: Nb): string =
   fmt"""
 <section id="source">
-<pre><code class="nohighlight nim hljs">{doc.context.getOrDefault("source_highlighted").getStr}</code></pre>
+<pre><code class="nohighlight nim hljs">{nb.doc.context.getOrDefault("source_highlighted").getStr}</code></pre>
 </section>
   """
 
-func showSourceScriptToHtml*(): string =
+func showSourceScriptToHtml*(blk: JsonNode, nb: Nb): string =
   """
 <script>
   function toggleSourceDisplay() {
@@ -108,18 +108,18 @@ func showSourceScriptToHtml*(): string =
 </script>
   """
 
-func footerToHtml*(doc: NbDoc): string =
-  fmt"""
-<footer>
-<div class="nb-box">
-  <span>{footerLeftToHtml()}</span>
-  <span>{footerCenterToHtml()}</span>
-  <span>{footerRightToHtml()}</span>
-</div>
-</footer>
-{sourceSectionToHtml(doc)}
-{showSourceScriptToHtml()}
-  """
+func footerToHtml*(blk: JsonNode, nb: Nb): string =
+  result = withNewlines:
+    "<footer>"
+    """<div class="nb-box">"""
+    " <span>" & nb.renderPartial("footer_left", blk) & "</span>"
+    " <span>" & nb.renderPartial("footer_center", blk) & "</span>"
+    " <span>" & nb.renderPartial("footer_right", blk) & "</span>"
+    "</div>"
+    "</footer>"
+    nb.renderPartial("source_section", blk)
+    nb.renderPartial("show_source_script", blk)
+
 
 #[ # TODO: Make these old partials into procs with inputs so they can be reused!
 const document* = """
@@ -251,37 +251,40 @@ function toggleSourceDisplay() {
 proc optOut*(content, keyword: string): string =
   "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}" ]#
 
-proc useDefault*(doc: var NbDoc) =
-  doc.context["path_to_root"] = %(doc.srcDirRel).string
-  doc.context["path_to_here"] = %(doc.thisFileRel).string
-  doc.context["source"] = %doc.source
+proc useDefault*(nb: var Nb) =
+  nb.doc.context["path_to_root"] = %(nb.doc.srcDirRel).string
+  nb.doc.context["path_to_here"] = %(nb.doc.thisFileRel).string
+  nb.doc.context["source"] = %nb.doc.source
 
   #doc.partials["document"] = document
   #doc.partials["main"] = main
+  nb.backend.partials["left"] = leftToHtml
+  nb.backend.partials["right"] = rightToHtml
   # head
-  #doc.partials["head"] = head
-  doc.context["version"] = %getNimibVersion()
-  doc.context["favicon"] = %faviconWhale
-  doc.context["stylesheet"] = %waterLight
-  doc.context["highlight"] = %atomOneLight
-  doc.context["highlightJs"] = %highlightJsTags
-  doc.context["nb_style"] = %nbStyle
+  nb.backend.partials["head"] = headToHtml
+  nb.doc.context["version"] = %getNimibVersion()
+  nb.doc.context["favicon"] = %faviconWhale
+  nb.doc.context["stylesheet"] = %waterLight
+  nb.doc.context["highlight"] = %atomOneLight
+  nb.doc.context["highlightJs"] = %highlightJsTags
+  nb.doc.context["nb_style"] = %nbStyle
   # header
-  #doc.partials["header"] = header
-  #doc.partials["header_left"] = homeLink
-  doc.context["title"] = doc.context["path_to_here"]
-  #doc.partials["header_center"] = "<code>" & doc.context["title"].castStr & "</code>"
+  nb.backend.partials["header"] = headerToHtml
+  nb.backend.partials["header_left"] = headerLeftToHtml
+  nb.doc.context["title"] = nb.doc.context["path_to_here"]
+  nb.backend.partials["header_center"] = headerCenterToHtml
   if isGitAvailable() and isOnGithub():
-    #doc.partials["header_right"] = githubLink
-    doc.context["github_remote_url"] = %getGitRemoteUrl()
-    doc.context["github_logo"] = %githubLogoLight
+    nb.backend.partials["header_right"] = headerRightToHtml
+    nb.doc.context["github_remote_url"] = %getGitRemoteUrl()
+    nb.doc.context["github_logo"] = %githubLogoLight
   # footer
-  # doc.partials["footer"] = footer
-  # doc.partials["footer_left"] = madeWithNimib
-  # doc.partials["footer_right"] = optOut(showSourceButton, "no_source")
-  # doc.partials["source_section"] = optOut(sourceSection, "no_source")
-  # doc.partials["show_source_script"] = optOut(showSourceScript, "no_source")
-  doc.context["source_highlighted"] = %highlightNim(doc.context["source"].getStr)
+  nb.backend.partials["footer"] = footerToHtml
+  nb.backend.partials["footer_left"] = footerLeftToHtml
+  nb.backend.partials["footer_center"] = footerCenterToHtml
+  nb.backend.partials["footer_right"] = footerRightToHtml
+  nb.backend.partials["source_section"] = sourceSectionToHtml
+  nb.backend.partials["show_source_script"] = showSourceScriptToHtml
+  nb.doc.context["source_highlighted"] = %highlightNim(nb.doc.context["source"].getStr)
 
 proc darkMode*(doc: var NbDoc) =
   doc.context["stylesheet"] = %waterDark

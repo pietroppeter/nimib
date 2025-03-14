@@ -3,6 +3,7 @@ import ./types, markdown, mustache, ./jsutils, ./nimibSugars, ./themes, ./global
 
 import highlight
 import mustachepkg/values
+from std/jsonutils import nil
 
 #[ proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
   blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
@@ -10,29 +11,21 @@ import mustachepkg/values
 proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
   blk.context["codeHighlighted"] = highlightNim(blk.code) ]#
 
-func renderPartial*(render: NbRender, name: string, blk: JsonNode, nb: Nb): string =
-  if name in render.partials:
-    render.partials[name](blk, nb)
-  else:
-    ""
-
-func renderPartial*(nb: Nb, name: string, blk: JsonNode): string =
-  nb.backend.renderPartial(name, blk, nb)
 
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
   let doc = blk.NbDoc
+  let docJson = %[] # it's unused
   result = withNewlines:
     "<!DOCTYPE html>"
     """<html lang="en-us">"""
-    headToHtml(doc)
+    nb.renderPartial("head", docJson)
     "<body>"
-    headerToHtml(doc)
-    leftToHtml()
+    nb.renderPartial("header", docJson)
+    nb.renderPartial("left", docJson)
     mainToHtml(doc, nb)
-    rightToHtml()
-    footerToHtml(doc)
+    nb.renderPartial("right", docJson)
+    nb.renderPartial("footer", docJson)
     "</body>"
-  # TODO: Convert all constants below into functions with inputs!
 
 addNbBlockToJson(NbDoc) # should this be here?
 nbToHtml.funcs["NbDoc"] = nbDocToHtml
@@ -119,6 +112,23 @@ Your browser does not support the audio element.
   doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
   doc.renderProcs["highlightCode"] = highlightCode
   doc.renderProcs["compileNimToJs"] = compileNimToJs ]#
+
+#[ func nbDocToMd*(blk: NbBlock, nb: Nb): string =
+  let doc = blk.NbDoc
+  result = nbContainerToHtml(doc, nb)
+
+nbToMd.funcs["NbDoc"] = nbDocToMd
+
+proc nbTextToMd*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbText
+
+nbToMd.funcs["NbText"] = nbTextToMd
+
+proc nbCodeToMd*(blk: NbBlock, nb: Nb): string =
+  discard
+
+nbToMd.funcs["NbCode"] = nbCodeToMd ]#
+
 
 proc useMdBackend*(doc: var NbDoc) =
   discard

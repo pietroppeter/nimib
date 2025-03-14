@@ -64,7 +64,7 @@ template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisF
   nb.backend = renderer
 
   # apply theme
-  theme nb.doc # how do we handle themes?
+  theme nb # how do we handle themes?
 
 template nbInitMd*(thisFileRel = "") = 
   var tfr = if thisFileRel == "":
@@ -239,6 +239,7 @@ newNbBlock(NbFile):
 <pre>{blk.filename}</pre>
 <pre><code class="{blk.ext} hljs">{blk.content}</code></pre>
 """
+# Make pre-code with hljs-extensions into a partial! Or a function that calls a partial even? (that constructs the JsNode for us)
 
 proc file*(nb: var Nb, tname: string, tcontent: string) =
   ## Generic string file

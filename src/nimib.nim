@@ -18,7 +18,7 @@ export searchTable, searchDirs, castStr
 template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
 
-template nbInit*(theme = themes.useDefault, renderer: NbRender = nbToHtml, thisFileRel = "") =
+template nbInit*(theme: proc (nb: var Nb) = themes.useDefault, renderer: NbRender = nbToHtml, thisFileRel = "") =
   var nb {.inject.}: Nb
   nb.doc = NbDoc(kind: "NbDoc")
   nb.doc.initDir = getCurrentDir().AbsoluteDir
@@ -392,6 +392,25 @@ func show*[T](nb: var Nb, obj: T) =
 
 template nbShow*(obj: untyped) =
   nb.show(obj)
+
+newNbBlock(NbDiv of NbContainer):
+  class: string
+  style: string
+  toHtml:
+    withNewLines:
+      &"<div class=\"{blk.class}\" style=\"{blk.style}\">"
+      nbContainerToHtml(blk, nb)
+      "</div>"
+
+template nbDiv*(classes: string, styles: string, body: untyped) =
+  let blk = newNbDiv(class=classes, style=styles)
+  nb.withContainer(blk):
+    body
+  nb.add blk
+
+template nbDiv*(body: untyped) =
+  nbDiv("", ""):
+    body
 
 #[ template nbShow*(obj: untyped) =
   nbRawHtml(obj.toHtml())

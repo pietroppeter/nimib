@@ -254,8 +254,8 @@ print(s)
 print(a)
 """
       nbPython: pyString
-      check nb.blk.code == pyString
-      check nb.blk.output == "[0, 2, 4]\n3.14\n"
+      check nb.blk.NbPython.code == pyString
+      check nb.blk.NbPython.output == "[0, 2, 4]\n3.14\n"
 
 when moduleAvailable(karax/kbase):
   suite "nbKarax":
@@ -266,5 +266,5 @@ when moduleAvailable(karax/kbase):
         karaxHtml:
           p:
             text message
-      check nb.blk.code.len > 0
-      check nb.blk.NbJsFromCode.transformedCode.len > 0
+      check nb.blk.NbJsFromCodeOwnFile.code.len > 0
+      check nb.blk.NbJsFromCodeOwnFile.transformedCode.len > 0

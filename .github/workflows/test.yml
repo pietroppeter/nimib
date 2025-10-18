@@ -20,6 +20,7 @@ jobs:
       - uses: jiro4989/setup-nim-action@v2.2.2
         with:
           nim-version: ${{ matrix.nim }}
+      - run: apt install libpcre3 libpcre3-dev
       - run: nimble -y install
       - run: nimble docsdeps
       - run: nimble test

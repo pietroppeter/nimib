@@ -313,5 +313,5 @@ proc `title=`*(doc: var NbDoc, text: string) =
 proc `title=`*(nb: var Nb, text: string) =
   `title=`(nb.doc, text)
 
-proc noTheme*(doc: var NbDoc) =
+proc noTheme*(doc: var Nb) =
   discard

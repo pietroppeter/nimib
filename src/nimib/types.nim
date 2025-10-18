@@ -66,7 +66,6 @@ proc blocks*(nb: var Nb): var seq[NbBlock] =
   nb.doc.blocks
 
 func render*(nb: Nb, blk: NbBlock): string =
-  debugecho "REndering block: ", blk[]
   if blk.kind in nb.backend.funcs:
     nb.backend.funcs[blk.kind](blk, nb)
   else:
@@ -86,3 +85,5 @@ func nbContainerToHtml*(blk: NbBlock, nb: Nb): string =
   for b in blk.blocks:
     result.add nb.render(b).strip & '\n'
   result.strip
+
+const nbContainerToMd* = nbContainerToHtml

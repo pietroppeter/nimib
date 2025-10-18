@@ -2,15 +2,12 @@ import std/[os, strutils, sugar, strformat, macros, macrocache, sequtils, json]
 import std / jsonutils except toJson
 export jsonutils except toJson
 import markdown
-import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight, logging] 
-export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons
+import nimib / [types, blocks, docs, boost, config, options, capture, jsons, globals, jsutils, nimibSugars, sources, highlight, logging, renders] 
+export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons, renders
 # types exports mustache, tables, paths
 
 from nimib / themes import nil
 export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
-
-#from nimib / renders import nil
-import nimib / renders
 
 from mustachepkg/values import searchTable, searchDirs, castStr
 export searchTable, searchDirs, castStr
@@ -72,7 +69,7 @@ template nbInitMd*(thisFileRel = "") =
     else:
       thisFileRel
 
-  nbInit(backend=renders.useMdBackend, theme=themes.noTheme, tfr)
+  nbInit(renderer=nbToMd, theme=themes.noTheme, tfr)
 
   if nb.options.filename == "":
     nb.doc.filename = nb.doc.filename.splitFile.name & ".md"
@@ -99,7 +96,23 @@ newNbBlock(NbCode of NbContainer):
       nb.renderPartial("nbCodeSource", jsonutils.toJson(blk))
       nbContainerToHtml(blk, nb)
       nb.renderPartial("nbCodeOutput", jsonutils.toJson(blk))
-      
+
+proc nbCodeToMd(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbCode
+  withNewlines:
+    if blk.code.len > 0:
+      withNewLines:
+        "```nim"
+        blk.code
+        "```"
+    if blk.output.len > 0:
+      withNewLines:
+        "```"
+        blk.output
+        "```"
+
+nbToMd.funcs["NbCode"] = nbCodeToMd
+
 
 template code*(nb: Nb, body: untyped) =
   let blk = newNbCode()
@@ -167,6 +180,11 @@ newNbBlock(NbText):
   toHtml:
     nb.renderPartial("nbText", jsonutils.toJson(blk))
 
+func nbTextToMd*(blk: NbBlock, nb: Nb): string =
+  blk.NbText.text
+
+nbToMd.funcs["NbText"] = nbTextToMd
+
 func text*(nb: var Nb, text: string) =
   let blk = newNbText(text=text)
   nb.add blk
@@ -182,6 +200,11 @@ newNbBlock(NbTextWithCode of NbText):
   code: string
   toHtml:
     nbTextToHtml(blk, nb)
+
+func nbTextWithCodeToMd*(blk: NbBlock, nb: Nb): string =
+  blk.NbTextWithCode.text
+
+nbToMd.funcs["NbTextWithCode"] = nbTextWithCodeToMd
 
 template textWithCode*(nb: Nb, body: untyped) =
   let ttext = body
@@ -204,6 +227,17 @@ newNbBlock(NbImage):
   <figcaption>{blk.caption}</figcaption>
 </figure>
 """
+
+func nbImageToMd*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbImage
+  withNewLines:
+    &"![{blk.alt}]({blk.url})"
+    if blk.caption.len > 0:
+      withNewLines:
+        ""
+        &"**Figure:** {blk.caption}"
+
+nbToMd.funcs["NbImage"] = nbImageToMd
 
 func image*(nb: var Nb, turl: string, tcaption = "", talt = "") =
   let blk = newNbImage()

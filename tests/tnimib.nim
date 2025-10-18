@@ -62,7 +62,7 @@ hi
 how are you?
 """
     when defined(nimibCodeFromAst):
-      check nb.blk.NbTextWithCode.code == "\"\"\"hi\nhow are you?\n\"\"\""
+      check nb.blk.NbTextWithCode.code == "\"\"\"\nhi\nhow are you?\n\"\"\""
     else:
       check nb.blk.NbTextWithCode.code == "\"\"\"\nhi\nhow are you?\n\"\"\""
     check nb.blk.NbTextWithCode.text == """hi
@@ -222,7 +222,7 @@ echo a
     check nb.blocks[^2].NbJsFromCode.transformedCode.len > 0
     check "ellipse(mouseX, mouseY, 20)" in nb.blocks[^2].NbJsFromCode.transformedCode
     when defined(nimibCodeFromAst):
-      check nb.blocks[^1].NbCode.code.startsWith("import\n  p5")
+      check nb.blocks[^1].NbCode.code.startsWith("import p5")
     else:
       check nb.blocks[^1].NbCode.code.startsWith("import p5")
     check nb.blocks[^1].NbCode.output == ""

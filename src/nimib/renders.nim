@@ -59,8 +59,9 @@ func nbTextPartial*(blk: JsonNode, nb: Nb): string =
 nbToHtml.partials["nbText"] = nbTextPartial
 
 
-proc useHtmlBackend*(doc: var NbDoc) =
-  discard
+proc useHtmlBackend*(nb: var Nb) =
+  nb.backend = nbToHtml
+
 #[   doc.partials["nbText"] = "{{&outputToHtml}}"
   doc.partials["nbCode"] = """
 {{>nbCodeSource}}
@@ -129,9 +130,17 @@ proc nbCodeToMd*(blk: NbBlock, nb: Nb): string =
 
 nbToMd.funcs["NbCode"] = nbCodeToMd ]#
 
+func nbDocToMd*(blk: NbBlock, nb: Nb): string =
+  let doc = blk.NbDoc
+  let docJson = %[] # it's unused
+  result = withNewlines:
+    nbContainerToMd(doc, nb)
 
-proc useMdBackend*(doc: var NbDoc) =
-  discard
+nbToMd.funcs["NbDoc"] = nbDocToMd
+
+proc useMdBackend*(nb: var Nb) =
+  nb.backend = nbToMd
+
 #[
   doc.partials["document"] = """
 {{#blocks}}

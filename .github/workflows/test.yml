@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         nim:
-          - '1.6.x'
           - 'stable'
           - 'devel'
       fail-fast: false

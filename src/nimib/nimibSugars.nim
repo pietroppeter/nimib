@@ -194,20 +194,23 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
 
 macro withNewlines*(body: untyped) : string =
   body.expectKind nnkStmtList
-  result = body[0]
-  if result.kind == nnkIfStmt and result.findChild(it.kind == nnkElse).isNil:
-    result.add nnkElse.newTree("".newLit)
-  result = infix(result, "&", "\n".newLit)
-  if body.len > 1:
-    for line in body[1..^1]:
+  result = "".newLit
+  if body.len > 0:
+    for i, line in body:
       # TODO: handle for loops
       # if it's an if-statement, check if it has an else-clause. Otherwise add one which returns ""
       if line.kind == nnkIfStmt and line.findChild(it.kind == nnkElse).isNil:
         line.add nnkElse.newTree("".newLit)
-      result = infix(result, "&", line)
-      result = infix(result, "&", "\n".newLit)
-  #echo result.treerepr
-  #echo result.repr
+      
+      # Only add a newline if the line contains anything and isn't the last line
+      # Also if it already ends with a newline we don't have to add one
+      result = genAst(result=result, line=line, isLast=newLit(i==body.len-1)):
+        let lineVal = line
+        if not isLast and lineVal.len > 0 and lineVal[^1] != '\n':
+          result & lineVal & "\n"
+        else:
+          result & lineVal
+
 
   
 

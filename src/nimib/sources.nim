@@ -168,4 +168,4 @@ macro getCodeAsInSource*(source: string, body: untyped): string =
     getCodeBlock(nb.doc.sourceFiles[`filename`], `startPosLit`, `endPosLit`)
 
 template getCode*(body: untyped): string =
-  getCodeAsInSource(nb.doc.source, body)
+  getCodeAsInSource(nb.doc.source, body).strip

@@ -68,7 +68,7 @@ template nbInitMd*(thisFileRel = "") =
 
   nbInit(renderer=nbToMd, theme=themes.noTheme, tfr)
 
-  if nb.options.filename == "":
+  if nb.doc.options.filename == "":
     nb.doc.filename = nb.doc.filename.splitFile.name & ".md"
 
 #[ # block generation templates

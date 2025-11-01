@@ -29,8 +29,9 @@ task readme, "update readme":
 
 task docs, "Build documentation":
   for file in ["allblocks", "hello", "mostaccio", "numerical", "nolan",
-    "pythno", "index", "cheatsheet", "files", "interactivity", "counters", "caesar"]:
+    "pythno", "cheatsheet", "files", "index",
+    "interactivity", "counters", "caesar"]:
     exec "nim r --hints:off docsrc/" & file & ".nim"
   when not defined(nimibDocsSkipPenguins):
     exec "nim r --hints:off docsrc/penguins.nim"
-  #exec "nimble readme"  
+  exec "nimble readme"  

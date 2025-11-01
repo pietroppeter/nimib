@@ -137,7 +137,7 @@ suite "nbCodeSkip":
       echo "random output..."
 
     check nb.blk.NbCode.output == ""
-    check nb.blk.NbCode.code == "echo \"random output...\"\n"
+    check nb.blk.NbCode.code == "echo \"random output...\""
 
   test "destructive code":
     # Make sure the code is NOT executed
@@ -146,7 +146,7 @@ suite "nbCodeSkip":
       fail()
     
     check nb.blk.NbCode.output == ""
-    check nb.blk.NbCode.code == "fail()\n"
+    check nb.blk.NbCode.code == "fail()"
 
 suite "nbCapture":
   test "single line of code, with output":

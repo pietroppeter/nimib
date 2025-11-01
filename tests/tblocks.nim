@@ -17,6 +17,6 @@ suite "newNbBlock":
     readCodeBlock:
       let a = 1.23
 
-    check nb.blk.ReadCodeBlock.code == "let a = 1.23\n"
+    check nb.blk.ReadCodeBlock.code == "let a = 1.23"
 
 

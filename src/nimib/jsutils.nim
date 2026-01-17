@@ -195,55 +195,6 @@ macro nbHappyxCodeBackend*(rootId: untyped, args: varargs[untyped]) =
   let call = newCall(ident"nbJsFromCodeOwnFile", callArgs)
   result = call
 
-#[ proc compileNimToJs*(doc: var NbDoc, blk: var NbBlock) =
-  let blk = 
-  let tempdir = getTempDir() / "nimib"
-  createDir(tempdir)
-  let (dir, filename, ext) = doc.thisFile.splitFile()
-  let nimfile = dir / (filename & "_nbCodeToJs_" & $doc.newId() & ext).RelativeFile
-  let jsfile = tempdir / &"out{hash(doc.thisFile)}.js"
-  var codeText = blk.context["transformedCode"].vString
-  let nbJsCounter = doc.nbJsCounter
-  doc.nbJsCounter += 1
-  var bumpGensymString = """
-import std/[macros, json]
-
-macro bumpGensym(n: static int) =
-  for i in 0 .. n:
-    let _ = gensym()
-
-"""
-  bumpGensymString.add &"bumpGensym({nbJsCounter})\n"
-  codeText = bumpGensymString & codeText
-  writeFile(nimfile, codeText)
-  let kxiname = "nimib_kxi_" & $doc.newId()
-  let errorCode = execShellCmd(&"nim js -d:danger -d:kxiname=\"{kxiname}\" -o:{jsfile} {nimfile}")
-  if errorCode != 0:
-    raise newException(OSError, "The compilation of a javascript file failed! Did you remember to capture all needed variables?\n" & $nimfile)
-  removeFile(nimfile)
-  let jscode = readFile(jsfile)
-  removeFile(jsfile)
-  blk.output = jscode
-  blk.context["output"] = jscode
-
-proc nbCollectAllNbJs*(doc: var NbDoc) =
-  var topCode = "" # placed at the top (nbJsFromCodeGlobal)
-  var code = ""
-  for blk in doc.blocks:
-    if blk.command == "nbJsFromCode":
-      if blk.context["putAtTop"].vBool:
-        topCode.add "\n" & blk.context["transformedCode"].vString
-      else:
-        code.add "\n" & blk.context["transformedCode"].vString
-  code = topCode & "\n" & code
-
-  if not code.isEmptyOrWhitespace:
-    # Create block which which will compile the code when rendered (nbJsFromJsOwnFile)
-    var blk = NbBlock(command: "nbJsFromCodeOwnFile", code: code, context: newContext(searchDirs = @[], partials = doc.partials), output: "")
-    blk.context["transformedCode"] = code
-    doc.blocks.add blk
-    doc.blk = blk ]#
-
 proc compileNimToJs*(nb: var Nb, blk: NbBlock): string =
   let blk = blk.NbJsFromCodeOwnFile
   let tempdir = getTempDir() / "nimib"

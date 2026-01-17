@@ -1,4 +1,3 @@
-#from mustachepkg/values import castStr
 import std/[json, macros, sequtils, strutils, strformat]
 import types, gits, highlight, config, jsons, globals, nimibSugars
 
@@ -11,7 +10,6 @@ func getTitle*(doc: NbDoc): string =
   doc.context{"title"}.getStr("nimib document")
 
 
-# All of this should be moved to renders.nim?
 func headToHtml*(blk: JsonNode, nb: Nb): string =
   result = withNewlines:
     fmt"""
@@ -120,47 +118,6 @@ func footerToHtml*(blk: JsonNode, nb: Nb): string =
     nb.renderPartial("source_section", blk)
     nb.renderPartial("show_source_script", blk)
 
-
-#[ # TODO: Make these old partials into procs with inputs so they can be reused!
-const document* = """
-<!DOCTYPE html>
-<html lang="en-us">
-{{> head }}
-<body>
-{{> header }}
-{{> left }}
-{{> main }}
-{{> right }}
-{{> footer }}
-</body>
-</html>"""
-
-const head* = """
-<head>
-  <title>{{title}}{{^title}}nimib document{{/title}}</title>
-  {{{favicon}}}
-  <meta content="text/html; charset=utf-8" http-equiv="content-type">
-  <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib {{version}}" name="generator">
-  {{{stylesheet}}}
-  {{{highlight}}}
-  {{^disableHighlightJs}}
-    {{{highlightJs}}}
-  {{/disableHighlightJs}}
-  {{{nb_style}}}
-  {{{latex}}}
-  {{> head_other }}
-</head>
-"""
-
-const main* = """
-<main>
-{{#blocks}}
-{{&.}}
-{{/blocks}}
-</main>
-""" ]#
-
 # https://css-tricks.com/emojis-as-favicons/ changed font-size to 80 to fit whale
 const faviconWhale* = """<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">"""
 const waterLight* = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">"""
@@ -207,57 +164,11 @@ figcaption {
   
 </style>"""
 
-#[ const header* = """
-<header>
-<div class="nb-box">
-  <span>{{> header_left }}</span>
-  <span>{{> header_center }}</span>
-  <span>{{> header_right }}</span>
-</div>
-<hr>
-</header>"""
-const homeLink* = """<a href="{{path_to_root}}">🏡</a>"""
-const githubLink* = """<a href="{{github_remote_url}}">{{{github_logo}}}</a>"""
-
-const footer* = """
-<footer>
-<div class="nb-box">
-  <span>{{> footer_left }}</span>
-  <span>{{> footer_center }}</span>
-  <span>{{> footer_right }}</span>
-</div>
-</footer>
-{{> source_section }}
-{{> show_source_script }}"""
-const madeWithNimib* = """<span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span>"""
-const showSourceButton* = """<button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button>"""
-const sourceSection* = """<section id="source">
-<pre><code class="nohighlight nim hljs">{{{source_highlighted}}}</code></pre>
-</section>"""
-const showSourceScript* = """<script>
-function toggleSourceDisplay() {
-  var btn = document.getElementById("show")
-  var source = document.getElementById("source");
-  if (btn.innerHTML=="Show Source") {
-    btn.innerHTML = "Hide Source";
-    source.style.display = "block";
-  } else {
-    btn.innerHTML = "Show Source";
-    source.style.display = "none";
-  }
-}
-</script>"""
-
-proc optOut*(content, keyword: string): string =
-  "{{^" & keyword & "}}" & content & "{{/" & keyword & "}}" ]#
-
 proc useDefault*(nb: var Nb) =
   nb.doc.context["path_to_root"] = %(nb.doc.srcDirRel).string
   nb.doc.context["path_to_here"] = %(nb.doc.thisFileRel).string
   nb.doc.context["source"] = %nb.doc.source
 
-  #doc.partials["document"] = document
-  #doc.partials["main"] = main
   nb.backend.partials["left"] = leftToHtml
   nb.backend.partials["right"] = rightToHtml
   # head

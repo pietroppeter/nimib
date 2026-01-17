@@ -24,7 +24,6 @@ proc add*(nb: var Nb, blk: NbBlock) =
     nb.containers[^1].blocks.add blk
 
 template withContainer*(nb: var Nb, container: NbContainer, body: untyped) =
-  # nb.add container # should this be here?
   nb.containers.add container
   body
   discard nb.containers.pop

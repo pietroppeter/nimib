@@ -1,5 +1,5 @@
-import mustache, std / tables, nimib / paths, std / parseopt
-export mustache, tables, paths
+import std / tables, nimib / paths, std / parseopt
+export tables, paths
 import std / [os, json, strutils]
 
 type
@@ -33,16 +33,12 @@ type
     id*: int
     nbJsCounter*: int
   Nb* = object
-    # TODO: which fields should be moved from NbDoc to Nb?
-    # As little as possible?
     # NbDoc should contain all info relevant to rendering the page and
     # Nb should just contain stuff needed for producing the NbDoc (like id and nbJsCounter)
     blk*: NbBlock # last block processed
     doc*: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
     containers*: seq[NbContainer] # current container
     backend*: NbRender # current backend
-
-#proc `$`*(blk: NbBlock): string  = $blk[]
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =

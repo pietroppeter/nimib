@@ -7,10 +7,6 @@ template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
 
 # block templates
-#[ template nbCode*(body: untyped) =
-  newNbCodeBlock("nbCode", body):
-    captureStdout(nb.blk.output):
-      body ]#
 
 newNbBlock(NbCode of NbContainer):
   code: string
@@ -58,10 +54,6 @@ template codeSkip*(nb: Nb, body: untyped) =
 template nbCodeSkip*(body: untyped) =
   nb.codeSkip(body)
 
-#[ template nbCodeSkip*(body: untyped) =
-  newNbCodeBlock("nbCodeSkip", body):
-    discard ]#
-
 template capture*(nb: Nb, body: untyped) =
   let blk = newNbCode()
   nb.withContainer(blk):
@@ -71,11 +63,6 @@ template capture*(nb: Nb, body: untyped) =
 
 template nbCapture*(body: untyped) =
   nb.capture(body)
-
-#[ template nbCapture*(body: untyped) =
-  newNbCodeBlock("nbCapture", body):
-    captureStdout(nb.blk.output):
-      body ]#
 
 template codeInBlock*(nb: Nb, body: untyped) =
   block:
@@ -89,15 +76,6 @@ template nbCodeInBlock*(body: untyped): untyped =
 template nimibCode*(body: untyped) =
   nbCode:
     body
-
-#[ template nimibCode*(body: untyped) =
-  newNbCodeBlock("nimibCode", body):
-    discard
-  body ]#
-
-#[ template nbText*(text: string) =
-  newNbSlimBlock("nbText"):
-    nb.blk.output = text ]#
 
 newNbBlock(NbText):
   text: string
@@ -115,10 +93,6 @@ func text*(nb: var Nb, text: string) =
 
 template nbText*(ttext: string) =
   nb.text(ttext)
-
-#[ template nbTextWithCode*(body: untyped) =
-  newNbCodeBlock("nbText", body):
-    nb.blk.output = body ]#
 
 newNbBlock(NbTextWithCode of NbText):
   code: string
@@ -176,17 +150,6 @@ func image*(nb: var Nb, turl: string, tcaption = "", talt = "") =
 
 template nbImage*(url: string, caption = "", alt = "") =
   nb.image(url, caption, alt)
-
-#[ template nbImage*(url: string, caption = "", alt = "") =
-  newNbSlimBlock("nbImage"):
-    nb.blk.context["url"] = nb.relToRoot(url) 
-    nb.blk.context["alt_text"] = 
-      if alt == "":
-        caption
-      else:
-        alt
-        
-    nb.blk.context["caption"] = caption ]#
 
 newNbBlock(NbFile):
   filename: string
@@ -283,28 +246,6 @@ template nbFile*(name: string, body: untyped) =
 template nbFile*(name: string) =
   nb.file(name)
 
-#[ template nbFile*(name: string, content: string) =
-  ## Generic string file
-  newNbSlimBlock("nbFile"):
-    name.writeFile content
-    nb.blk.context["filename"] = name
-    nb.blk.context["ext"] = name.getExt
-    nb.blk.context["content"] = content
-
-template nbFile*(name: string, body: untyped) =
-  newNbCodeBlock("nbFile", body):
-    name.writeFile nb.blk.code
-    nb.blk.context["filename"] = name
-    nb.blk.context["ext"] = name.getExt
-    nb.blk.context["content"] = nb.blk.code
-
-template nbFile*(name: string) =
-  ## Read content from a file instead of writing to it
-  newNbSlimBlock("nbFile"):
-    nb.blk.context["filename"] = name
-    nb.blk.context["ext"] = name.getExt
-    nb.blk.context["content"] = readFile(name) ]#
-
 when moduleAvailable(nimpy):
   newNbBlock(NbPython of NbCode):
     toHtml:
@@ -326,12 +267,6 @@ when moduleAvailable(nimpy):
     
     template nbPython(pythonStr: string) =
       nb.python(pythonStr)
-
-    #[ template nbPython(pythonStr: string) =
-      newNbSlimBlock("nbPython"):
-        nb.blk.code = pythonStr
-        captureStdout(nb.blk.output):
-          discard nbPythonBuiltins.exec(pythonStr) ]#
 
 newNbBlock(NbRawHtml):
   html: string
@@ -370,39 +305,12 @@ template nbDiv*(body: untyped) =
   nbDiv("", ""):
     body
 
-#[ template nbShow*(obj: untyped) =
-  nbRawHtml(obj.toHtml())
-
-template nbRawOutput*(content: string) {.deprecated: "Use nbRawHtml instead".} = 
-  nbRawHtml(content)
-
-template nbRawHtml*(content: string) =
-  newNbSlimBlock("nbRawHtml"):
-    nb.blk.output = content ]#
-
 func nbJsFromStringInit*(body: string): NbBlock =
   newNbJsFromCode(code=body, transformedCode=body, putAtTop=false)
-
-#[ template nbJsFromStringInit*(body: string): NbBlock =
-  var result = NbBlock(command: "nbJsFromCode", code: body, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = body
-  result.context["putAtTop"] = false
-  result ]#
 
 func addStringToJs*(script: NbJsFromCode or NbJsFromCodeOwnFile, body: string) =
   script.code &= "\n" & body
   script.transformedCode &= "\n" & body
-
-#[ template addStringToJs*(script: NbBlock, body: string) =
-  script.code &= "\n" & body
-  script.context["transformedCode"] = script.context["transformedCode"].vString & "\n" & body ]#
-
-#[ func addToDocAsJs*(nb: var Nb, script: NbBlock) =
-  nb.add script
-
-template addToDocAsJs*(script: NbBlock) =
-  nb.blocks.add script
-  nb.blk = script ]#
 
 func jsFromString*(nb: var Nb, body: string) =
   let script = nbJsFromStringInit(body)
@@ -443,37 +351,6 @@ template jsFromCodeOwnFile*(nb: var Nb, args: varargs[untyped]) =
 template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
   nb.jsFromCodeOwnFile(args)
 
-#[ template nbJsFromCode*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = code
-  result.context["putAtTop"] = false
-  result.addToDocAsJs
-
-template nbJsFromCodeInBlock*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(putCodeInBlock=true, args)
-  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = code
-  result.context["putAtTop"] = false
-  result.addToDocAsJs
-
-template nbJsFromCodeGlobal*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbJsFromCode", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = code
-  result.context["putAtTop"] = true
-  result.addToDocAsJs
-
-template nbJsFromCodeOwnFile*(args: varargs[untyped]) =
-  let (code, originalCode) = nimToJsString(putCodeInBlock=false, args)
-  var result = NbBlock(command: "nbJsFromCodeOwnFile", code: originalCode, context: newContext(searchDirs = @[], partials = nb.partials), output: "")
-  result.context["transformedCode"] = code
-  result.addToDocAsJs
-
-template nbCodeToJs*(args: varargs[untyped]) {.deprecated: "Use nbJsFromCode or nbJsFromString instead".} =
-  nbJsFromCode(args) ]#
-
-
 when moduleAvailable(karax/kbase):
   template karaxCode*(nb: var Nb, args: varargs[untyped]) =
     let rootId = "karax-" & $nb.doc.newId()
@@ -491,14 +368,6 @@ when moduleAvailable(happyx):
 
   template nbHappyxCode*(args: varargs[untyped]) =
     nb.happyxCode(args)
-
-#[ template nbJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
-  nb.blk.context["js_show_nim_source"] = true
-  if message.len > 0:
-    nb.blk.context["js_show_nim_source_message"] = message
-
-template nbCodeToJsShowSource*(message: string = "") {.deprecated: "Use nbCodeDisplay instead".} =
-  nbJsShowSource(message) ]#
 
 template codeDisplay*(nb: var Nb, tmplCall: untyped, body: untyped) =
   tmplCall:

@@ -34,23 +34,5 @@ func blocksFlattened*(doc: NbContainer): seq[NbBlock] =
     if blk of NbContainer:
       result.add blk.NbContainer.blocksFlattened()
 
-# do we need this anymore? How do we implement something similar now? I'm thinking mainly of the logging
-# insert it into the newBlockName procs?
-template newNbBlockOld*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, blockImpl: untyped) =
-  nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
-  when readCode:
-    nbBlock.code = nbNormalize:
-      when defined(nimibCodeFromAst):
-        toStr(body)
-      else:
-        getCodeAsInSource(nbDoc.source, cmd, body)
-  log "$1 $2: $3" % [$nbDoc.blocks.len, cmd, peekFirstLineOf(nbBlock.code)]
-  blockImpl
-  if nimibLog and len(nbBlock.output) > 0:
-    echo "     -> ", peekFirstLineOf(nbBlock.output)
-  nbBlock.context["code"] = nbBlock.code
-  nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
-  nbDoc.blocks.add nbBlock
-
 when defined(nimibPreviewCodeAsInSource):
   {.warning: "-d:nimibPreviewCodeAsInSource is now default (since 0.3), old default is available with -d:nimibCodeFromAst".}

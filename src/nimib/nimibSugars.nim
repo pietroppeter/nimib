@@ -145,25 +145,45 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
     hookAssignements
   )
 
-macro withNewlines*(body: untyped) : string =
+macro withNewlines*(body: untyped): string =
   body.expectKind nnkStmtList
-  result = "".newLit
-  if body.len > 0:
-    for i, line in body:
-      # TODO: handle for loops
-      # if it's an if-statement, check if it has an else-clause. Otherwise add one which returns ""
-      if line.kind == nnkIfStmt and line.findChild(it.kind == nnkElse).isNil:
-        line.add nnkElse.newTree("".newLit)
-      
-      # Only add a newline if the line contains anything and isn't the last line
-      # Also if it already ends with a newline we don't have to add one
-      result = genAst(result=result, line=line, isLast=newLit(i==body.len-1)):
-        let lineVal = line
-        if not isLast and lineVal.len > 0 and lineVal[^1] != '\n':
-          result & lineVal & "\n"
-        else:
-          result & lineVal
 
+  let res = genSym(nskVar, "res")
+  var stmts = newStmtList()
+  stmts.add newVarStmt(res, "".newLit)
+
+  proc processStmtList(targetStmts: var NimNode, stmtList: NimNode, res: NimNode) =
+    for line in stmtList:
+      case line.kind
+      of nnkForStmt:
+        # Rebuild the for loop with a transformed body that appends to res
+        var forStmt = line.copy()
+        let forBody = forStmt[^1]
+        var newBody = newStmtList()
+        if forBody.kind == nnkStmtList:
+          processStmtList(newBody, forBody, res)
+        else:
+          processStmtList(newBody, newStmtList(forBody), res)
+        forStmt[^1] = newBody
+        discard targetStmts.add forStmt
+      else:
+        # If it's an if-statement without else, add an else returning ""
+        if line.kind == nnkIfStmt and line.findChild(it.kind == nnkElse).isNil:
+          line.add nnkElse.newTree("".newLit)
+        # Append the line value to res, inserting a "\n" separator when needed
+        let code = genAst(res=res, line=line):
+          block:
+            let lineVal = line
+            if lineVal.len > 0:
+              if res.len > 0 and res[^1] != '\n':
+                res &= "\n"
+              res &= lineVal
+        discard targetStmts.add code
+
+  processStmtList(stmts, body, res)
+
+  stmts.add res
+  result = stmts
 
   
 

@@ -50,6 +50,17 @@ func nbTextPartial*(blk: JsonNode, nb: Nb): string =
 
 nbToHtml.partials["nbText"] = nbTextPartial
 
+func preCodeTag*(lang: string, code: string): string =
+  &"""<pre><code class="{lang} hljs">{code}</code></pre>"""
+
+func nbFilePartial(blk: JsonNode, nb: Nb): string =
+  let filename = blk{"filename"}.getStr
+  withNewlines:
+      &"<pre>{filename}</pre>"
+      preCodeTag(lang=blk{"ext"}.getStr, code=blk{"content"}.getStr)
+
+nbToHtml.partials["nbFile"] = nbFilePartial
+
 
 proc useHtmlBackend*(nb: var Nb) =
   nb.backend = nbToHtml

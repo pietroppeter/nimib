@@ -1,7 +1,7 @@
 import std / [strformat, os, strutils, json]
 import std / jsonutils except toJson
 
-import ./types, ./blocks, ./capture, ./nimibSugars, ./globals, ./jsons, ./paths, ./docs, ./jsutils
+import ./types, ./blocks, ./capture, ./nimibSugars, ./globals, ./jsons, ./paths, ./docs, ./jsutils, ./renders
 
 template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
@@ -156,11 +156,7 @@ newNbBlock(NbFile):
   ext: string
   content: string
   toHtml:
-    &"""
-<pre>{blk.filename}</pre>
-<pre><code class="{blk.ext} hljs">{blk.content}</code></pre>
-"""
-# Make pre-code with hljs-extensions into a partial! Or a function that calls a partial even? (that constructs the JsNode for us)
+    nb.renderPartial("nbFile", jsonutils.toJson(blk))
 
 proc file*(nb: var Nb, tname: string, tcontent: string) =
   ## Generic string file

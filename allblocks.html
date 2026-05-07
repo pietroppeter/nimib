@@ -2,15 +2,11 @@
 <html lang="en-us">
 <head>
   <title>allblocks.nim</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib 0.3.13" name="generator">
+  <meta content="nimib 0.4.0" name="generator">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-
   <style>
 .nb-box {
   display: flex;
@@ -44,17 +40,20 @@ figcaption {
   
 </style>
   
-  <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
+    
+<script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </head>
 <body>
 <header>
 <div class="nb-box">
-  <span><a href=".">🏡</a></span>
-  <span><code>allblocks.nim</code></span>
-  <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+ <span><a href=".">🏡</a></span>
+ <span><code>allblocks.nim</code></span>
+ <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
 </div>
 <hr>
-</header><main>
+</header>
+<main>
 <blockquote>
 <p>This nimib document provides a brief description and example for
 all blocks in nimib.</p>
@@ -82,7 +81,7 @@ all blocks in nimib.</p>
 <p><code>nbText</code> is a block that displays text. It is the one you will use the most.
 You can use markdown syntax to format your text.
 The markdown syntax is explained in the <a href="./cheatsheet.html">Markdown Cheatsheet</a>.</p>
-<pre><code class="nohighlight hljs nim">nbText: <span class="hljs-string">&quot;&quot;&quot;
+<pre><code class="nohighlight nim hljs">nbText: <span class="hljs-string">&quot;&quot;&quot;
   #### Markdown Example
   My **text** is *formatted* with the 
   [Markdown](./cheatsheet.html) syntax.
@@ -95,9 +94,11 @@ The markdown syntax is explained in the <a href="./cheatsheet.html">Markdown Che
 <hr />
 <p>You can insert your Nim code in your text using the <code>nbCode</code> block.
 It displays your code with highlighting, compiles it, runs it and captures any output that is <code>echo</code>ed.</p>
-<pre><code class="nohighlight hljs nim">nbCode:
+<pre><code class="nohighlight nim hljs">nbCode:
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span></code></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span></code></pre><pre class="nb-output">Hello World!</pre>
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Hello World!&quot;</span></code></pre>
+<pre class="nb-output">Hello World!
+</pre>
 <p><a name = "nbcodeskip"></a></p>
 <h3>nbCodeSkip</h3>
 <hr />
@@ -108,23 +109,23 @@ It is useful to show erroneous code or code that takes too long to run.</p>
 <p>⚠️ <code>nbCodeSkip</code> does not guarantee that the code you show will compile nor run.</p>
 </blockquote>
 <p>Examples:</p>
-<pre><code class="nohighlight hljs nim">nbCodeSkip:
+<pre><code class="nohighlight nim hljs">nbCodeSkip:
   <span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
     <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span>
 
 nbCodeSkip:
   exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>:
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Notice how there is no output?&quot;</span>
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;The code is not compiled or executed so no output is generated!&quot;</span></code></pre>
-<pre><code class="nohighlight hljs nim">exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
+<pre><code class="nohighlight nim hljs">exit() <span class="hljs-comment"># even this won't execute!</span></code></pre>
 <p><a name = "nbcodeinblock"></a></p>
 <h3>nbCodeInBlock</h3>
 <hr />
 <p>Sometimes, you want to show similar code snippets with the same variable names and you need to declare twice the same variables.
 You can do so with <code>nbCodeInBlock</code> which nests your snippet inside a block.</p>
-<pre><code class="nohighlight hljs nim">nbCode:
+<pre><code class="nohighlight nim hljs">nbCode:
   <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span>
 nbCodeInBlock:
   <span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
@@ -135,18 +136,23 @@ nbCodeInBlock:
 <span class="hljs-keyword">when</span> <span class="hljs-literal">false</span>:
   <span class="hljs-keyword">echo</span> y <span class="hljs-comment"># This would fail as defined in another scope</span>
   <span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># This would fail in nbCode, since it is a redefinition</span></code></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span></code></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
-<span class="hljs-keyword">echo</span> x, <span class="hljs-string">' '</span>, y <span class="hljs-comment"># The x variable comes from above</span></code></pre><pre class="nb-output">true 2</pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> y = <span class="hljs-number">3</span> <span class="hljs-comment"># We have to redefine the variable y in this new CodeInBlock</span>
-<span class="hljs-keyword">echo</span> y</code></pre><pre class="nb-output">3</pre>
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">var</span> x = <span class="hljs-literal">true</span> <span class="hljs-comment"># x is shared between all code blocks</span></code></pre>
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span> <span class="hljs-comment"># y is local to this block</span>
+<span class="hljs-keyword">echo</span> x, <span class="hljs-string">' '</span>, y <span class="hljs-comment"># The x variable comes from above</span></code></pre>
+<pre class="nb-output">true 2
+</pre>
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">var</span> y = <span class="hljs-number">3</span> <span class="hljs-comment"># We have to redefine the variable y in this new CodeInBlock</span>
+<span class="hljs-keyword">echo</span> y</code></pre>
+<pre class="nb-output">3
+</pre>
 <p><a name = "nbcapture"></a></p>
 <h3>nbCapture</h3>
 <hr />
 <p><code>nbCapture</code> is a block that only shows the captured output of a code block.</p>
-<pre><code class="nohighlight hljs nim">nbCapture:
+<pre><code class="nohighlight nim hljs">nbCapture:
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Captured!&quot;</span></code></pre>
-<pre class="nb-output">Captured!</pre>
+<pre class="nb-output">Captured!
+</pre>
 <p><a name = "nbtextwithcode"></a></p>
 <h3>nbTextWithCode</h3>
 <hr />
@@ -157,10 +163,10 @@ nbCodeInBlock:
 <hr />
 <p><code>nbImage</code> enables to display your favorite pictures.</p>
 <p>Most formats (.jpg, .png) are accepted. The caption is optional!</p>
-<pre><code class="nohighlight hljs nim">nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)</code></pre>
+<pre><code class="nohighlight nim hljs">nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)</code></pre>
 <figure>
-<img src="./images/todd-cravens-nimib-unsplash.jpg" alt="Blue Whale (photograph by Todd Cravens)">
-<figcaption>Blue Whale (photograph by Todd Cravens)</figcaption>
+  <img src="./images/todd-cravens-nimib-unsplash.jpg" alt="Blue Whale (photograph by Todd Cravens)">
+  <figcaption>Blue Whale (photograph by Todd Cravens)</figcaption>
 </figure>
 <p><a name = "nbvideo"></a></p>
 <h3>nbVideo</h3>
@@ -170,42 +176,46 @@ video autoplays, loops, and/or is muted.</p>
 <p>Pictured below is Bad Apple!! If you aren't sure what it is, or are curious about its
 origins, here's <a href="https://www.youtube.com/watch?v=6QY4ekac1_Q">an explainer</a>.</p>
 <p>The <code>typ</code> parameter specifies the video's MIME type, and is optional!</p>
-<pre><code class="nohighlight hljs nim">nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, typ=<span class="hljs-string">&quot;video/mp4&quot;</span>)</code></pre>
-<video controls   >
-  <source src="./media/bad_apple!!.mp4" type="video/mp4">
-Your browser does not support the video element.
-</video>
+<pre><code class="nohighlight nim hljs">nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, filetype=<span class="hljs-string">&quot;video/mp4&quot;</span>)</code></pre>
+<video controls
+>
+<source src="./media/bad_apple!!.mp4" 
+type="video/mp4" 
+>
+Your browser does not support the video element.</video>
 <p><a name = "nbaudio"></a></p>
 <h3>nbAudio</h3>
 <hr />
 <p><code>nbAudio</code> enables you to play audio in nimib. You may choose if the audio autoplays,
 loops, and/or is muted.</p>
 <p>The <code>typ</code> parameter is similar to <code>nbVideo</code>'s.</p>
-<pre><code class="nohighlight hljs nim">nbAudio(url=<span class="hljs-string">&quot;media/bad_apple!!.webm&quot;</span>, loop=<span class="hljs-literal">true</span>)</code></pre>
-<audio controls loop  >
-  <source src="./media/bad_apple!!.webm" type="audio/webm">
-Your browser does not support the audio element.
-</audio>
+<pre><code class="nohighlight nim hljs">nbAudio(url=<span class="hljs-string">&quot;media/bad_apple!!.webm&quot;</span>, loop=<span class="hljs-literal">true</span>)</code></pre>
+<audio controls
+loop
+>
+<source src="./media/bad_apple!!.webm" 
+type="audio/webm" 
+>
+Your browser does not support the video element.</audio>
 <p><a name = "nbfile"></a></p>
 <h3>nbFile</h3>
 <hr />
 <p><code>nbFile</code> can save the contents of block into a file or display the contents of a file.</p>
 <p>To save to a file it takes two arguments: the name of the file and the content of the file.
 The content can be a string or a code block.</p>
-<pre><code class="nohighlight hljs nim">nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
+<pre><code class="nohighlight nim hljs">nbFile(<span class="hljs-string">&quot;exampleCode.nim&quot;</span>):
   <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;This code will be saved in the exampleCode.nim file.&quot;</span></code></pre>
 <pre>exampleCode.nim</pre>
-<pre><code class="nim hljs">echo &quot;This code will be saved in the exampleCode.nim file.&quot;</code></pre>
-
+<pre><code class=" nim hljs">echo "This code will be saved in the exampleCode.nim file."</code></pre>
 <p>To display a file, it takes one argument: the file's path.</p>
-<pre><code class="nohighlight hljs nim">nbFile(<span class="hljs-string">&quot;../LICENSE&quot;</span>)</code></pre>
+<pre><code class="nohighlight nim hljs">nbFile(<span class="hljs-string">&quot;../LICENSE&quot;</span>)</code></pre>
 <pre>../LICENSE</pre>
-<pre><code class=" hljs">MIT License
+<pre><code class="  hljs">MIT License
 
 Copyright (c) 2020 pietroppeter
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &quot;Software&quot;), to deal
+of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -214,7 +224,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -222,20 +232,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 </code></pre>
-
 <p><a name = "nbrawhtml"></a></p>
 <h3>nbRawHtml</h3>
 <hr />
 <p>Certain things are not doable with pure Markdown. You can use raw HTML directly with the <code>nbRawHtml</code> block.</p>
 <p>For example, you have to use HTML style attribute and inject CSS styling in a HTML tag to center your titles (that is a Markdown limitation).</p>
 <p>Here is the source code and the centered title:</p>
-<pre><code class="nohighlight hljs nim">nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span></code></pre>
+<pre><code class="nohighlight nim hljs">nbRawHtml: <span class="hljs-string">&quot;&quot;&quot;&lt;h4 style=&quot;text-align: center&quot;&gt;Centered title&lt;/h4&gt;&quot;&quot;&quot;</span></code></pre>
 <h4 style="text-align: center">Centered title</h4>
 <p><a name = "nbshow"></a></p>
 <h3>nbShow</h3>
 <hr />
 <p>Nimib allows to pretty-print objects by rendering them to HTML. If the object has an associated <code>toHtml()</code> procedure, it can be rendered with <code>nbShow</code>.</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> datamancer
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> datamancer
 <span class="hljs-keyword">let</span> s1: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">int</span>] = @[<span class="hljs-number">22</span>, <span class="hljs-number">54</span>, <span class="hljs-number">34</span>]
 <span class="hljs-keyword">let</span> s2: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">float</span>] = @[<span class="hljs-number">1.87</span>, <span class="hljs-number">1.75</span>, <span class="hljs-number">1.78</span>]
 <span class="hljs-keyword">let</span> s3: <span class="hljs-built_in">seq</span>[<span class="hljs-built_in">string</span>] = @[<span class="hljs-string">&quot;Mike&quot;</span>, <span class="hljs-string">&quot;Laura&quot;</span>, <span class="hljs-string">&quot;Sue&quot;</span>]
@@ -259,13 +268,13 @@ nbShow(df)</code></pre>
 <hr />
 <p>Clears the output of the preceding code block if you do not want to show it. This block is useful if you produce too long output or you do not want to show it.
 It comes in handy when you want to plot with <code>ggplotnim</code> without the additional output that the library produces.</p>
-<pre><code class="nohighlight hljs nim">nbCode:
+<pre><code class="nohighlight nim hljs">nbCode:
   <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
   <span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">1000</span>:
     <span class="hljs-keyword">echo</span> i
     inc i
 nbClearOutput</code></pre>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>
 <span class="hljs-keyword">while</span> i &lt; <span class="hljs-number">1000</span>:
   <span class="hljs-keyword">echo</span> i
   inc i</code></pre>
@@ -280,9 +289,9 @@ It displays the code of a nimib document (even nbCode blocks), compiles and runs
 </main>
 <footer>
 <div class="nb-box">
-  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
-  <span></span>
-  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+ <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+ <span></span>
+ <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
 </div>
 </footer>
 <section id="source">
@@ -292,17 +301,17 @@ It displays the code of a nimib document (even nbCode blocks), compiles and runs
 
 nbInit
 
-<span class="hljs-keyword">var</span> nbToc: <span class="hljs-type">NbBlock</span>
+<span class="hljs-keyword">var</span> nbToc: <span class="hljs-type">NbText</span>
 
 <span class="hljs-keyword">template</span> addToc =
-  newNbBlock(<span class="hljs-string">&quot;nbText&quot;</span>, <span class="hljs-literal">false</span>, nb, nbToc, <span class="hljs-string">&quot;&quot;</span>):
-    nbToc.output = <span class="hljs-string">&quot;## Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+  nbToc = newNbText(text=<span class="hljs-string">&quot;## Table of Contents:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>)
+  nb.add nbToc
 
-<span class="hljs-keyword">template</span> nbCodeBlock(name:<span class="hljs-built_in">string</span>) =
+<span class="hljs-keyword">template</span> nbCodeBlock(name: <span class="hljs-built_in">string</span>) =
   <span class="hljs-keyword">let</span> anchorName = name.toLower.replace(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>)
   nbText <span class="hljs-string">&quot;&lt;a name = </span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">### &quot;</span> &amp; name &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">---&quot;</span>
   <span class="hljs-comment"># see below, but any number works for a numbered list</span>
-  nbToc.output.add <span class="hljs-string">&quot;1. &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+  nbToc.text.add <span class="hljs-string">&quot;1. &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
 
 nbText: <span class="hljs-string">&quot;&quot;&quot;
 &gt; This nimib document provides a brief description and example for 
@@ -408,7 +417,7 @@ The `typ` parameter specifies the video's MIME type, and is optional!
 &quot;&quot;&quot;</span>
 
 nimibCode:
-  nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, typ=<span class="hljs-string">&quot;video/mp4&quot;</span>)
+  nbVideo(url=<span class="hljs-string">&quot;media/bad_apple!!.mp4&quot;</span>, filetype=<span class="hljs-string">&quot;video/mp4&quot;</span>)
 
 nbCodeBlock: <span class="hljs-string">&quot;nbAudio&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;
@@ -495,17 +504,20 @@ Happy coding!
 
 nbSave
 </code></pre>
-</section><script>
-function toggleSourceDisplay() {
-  var btn = document.getElementById("show")
-  var source = document.getElementById("source");
-  if (btn.innerHTML=="Show Source") {
-    btn.innerHTML = "Hide Source";
-    source.style.display = "block";
-  } else {
-    btn.innerHTML = "Show Source";
-    source.style.display = "none";
+</section>
+  
+<script>
+  function toggleSourceDisplay() {
+    var btn = document.getElementById("show")
+    var source = document.getElementById("source");
+    if (btn.innerHTML=="Show Source") {
+      btn.innerHTML = "Hide Source";
+      source.style.display = "block";
+    } else {
+      btn.innerHTML = "Show Source";
+      source.style.display = "none";
+    }
   }
-}
-</script></body>
-</html>
+</script>
+  
+</body>

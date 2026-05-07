@@ -2,15 +2,11 @@
 <html lang="en-us">
 <head>
   <title>Nimib Docs</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib 0.3.13" name="generator">
+  <meta content="nimib 0.4.0" name="generator">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
-    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-
   <style>
 .nb-box {
   display: flex;
@@ -44,17 +40,20 @@ figcaption {
   
 </style>
   
-  <script async defer data-domain="pietroppeter.github.io/nimib" src="https://plausible.io/js/plausible.js"></script>
+    
+<script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </head>
 <body>
 <header>
 <div class="nb-box">
-  <span><a href=".">🏡</a></span>
-  <span><code>index.nim</code></span>
-  <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
+ <span><a href=".">🏡</a></span>
+ <span><code>Nimib Docs</code></span>
+ <span><a href="https://github.com/pietroppeter/nimib"><svg aria-hidden="true" width="1.2em" height="1.2em" style="vertical-align: middle;" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" fill="#000"></path></svg></a></span>
 </div>
 <hr>
-</header><main>
+</header>
+<main>
 <h1>nimib 🐳 - nim 👑 driven ⛵ publishing ✍</h1>
 <p>Nimib provides an API to convert your Nim code and its outputs to html documents.</p>
 <p>The type of html output that is obtained by default is similar to html notebooks produced by tools
@@ -98,7 +97,7 @@ provides syntax highlighting of embedded languages in nimib documents (eg. markd
 <h2>👋 🌍 Example Usage</h2>
 <p>First have a look at the following html document: <a href="./hello.html">hello.html</a></p>
 <p>This was produced with <code>nim r docsrc/hello</code>, where <a href="https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim">docsrc/hello.nim</a> is:</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> strformat, strutils
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> strformat, strutils
 <span class="hljs-keyword">import</span> nimib
 
 nbInit
@@ -253,17 +252,21 @@ As <code>homeDir</code>, it can be set as absolute or relative (to config).</li>
 that allow to override the above value, skip the config file or other options.</p>
 <p>All the options available can be seen by running any nimib file with option <code>nbHelp</code>
 (execution will stop after <code>nbInit</code>).</p>
-<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">import</span> osproc
-withDir nb.srcDir:
-  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)</code></pre><pre class="nb-output">Nimib options:
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> osproc
+withDir nb.doc.srcDir:
+  <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)</code></pre>
+<pre class="nb-output">Nimib options:
 
   --nbHelp,     --nimibHelp                 print this help
   --nbSkipCfg,  --nimibSkipCfg              skip nimib config file
-  --nbCfgName,  --nimibCfgName              change name of config file (default &quot;nimib.toml&quot;)
+  --nbCfgName,  --nimibCfgName              change name of config file (default "nimib.toml")
   --nbSrcDir,   --nimibSrcDir               set srcDir as relative (to CfgDir) or absolute; overrides config 
   --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
   --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
-  --nbShow,     --nimibShow                 open in browser at the end of nbSave</pre>
+  --nbShow,     --nimibShow                 open in browser at the end of nbSave
+
+
+</pre>
 <p>The value of options are available in <code>nb.options</code> field which also
 tracks further options in <code>nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]</code>.</p>
 <h3>define flags</h3>
@@ -376,9 +379,9 @@ and they tell me <a href="https://www.goodreads.com/quotes/558084-imitation-is-t
 </main>
 <footer>
 <div class="nb-box">
-  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
-  <span></span>
-  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+ <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+ <span></span>
+ <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
 </div>
 </footer>
 <section id="source">
@@ -396,7 +399,7 @@ nb.title = <span class="hljs-string">&quot;Nimib Docs&quot;</span>
 <span class="hljs-keyword">let</span>
   repo = <span class="hljs-string">&quot;https://github.com/pietroppeter/nimib&quot;</span>
   docs = <span class="hljs-keyword">if</span> <span class="hljs-keyword">defined</span>(mdOutput): <span class="hljs-string">&quot;https://pietroppeter.github.io/nimib&quot;</span> <span class="hljs-keyword">else</span>: <span class="hljs-string">&quot;.&quot;</span>
-  hello = read(nb.srcDir / <span class="hljs-string">&quot;hello.nim&quot;</span>.<span class="hljs-type">RelativeFile</span>)
+  hello = read(nb.doc.srcDir / <span class="hljs-string">&quot;hello.nim&quot;</span>.<span class="hljs-type">RelativeFile</span>)
 
 nbText: <span class="hljs-string">hlMdF&quot;&quot;&quot;
 # nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
@@ -449,13 +452,13 @@ provides syntax highlighting of embedded languages in nimib documents (eg. markd
 
 First have a look at the following html document: [hello.html]({docs}/hello.html)
 
-This was produced with `nim r {nb.cfg.srcDir}/hello`, where [{nb.cfg.srcDir}/hello.nim]({repo}/blob/main/{nb.cfg.srcDir}/hello.nim) is:
+This was produced with `nim r {nb.doc.cfg.srcDir}/hello`, where [{nb.doc.cfg.srcDir}/hello.nim]({repo}/blob/main/{nb.doc.cfg.srcDir}/hello.nim) is:
 &quot;&quot;&quot;</span>.emojize
 
 
 <span class="hljs-keyword">when</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">defined</span>(mdOutput):
   nbCode: <span class="hljs-keyword">discard</span>
-  nb.blk.code = hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
+  nb.blk.<span class="hljs-type">NbCode</span>.code = hello  <span class="hljs-comment"># &quot;\n&quot; should not be needed here (fix required in rendering)</span>
 <span class="hljs-keyword">else</span>:
   nbText &amp;<span class="hljs-string">&quot;&quot;&quot;
 ```nim
@@ -508,7 +511,7 @@ The following are the main elements of a default nimib document:
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
 * a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
 * a footer with a &quot;made with nimib&quot; line and a `Show source` button that shows the full source to create the document.
-* (optional) possibility to create a markdown version of the same document (see this document for an example: [{nb.cfg.srcDir}/index.nim]({repo}/blob/main/{nb.cfg.srcDir}/index.nim))
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [{nb.doc.cfg.srcDir}/index.nim]({repo}/blob/main/{nb.doc.cfg.srcDir}/index.nim))
 
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).
@@ -594,7 +597,7 @@ All the options available can be seen by running any nimib file with option `nbH
 
 nbCode:
   <span class="hljs-keyword">import</span> osproc
-  withDir nb.srcDir:
+  withDir nb.doc.srcDir:
     <span class="hljs-keyword">echo</span> execProcess(<span class="hljs-string">&quot;nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp&quot;</span>)
 
 <span class="hljs-keyword">let</span> renderProcType = <span class="hljs-string">&quot;type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}&quot;</span>
@@ -722,22 +725,25 @@ and they tell me [imitation is the sincerest form of flattery](https://www.goodr
 &quot;&quot;&quot;</span>.emojize
 
 <span class="hljs-keyword">when</span> <span class="hljs-keyword">defined</span>(mdOutput):
-  nb.filename = <span class="hljs-string">&quot;../README.md&quot;</span>
+  nb.doc.filename = <span class="hljs-string">&quot;../README.md&quot;</span>
   nbSave
 <span class="hljs-keyword">else</span>:
   nbSave
 </code></pre>
-</section><script>
-function toggleSourceDisplay() {
-  var btn = document.getElementById("show")
-  var source = document.getElementById("source");
-  if (btn.innerHTML=="Show Source") {
-    btn.innerHTML = "Hide Source";
-    source.style.display = "block";
-  } else {
-    btn.innerHTML = "Show Source";
-    source.style.display = "none";
+</section>
+  
+<script>
+  function toggleSourceDisplay() {
+    var btn = document.getElementById("show")
+    var source = document.getElementById("source");
+    if (btn.innerHTML=="Show Source") {
+      btn.innerHTML = "Hide Source";
+      source.style.display = "block";
+    } else {
+      btn.innerHTML = "Show Source";
+      source.style.display = "none";
+    }
   }
-}
-</script></body>
-</html>
+</script>
+  
+</body>

@@ -22,10 +22,14 @@ func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
 addNbBlockToJson(NbDoc)
 nbToHtml.funcs["NbDoc"] = nbDocToHtml
 
+func preCodeTag*(lang: string, code: string, highlight: bool = true): string =
+  let highlightString = if not highlight: "nohighlight" else: ""
+  &"""<pre><code class="{highlightString} {lang} hljs">{code}</code></pre>"""
+
 func nbCodeSourcePartial*(blk: JsonNode, nb: Nb): string =
   let code = blk{"code"}.getStr
   if code.len > 0:
-    &"<pre><code class=\"nohighlight hljs nim\">{code.highlightNim}</code></pre>"
+    preCodeTag(lang="nim", code=code.highlightNim, highlight=false)
   else:
     ""
 
@@ -49,9 +53,6 @@ func nbTextPartial*(blk: JsonNode, nb: Nb): string =
   markdownToHtml(text)
 
 nbToHtml.partials["nbText"] = nbTextPartial
-
-func preCodeTag*(lang: string, code: string): string =
-  &"""<pre><code class="{lang} hljs">{code}</code></pre>"""
 
 func nbFilePartial(blk: JsonNode, nb: Nb): string =
   let filename = blk{"filename"}.getStr

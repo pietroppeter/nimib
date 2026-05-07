@@ -47,6 +47,9 @@ The VS Codium / Code extension
 [nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost) ([Open VSX](https://open-vsx.org/extension/hugogranstrom/nimiboost))
 provides syntax highlighting of embedded languages in nimib documents (eg. markdown, python, html) and a preview window of nimib documents inside the editor.
 
+👷‍♀️ Nimib ecosystem is being (veeery slooooowly) migrated to [NimibLand](https://github.com/nimib-land) org. 🏗️ 🐢
+
+
 ## 👋 🌍 Example Usage
 
 First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)

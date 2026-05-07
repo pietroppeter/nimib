@@ -10,16 +10,16 @@ jobs:
     strategy:
       matrix:
         nim:
-          - '1.6.x'
           - 'stable'
           - 'devel'
       fail-fast: false
     name: Nim ${{ matrix.nim }}
     steps:
       - uses: actions/checkout@v3
-      - uses: jiro4989/setup-nim-action@v1.4.3
+      - uses: jiro4989/setup-nim-action@v2.2.2
         with:
           nim-version: ${{ matrix.nim }}
+      - run: sudo apt install libpcre3 libpcre3-dev
       - run: nimble -y install
       - run: nimble docsdeps
       - run: nimble test

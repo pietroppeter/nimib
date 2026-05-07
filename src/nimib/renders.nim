@@ -1,142 +1,78 @@
-import std / [strutils, tables, sugar, os, strformat, sequtils]
-import ./types, ./jsutils, ./logging, markdown, mustache
+import std / [strutils, tables, sugar, os, strformat, sequtils, json]
+import ./types, markdown, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons, ./logging
 
 import highlight
-import mustachepkg/values
+from std/jsonutils import nil
 
-proc mdOutputToHtml(doc: var NbDoc, blk: var NbBlock) =
-  blk.context["outputToHtml"] = markdown(blk.output, config=initGfmConfig()).dup(removeSuffix)
+func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
+  let doc = blk.NbDoc
+  let docJson = %[] # it's unused
+  result = withNewlines:
+    "<!DOCTYPE html>"
+    """<html lang="en-us">"""
+    nb.renderPartial("head", docJson)
+    "<body>"
+    nb.renderPartial("header", docJson)
+    nb.renderPartial("left", docJson)
+    mainToHtml(doc, nb)
+    nb.renderPartial("right", docJson)
+    nb.renderPartial("footer", docJson)
+    "</body>"
 
-proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
-  blk.context["codeHighlighted"] = highlightNim(blk.code)
+addNbBlockToJson(NbDoc)
+nbToHtml.funcs["NbDoc"] = nbDocToHtml
 
+func preCodeTag*(lang: string, code: string, highlight: bool = true): string =
+  let highlightString = if not highlight: "nohighlight" else: ""
+  &"""<pre><code class="{highlightString} {lang} hljs">{code}</code></pre>"""
 
-proc useHtmlBackend*(doc: var NbDoc) =
-  doc.partials["nbText"] = "{{&outputToHtml}}"
-  doc.partials["nbCode"] = """
-{{>nbCodeSource}}
-{{>nbCodeOutput}}"""
-  doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
-  doc.partials["nbCapture"] = """{{>nbCodeOutput}}"""
-  doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
-  doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
-  doc.partials["nimibCode"] = doc.partials["nbCode"]
-  doc.partials["nbImage"] = """<figure>
-<img src="{{url}}" alt="{{alt_text}}">
-<figcaption>{{caption}}</figcaption>
-</figure>"""
-  doc.partials["nbVideo"] = """<video controls {{loop}} {{autoplay}} {{muted}}>
-  <source src="{{url}}" {{#type}}type="{{type}}"{{/type}}>
-Your browser does not support the video element.
-</video>"""
-  doc.partials["nbAudio"] = """<audio controls {{loop}} {{autoplay}} {{muted}}>
-  <source src="{{url}}" {{#type}}type="{{type}}"{{/type}}>
-Your browser does not support the audio element.
-</audio>"""
-  doc.partials["nbRawHtml"] = "{{&output}}"
-  doc.partials["nbPython"] = """
-<pre><code class="python hljs">{{&code}}</code></pre>
-{{#output}}<pre><samp>{{&output}}</samp></pre>{{/output}}
-"""
-  doc.partials["nbFile"] = """
-<pre>{{filename}}</pre>
-<pre><code class="{{ext}} hljs">{{content}}</code></pre>
-"""
-
-  doc.partials["nbJsFromCode"] = "{{>nbJsScriptNimSource}}" # the script is handled by collector block
-  doc.partials["nbJsFromCodeOwnFile"] = """
-{{>nbJsScriptNimSource}}
-{{>nbJsScript}}"""
-  doc.partials["nbJsScriptNimSource"] = "{{#js_show_nim_source}}{{#js_show_nim_source_message}}<p>{{js_show_nim_source_message}}</p>{{/js_show_nim_source_message}}{{>nbCodeSource}}{{/js_show_nim_source}}"
-  doc.partials["nbJsScript"] = "<script defer>{{&output}}</script>"
-
-  # I prefer to initialize here instead of in nimib (each backend should re-initialize)
-  doc.renderPlans = initTable[string, seq[string]]()
-  doc.renderPlans["nbText"] = @["mdOutputToHtml"]
-  doc.renderPlans["nbCode"] = @["highlightCode"] # default partial automatically escapes output (code is escaped when highlighting)
-  doc.renderPlans["nbCodeSkip"] = @["highlightCode"]
-  doc.renderPlans["nbJsFromCodeOwnFile"] = @["compileNimToJs", "highlightCode"]
-  doc.renderPlans["nbJsFromCode"] = @["highlightCode"]
-  doc.renderPlans["nimibCode"] = doc.renderPlans["nbCode"]
-
-  doc.renderProcs = initTable[string, NbRenderProc]()
-  doc.renderProcs["mdOutputToHtml"] = mdOutputToHtml
-  doc.renderProcs["highlightCode"] = highlightCode
-  doc.renderProcs["compileNimToJs"] = compileNimToJs
-
-proc useMdBackend*(doc: var NbDoc) =
-  doc.partials["document"] = """
-{{#blocks}}
-
-{{&.}}
-
-{{/blocks}}"""
-  doc.partials["nbText"] = "{{&output}}"
-  doc.partials["nbCode"] = """
-{{>nbCodeSource}}
-{{>nbCodeOutput}}"""
-  doc.partials["nbCodeSkip"] = """{{>nbCodeSource}}"""
-  doc.partials["nbCapture"] = """{{>nbCodeOutput}}"""
-  doc.partials["nbCodeSource"] = """
-
-```nim
-{{&code}}
-```
-
-"""
-  doc.partials["nbCodeOutput"] = """{{#output}}
-
-```
-{{&output}}
-```
-
-{{/output}}
-"""
-  doc.partials["nimibCode"] = doc.partials["nbCode"]
-  doc.partials["nbImage"] = """
-![{{&alt_text}}]({{&url}})
-
-{{#caption}}
-**Figure:** {{&caption}}
-{{/caption}}
-"""
-  doc.partials["nbPython"] = """
-```python
-{{&code}}
-```
-{{#output}}
-```
-{{&output}}
-```
-{{/output}}
-"""
-
-  # no need for special treatment
-  doc.renderPlans = initTable[string, seq[string]]()
-  doc.renderProcs = initTable[string, NbRenderProc]()
-
-template debugRender(message: string) =
-  when defined(nimibDebugRender):
-    log "debugRender", message
-
-proc render*(nb: var NbDoc, blk: var NbBlock): string =
-  debugRender "rendering block " & blk.command
-  if blk.command not_in nb.partials:
-    warning "no partial found for block " & blk.command
-    return
+func nbCodeSourcePartial*(blk: JsonNode, nb: Nb): string =
+  let code = blk{"code"}.getStr
+  if code.len > 0:
+    preCodeTag(lang="nim", code=code.highlightNim, highlight=false)
   else:
-    if blk.command in nb.renderPlans:
-      debugRender "renderPlan " & $nb.renderPlans[blk.command]
-      for step in nb.renderPlans[blk.command]:
-        if step in nb.renderProcs:
-          nb.renderProcs[step](nb, blk)
-    blk.context.searchTable(nb.partials)
-    debugRender "partial " & nb.partials[blk.command]
-    result = nb.partials[blk.command].render(blk.context)
+    ""
 
-proc render*(nb: var NbDoc): string =
-  var blocks: seq[string]
-  for blk in nb.blocks.mitems:
-    blocks.add nb.render(blk)
-  nb.context["blocks"] = blocks
-  return "{{> document}}".render(nb.context)
+nbToHtml.partials["nbCodeSource"] = nbCodeSourcePartial
+
+func nbCodeOutputPartial*(blk: JsonNode, nb: Nb): string =
+  let output = blk{"output"}.getStr
+  if output.len > 0:
+    &"<pre class=\"nb-output\">{output}</pre>"
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeOutputPartial
+
+func markdownToHtml*(markdownText: string): string =
+  {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
+    markdown(markdownText, config=initGfmConfig())
+
+func nbTextPartial*(blk: JsonNode, nb: Nb): string =
+  let text = blk{"text"}.getStr
+  markdownToHtml(text)
+
+nbToHtml.partials["nbText"] = nbTextPartial
+
+func nbFilePartial(blk: JsonNode, nb: Nb): string =
+  let filename = blk{"filename"}.getStr
+  withNewlines:
+      &"<pre>{filename}</pre>"
+      preCodeTag(lang=blk{"ext"}.getStr, code=blk{"content"}.getStr)
+
+nbToHtml.partials["nbFile"] = nbFilePartial
+
+
+proc useHtmlBackend*(nb: var Nb) =
+  nb.backend = nbToHtml
+
+func nbDocToMd*(blk: NbBlock, nb: Nb): string =
+  let doc = blk.NbDoc
+  let docJson = %[] # it's unused
+  result = withNewlines:
+    nbContainerToMd(doc, nb)
+
+nbToMd.funcs["NbDoc"] = nbDocToMd
+
+proc useMdBackend*(nb: var Nb) =
+  nb.backend = nbToMd

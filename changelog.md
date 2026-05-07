@@ -13,9 +13,13 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v 0.4.0
+
+todo after release
+
 ## v0.3.12
 
-## What's Changed
+### What's Changed
 * Update changelog.md with 3.11 release notes and bump 3.12 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/239
 * Make Nimib logging to stdout optional (`-d:nimibQuiet`) by @neroist in https://github.com/pietroppeter/nimib/pull/242
 * Add nbVideo & nbAudio (revive #153) by @neroist in https://github.com/pietroppeter/nimib/pull/244
@@ -25,18 +29,18 @@ Notes for maintainers:
 
 ## v0.3.11
 
-## What's Changed
+### What's Changed
 * Update changelog.md and bumping to 3.11 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/231
 * paths.nim: Fix import for FreeBSD by @lbartoletti in https://github.com/pietroppeter/nimib/pull/238
 
-## New Contributors
+### New Contributors
 * @lbartoletti made their first contribution in https://github.com/pietroppeter/nimib/pull/238
 
 **Full Changelog**: https://github.com/pietroppeter/nimib/compare/v0.3.10...v0.3.11
 
 ## v0.3.10
 
-## What's Changed
+### What's Changed
 * bump 0.3.10 and update changelog with 0.3.9 release notes by @pietroppeter in https://github.com/pietroppeter/nimib/pull/199
 * Enlarge figure and center figure captions by @dlesnoff in https://github.com/pietroppeter/nimib/pull/201
 * Refactor tests and remove hints to better visualize success/failure by @dlesnoff in https://github.com/pietroppeter/nimib/pull/202
@@ -49,7 +53,7 @@ Notes for maintainers:
 * Add nbFile overload for file embedding by @PhilippMDoerner in https://github.com/pietroppeter/nimib/pull/219
 * fix issue#229: skip nimble INFO logs when dumping json by @lost22git in https://github.com/pietroppeter/nimib/pull/230
 
-## New Contributors :heart: 
+### New Contributors :heart: 
 * @sent44 made their first contribution in https://github.com/pietroppeter/nimib/pull/211
 * @quimt made their first contribution in https://github.com/pietroppeter/nimib/pull/212
 * @PhilippMDoerner made their first contribution in https://github.com/pietroppeter/nimib/pull/219

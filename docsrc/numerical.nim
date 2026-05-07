@@ -1,16 +1,16 @@
 #remember to run also with -d:numericalDefaultStyle
-import nimib, strformat, strutils
+import nimib, strformat, strutils, json
 nbInit
 nb.useLatex
 let
-  filename_default_style = nb.filename.replace(".html", "_default_style.html")
-  default_style = nb.context["stylesheet"]
+  filename_default_style = nb.doc.filename.replace(".html", "_default_style.html")
+  default_style = nb.doc.context["stylesheet"]
 
-nb.context["stylesheet"] = """<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
+nb.doc.context["stylesheet"] = %"""<link rel="stylesheet" href="https://latex.now.sh/style.css">"""
 
 proc introText(defaultStyle = false): string =
   let otherStyle = if defaultStyle:
-    fmt"; _you are looking at default style, for custom style [click here]({(nb.filename.AbsoluteFile).relPath})_"
+    fmt"; _you are looking at default style, for custom style [click here]({(nb.doc.filename.AbsoluteFile).relPath})_"
   else:
     fmt"; _for default style [click here]({(filename_default_style.AbsoluteFile).relPath})_"
 
@@ -26,7 +26,7 @@ proc introText(defaultStyle = false): string =
 
 nbText: introText()
 # save to change later
-var blockIntroText = nb.blk
+var blockIntroText = nb.blk.NbText
 
 nbText: fmt"""# Using NumericalNim
 
@@ -128,17 +128,17 @@ $h=0.01$ | {pe y3hn[^1]} | {pe y3rk[^1]}
 
 and here is the code for this Markdown block:
 """ # right alignment of numbers does not seem to work. is this an issue of latex.css?
-let mdCode = nb.blk.code
+let mdCode = nb.blk.NbTextWithCode.code
 nbCode:
   discard
-nb.blk.code = mdCode
+nb.blk.NbCode.code = mdCode
 # add a show Markdown source. It would be nice when hovering a code block to show (on the side? how to do it on mobile?) the call code (nbText: or other)
 
 # first save with latex style
 nbSave
 
 # then save with default style
-blockIntroText.output = introText(default_style=true)
-nb.filename = filename_default_style
-nb.context["stylesheet"] = default_style 
+blockIntroText.text = introText(default_style=true)
+nb.doc.filename = filename_default_style
+nb.doc.context["stylesheet"] = default_style 
 nbSave

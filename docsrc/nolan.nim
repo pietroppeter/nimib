@@ -1,5 +1,5 @@
 import nimib
-import strutils, sequtils, strformat
+import strutils, sequtils, strformat, json
 
 nbInit
 nbText: """
@@ -11,7 +11,7 @@ nbText: """
 >
 > It reorders a **Limerick** according to Nolan's [Memento film structure](https://en.wikipedia.org/wiki/Memento_(film)#Film_structure).
 """
-let filename_variant = nb.filename.replace(".html", "_no_source.html")
+let filename_variant = nb.doc.filename.replace(".html", "_no_source.html")
 let iChange = nb.blocks.len
 nbText:fmt"""
 > Click on `Show Source` at the bottom to see the nim file that generates this document.
@@ -48,11 +48,11 @@ nbSave
 # save another document without source to test the opt-out of Show Source feature
 nbText: "---\n> This is how we can remove the `Show Source` functionality"
 nbCode:
-  nb.context["no_source"] = true
+  nb.doc.context["no_source"] = %true
 # we will generate this last block to change a previous block and then remove it
 nbText:fmt"""
-> To see the variant with Show Source [click here]({(nb.filename.AbsoluteFile).relPath})
+> To see the variant with Show Source [click here]({(nb.doc.filename.AbsoluteFile).relPath})
 """
-nb.blocks[iChange] = nbDoc.blocks.pop
-nb.filename = filename_variant
+nb.blocks[iChange] = nb.blocks.pop
+nb.doc.filename = filename_variant
 nbSave

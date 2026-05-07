@@ -1,5 +1,5 @@
 ## Markdown cheatsheet with nimib 
-import nimib, std/strutils
+import nimib, std/[strutils, strformat, json]
 
 nbInit
 nbText: """
@@ -15,34 +15,36 @@ nbText: """
 """
 
 # customize source highlighting:
-nb.context["highlight"] = """
+nb.doc.context["highlight"] = %"""
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>"""
 
-# a custom text block that shows markdown source
-template nbTextWithSource*(body: untyped) =
-  newNbBlock("nbTextWithSource", false, nb, nb.blk, body):
-    nb.blk.output = body
-  nb.blk.context["code"] = body
 
-nb.renderPlans["nbTextWithSource"] = @["mdOutputToHtml"]
-nb.partials["nbTextWithSource"] = """{{&outputToHtml}}
-<pre><code class=\"language-markdown\">{{code}}</code></pre>"""
+# a custom text block that shows markdown source
+newNbBlock(NbTextWithSource of NbText):
+  toHtml:
+    result = withNewlines:
+      nbTextToHtml(blk, nb)
+      &"""<pre><code class="language-markdown">{blk.text}</code></pre>"""
+
+template nbTextWithSource*(body: string) =
+  let blk = newNbTextWithSource(text=body)
+  nb.add blk
 
 # how to add a ToC
 var
-  nbToc: NbBlock
+  nbToc: NbText
 
 template addToc =
-  newNbBlock("nbText", false, nb, nbToc, ""):
-    nbToc.output = "# Table of Contents:\n\n"
+  nbToc = newNbText(text="# Table of Contents:\n\n")
+  nb.add nbToc
 
 template nbSection(name:string) =
   let anchorName = name.toLower.replace(" ", "-")
   nbText "<a name = \"" & anchorName & "\"></a>\n# " & name & "\n\n---"
   # see below, but any number works for a numbered list
-  nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n" 
+  nbToc.text.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n" 
 
 # here is the start of the document
 nbText """
@@ -100,7 +102,7 @@ nbTextWithSource """1. First ordered list item
 * Unordered list can use asterisks
 - Or minuses
 + Or pluses"""
-nb.blk.output = nb.blk.output.replace(dot, " ")
+nb.blk.NbTextWithSource.text = nb.blk.NbTextWithSource.text.replace(dot, " ")
 
 nbText """
 > in ordered to have the ordered sublist work correctly

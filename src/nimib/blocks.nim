@@ -16,21 +16,23 @@ func nbNormalize*(text: string): string =
   text.replace("\c\l", "\n").replace("\c", "\n").strip # this could be made more efficient
 # note that: '\c' == '\r' and '\l' == '\n'
 
-template newNbBlock*(cmd: string, readCode: static[bool], nbDoc, nbBlock, body, blockImpl: untyped) =
-  nbBlock = NbBlock(command: cmd, context: newContext(searchDirs = @[], partials = nbDoc.partials))
-  when readCode:
-    nbBlock.code = nbNormalize:
-      when defined(nimibCodeFromAst):
-        toStr(body)
-      else:
-        getCodeAsInSource(nbDoc.source, cmd, body)
-  log "$1 $2: $3" % [$nbDoc.blocks.len, cmd, peekFirstLineOf(nbBlock.code)]
-  blockImpl
-  if nimibLog and len(nbBlock.output) > 0:
-    echo "     -> ", peekFirstLineOf(nbBlock.output)
-  nbBlock.context["code"] = nbBlock.code
-  nbBlock.context["output"] = nbBlock.output.dup(removeSuffix)
-  nbDoc.blocks.add nbBlock
+proc add*(nb: var Nb, blk: NbBlock) =
+  nb.blk = blk
+  if nb.containers.len == 0:
+    nb.doc.blocks.add blk
+  else:
+    nb.containers[^1].blocks.add blk
+
+template withContainer*(nb: var Nb, container: NbContainer, body: untyped) =
+  nb.containers.add container
+  body
+  discard nb.containers.pop
+
+func blocksFlattened*(doc: NbContainer): seq[NbBlock] =
+  for blk in doc.blocks:
+    result.add blk
+    if blk of NbContainer:
+      result.add blk.NbContainer.blocksFlattened()
 
 when defined(nimibPreviewCodeAsInSource):
   {.warning: "-d:nimibPreviewCodeAsInSource is now default (since 0.3), old default is available with -d:nimibCodeFromAst".}

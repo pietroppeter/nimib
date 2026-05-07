@@ -12,7 +12,7 @@ nb.title = "Nimib Docs"
 let
   repo = "https://github.com/pietroppeter/nimib"
   docs = if defined(mdOutput): "https://pietroppeter.github.io/nimib" else: "."
-  hello = read(nb.srcDir / "hello.nim".RelativeFile)
+  hello = read(nb.doc.srcDir / "hello.nim".RelativeFile)
 
 nbText: hlMdF"""
 # nimib :whale: - nim :crown: driven :sailboat: publishing :writingHand:
@@ -65,13 +65,13 @@ provides syntax highlighting of embedded languages in nimib documents (eg. markd
 
 First have a look at the following html document: [hello.html]({docs}/hello.html)
 
-This was produced with `nim r {nb.cfg.srcDir}/hello`, where [{nb.cfg.srcDir}/hello.nim]({repo}/blob/main/{nb.cfg.srcDir}/hello.nim) is:
+This was produced with `nim r {nb.doc.cfg.srcDir}/hello`, where [{nb.doc.cfg.srcDir}/hello.nim]({repo}/blob/main/{nb.doc.cfg.srcDir}/hello.nim) is:
 """.emojize
 
 
 when not defined(mdOutput):
   nbCode: discard
-  nb.blk.code = hello  # "\n" should not be needed here (fix required in rendering)
+  nb.blk.NbCode.code = hello  # "\n" should not be needed here (fix required in rendering)
 else:
   nbText &"""
 ```nim
@@ -124,7 +124,7 @@ The following are the main elements of a default nimib document:
 * (optional) latex rendering through [katex](https://katex.org/) (see below)
 * a header with navigation to a home page, a minimal title and an automatic detection of github repo (with link)
 * a footer with a "made with nimib" line and a `Show source` button that shows the full source to create the document.
-* (optional) possibility to create a markdown version of the same document (see this document for an example: [{nb.cfg.srcDir}/index.nim]({repo}/blob/main/{nb.cfg.srcDir}/index.nim))
+* (optional) possibility to create a markdown version of the same document (see this document for an example: [{nb.doc.cfg.srcDir}/index.nim]({repo}/blob/main/{nb.doc.cfg.srcDir}/index.nim))
 
 Customization over the default is mostly achieved through nim-mustache or changing
 `NbDoc` and `NbBlock` elements (see below api).
@@ -210,7 +210,7 @@ All the options available can be seen by running any nimib file with option `nbH
 
 nbCode:
   import osproc
-  withDir nb.srcDir:
+  withDir nb.doc.srcDir:
     echo execProcess("nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp")
 
 let renderProcType = "type NbRenderProc = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}"
@@ -338,7 +338,7 @@ and they tell me [imitation is the sincerest form of flattery](https://www.goodr
 """.emojize
 
 when defined(mdOutput):
-  nb.filename = "../README.md"
+  nb.doc.filename = "../README.md"
   nbSave
 else:
   nbSave

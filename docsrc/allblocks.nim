@@ -4,17 +4,17 @@ import std/[strutils, strformat]
 
 nbInit
 
-var nbToc: NbBlock
+var nbToc: NbText
 
 template addToc =
-  newNbBlock("nbText", false, nb, nbToc, ""):
-    nbToc.output = "## Table of Contents:\n\n"
+  nbToc = newNbText(text="## Table of Contents:\n\n")
+  nb.add nbToc
 
-template nbCodeBlock(name:string) =
+template nbCodeBlock(name: string) =
   let anchorName = name.toLower.replace(" ", "-")
   nbText "<a name = \"" & anchorName & "\"></a>\n### " & name & "\n\n---"
   # see below, but any number works for a numbered list
-  nbToc.output.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n"
+  nbToc.text.add "1. <a href=\"#" & anchorName & "\">" & name & "</a>\n"
 
 nbText: """
 > This nimib document provides a brief description and example for 
@@ -120,7 +120,7 @@ The `typ` parameter specifies the video's MIME type, and is optional!
 """
 
 nimibCode:
-  nbVideo(url="media/bad_apple!!.mp4", typ="video/mp4")
+  nbVideo(url="media/bad_apple!!.mp4", filetype="video/mp4")
 
 nbCodeBlock: "nbAudio"
 nbText: """

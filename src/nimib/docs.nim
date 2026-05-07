@@ -1,4 +1,4 @@
-import std/os
+import std/[os, json]
 import std/uri
 import browsers
 import types, logging, renders
@@ -9,16 +9,16 @@ proc relToRoot*(doc: NbDoc, url: string): string =
   if isAbsolute(url) or isAbsolute(parseUri(url)):
     url
   else:
-    doc.context["path_to_root"].vString / url
+    doc.context{"path_to_root"}.getStr / url
 
-proc write*(doc: var NbDoc) =
+proc write*(nb: Nb) =
   log "current directory: " & getCurrentDir()
-  let dir = doc.filename.splitFile().dir
+  let dir = nb.doc.filename.splitFile().dir
   if not dir.dirExists:
     log "creating directory: " & dir
     createDir(dir)
-  log "saving file: " & doc.filename
-  writeFile(doc.filename, render(doc))
+  log "saving file: ", nb.doc.filename
+  writeFile(nb.doc.filename, nb.render(nb.doc))
 
 proc open*(doc: NbDoc) =
   openDefaultBrowser(doc.filename)

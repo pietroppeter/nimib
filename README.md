@@ -1,4 +1,3 @@
-
 # nimib 🐳 - nim 👑 driven ⛵ publishing ✍
 
 Nimib provides an API to convert your Nim code and its outputs to html documents.
@@ -50,8 +49,6 @@ provides syntax highlighting of embedded languages in nimib documents (eg. markd
 First have a look at the following html document: [hello.html](https://pietroppeter.github.io/nimib/hello.html)
 
 This was produced with `nim r docsrc/hello`, where [docsrc/hello.nim](https://github.com/pietroppeter/nimib/blob/main/docsrc/hello.nim) is:
-
-
 ```nim
 import strformat, strutils
 import nimib
@@ -100,8 +97,6 @@ nbText:
 nbSave
 
 ```
-
-
 ### Other examples of usage
 
 in this repo:
@@ -228,16 +223,11 @@ that allow to override the above value, skip the config file or other options.
 
 All the options available can be seen by running any nimib file with option `nbHelp`
 (execution will stop after `nbInit`).
-
-
-
 ```nim
 import osproc
-withDir nb.srcDir:
+withDir nb.doc.srcDir:
   echo execProcess("nim r --verbosity:0 --hints:off --warnings:off hello --nbHelp")
 ```
-
-
 ```
 Nimib options:
 
@@ -248,12 +238,9 @@ Nimib options:
   --nbHomeDir,  --nimibHomeDir              set homeDir as relative (to CfgDir) or absolute; overrides config 
   --nbFilename, --nimibFilename             overrides name of output file (e.g. somefile --nbFilename:othername.html)
   --nbShow,     --nimibShow                 open in browser at the end of nbSave
+
+
 ```
-
-
-
-
-
 The value of options are available in `nb.options` field which also
 tracks further options in `nb.options.other: seq[tuple[kind: CmdLineKind; name, value: string]]`.
 
@@ -372,4 +359,3 @@ because I made a [package](https://github.com/pietroppeter/nimoji) for that and 
 
 because [someone made it into an art form](https://github.com/oakes/vim_cubed#q--a)
 and they tell me [imitation is the sincerest form of flattery](https://www.goodreads.com/quotes/558084-imitation-is-the-sincerest-form-of-flattery-that-mediocrity-can)
-

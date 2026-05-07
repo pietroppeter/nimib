@@ -1,13 +1,10 @@
-import mustache, std / tables, nimib / paths, std / parseopt
-export mustache, tables, paths
-import std / [os]
+import std / tables, nimib / paths, std / parseopt
+export tables, paths
+import std / [os, json, strutils]
 
 type
-  NbBlock* = ref object
-    command*: string
-    code*: string
-    output*: string
-    context*: Context
+  NbBlock* = ref object of RootObj
+    kind*: string
   NbOptions* = object
     skipCfg*: bool
     cfgName*, srcDir*, homeDir*, filename*: string
@@ -15,8 +12,14 @@ type
     other*: seq[tuple[kind: CmdLineKind; name, value: string]]
   NbConfig* = object
     srcDir*, homeDir*: string
-  NbRenderProc* = proc (doc: var NbDoc, blk: var NbBlock) {. nimcall .}
-  NbDoc* = object
+  NbRenderFunc* = proc (blk: NbBlock, nb: Nb): string {. noSideEffect .}
+  NbPartialFunc* = proc (blk: JsonNode, nb: Nb): string {. noSideEffect .}
+  NbRender* = ref object of RootObj
+    funcs*: Table[string, NbRenderFunc]
+    partials*: Table[string, NbPartialFunc]
+  NbContainer* = ref object of NbBlock
+    blocks*: seq[NbBlock]
+  NbDoc* = ref object of NbContainer
     thisFile*: AbsoluteFile
     filename*: string
     source*: string
@@ -26,15 +29,16 @@ type
     cfg*: NbConfig
     cfgDir*: AbsoluteDir
     rawCfg*: string
-    blk*: NbBlock  ## current block being processed
-    blocks*: seq[NbBlock]
-    context*: Context
-    partials*: Table[string, string]
-    templateDirs*: seq[string]
-    renderPlans*: Table[string, seq[string]]
-    renderProcs*: Table[string, NbRenderProc]
-    id: int
-    nbJsCounter*: int 
+    context*: JsonNode
+    id*: int
+    nbJsCounter*: int
+  Nb* = object
+    # NbDoc should contain all info relevant to rendering the page and
+    # Nb should just contain stuff needed for producing the NbDoc (like id and nbJsCounter)
+    blk*: NbBlock # last block processed
+    doc*: NbDoc # could be a NbBlock but we could give more guarantees with a NbDoc
+    containers*: seq[NbContainer] # current container
+    backend*: NbRender # current backend
 
 proc thisDir*(doc: NbDoc): AbsoluteDir = doc.thisFile.splitFile.dir
 proc srcDir*(doc: NbDoc): AbsoluteDir =
@@ -53,3 +57,29 @@ proc newId*(doc: var NbDoc): int =
   ## Provides a unique integer each time it is called
   result = doc.id
   inc doc.id
+
+proc blocks*(nb: var Nb): var seq[NbBlock] =
+  nb.doc.blocks
+
+func render*(nb: Nb, blk: NbBlock): string =
+  if blk.kind in nb.backend.funcs:
+    nb.backend.funcs[blk.kind](blk, nb)
+  else:
+    ""
+
+func renderPartial*(render: NbRender, name: string, blk: JsonNode, nb: Nb): string =
+  if name in render.partials:
+    render.partials[name](blk, nb)
+  else:
+    ""
+
+func renderPartial*(nb: Nb, name: string, blk: JsonNode): string =
+  nb.backend.renderPartial(name, blk, nb)
+
+func nbContainerToHtml*(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbContainer
+  for b in blk.blocks:
+    result.add nb.render(b).strip & '\n'
+  result.strip
+
+const nbContainerToMd* = nbContainerToHtml

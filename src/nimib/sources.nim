@@ -33,6 +33,7 @@ proc startPos(node: NimNode): Pos =
   else:
     result = toPos(node.lineInfoObj())
     for child in node.children:
+      if child.kind == nnkEmpty: continue
       let childPos = child.startPos()
       # If we can't get the line info for some reason, skip it!
       if childPos.line == 0: continue
@@ -65,7 +66,9 @@ proc finishPos*(node: NimNode): Pos =
         result = toPos(node.lineInfoObj())
 
 proc isCommandLine*(s: string, command: string): bool =
-  nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command))
+  # how do we handle nb.code as well as nbCode?
+  # check for contains instead?
+  nimIdentNormalize(s.strip()).startsWith(nimIdentNormalize(command)) or nimIdentNormalize(command) in nimIdentNormalize(s.strip())
 
 proc isCommentLine*(s: string): bool =
   s.strip.startsWith('#')
@@ -86,7 +89,7 @@ proc findStartLine*(source: seq[string], startPos: Pos): int =
     return startPos.line - 1
 
 
-proc findEndLine*(source: seq[string], command: string, startLine, endPos: int): int =
+proc findEndLine*(source: seq[string], startsOnCommandLine: bool, startLine, endPos: int): int =
   result = endPos
   # Handle if line is an unclosed triple-quote string
   if source[endPos].count("\"\"\"") mod 2 == 1:
@@ -94,10 +97,10 @@ proc findEndLine*(source: seq[string], command: string, startLine, endPos: int):
     while result < source.high and source[result].count("\"\"\"") mod 2 == 0:
       inc result
   # Handle if there are ending comments
-  let startsOnCommandLine = source[startLine].isCommandLine(command)
+  #let startsOnCommandLine = source[startLine].isCommandLine(command)
   if result > startLine or not startsOnCommandLine:
     let baseIndent =
-      if source[startLine].isCommandLine(command):
+      if startsOnCommandLine:
         skipWhile(source[startLine], {' '}) + 1 # we want to add indent here.
         # this is problematic because we don't know the indentation of the code block because
         # we don't know the indentation size used. So we just add 1 and check that it is larger or equal.
@@ -107,19 +110,18 @@ proc findEndLine*(source: seq[string], command: string, startLine, endPos: int):
     while result < source.high and (source[result+1].startsWith(baseIndentStr) or source[result+1].isEmptyOrWhitespace):
       inc result
 
-proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
+proc getCodeBlock*(source: string, startPos, endPos: Pos): string =
   ## Extracts the code in source from startPos to endPos with additional processing to get the entire code block.
   let rawLines = source.splitLines()
   let rawStartLine = startPos.line - 1
   let rawStartCol = startPos.column - 1
   var startLine = findStartLine(rawLines, startPos)
-  var endLine = findEndLine(rawLines, command, startLine, endPos.line - 1)
+  let startsOnCommandLine = block:
+    let preline = rawLines[startLine][0 ..< rawStartCol]
+    startLine == rawStartLine and (not preline.isEmptyOrWhitespace) and (not (preline.nimIdentNormalize.strip() in ["for", "type"]))
+  var endLine = findEndLine(rawLines, startsOnCommandLine, startLine, endPos.line - 1)
 
   var lines = rawLines[startLine .. endLine]
-
-  let startsOnCommandLine = block:
-    let preline = lines[0][0 ..< rawStartCol]
-    startLine == rawStartLine and (not preline.isEmptyOrWhitespace) and (not (preline.nimIdentNormalize.strip() in ["for", "type"]))
     
   if startsOnCommandLine:
     lines[0] = lines[0][rawStartCol .. ^1].strip()
@@ -143,7 +145,7 @@ proc getCodeBlock*(source, command: string, startPos, endPos: Pos): string =
         preserveIndent = not preserveIndent
     result = lines.join("\n")
 
-macro getCodeAsInSource*(source: string, command: static string, body: untyped): string =
+macro getCodeAsInSource*(source: string, body: untyped): string =
   ## Returns string for the code in body from source. 
   # substitute for `toStr` in blocks.nim
   let startPos = startPos(body)
@@ -155,12 +157,15 @@ macro getCodeAsInSource*(source: string, command: static string, body: untyped):
   let startPosLit = startPos.newLit
 
   result = quote do:
-    if `filename` notin nb.sourceFiles:
-      nb.sourceFiles[`filename`] = readFile(`filename`)
+    if `filename` notin nb.doc.sourceFiles:
+      nb.doc.sourceFiles[`filename`] = readFile(`filename`)
 
     doAssert `endFilename` == `filename`, """
     Code from two different files were found in the same nbCode!
     If you want to mix code from different files in nbCode, use -d:nimibCodeFromAst instead. 
     If you are not mixing code from different files, please open an issue on nimib's Github with a minimal reproducible example."""
 
-    getCodeBlock(nb.sourceFiles[`filename`], `command`, `startPosLit`, `endPosLit`)
+    getCodeBlock(nb.doc.sourceFiles[`filename`], `startPosLit`, `endPosLit`)
+
+template getCode*(body: untyped): string =
+  getCodeAsInSource(nb.doc.source, body).strip

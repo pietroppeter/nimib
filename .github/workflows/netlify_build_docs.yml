@@ -8,10 +8,12 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
+      - name: apt install
+        run: sudo apt install -y libpcre3 libblas-dev liblapack-dev
       - uses: actions/checkout@v2
       - name: install nim
         id: install_nim
-        uses: iffy/install-nim@v3
+        uses: iffy/install-nim@v5
       - name: install library dependencies
         run: nimble install -y
       - name: install doc dependencies

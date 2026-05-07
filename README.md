@@ -37,9 +37,11 @@ you should be reading one of the two, for the other:
 Nimib was presented at [NimConf2022](https://nim-lang.org/nimconf2022/), see the [slides](https://github.com/pietroppeter/nimconf22-nimib/) and click thumbnail to see video.
 [![nimib nimconf2022 thumbnail](https://github.com/pietroppeter/nimib/raw/d4399747aa4c4435d27e0038046ad0311a92f21d/assets/nimib-nimconf-thumbnail.png)](https://www.youtube.com/watch?v=hZ7wX1kgnuc)
 
-Nimib was also presented in [NimConf2021](https://conf.nim-lang.org),
+Nimib was also presented in [NimConf2021](https://conf.nim-lang.org/2021/),
 see [video](https://www.youtube.com/watch?v=sWA58Wtk6L8)
-and [slides](https://github.com/pietroppeter/nimconf2021).
+and [slides](https://github.com/pietroppeter/nimconf2021);
+and at [NimConf2024](https://conf.nim-lang.org/2024/), see [video](https://www.youtube.com/watch?v=yUb6Vjl2ovw&list=PLxLdEZg8DRwSkT93RIO-CoY-MxHOjYzs2&index=9)
+and [slides](https://github.com/nimib-land/nimconf24).
 
 The VS Codium / Code extension
 [nimiboost](https://marketplace.visualstudio.com/items?itemName=hugogranstrom.nimiboost) ([Open VSX](https://open-vsx.org/extension/hugogranstrom/nimiboost))

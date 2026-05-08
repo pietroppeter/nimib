@@ -20,15 +20,15 @@ Nimib v0.4.0 brings with it a complete rewrite of the blocks and rendering backe
 - Instead of a single `NbBlock` type with a mustache context to store all values, we use proper objects using inheritance with real fields
   - In the cases where we still need a general context type we instead use `JsonNode` which is more ergonomic
 
-Some new things this has allowed us to add is:
-- JSON backend: serialize and deserialize your nimib document to JSON
-  - This will allow caching of documents so unneccary recompilations can be avoided. 
-  - This could be useful in a static site generator built with Nimib
+
+We have added a JSON backend that can serialize and deserialize your nimib document to JSON.
+- This will allow caching of documents so unneccary recompilations can be avoided. 
+- This could be useful in for example a static site generator built with Nimib
 
 The consequences of this large refactoring for our users are:
 - If you are just using Nimib's' builtin blocks (`nbText`, `nbCode`, etc) it *should* just work. 
 - If you have defined your own blocks, they will have to be rewritten (see examples below).
-- NimiSlides and Nimibook will shortly be ported over to Nimib v0.4. Until then they should be used with Nimib v0.3.
+- NimiSlides and Nimibook will be ported over to Nimib v0.4. Until then they should be used with Nimib v0.3.
 
 ### Changes in how to define blocks
 #### `nbImage` - simple block
@@ -39,13 +39,8 @@ This is how we define the `nbImage` block in the previous version:
 template nbImage*(url: string, caption = "", alt = "") =
   newNbSlimBlock("nbImage"):
     nb.blk.context["url"] = nb.relToRoot(url) 
-    nb.blk.context["alt_text"] = 
-      if alt == "":
-        caption
-      else:
-        alt
-        
     nb.blk.context["caption"] = caption
+    nb.blk.context["alt_text"] = if alt == "": caption else: alt
 
 doc.partials["nbImage"] = """<figure>
 <img src="{{url}}" alt="{{alt_text}}">
@@ -84,8 +79,8 @@ newNbBlock(NbImage):
 template image*(url: string, caption = "", alt = "") =
   let blk = newNbImage()
   blk.url = nb.doc.relToRoot(url)
-  blk.alt = if alt.len == 0: caption else: alt
   blk.caption = caption
+  blk.alt = if alt.len == 0: caption else: alt
   nb.add blk
 ```
 - Here we use the `newNbBlock` macro to define the fields of the `NbImage` block type. We also define how we want to render it usig those fields using the injected `blk` variable in `toHtml`. 

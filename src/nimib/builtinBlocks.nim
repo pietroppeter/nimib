@@ -137,15 +137,11 @@ func nbImageToMd*(blk: NbBlock, nb: Nb): string =
 
 nbToMd.funcs["NbImage"] = nbImageToMd
 
-func image*(nb: var Nb, turl: string, tcaption = "", talt = "") =
+func image*(nb: var Nb, url: string, caption = "", alt = "") =
   let blk = newNbImage()
-  blk.url = 
-    if isAbsolute(turl) or turl.startsWith("http"):
-      turl
-    else:
-      nb.doc.context{"path_to_root"}.getStr / turl
-  blk.alt = if talt.len == 0: tcaption else: talt
-  blk.caption = tcaption
+  blk.url = nb.doc.relToRoot(url)
+  blk.alt = if alt.len == 0: caption else: alt
+  blk.caption = caption
   nb.add blk
 
 template nbImage*(url: string, caption = "", alt = "") =
@@ -158,23 +154,23 @@ newNbBlock(NbFile):
   toHtml:
     nb.renderPartial("nbFile", jsonutils.toJson(blk))
 
-proc file*(nb: var Nb, tname: string, tcontent: string) =
+proc file*(nb: var Nb, name: string, content: string) =
   ## Generic string file
-  tname.writeFile tcontent
-  let blk = newNbFile(filename=tname, ext=tname.getExt, content=tcontent)
+  name.writeFile content
+  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
   nb.add blk
 
-template file*(nb: Nb, tname: string, body: untyped) =
+template file*(nb: Nb, name: string, body: untyped) =
   ## Read code and write it to file
   let content = getCode(body)
-  tname.writeFile content
-  let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
+  name.writeFile content
+  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
   nb.add blk
 
-proc file*(nb: var Nb, tname: string) =
+proc file*(nb: var Nb, name: string) =
   ## Read content from a file instead of writing to it
-  let content = readFile(tname)
-  let blk = newNbFile(filename=tname, ext=tname.getExt, content=content)
+  let content = readFile(name)
+  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
   nb.add blk
 
 newNbBlock(NbVideo):

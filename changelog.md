@@ -13,9 +13,103 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
-## v 0.4.0
+## v0.4.0
+### Changes in how to define blocks
+#### `nbImage` - simple block
+##### Previous behavior (nimib <= 0.3)
+This is how we define the `nbImage` block in the previous version:
 
-todo after release
+```nim
+template nbImage*(url: string, caption = "", alt = "") =
+  newNbSlimBlock("nbImage"):
+    nb.blk.context["url"] = nb.relToRoot(url) 
+    nb.blk.context["alt_text"] = 
+      if alt == "":
+        caption
+      else:
+        alt
+        
+    nb.blk.context["caption"] = caption
+
+doc.partials["nbImage"] = """<figure>
+<img src="{{url}}" alt="{{alt_text}}">
+<figcaption>{{caption}}</figcaption>
+</figure>"""
+```
+It consists of two parts:
+- The block template that uses `newNbSlimBlock` to create the block and then it assigns the values to the block's context
+- Defining a mustache partial that uses the values from the context
+
+The drawbacks of this approach are:
+- Clunky context type: If you only assign values to the context once it is fine, but if you need to modify a value it quickly gets quite ugly.
+- The template and the partial are often (in the case of core nimib types at least) defined in two different places in the codebase. This makes working with the harder as you have to jump back and forth between files.
+
+##### New behaviour (nimib >= 0.4)
+New:
+- uses newNbBlock macro sugar
+- Uses normal string interpolation
+    - Uses objects and JsonNodes for context instead
+
+This is how the block can be defined now:
+
+```nim
+newNbBlock(NbImage):
+  url: string
+  caption: string
+  alt: string
+  toHtml:
+    &"""
+<figure>
+  <img src="{blk.url}" alt="{blk.alt}">
+  <figcaption>{blk.caption}</figcaption>
+</figure>
+"""
+
+template image*(url: string, caption = "", alt = "") =
+  let blk = newNbImage()
+  blk.url = nb.doc.relToRoot(url)
+  blk.alt = if alt.len == 0: caption else: alt
+  blk.caption = caption
+  nb.add blk
+```
+- Here we use the `newNbBlock` macro to define the fields of the `NbImage` block type. We also define how we want to render it usig those fields using the injected `blk` variable in `toHtml`. 
+  - Note that the `NbImage` is an actual Nim-type with actual fields now compared to previously when there was just a single `NbBlock` type with all values in a Table-like context.
+  - We use normal string interpolation instead of mustache's own syntax
+- The template simply assigns the inputs to the fields of the `NbImage` object 
+
+
+Under the hood this is what `newNbBlock` does:
+```nim
+# Defines the type as a subclass of NbBlock
+type NbImage* = ref object of NbBlock
+    url: string
+    caption: string
+    alt: string
+
+# Creates an initializer with default values
+proc newNbImage*(url: string = "", caption: string = "", alt: string = "") =
+    NbImage(url: url, caption: caption, alt: alt)
+
+# Creates a render function
+proc nbImageToHtml*(blk: NbBlock, nb: Nb): string =
+    let blk = NbImage(blk)
+    &"""
+<figure>
+  <img src="{blk.url}" alt="{blk.alt}">
+  <figcaption>{blk.caption}</figcaption>
+</figure>
+"""
+
+# Adds the render function to the nbToHtml renderer
+nbToHtml.funcs["NbImage"] = nbImageToHtml
+# Registers the block type in the JSON backend
+addNbBlockToJson(NbImage)
+```
+
+#### `nbCode` - more complex block
+
+### JSON backend
+TODO
 
 ## v0.3.12
 

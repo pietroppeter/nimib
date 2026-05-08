@@ -14,6 +14,22 @@ Notes for maintainers:
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
 ## v0.4.0
+
+Nimib v0.4.0 brings with it a complete rewrite of the blocks and rendering backend. We have moved on from mustache templates to use a more Nim-native style.
+- Instead of mustache templates we use string interpolation
+- Instead of a single `NbBlock` type with a mustache context to store all values, we use proper objects using inheritance with real fields
+  - In the cases where we still need a general context type we instead use `JsonNode` which is more ergonomic
+
+Some new things this has allowed us to add is:
+- JSON backend: serialize and deserialize your nimib document to JSON
+  - This will allow caching of documents so unneccary recompilations can be avoided. 
+  - This could be useful in a static site generator built with Nimib
+
+The consequences of this large refactoring for our users are:
+- If you are just using Nimib's' builtin blocks (`nbText`, `nbCode`, etc) it *should* just work. 
+- If you have defined your own blocks, they will have to be rewritten (see examples below).
+- NimiSlides and Nimibook will shortly be ported over to Nimib v0.4. Until then they should be used with Nimib v0.3.
+
 ### Changes in how to define blocks
 #### `nbImage` - simple block
 ##### Previous behavior (nimib <= 0.3)
@@ -87,8 +103,9 @@ type NbImage* = ref object of NbBlock
     alt: string
 
 # Creates an initializer with default values
+# Also sets the correct kind (used for the JSON backend)
 proc newNbImage*(url: string = "", caption: string = "", alt: string = "") =
-    NbImage(url: url, caption: caption, alt: alt)
+    NbImage(kind: "NbImage", url: url, caption: caption, alt: alt)
 
 # Creates a render function
 proc nbImageToHtml*(blk: NbBlock, nb: Nb): string =
@@ -106,10 +123,19 @@ nbToHtml.funcs["NbImage"] = nbImageToHtml
 addNbBlockToJson(NbImage)
 ```
 
-#### `nbCode` - more complex block
+#### `nbCode` - using partials
+
+
+### Pour some **sugar** on Nim
+Some other sugars that has been added:
+TODO: withNewLines
 
 ### JSON backend
-TODO
+Another new thing is the ability to serialize and deserialize (!) nimib documents to JSON. This is useful for caching the results of a nimib document in usecases like static site generators. 
+
+TODO: show how to serialize it
+
+
 
 ## v0.3.12
 

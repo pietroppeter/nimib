@@ -32,6 +32,7 @@ The consequences of this large refactoring for our users are:
 
 ### Changes in how to define blocks
 #### `nbImage` - simple block
+This will show how to define a simple block. If you define your own blocks, this is enough for most of your usecases.
 ##### Previous behavior (nimib <= 0.3)
 This is how we define the `nbImage` block in the previous version:
 
@@ -119,8 +120,88 @@ addNbBlockToJson(NbImage)
 ```
 
 #### `nbCode` - using partials
+Here we have a more complicated example where we are using partials to allow easier customization by the user/libraries. I.e. the user/library will be able to override how this block is rendered. That means we will need more code.
+##### Previous behavior (nimib <= 0.3)
+```nim
+template nbCode*(body: untyped) =
+  newNbCodeBlock("nbCode", body):
+    captureStdout(nb.blk.output):
+      body
+
+doc.partials["nbCode"] = """
+{{>nbCodeSource}}
+{{>nbCodeOutput}}"""
+
+doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
+doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
 
 
+proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
+  blk.context["codeHighlighted"] = highlightNim(blk.code)
+doc.renderProcs["highlightCode"] = highlightCode
+doc.renderPlans["nbCode"] = @["highlightCode"]
+```
+There are 3 parts:
+- Define the template that creates a `nbCode` block and captures the output of the body.
+- Define the `nbCode` partial and the `nbCodeSource` and `nbCodeOutput` partials used by it.
+- Define renderProcs that are run on the block when it is rendered
+
+##### New behaviour (nimib >= 0.4)
+```nim
+# Define block and toHtml
+newNbBlock(NbCode of NbContainer):
+  code: string
+  output: string
+  toHtml:
+    withNewlines:
+      nb.renderPartial("nbCodeSource", jsonutils.toJson(blk))
+      nbContainerToHtml(blk, nb)
+      nb.renderPartial("nbCodeOutput", jsonutils.toJson(blk))
+
+# Define template
+template nbCode*(body: untyped) =
+  let blk = newNbCode()
+  blk.code = getCode(body)
+  nb.withContainer(blk):
+    captureStdout(blk.output):
+      body
+  nb.add blk
+
+# Define helper
+func preCodeTag*(lang: string, code: string, highlight: bool = true): string =
+  let highlightString = if not highlight: "nohighlight" else: ""
+  &"""<pre><code class="{highlightString} {lang} hljs">{code}</code></pre>"""
+
+# Define and register `nbCodeSource` partial
+func nbCodeSourcePartial*(blk: JsonNode, nb: Nb): string =
+  let code = blk{"code"}.getStr
+  if code.len > 0:
+    preCodeTag(lang="nim", code=code.highlightNim, highlight=false)
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeSourcePartial
+
+# Define and register `nbCodeSource` partial
+func nbCodeOutputPartial*(blk: JsonNode, nb: Nb): string =
+  let output = blk{"output"}.getStr
+  if output.len > 0:
+    &"<pre class=\"nb-output\">{output}</pre>"
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeOutputPartial
+```
+
+The most important thing this allows us to do that we previously couldn't is to use normal functions. They are IDE-friendly and can be reused like in this example `preCodeTag`. It can be used in all other blocks where we need a `<pre><code>` block. 
+
+The partials are defined and registered and they can then be rendered using `nb.renderPartial("partialName", jsonutils.toJson(blk))`. The reason we must convert our object to `JsonNode` is that multiple different blocks could use this partial.
+
+Something else you can note is that we inherit from `NbContainer`. That's needed to be able to support blocks nested inside this block. For example if you have a `nbCode` block inside another nbCode block. It is rendered using `nbContainerToHtml(blk, nb)` in `toHtml`.
+
+While the number of lines has increased, the reusability and readability has increased in our opinion. The part that is a bit ugly is that we extract the field from the JsonNode on its own line and have if-statements. We have some ideas for how this could be prettified with some sugar in the future though. So hopefully we will in the end be able to get the best of both worlds.
+
+Note that we are 
 ### Pour some **sugar** on Nim
 Some other sugars that has been added:
 TODO: withNewLines

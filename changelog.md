@@ -201,13 +201,63 @@ Something else you can note is that we inherit from `NbContainer`. That's needed
 
 While the number of lines has increased, the reusability and readability has increased in our opinion. The part that is a bit ugly is that we extract the field from the JsonNode on its own line and have if-statements. We have some ideas for how this could be prettified with some sugar in the future though. So hopefully we will in the end be able to get the best of both worlds.
 
-Note that we are 
 ### Pour some **sugar** on Nim
-Some other sugars that has been added:
-TODO: withNewLines
+In addition to the `newNbBlock` macro that was shown above, we have also added a `withNewlines` macro:
+
+```nim
+let s = withNewlines:
+  "<!DOCTYPE html>"
+  """<html lang="en-us">"""
+  nb.renderPartial("head", docJson)
+  "<body>"
+  nb.renderPartial("header", docJson)
+  nb.renderPartial("left", docJson)
+  mainToHtml(doc, nb)
+  nb.renderPartial("right", docJson)
+  nb.renderPartial("footer", docJson)
+  "</body>"
+
+# equivalent to:
+let s =
+  "<!DOCTYPE html>\n" +
+  """<html lang="en-us">\n"""
+  nb.renderPartial("head", docJson) + '\n'
+  "<body>\n"
+  nb.renderPartial("header", docJson) + '\n'
+  nb.renderPartial("left", docJson) + '\n'
+  mainToHtml(doc, nb) + '\n'
+  nb.renderPartial("right", docJson) + '\n'
+  nb.renderPartial("footer", docJson) + '\n'
+  "</body>"
+```
+It is at the core an easier to read and write way of inserting newlines between stuff. But it also supports if-statements and for-loops:
+
+```nim
+withNewlines:
+  "<div>"
+  if x == 2:
+    "Correct!"
+  else:
+    "Wrong answer"
+  if x == 3:
+    "But close!"
+  "</div>"
+```
+Note that the second if-statement doesn't have an else-clause, it will implicitly insert an `else: ""` for you to keep your code readble.
+
+```nim
+withNewlines:
+  "<li>"
+  for x in listOfStuff:
+    "<li>"
+    x.toLower
+    "</li>"
+  "</li>"
+```
+
 
 ### JSON backend
-Another new thing is the ability to serialize and deserialize (!) nimib documents to JSON. This is useful for caching the results of a nimib document in usecases like static site generators. 
+Another new thing is the ability to serialize and deserialize nimib documents to JSON. This is useful for caching the results of a nimib document in usecases like static site generators. 
 
 TODO: show how to serialize it
 

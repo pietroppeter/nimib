@@ -54,7 +54,7 @@ It consists of two parts:
 
 The drawbacks of this approach are:
 - Clunky context type: If you only assign values to the context once it is fine, but if you need to modify a value it quickly gets quite ugly.
-- The template and the partial are often (in the case of core nimib types at least) defined in two different places in the codebase. This makes working with the harder as you have to jump back and forth between files.
+- The template and the partial are often (in the case of core nimib types at least) defined in two different places in the codebase. This makes working with them harder as you have to jump back and forth between files.
 
 ##### New behaviour (nimib >= 0.4)
 New:
@@ -200,6 +200,31 @@ The partials are defined and registered and they can then be rendered using `nb.
 Something else you can note is that we inherit from `NbContainer`. That's needed to be able to support blocks nested inside this block. For example if you have a `nbCode` block inside another nbCode block. It is rendered using `nbContainerToHtml(blk, nb)` in `toHtml`.
 
 While the number of lines has increased, the reusability and readability has increased in our opinion. The part that is a bit ugly is that we extract the field from the JsonNode on its own line and have if-statements. We have some ideas for how this could be prettified with some sugar in the future though. So hopefully we will in the end be able to get the best of both worlds.
+
+### Container blocks
+We touched on container blocks above and they are a way to nest a block inside another block. For example `NbDoc` is a container block (inherits from `NbContainer`) and the rest of the blocks are nested inside it. This was not possible before but now it is. Here is how to define a `nbDiv` block that supports nesting:
+
+```nim
+newNbBlock(NbDiv of NbContainer):
+  class: string
+  style: string
+  toHtml:
+    withNewLines:
+      &"<div class=\"{blk.class}\" style=\"{blk.style}\">"
+      nbContainerToHtml(blk, nb)
+      "</div>"
+
+template nbDiv*(classes: string, styles: string, body: untyped) =
+  let blk = newNbDiv(class=classes, style=styles)
+  nb.withContainer(blk):
+    body
+  nb.add blk
+```
+
+There are 3 important parts:
+- `newNbBlock(NbDiv of NbContainer)` - the block needs to inherit from `NbContainer`
+- `nbContainerToHtml(blk, nb)` - this renders all the nested blocks inside the current block
+- `nb.withContainer(blk):` - inside this code block any blocks that are create will be assigned to the current block
 
 ### Pour some **sugar** on Nim
 In addition to the `newNbBlock` macro that was shown above, we have also added a `withNewlines` macro:

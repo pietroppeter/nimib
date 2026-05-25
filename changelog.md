@@ -257,9 +257,15 @@ withNewlines:
 
 
 ### JSON backend
-Another new thing is the ability to serialize and deserialize nimib documents to JSON. This is useful for caching the results of a nimib document in usecases like static site generators. 
+Another new thing is the ability to serialize and deserialize nimib documents to JSON. This is useful for caching the results of a nimib document. For example in usecases like static site generators. 
 
-TODO: show how to serialize it
+To serialize a document, you simply run:
+
+```nim
+# Uses Jsony behind the scenes
+let jsonString = nb.doc.dump()
+let reconstructedDocument = jsonString.fromJson(NbDoc)
+```
 
 
 

@@ -13,9 +13,286 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
-## v 0.4.0
+## v0.4.0
 
-todo after release
+Nimib v0.4.0 brings with it a complete rewrite of the blocks and rendering backend. We have moved on from mustache templates to use a more Nim-native style.
+- Instead of mustache templates we use string interpolation
+- Instead of a single `NbBlock` type with a mustache context to store all values, we use proper objects using inheritance with real fields
+  - In the cases where we still need a general context type we instead use `JsonNode` which is more ergonomic
+
+
+We have added a JSON backend that can serialize and deserialize your nimib document to JSON.
+- This will allow caching of documents so unneccary recompilations can be avoided. 
+- This could be useful in for example a static site generator built with Nimib
+
+The consequences of this large refactoring for our users are:
+- If you are just using Nimib's' builtin blocks (`nbText`, `nbCode`, etc) it *should* just work. 
+- If you have defined your own blocks, they will have to be rewritten (see examples below).
+- NimiSlides and Nimibook will be ported over to Nimib v0.4. Until then they should be used with Nimib v0.3.
+
+### Changes in how to define blocks
+#### `nbImage` - simple block
+This will show how to define a simple block. If you define your own blocks, this is enough for most of your usecases.
+##### Previous behavior (nimib <= 0.3)
+This is how we define the `nbImage` block in the previous version:
+
+```nim
+template nbImage*(url: string, caption = "", alt = "") =
+  newNbSlimBlock("nbImage"):
+    nb.blk.context["url"] = nb.relToRoot(url) 
+    nb.blk.context["caption"] = caption
+    nb.blk.context["alt_text"] = if alt == "": caption else: alt
+
+doc.partials["nbImage"] = """<figure>
+<img src="{{url}}" alt="{{alt_text}}">
+<figcaption>{{caption}}</figcaption>
+</figure>"""
+```
+It consists of two parts:
+- The block template that uses `newNbSlimBlock` to create the block and then it assigns the values to the block's context
+- Defining a mustache partial that uses the values from the context
+
+The drawbacks of this approach are:
+- Clunky context type: If you only assign values to the context once it is fine, but if you need to modify a value it quickly gets quite ugly.
+- The template and the partial are often (in the case of core nimib types at least) defined in two different places in the codebase. This makes working with them harder as you have to jump back and forth between files.
+
+##### New behaviour (nimib >= 0.4)
+New:
+- uses newNbBlock macro sugar
+- Uses normal string interpolation
+    - Uses objects and JsonNodes for context instead
+
+This is how the block can be defined now:
+
+```nim
+newNbBlock(NbImage):
+  url: string
+  caption: string
+  alt: string
+  toHtml:
+    &"""
+<figure>
+  <img src="{blk.url}" alt="{blk.alt}">
+  <figcaption>{blk.caption}</figcaption>
+</figure>
+"""
+
+template image*(url: string, caption = "", alt = "") =
+  let blk = newNbImage()
+  blk.url = nb.doc.relToRoot(url)
+  blk.caption = caption
+  blk.alt = if alt.len == 0: caption else: alt
+  nb.add blk
+```
+- Here we use the `newNbBlock` macro to define the fields of the `NbImage` block type. We also define how we want to render it usig those fields using the injected `blk` variable in `toHtml`. 
+  - Note that the `NbImage` is an actual Nim-type with actual fields now compared to previously when there was just a single `NbBlock` type with all values in a Table-like context.
+  - We use normal string interpolation instead of mustache's own syntax
+- The template simply assigns the inputs to the fields of the `NbImage` object 
+
+
+Under the hood this is what `newNbBlock` does:
+```nim
+# Defines the type as a subclass of NbBlock
+type NbImage* = ref object of NbBlock
+    url: string
+    caption: string
+    alt: string
+
+# Creates an initializer with default values
+# Also sets the correct kind (used for the JSON backend)
+proc newNbImage*(url: string = "", caption: string = "", alt: string = "") =
+    NbImage(kind: "NbImage", url: url, caption: caption, alt: alt)
+
+# Creates a render function
+proc nbImageToHtml*(blk: NbBlock, nb: Nb): string =
+    let blk = NbImage(blk)
+    &"""
+<figure>
+  <img src="{blk.url}" alt="{blk.alt}">
+  <figcaption>{blk.caption}</figcaption>
+</figure>
+"""
+
+# Adds the render function to the nbToHtml renderer
+nbToHtml.funcs["NbImage"] = nbImageToHtml
+# Registers the block type in the JSON backend
+addNbBlockToJson(NbImage)
+```
+
+#### `nbCode` - using partials
+Here we have a more complicated example where we are using partials to allow easier customization by the user/libraries. I.e. the user/library will be able to override how this block is rendered. That means we will need more code.
+##### Previous behavior (nimib <= 0.3)
+```nim
+template nbCode*(body: untyped) =
+  newNbCodeBlock("nbCode", body):
+    captureStdout(nb.blk.output):
+      body
+
+doc.partials["nbCode"] = """
+{{>nbCodeSource}}
+{{>nbCodeOutput}}"""
+
+doc.partials["nbCodeSource"] = "<pre><code class=\"nohighlight hljs nim\">{{&codeHighlighted}}</code></pre>"
+doc.partials["nbCodeOutput"] = """{{#output}}<pre class="nb-output">{{output}}</pre>{{/output}}"""
+
+
+proc highlightCode(doc: var NbDoc, blk: var NbBlock) =
+  blk.context["codeHighlighted"] = highlightNim(blk.code)
+doc.renderProcs["highlightCode"] = highlightCode
+doc.renderPlans["nbCode"] = @["highlightCode"]
+```
+There are 3 parts:
+- Define the template that creates a `nbCode` block and captures the output of the body.
+- Define the `nbCode` partial and the `nbCodeSource` and `nbCodeOutput` partials used by it.
+- Define renderProcs that are run on the block when it is rendered
+
+##### New behaviour (nimib >= 0.4)
+```nim
+# Define block and toHtml
+newNbBlock(NbCode of NbContainer):
+  code: string
+  output: string
+  toHtml:
+    withNewlines:
+      nb.renderPartial("nbCodeSource", jsonutils.toJson(blk))
+      nbContainerToHtml(blk, nb)
+      nb.renderPartial("nbCodeOutput", jsonutils.toJson(blk))
+
+# Define template
+template nbCode*(body: untyped) =
+  let blk = newNbCode()
+  blk.code = getCode(body)
+  nb.withContainer(blk):
+    captureStdout(blk.output):
+      body
+  nb.add blk
+
+# Define helper
+func preCodeTag*(lang: string, code: string, highlight: bool = true): string =
+  let highlightString = if not highlight: "nohighlight" else: ""
+  &"""<pre><code class="{highlightString} {lang} hljs">{code}</code></pre>"""
+
+# Define and register `nbCodeSource` partial
+func nbCodeSourcePartial*(blk: JsonNode, nb: Nb): string =
+  let code = blk{"code"}.getStr
+  if code.len > 0:
+    preCodeTag(lang="nim", code=code.highlightNim, highlight=false)
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeSourcePartial
+
+# Define and register `nbCodeSource` partial
+func nbCodeOutputPartial*(blk: JsonNode, nb: Nb): string =
+  let output = blk{"output"}.getStr
+  if output.len > 0:
+    &"<pre class=\"nb-output\">{output}</pre>"
+  else:
+    ""
+
+nbToHtml.partials["nbCodeOutput"] = nbCodeOutputPartial
+```
+
+The most important thing this allows us to do that we previously couldn't is to use normal functions. They are IDE-friendly and can be reused like in this example `preCodeTag`. It can be used in all other blocks where we need a `<pre><code>` block. 
+
+The partials are defined and registered and they can then be rendered using `nb.renderPartial("partialName", jsonutils.toJson(blk))`. The reason we must convert our object to `JsonNode` is that multiple different blocks could use this partial.
+
+Something else you can note is that we inherit from `NbContainer`. That's needed to be able to support blocks nested inside this block. For example if you have a `nbCode` block inside another nbCode block. It is rendered using `nbContainerToHtml(blk, nb)` in `toHtml`.
+
+While the number of lines has increased, the reusability and readability has increased in our opinion. The part that is a bit ugly is that we extract the field from the JsonNode on its own line and have if-statements. We have some ideas for how this could be prettified with some sugar in the future though. So hopefully we will in the end be able to get the best of both worlds.
+
+### Container blocks
+We touched on container blocks above and they are a way to nest a block inside another block. For example `NbDoc` is a container block (inherits from `NbContainer`) and the rest of the blocks are nested inside it. This was not possible before but now it is. Here is how to define a `nbDiv` block that supports nesting:
+
+```nim
+newNbBlock(NbDiv of NbContainer):
+  class: string
+  style: string
+  toHtml:
+    withNewLines:
+      &"<div class=\"{blk.class}\" style=\"{blk.style}\">"
+      nbContainerToHtml(blk, nb)
+      "</div>"
+
+template nbDiv*(classes: string, styles: string, body: untyped) =
+  let blk = newNbDiv(class=classes, style=styles)
+  nb.withContainer(blk):
+    body
+  nb.add blk
+```
+
+There are 3 important parts:
+- `newNbBlock(NbDiv of NbContainer)` - the block needs to inherit from `NbContainer`
+- `nbContainerToHtml(blk, nb)` - this renders all the nested blocks inside the current block
+- `nb.withContainer(blk):` - inside this code block any blocks that are create will be assigned to the current block
+
+### Pour some **sugar** on Nim
+In addition to the `newNbBlock` macro that was shown above, we have also added a `withNewlines` macro:
+
+```nim
+let s = withNewlines:
+  "<!DOCTYPE html>"
+  """<html lang="en-us">"""
+  nb.renderPartial("head", docJson)
+  "<body>"
+  nb.renderPartial("header", docJson)
+  nb.renderPartial("left", docJson)
+  mainToHtml(doc, nb)
+  nb.renderPartial("right", docJson)
+  nb.renderPartial("footer", docJson)
+  "</body>"
+
+# equivalent to:
+let s =
+  "<!DOCTYPE html>\n" +
+  """<html lang="en-us">\n"""
+  nb.renderPartial("head", docJson) + '\n'
+  "<body>\n"
+  nb.renderPartial("header", docJson) + '\n'
+  nb.renderPartial("left", docJson) + '\n'
+  mainToHtml(doc, nb) + '\n'
+  nb.renderPartial("right", docJson) + '\n'
+  nb.renderPartial("footer", docJson) + '\n'
+  "</body>"
+```
+It is at the core an easier to read and write way of inserting newlines between stuff. But it also supports if-statements and for-loops:
+
+```nim
+withNewlines:
+  "<div>"
+  if x == 2:
+    "Correct!"
+  else:
+    "Wrong answer"
+  if x == 3:
+    "But close!"
+  "</div>"
+```
+Note that the second if-statement doesn't have an else-clause, it will implicitly insert an `else: ""` for you to keep your code readble.
+
+```nim
+withNewlines:
+  "<li>"
+  for x in listOfStuff:
+    "<li>"
+    x.toLower
+    "</li>"
+  "</li>"
+```
+
+
+### JSON backend
+Another new thing is the ability to serialize and deserialize nimib documents to JSON. This is useful for caching the results of a nimib document. For example in usecases like static site generators. 
+
+To serialize a document, you simply run:
+
+```nim
+# Uses Jsony behind the scenes
+let jsonString = nb.doc.dump()
+let reconstructedDocument = jsonString.fromJson(NbDoc)
+```
+
+
 
 ## v0.3.12
 

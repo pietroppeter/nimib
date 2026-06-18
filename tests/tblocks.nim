@@ -1,10 +1,20 @@
 import nimib
-import std / [unittest, strutils]
+import std / [unittest, strutils, strformat]
 
 newNbBlock(ReadCodeBlock):
   code: string
   toHtml:
     blk.code
+
+template iCreateGensyms() =
+  newNbBlock(NotGensymed):
+    foo: int
+    toHtml:
+      let x = blk.foo
+      &"x: {x}"
+
+iCreateGensyms()
+  
 
 suite "newNbBlock":
   nbInit

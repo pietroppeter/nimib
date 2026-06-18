@@ -13,6 +13,15 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v0.4.1
+Fixed a bug in `newNbBlock` where `toHtml` blocks were gensym'd which made string interpolation break because the interpolated variable wasn't gensym'd in the template string:
+
+```nim
+toHtml:
+  let x`gensym123 = 1
+  &"{x}" # doesn't work!
+```
+
 ## v0.4.0
 
 Nimib v0.4.0 brings with it a complete rewrite of the blocks and rendering backend. We have moved on from mustache templates to use a more Nim-native style.

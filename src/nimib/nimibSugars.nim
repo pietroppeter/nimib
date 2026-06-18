@@ -54,6 +54,27 @@ macro generateBlockInitializer*(typeName: typed): untyped =
   let initializer = newProc(procName, procParams, procBody)
   return initializer
 
+proc cleanName(n: NimNode): string =
+  ## Strips a trailing `gensymNNN suffix.
+  result = n.strVal
+  let tick = result.find('`')
+  if tick >= 0:
+    result = result[0 ..< tick]
+
+proc stripGensym(n: NimNode): NimNode =
+  case n.kind
+  of nnkSym, nnkIdent:
+    result = ident(cleanName(n))
+  of nnkOpenSymChoice, nnkClosedSymChoice:
+    # Collapse to an Ident
+    result = ident(cleanName(n[0]))
+  of nnkEmpty, nnkNone, nnkLiterals:
+    result = n
+  else:
+    result = copyNimNode(n)
+    for child in n:
+      result.add stripGensym(child)
+
 macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   # typeName is either `ident` or
   # Infix
@@ -95,7 +116,7 @@ macro newNbBlock*(typeName: untyped, body: untyped): untyped =
   for n in body:
     let (name, body) = n.parseCallStmt()
     if eqIdent(name, "toHtml"):
-      toHtmlBody = body
+      toHtmlBody = body.stripGensym
     else:
       fields.add (name, body)
 

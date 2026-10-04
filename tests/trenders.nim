@@ -19,6 +19,30 @@ suite "render (block), html default backend":
 <pre class="nb-output">hi
 </pre>"""
 
+  test "nbImage":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", "nim-lang.org favicon")
+    check nb.render(nb.blk).strip == """
+<figure>
+  <img src="https://nim-lang.org/assets/img/logo_bw.png" alt="nim-lang.org favicon">
+  <figcaption>nim-lang.org favicon</figcaption>
+</figure>""".strip
+
+  test "nbImage with width":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", "nim-lang.org favicon", width="200")
+    check nb.render(nb.blk).strip == """
+<figure>
+  <img src="https://nim-lang.org/assets/img/logo_bw.png" alt="nim-lang.org favicon" width="200">
+  <figcaption>nim-lang.org favicon</figcaption>
+</figure>""".strip
+
+  test "nbImage with width and height":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", "nim-lang.org favicon", width="200", height="100")
+    check nb.render(nb.blk).strip == """
+<figure>
+  <img src="https://nim-lang.org/assets/img/logo_bw.png" alt="nim-lang.org favicon" width="200" height="100">
+  <figcaption>nim-lang.org favicon</figcaption>
+</figure>""".strip
+
 # switch to markdown backend
 useMdBackend nb
 
@@ -63,4 +87,11 @@ hi
     nbImage("https://nim-lang.org/assets/img/logo_bw.png", alt="nim-lang.org favicon")
     check nb.render(nb.blk).strip == """
 ![nim-lang.org favicon](https://nim-lang.org/assets/img/logo_bw.png)
+""".strip
+
+  test "nbImage with width and height (ignored in markdown)":
+    nbImage("https://nim-lang.org/assets/img/logo_bw.png", "nim-lang.org favicon", width="200", height="100")
+    check nb.render(nb.blk).strip == """
+![nim-lang.org favicon](https://nim-lang.org/assets/img/logo_bw.png)
+**Figure:** nim-lang.org favicon
 """.strip

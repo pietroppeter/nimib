@@ -13,6 +13,14 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version, both in `nimib.nimble` and in `nimibVersion` in `src/nimib/config.nim`; `nimble test` checks they match) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v0.4.2
+nimib now works with a Nim installation that ships without the compiler sources or `nimble` (for example Nim from PyPI via [nimlang](https://github.com/pietroppeter/uv-add-nimlang)):
+
+- the typed paths (`AbsoluteFile`, `AbsoluteDir`, `RelativeFile`, `RelativeDir`) come from `nimib/pathutils`, vendored from the compiler's `pathutils`, instead of importing `$nim/compiler/pathutils`. The same types and procs are still exported by nimib.
+- nimib's version is the `nimibVersion` const and `getNimibVersion()` returns it, instead of running `nimble dump` at runtime. A test checks that it matches the version in `nimib.nimble`.
+
+* Work without Nim compiler sources or nimble, bump 0.4.2 by @pietroppeter in https://github.com/pietroppeter/nimib/pull/257
+
 ## v0.4.1
 Fixed a bug in `newNbBlock` where `toHtml` blocks were gensym'd which made string interpolation break because the interpolated variable wasn't gensym'd in the template string:
 

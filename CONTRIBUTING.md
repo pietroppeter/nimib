@@ -34,7 +34,8 @@ There are 4 main folders in the project:
     - `highlight.nim`: Logic related to static highlighting of Nim code.
     - `jsutils.nim`: Here the underlying logic of the `nbJs` blocks are located.
     - `options.nim`: Logic related to parsing runtime options when building a document.
-    - `paths.nim`: Wrapper on top of the compiler's `pathutils`.
+    - `paths.nim`: Path helpers on top of `pathutils.nim`.
+    - `pathutils.nim`: Typed paths (`AbsoluteFile`, `RelativeDir`, ...) vendored from the Nim compiler's `pathutils`, so nimib does not need Nim's compiler sources.
     - `renders.nim`: Here all the backends are defined. `partials`, `renderPlans` and `renderProcs` are defined here.
     - `sources.nim`: The logic of `codeAsInSource` is located here.
     - `themes.nim`: Here the default theme is located. If you are making your own theme, this is a good reference to start from.

@@ -1,4 +1,4 @@
-import std / [unittest, strformat, strutils]
+import std / [unittest, strformat, strutils, os]
 import nimib/config
 import nimib
 
@@ -242,6 +242,15 @@ test "getNimibVersion()":
   let version = getNimibVersion()
 
   check version.count('.') == 2
+
+test "nimibVersion matches version in nimib.nimble":
+  const nimbleFile = staticRead(currentSourcePath().parentDir.parentDir / "nimib.nimble")
+  var nimbleVersion = ""
+  for line in nimbleFile.splitLines:
+    if line.startsWith("version"):
+      nimbleVersion = line.split('=', 1)[1].strip.strip(chars = {'"'})
+      break
+  check nimbleVersion == nimibVersion
 
 when moduleAvailable(nimpy) and false:
   nbInitPython()

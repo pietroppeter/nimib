@@ -11,7 +11,7 @@ Notes for maintainers:
 
 - When a maintainer merges a PR, they should make sure that the squashed commit message is relevant and clear.
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
-- finally, after a release, we update this changelog (and bump version) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
+- finally, after a release, we update this changelog (and bump version, both in `nimib.nimble` and in `nimibVersion` in `src/nimib/config.nim`; `nimble test` checks they match) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
 ## v0.4.1
 Fixed a bug in `newNbBlock` where `toHtml` blocks were gensym'd which made string interpolation break because the interpolated variable wasn't gensym'd in the template string:

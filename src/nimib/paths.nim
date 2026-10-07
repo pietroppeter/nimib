@@ -1,7 +1,4 @@
-when defined(FreeBSD):
-  import "$nim/lib/compiler/pathutils"
-else:
-  import "$nim/compiler/pathutils"
+import pathutils
 export pathutils
 import os, strutils, hashes
 

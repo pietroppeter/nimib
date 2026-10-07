@@ -1,14 +1,10 @@
-import types, logging, parsetoml, jsony, std / [json, os, osproc, math, sequtils]
+import types, logging, parsetoml, jsony, std / [json, os, math, sequtils]
 
-proc getNimibVersion*(): string = 
-  var dir = currentSourcePath().parentDir().parentDir()
+const nimibVersion* = "0.4.1"
+  ## nimib's version. Keep it in sync with `version` in nimib.nimble
+  ## (tests/tnimib.nim checks that they match).
 
-  if dir.splitPath().tail == "src":
-    dir = dir.parentDir()
-
-  let dumpedJson = execProcess("nimble dump --silent --json", dir) 
-
-  result = parseJson(dumpedJson)["version"].getStr()
+proc getNimibVersion*(): string = nimibVersion
 
 proc hasCfg*(doc: var NbDoc): bool = doc.cfgDir.string != ""
 

@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # libpcre3 is not packaged in newer ubuntu
     strategy:
       matrix:
         nim:

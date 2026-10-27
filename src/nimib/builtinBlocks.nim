@@ -118,15 +118,21 @@ newNbBlock(NbImage):
   url: string
   caption: string
   alt: string
+  width: string
+  height: string
   toHtml:
+    var sizeAttrs = ""
+    if blk.width.len > 0: sizeAttrs.add &" width=\"{blk.width}\""
+    if blk.height.len > 0: sizeAttrs.add &" height=\"{blk.height}\""
     &"""
 <figure>
-  <img src="{blk.url}" alt="{blk.alt}">
+  <img src="{blk.url}" alt="{blk.alt}"{sizeAttrs}>
   <figcaption>{blk.caption}</figcaption>
 </figure>
 """
 
 func nbImageToMd*(blk: NbBlock, nb: Nb): string =
+  ## markdown has no standard syntax for image size: width and height are ignored
   let blk = blk.NbImage
   withNewLines:
     &"![{blk.alt}]({blk.url})"
@@ -137,15 +143,19 @@ func nbImageToMd*(blk: NbBlock, nb: Nb): string =
 
 nbToMd.funcs["NbImage"] = nbImageToMd
 
-func image*(nb: var Nb, url: string, caption = "", alt = "") =
+func image*(nb: var Nb, url: string, caption = "", alt = "", width = "", height = "") =
+  ## `width` and `height` are passed as is to the html `width` and `height` attributes
+  ## (e.g. "300" for 300 pixels); when empty the image keeps its natural size.
   let blk = newNbImage()
   blk.url = nb.doc.relToRoot(url)
   blk.alt = if alt.len == 0: caption else: alt
   blk.caption = caption
+  blk.width = width
+  blk.height = height
   nb.add blk
 
-template nbImage*(url: string, caption = "", alt = "") =
-  nb.image(url, caption, alt)
+template nbImage*(url: string, caption = "", alt = "", width = "", height = "") =
+  nb.image(url, caption, alt, width, height)
 
 newNbBlock(NbFile):
   filename: string

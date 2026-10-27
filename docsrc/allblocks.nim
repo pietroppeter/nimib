@@ -108,6 +108,12 @@ Most formats (.jpg, .png) are accepted. The caption is optional!
 nimibCode:
   nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="Blue Whale (photograph by Todd Cravens)")
 
+nbText: """
+Use the optional `width` and `height` to resize the image (they are passed to the html `width` and `height` attributes, so `"300"` means 300 pixels; they are ignored by the markdown backend):
+"""
+nimibCode:
+  nbImage(url="images/todd-cravens-nimib-unsplash.jpg", caption="A smaller whale", width="300")
+
 nbCodeBlock: "nbVideo"
 nbText: """
 `nbVideo` allows you to display videos within your nimib document. You may choose if the

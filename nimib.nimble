@@ -14,8 +14,15 @@ requires "markdown >= 0.8.1"
 requires "parsetoml >= 0.7.0"
 requires "jsony >= 1.1.5"
 
+import std/[os, strutils]
+
 task docsdeps, "install dependendencies required for doc building":
-  exec "nimble -y install ggplotnim@0.5.9 numericalnim@0.8.8 nimoji nimpy karax@1.3.3 happyx@2.0.0 mustache@0.4.3"
+  exec "nimble -y install nimja@0.10.3 ggplotnim@0.5.9 numericalnim@0.8.8 nimoji nimpy karax@1.3.3 happyx@2.0.0 mustache@0.4.3"
+  # nimja 0.10.4 (pulled in by happyx) does not compile to js (copyMem undeclared)
+  # and nim picks the newest installed version, so we remove it
+  for dir in listDirs(getHomeDir() / ".nimble" / "pkgs2"):
+    if dir.lastPathPart.startsWith("nimja-0.10.4-"):
+      rmDir dir
 
 task test, "General tests":
   for file in ["tsources.nim", "tblocks.nim", "tnimib.nim", "trenders.nim"]:

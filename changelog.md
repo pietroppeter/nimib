@@ -13,6 +13,18 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version, both in `nimib.nimble` and in `nimibVersion` in `src/nimib/config.nim`; `nimble test` checks they match) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## v0.4.3
+`nbImage` (and `nb.image`) accept optional `width` and `height`, passed as is to the html `width` and `height` attributes of the image (e.g. `width = "300"` for 300 pixels, `"50%"` also works). When they are empty the html is the same as before. The markdown backend ignores them, since markdown has no standard syntax for image size.
+
+```nim
+nbImage("images/whale.jpg", caption = "A smaller whale", width = "300")
+```
+
+CI fixes: workflows run on `ubuntu-24.04` (`ubuntu-latest` no longer packages libpcre3), and the docs use nimja 0.10.3 because nimja 0.10.4 does not compile to js (enthus1ast/nimja#118).
+
+* ci: pin ubuntu-24.04 and nimja 0.10.3 to fix CI by @pietroppeter in https://github.com/pietroppeter/nimib/pull/261
+* nbImage: add optional width and height parameters by @pietroppeter in https://github.com/pietroppeter/nimib/pull/260
+
 ## v0.4.2
 nimib now works with a Nim installation that ships without the compiler sources or `nimble` (for example Nim from PyPI via [nimlang](https://github.com/pietroppeter/uv-add-nimlang)):
 

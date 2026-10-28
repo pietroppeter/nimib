@@ -16,7 +16,10 @@ jobs:
           nim-version: 'stable'
       - run: sudo apt install libpcre3 libpcre3-dev
       - run: nimble -y install
-      - run: nimble -y install nimibook karax
+      # one package per command: installing both in one call left nimibook out
+      - run: nimble -y install nimibook
+      - run: nimble -y install karax
+      - run: nimble path nimib nimibook karax
       - uses: actions/setup-node@v4
         with:
           node-version: 22

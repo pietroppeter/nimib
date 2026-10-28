@@ -56,6 +56,9 @@ reference, section "Migrating 0.3 blocks".
   and a `func xxx*(nb: var Nb, ...)` plus `template nbXxx*`, add an md
   renderer if sensible (`nbToMd.funcs[...]`), a test in `tests/tblocks.nim`
   or `trenders.nim`, an example in `docsrc/allblocks.nim`, a changelog entry.
+- Agent skills live in `agent-skills/` (Claude Code plugin, see its README).
+  When an API changes, `agent-skills/harness/check_snippets.py` (CI workflow
+  `skills.yml`) fails until the skills are updated.
 
 ## Release checklist (nimib; nimibook is similar)
 

@@ -4,7 +4,7 @@
   <title>allblocks.nim</title>
   <meta content="text/html; charset=utf-8" http-equiv="content-type">
   <meta content="width=device-width, initial-scale=1" name="viewport">
-  <meta content="nimib 0.4.1" name="generator">
+  <meta content="nimib 0.4.3" name="generator">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
   <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
   <style>
@@ -167,6 +167,12 @@ nbCodeInBlock:
 <figure>
   <img src="./images/todd-cravens-nimib-unsplash.jpg" alt="Blue Whale (photograph by Todd Cravens)">
   <figcaption>Blue Whale (photograph by Todd Cravens)</figcaption>
+</figure>
+<p>Use the optional <code>width</code> and <code>height</code> to resize the image (they are passed to the html <code>width</code> and <code>height</code> attributes, so <code>&quot;300&quot;</code> means 300 pixels; they are ignored by the markdown backend):</p>
+<pre><code class="nohighlight nim hljs">nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;A smaller whale&quot;</span>, width=<span class="hljs-string">&quot;300&quot;</span>)</code></pre>
+<figure>
+  <img src="./images/todd-cravens-nimib-unsplash.jpg" alt="A smaller whale" width="300">
+  <figcaption>A smaller whale</figcaption>
 </figure>
 <p><a name = "nbvideo"></a></p>
 <h3>nbVideo</h3>
@@ -404,6 +410,12 @@ Most formats (.jpg, .png) are accepted. The caption is optional!
 &quot;&quot;&quot;</span>
 nimibCode:
   nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;Blue Whale (photograph by Todd Cravens)&quot;</span>)
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+Use the optional `width` and `height` to resize the image (they are passed to the html `width` and `height` attributes, so `&quot;300&quot;` means 300 pixels; they are ignored by the markdown backend):
+&quot;&quot;&quot;</span>
+nimibCode:
+  nbImage(url=<span class="hljs-string">&quot;images/todd-cravens-nimib-unsplash.jpg&quot;</span>, caption=<span class="hljs-string">&quot;A smaller whale&quot;</span>, width=<span class="hljs-string">&quot;300&quot;</span>)
 
 nbCodeBlock: <span class="hljs-string">&quot;nbVideo&quot;</span>
 nbText: <span class="hljs-string">&quot;&quot;&quot;

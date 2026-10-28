@@ -1,0 +1,28 @@
+name: Agent skills
+# Builds every example and complete snippet taught by agent-skills/ against
+# this checkout of nimib, so the skills fail CI when the API they describe changes.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  snippets:
+    runs-on: ubuntu-24.04 # libpcre3 is not packaged in newer ubuntu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jiro4989/setup-nim-action@v2.2.2
+        with:
+          nim-version: 'stable'
+      - run: sudo apt install libpcre3 libpcre3-dev
+      - run: nimble -y install
+      - run: nimble -y install nimibook karax
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright Chromium (browser checks of nbJs/karax pages)
+        run: |
+          cd agent-skills
+          npm install --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+      - run: python3 agent-skills/harness/check_snippets.py

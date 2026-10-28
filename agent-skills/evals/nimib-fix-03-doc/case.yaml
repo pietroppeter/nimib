@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: nimib-fix-03-doc
+expected_outcome: |
+  report.nim is ported to nimib 0.4: the custom warning block uses newNbBlock (or an equivalent 0.4
+  approach) instead of newNbSlimBlock/mustache partials, nb.blk.output becomes nb.blk.NbCode.output,
+  the nbText is dedented so the heading renders, and report.html builds with the warning box.
+context:
+  scaffold_script: place-files.sh

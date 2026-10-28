@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: nimib-readme-and-html
+expected_outcome: |
+  readme.nim switches between nbInitMd and nbInit (e.g. with a -d:mdOutput define), and both README.md
+  (or readme.md) and readme.html are generated, the markdown containing a nim code fence and its
+  output.

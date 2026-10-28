@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: nimib-word-frequency-doc
+expected_outcome: |
+  word_freq.nim is a nimib document (nbInit ... nbSave) with nbText prose and nbCode blocks that
+  compute and echo word counts; it builds into word_freq.html with code outputs, a real title, and
+  prose that refers to computed values.

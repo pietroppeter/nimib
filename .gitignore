@@ -11,3 +11,6 @@ x_*
 # ignore build of docs 
 docs/*.html
 docs/images/*.png
+# agent skills: local test installs and eval reports
+agent-skills/node_modules/
+agent-skills/evals/results/

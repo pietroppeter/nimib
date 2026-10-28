@@ -1,0 +1,13 @@
+{
+  "name": "nimib",
+  "version": "0.1.0",
+  "description": "Skills for the nimib ecosystem: write and debug nimib documents (nimib 0.4), build nimibook books, and maintain the nimib repositories. Every code example is compiled against nimib in CI, and the skills come with evals.",
+  "author": {
+    "name": "Pietro Peterlongo",
+    "url": "https://github.com/pietroppeter"
+  },
+  "homepage": "https://github.com/pietroppeter/nimib/tree/main/agent-skills",
+  "repository": "https://github.com/pietroppeter/nimib",
+  "license": "MIT",
+  "keywords": ["nim", "nimib", "nimibook", "literate-programming", "notebooks", "documentation"]
+}

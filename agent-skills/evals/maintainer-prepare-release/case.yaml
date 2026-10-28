@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: maintainer-prepare-release
+expected_outcome: |
+  Version bumped to 0.4.4 in both nimib.nimble and nimibVersion in src/nimib/config.nim; changelog.md
+  has a new v0.4.4 section on top with a short summary (with an nbDetails example) and both PR lines
+  with authors and links; nothing is tagged or pushed and the final message lists the remaining
+  release steps (tag, GitHub release) for the maintainer.
+context:
+  scaffold_script: place-files.sh

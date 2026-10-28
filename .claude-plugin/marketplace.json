@@ -1,0 +1,17 @@
+{
+  "name": "nimib",
+  "owner": {
+    "name": "Pietro Peterlongo",
+    "url": "https://github.com/pietroppeter"
+  },
+  "metadata": {
+    "description": "Agent skills for the nimib ecosystem: writing nimib documents, building nimibook books, maintaining the repos."
+  },
+  "plugins": [
+    {
+      "name": "nimib",
+      "source": "./agent-skills",
+      "description": "Skills for nimib 0.4 documents, nimibook books and nimib maintenance, with checkers that build and inspect the output."
+    }
+  ]
+}

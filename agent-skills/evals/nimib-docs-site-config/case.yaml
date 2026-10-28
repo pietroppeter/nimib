@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: nimib-docs-site-config
+expected_outcome: |
+  A nimib.toml with srcDir = docsrc and homeDir = docs; docs/index.html and docs/guide/plotting.html
+  are built; the image tag in plotting.html points to ../images/logo.png (relative to the page) and
+  that file exists.

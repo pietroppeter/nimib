@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: nimibook-new-book
+expected_outcome: |
+  nbook.nim with initBookWithToc (entry/section), nimib.toml with the [nimibook] title and
+  git_repository_url, chapters using nbInit(theme = useNimibook), and a built docs/ folder whose pages
+  show the sidebar with all chapters and the computed outputs.

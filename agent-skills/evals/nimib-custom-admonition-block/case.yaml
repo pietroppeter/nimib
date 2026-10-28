@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: nimib-custom-admonition-block
+expected_outcome: |
+  admonition.nim defines a nimib 0.4 custom block with newNbBlock (typed fields + toHtml) and a
+  template/func nbAdmonition, uses it twice, and admonition.html contains two rendered admonition divs
+  (tip and warning).

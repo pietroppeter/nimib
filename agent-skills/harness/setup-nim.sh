@@ -57,10 +57,12 @@ if command -v nimble >/dev/null 2>&1; then
     log "installing nimib from $NIMIB_SRC"
     (cd "$NIMIB_SRC" && nimble install -y)
   else
-    nimble install -y nimib
+    (cd "${TMPDIR:-/tmp}" && nimble install -y nimib)
   fi
-  nimble install -y nimibook
-  [ -z "${SKIP_KARAX:-}" ] && nimble install -y karax@1.3.3 || true
+  # run from a neutral dir: inside a nimble project (e.g. the nimib repo),
+  # `nimble install pkg` installs the project's deps and silently skips pkg
+  (cd "${TMPDIR:-/tmp}" && nimble install -y nimibook)
+  [ -z "${SKIP_KARAX:-}" ] && (cd "${TMPDIR:-/tmp}" && nimble install -y karax@1.3.3) || true
   log "installed: $(ls "$HOME/.nimble/pkgs2" | sed 's/-[0-9a-f]\{40\}$//' | tr '\n' ' ')"
 fi
 

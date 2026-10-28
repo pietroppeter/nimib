@@ -2,10 +2,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 jobs:
   gh-docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # libpcre3 is not packaged in newer ubuntu
     steps:
+      - name: apt install
+        run: sudo apt install -y libpcre3 libblas-dev liblapack-dev
       - uses: actions/checkout@v2
       - name: install nim
         id: install_nim

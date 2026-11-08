@@ -6,7 +6,7 @@ import nimib / [types, blocks, docs, boost, config, options, capture, jsons, glo
 export types, blocks, docs, boost, sugar, globals, nimibSugars, jsutils, sources, highlight, jsons, renders, builtinBlocks
 
 from nimib / themes import nil
-export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs
+export themes.useLatex, themes.darkMode, themes.`title=`, themes.disableHighlightJs, themes.inlineAssets
 
 template nbInit*(theme: proc (nb: var Nb) = themes.useDefault, renderer: NbRender = nbToHtml, thisFileRel = "") =
   var nb {.inject.}: Nb

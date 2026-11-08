@@ -13,6 +13,13 @@ Notes for maintainers:
 - When we tag a new release, we should auto generate the release notes. It does not hurt if we add more context to the release notes (e.g. taking notable elements from PR discussion). We might also want to add a release discussion post.
 - finally, after a release, we update this changelog (and bump version, both in `nimib.nimble` and in `nimibVersion` in `src/nimib/config.nim`; `nimble test` checks they match) using the same wording from release notes: https://github.com/pietroppeter/nimib/releases
 
+## unreleased
+Code blocks behave on phones and custom themes no longer fight nimib's own style:
+- nimib's style rules (`nb_style`) use `:where()`, so they have zero specificity and any theme rule overrides them, wherever it is placed. Before, `pre > code {font-size: 1.2em}` came after a theme's `pre code` rule and won, which made code 20px in themed pages.
+- `pre`, `pre > code` and `.nb-output` scroll sideways (`overflow-x: auto`) instead of spilling out of their box; `text-size-adjust: 100%` stops iOS from inflating text in them.
+- ` ```nim ` code blocks in markdown (`nbText`) are highlighted when the page is built, like `nbCode`, instead of by highlight.js in the browser.
+- `nb.inlineAssets` ships water.css, the highlight theme and highlight.js inside the page (new `assets/water-light.min.css`, `assets/water-dark.min.css`), for self-contained pages that work offline or under a content security policy that blocks CDN stylesheets.
+
 ## v0.4.3
 `nbImage` (and `nb.image`) accept optional `width` and `height`, passed as is to the html `width` and `height` attributes of the image (e.g. `width = "300"` for 300 pixels, `"50%"` also works). When they are empty the html is the same as before. The markdown backend ignores them, since markdown has no standard syntax for image size.
 

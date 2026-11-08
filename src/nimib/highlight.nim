@@ -75,6 +75,10 @@ func highlightNim*(code: string): string =
   g.initGeneralTokenizer(code)
 
   while true:
+    # Nim 2.x highlite reads a `'` right after punctuation as punctuation, not as
+    # the start of a char literal, so `{'a'..'z'}` and `split(':')` come out wrong.
+    # It only looks at the previous token's kind for this, so reset it.
+    if g.kind == gtPunctuation: g.kind = gtNone
     g.getNextToken(langNim)
     # Get the string for the current identifier
     var istr = substr(code, g.start, g.length + g.start - 1)

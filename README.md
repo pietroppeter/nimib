@@ -182,12 +182,24 @@ In [caesar](https://pietroppeter.github.io/nimib/caesar.html) we have an example
 that implements [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
 ### highlighting
-Code blocks produced by `nbCode` are statically highlighted, but code in markdown code blocks are dynamically highlighted using
+Code blocks produced by `nbCode` and ` ```nim ` code blocks in markdown are statically highlighted (when the page is built);
+code blocks in other languages are dynamically highlighted using
 [highlightjs](https://highlightjs.org/). The dynamic highlighting can be disabled by running `nb.disableHighlightJs()`.
 The supported languages are the ones listed as "common" [here](https://highlightjs.org/download/) plus Nim, Julia and Latex.
 
 Highlight styling classes are the same of [highlightjs](https://highlightjs.org/)
 and you can pick a different styling (`atom-one-light` is default for light mode, `androidstudio` is default for dark mode).
+
+### self-contained pages
+By default the stylesheet (water.css), the highlight theme and highlight.js are loaded from a CDN.
+`nb.inlineAssets` ships them inside the page instead (about 180 KB, 160 KB of which is highlight.js),
+so the page works offline and where a content security policy blocks CDN stylesheets.
+
+### custom themes
+nimib's own style rules use `:where()`, so they have zero specificity: any rule of your theme overrides them,
+wherever your theme puts it. nimib also makes `pre`, `pre > code` and `.nb-output` scroll sideways (`overflow-x: auto`)
+and sets `text-size-adjust: 100%`, so that long lines scroll inside their box on a phone.
+If your theme gives `code` its own background or border, keep `overflow-x: auto` on it.
 
 ### latex
 

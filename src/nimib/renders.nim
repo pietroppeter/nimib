@@ -48,9 +48,30 @@ func markdownToHtml*(markdownText: string): string =
   {.cast(noSideEffect).}: # not sure why markdown is marked with side effects
     markdown(markdownText, config=initGfmConfig())
 
+func unescapeHtml(s: string): string =
+  s.multiReplace(("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&amp;", "&"))
+
+func highlightNimFences*(html: string): string =
+  ## Highlights the ```nim fences of rendered markdown when the page is built,
+  ## like nbCode blocks, so they do not depend on highlight.js (or a CDN).
+  const open = """<pre><code class="language-nim">"""
+  const close = "</code></pre>"
+  var i = 0
+  while true:
+    let a = html.find(open, i)
+    if a < 0: break
+    let b = html.find(close, a + open.len)
+    if b < 0: break
+    result.add html[i ..< a]
+    var code = html[a + open.len ..< b].unescapeHtml
+    code.removeSuffix('\n')
+    result.add preCodeTag(lang="nim", code=code.highlightNim, highlight=false)
+    i = b + close.len
+  result.add html[i .. ^1]
+
 func nbTextPartial*(blk: JsonNode, nb: Nb): string =
   let text = blk{"text"}.getStr
-  markdownToHtml(text)
+  markdownToHtml(text).highlightNimFences
 
 nbToHtml.partials["nbText"] = nbTextPartial
 

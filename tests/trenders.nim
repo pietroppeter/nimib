@@ -8,6 +8,16 @@ suite "render (block), html default backend":
     nbText: "hi"
     check nb.render(nb.blk).strip == "<p>hi</p>"
 
+  test "nbText highlights nim fences":
+    nbText: "```nim\necho 1 < 2\n```\n\n```python\nx = 1\n```"
+    check nb.render(nb.blk).strip == """<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">echo</span> <span class="hljs-number">1</span> &lt; <span class="hljs-number">2</span></code></pre>
+<pre><code class="language-python">x = 1
+</code></pre>"""
+
+  test "highlightNim: char literals after punctuation":
+    check highlightNim("{'a'..'z'}") == """{<span class="hljs-string">'a'</span>..<span class="hljs-string">'z'</span>}"""
+    check highlightNim("split(':')") == """split(<span class="hljs-string">':'</span>)"""
+
   test "nbCode without output":
     nbCode: discard
     check nb.render(nb.blk).strip == """<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">discard</span></code></pre>"""

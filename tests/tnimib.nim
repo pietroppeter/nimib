@@ -33,6 +33,17 @@ how are you? {answer}
 how are you? fine
 """
 
+suite "boost":
+  test "hl templates return their string":
+    let name = "you"
+    check hlMd"**hi**" == "**hi**"
+    check hlMdF"hi {name}" == "hi you"
+
+  test "md and fmd are not exported (removed in 0.5)":
+    # leaves the names free for libraries, e.g. tabelline's md()
+    check not compiles(md"hi")
+    check not compiles(fmd"hi")
+
 suite "nbTextWithCode":
   test "single line text string":
     nbTextWithCode: "hi"

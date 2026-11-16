@@ -161,6 +161,31 @@ figure {
 figcaption {
   text-align: center;
 }
+details.nb-file > summary {
+  display: flex;
+  align-self: stretch;
+  align-items: baseline;
+  gap: 0.5rem;
+  cursor: pointer;
+  list-style: none;
+}
+details.nb-file > summary::-webkit-details-marker {
+  display: none;
+}
+details.nb-file > summary::before {
+  content: "\25B6";
+  font-size: 0.7em;
+}
+details.nb-file[open] > summary::before {
+  content: "\25BC";
+}
+details.nb-file > summary > .nb-small {
+  margin-left: auto;
+  white-space: nowrap;
+}
+details.nb-file + details.nb-file {
+  margin-top: -0.5rem;
+}
   
 </style>"""
 

@@ -161,26 +161,64 @@ newNbBlock(NbFile):
   filename: string
   ext: string
   content: string
+  fold: bool
+  title: string
   toHtml:
     nb.renderPartial("nbFile", jsonutils.toJson(blk))
 
-proc file*(nb: var Nb, name: string, content: string) =
-  ## Generic string file
+func nbFileToMd(blk: NbBlock, nb: Nb): string =
+  let blk = blk.NbFile
+  let name = if blk.title.len > 0: blk.title else: "`" & blk.filename & "`"
+  let fence = "```" & blk.ext & "\n" & blk.content.strip(leading = false, chars = {'\n'}) & "\n```"
+  if blk.fold:
+    "<details><summary>" & name & " (" & linesLabel(blk.content) & ")</summary>\n\n" & fence & "\n\n</details>"
+  else:
+    name & "\n\n" & fence
+
+nbToMd.funcs["NbFile"] = nbFileToMd
+
+func langOf(name: string): string =
+  ## The language of a file for highlighting: its extension (`nims` is `nim`).
+  result = name.getExt
+  if result == "nims": result = "nim"
+
+func codeSlice*(code, start, stop: string): string =
+  ## The part of `code` from the first line that holds `start` up to the line before the next one
+  ## that holds `stop` (or to the end), dedented. Empty `start` means the whole code.
+  if start.len == 0: return code
+  let i = code.find(start)
+  if i < 0: raise newException(ValueError, "nbFile: no line holds " & start.escape)
+  result = code[code.rfind('\n', last = i) + 1 .. ^1]
+  if stop.len > 0:
+    let firstNl = result.find('\n')
+    let j = if firstNl < 0: -1 else: result.find(stop, start = firstNl + 1)
+    if j >= 0: result = result[0 ..< result.rfind('\n', last = j) + 1]
+  result = result.dedent
+
+proc file*(nb: var Nb, name: string, content: string, fold = false, title = "") =
+  ## Writes `content` to the file `name` and shows it.
   name.writeFile content
-  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
+  let blk = newNbFile(filename=name, ext=langOf(name), content=content, fold=fold, title=title)
   nb.add blk
 
 template file*(nb: Nb, name: string, body: untyped) =
   ## Read code and write it to file
   let content = getCode(body)
   name.writeFile content
-  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
+  let blk = newNbFile(filename=name, ext=langOf(name), content=content)
   nb.add blk
 
-proc file*(nb: var Nb, name: string) =
-  ## Read content from a file instead of writing to it
-  let content = readFile(name)
-  let blk = newNbFile(filename=name, ext=name.getExt, content=content)
+proc file*(nb: var Nb, name: string, fold = false, start = "", stop = "", title = "", lang = "") =
+  ## Shows the file `name` (a path from the current directory, or from the document's folder).
+  ## `fold` shows it closed, under its name (or `title`, in Markdown) and its number of lines;
+  ## folded files one after the other make a list. With `start`, it shows only from the first
+  ## line that holds `start`, up to the line before the next one that holds `stop` (or to the end).
+  ## `lang` overrides the language given by the extension.
+  let path = if fileExists(name) or not fileExists(nb.doc.thisDir.string / name): name
+             else: nb.doc.thisDir.string / name
+  let content = readFile(path).codeSlice(start, stop)
+  let lang = if lang.len > 0: lang else: langOf(name)
+  let blk = newNbFile(filename=name, ext=lang, content=content, fold=fold, title=title)
   nb.add blk
 
 newNbBlock(NbVideo):
@@ -239,14 +277,18 @@ func audio*(nb: var Nb, url: string, filetype: string = "", autoplay = false, mu
 template nbAudio*(url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
   nb.audio(url, filetype, autoplay, muted, loop)
 
-template nbFile*(name: string, content: string) =
-  nb.file(name, content)
+template nbFile*(name: string, content: string, fold = false, title = "") =
+  ## Writes `content` to the file `name` and shows it (folded with `fold`, see below).
+  nb.file(name, content, fold, title)
 
 template nbFile*(name: string, body: untyped) =
   nb.file(name, body)
 
-template nbFile*(name: string) =
-  nb.file(name)
+template nbFile*(name: string, fold = false, start = "", stop = "", title = "", lang = "") =
+  ## Shows the file `name`: `nbFile "src/main.nim"`. Folded under its name and its number of lines
+  ## with `fold = true`; only a part of it with `start` (and `stop`); `title` (Markdown) in place
+  ## of the name; `lang` in place of the extension.
+  nb.file(name, fold, start, stop, title, lang)
 
 when moduleAvailable(nimpy):
   newNbBlock(NbPython of NbCode):

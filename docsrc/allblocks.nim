@@ -157,6 +157,18 @@ To display a file, it takes one argument: the file's path.
 nimibCode:
   nbFile("../LICENSE")
 
+nbText: """
+A long file can be folded with `fold = true`: it shows its name and its number of lines, and opens with a tap.
+Folded files one after the other make a list. With `start` (and `stop`) it shows only a part of the file:
+from the first line that holds `start`, up to the line before the next one that holds `stop`.
+`title` (Markdown) takes the place of the name, and `lang` the place of the extension.
+A relative path is looked up in the current directory first, then beside the document.
+"""
+nimibCode:
+  nbFile("files.nim", fold = true)
+  nbFile("allblocks.nim", fold = true, start = "nbCodeBlock: \"nbFile\"",
+         stop = "nbCodeBlock: \"nbRawHtml\"", title = "The `nbFile` part of this page")
+
 nbCodeBlock: "nbRawHtml"
 nbText: """
 Certain things are not doable with pure Markdown. You can use raw HTML directly with the `nbRawHtml` block.

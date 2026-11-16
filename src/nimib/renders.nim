@@ -2,6 +2,7 @@ import std / [strutils, tables, sugar, os, strformat, sequtils, json]
 import ./types, markdown, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons, ./logging
 
 import highlight
+from std/cgi import xmlEncode
 from std/jsonutils import nil
 
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
@@ -54,11 +55,36 @@ func nbTextPartial*(blk: JsonNode, nb: Nb): string =
 
 nbToHtml.partials["nbText"] = nbTextPartial
 
+func inlineMarkdown*(text: string): string =
+  ## Markdown for a single line, without the `<p>` around it (for a title).
+  result = markdownToHtml(text).strip
+  if result.startsWith("<p>") and result.endsWith("</p>"):
+    result = result[3 ..< ^4]
+
+func linesLabel*(content: string): string =
+  ## "1 line", "12 lines": the length of a file, as `nbFile` shows it when folded.
+  let n = content.strip(leading = false, chars = {'\n'}).countLines
+  if n == 1: "1 line" else: &"{n} lines"
+
 func nbFilePartial(blk: JsonNode, nb: Nb): string =
   let filename = blk{"filename"}.getStr
-  withNewlines:
-      &"<pre>{filename}</pre>"
-      preCodeTag(lang=blk{"ext"}.getStr, code=blk{"content"}.getStr)
+  let lang = blk{"ext"}.getStr
+  let content = blk{"content"}.getStr
+  let title = blk{"title"}.getStr
+  let code =
+    if lang == "nim": preCodeTag(lang = "nim", code = content.highlightNim, highlight = false)
+    else: preCodeTag(lang = lang, code = content.xmlEncode)
+  if blk{"fold"}.getBool:
+    let name = if title.len > 0: inlineMarkdown(title) else: &"<code>{filename.xmlEncode}</code>"
+    withNewlines:
+      &"""<details class="nb-file"><summary>{name} <span class="nb-small">{linesLabel(content)}</span></summary>"""
+      code
+      "</details>"
+  else:
+    withNewlines:
+      if title.len > 0: &"<p>{inlineMarkdown(title)}</p>"
+      else: &"<pre>{filename.xmlEncode}</pre>"
+      code
 
 nbToHtml.partials["nbFile"] = nbFilePartial
 

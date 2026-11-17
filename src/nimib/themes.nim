@@ -161,7 +161,53 @@ figure {
 figcaption {
   text-align: center;
 }
-  
+.nb-file {
+  display: block;
+  margin: 1rem 0;
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--background-alt, #f7f7f7);
+}
+details.nb-file, details.nb-file[open] {
+  padding: 0;
+}
+.nb-file + .nb-file {
+  margin-top: -0.75rem;
+}
+.nb-file-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: var(--background, #efefef);
+}
+.nb-file-head > .nb-small {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.nb-file > pre {
+  margin: 0;
+}
+details.nb-file > summary {
+  cursor: pointer;
+  list-style: none;
+}
+details.nb-file[open] > summary {
+  margin: 0;
+}
+details.nb-file > summary::-webkit-details-marker {
+  display: none;
+}
+details.nb-file > summary::before {
+  content: "\25B6";
+  font-size: 0.7em;
+}
+details.nb-file[open] > summary::before {
+  content: "\25BC";
+}
+
 </style>"""
 
 proc useDefault*(nb: var Nb) =

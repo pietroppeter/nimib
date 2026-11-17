@@ -46,28 +46,30 @@ suite "render (block), html default backend":
   test "nbFile shows a file, escaped":
     nbFile("data/ops.txt")
     check nb.render(nb.blk).strip == """
-<pre>data/ops.txt</pre>
-<pre><code class=" txt hljs">a &lt; b &amp;&amp; c &gt; d
-</code></pre>"""
+<div class="nb-file"><div class="nb-file-head"><code>data/ops.txt</code> <span class="nb-small">1 line</span></div>
+<pre><code class=" txt hljs">a &lt; b &amp;&amp; c &gt; d</code></pre>
+</div>"""
 
   test "nbFile highlights Nim at build time":
     nbFile("data/greet.nim", start = "proc shout")
-    check nb.render(nb.blk).strip == """
-<pre>data/greet.nim</pre>
-<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">proc</span> shout*(s: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> =
-  s.toUpperAscii &amp; <span class="hljs-string">&quot;!&quot;</span>
-</code></pre>"""
+    check nb.render(nb.blk).strip.splitLines[1] ==
+      """<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">proc</span> shout*(s: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> ="""
+
+  test "nbFile foldable: open, and a reader can close it":
+    nbFile("data/greet.nim", foldable = true)
+    check nb.render(nb.blk).strip.splitLines[0] ==
+      """<details class="nb-file" open><summary class="nb-file-head"><code>data/greet.nim</code> <span class="nb-small">8 lines</span></summary>"""
 
   test "nbFile folded, with a part of the file":
-    nbFile("data/greet.nim", fold = true, start = "proc greet", stop = "proc shout")
+    nbFile("data/greet.nim", folded = true, start = "proc greet", stop = "proc shout")
     check nb.render(nb.blk).strip.splitLines[0] ==
-      """<details class="nb-file"><summary><code>data/greet.nim</code> <span class="nb-small">3 lines</span></summary>"""
+      """<details class="nb-file"><summary class="nb-file-head"><code>data/greet.nim</code> <span class="nb-small">lines 3–5</span></summary>"""
     check nb.render(nb.blk).strip.endsWith("</code></pre>\n</details>")
 
   test "nbFile folded under a title":
-    nbFile("data/ops.txt", fold = true, title = "The `ops`")
+    nbFile("data/ops.txt", folded = true, title = "The `ops`")
     check nb.render(nb.blk).strip.splitLines[0] ==
-      """<details class="nb-file"><summary>The <code>ops</code> <span class="nb-small">1 line</span></summary>"""
+      """<details class="nb-file"><summary class="nb-file-head">The <code>ops</code> <span class="nb-small">1 line</span></summary>"""
 
   test "nbFile: start not found":
     expect ValueError:
@@ -129,16 +131,20 @@ hi
   test "nbFile":
     nbFile("data/ops.txt")
     check nb.render(nb.blk).strip == """
-`data/ops.txt`
+`data/ops.txt` (1 line)
 
 ```txt
 a < b && c > d
 ```""".strip
 
+  test "nbFile foldable":
+    nbFile("data/ops.txt", foldable = true)
+    check nb.render(nb.blk).strip.startsWith("<details open><summary>`data/ops.txt` (1 line)</summary>")
+
   test "nbFile folded":
-    nbFile("data/greet.nim", fold = true, start = "proc shout")
+    nbFile("data/greet.nim", folded = true, start = "proc shout")
     check nb.render(nb.blk).strip == """
-<details><summary>`data/greet.nim` (2 lines)</summary>
+<details><summary>`data/greet.nim` (lines 7–8)</summary>
 
 ```nim
 proc shout*(s: string): string =

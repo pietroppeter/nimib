@@ -163,32 +163,39 @@ newNbBlock(NbFile):
   filename: string
   ext: string
   content: string
-  fold: bool
+  foldable: bool
+  folded: bool
   title: string
+  firstLine: int  # with `start`, the lines shown (from 1); 0 when the whole file is shown
+  lastLine: int
   toHtml:
+    let content = blk.content.strip(leading = false, chars = {'\n'})
     let code =
-      if blk.ext == "nim": preCodeTag(lang = "nim", code = blk.content.highlightNim, highlight = false)
-      else: preCodeTag(lang = blk.ext, code = blk.content.xmlEncode)
-    if blk.fold:
-      let name = if blk.title.len > 0: inlineMarkdown(blk.title) else: "<code>" & blk.filename.xmlEncode & "</code>"
+      if blk.ext == "nim": preCodeTag(lang = "nim", code = content.highlightNim, highlight = false)
+      else: preCodeTag(lang = blk.ext, code = content.xmlEncode)
+    let name = if blk.title.len > 0: inlineMarkdown(blk.title) else: "<code>" & blk.filename.xmlEncode & "</code>"
+    let head = name & " <span class=\"nb-small\">" & linesLabel(blk.content, blk.firstLine, blk.lastLine) & "</span>"
+    if blk.foldable or blk.folded:
+      let open = if blk.folded: "" else: " open"
       withNewlines:
-        "<details class=\"nb-file\"><summary>" & name & " <span class=\"nb-small\">" & linesLabel(blk.content) & "</span></summary>"
+        "<details class=\"nb-file\"" & open & "><summary class=\"nb-file-head\">" & head & "</summary>"
         code
         "</details>"
     else:
       withNewlines:
-        if blk.title.len > 0: "<p>" & inlineMarkdown(blk.title) & "</p>"
-        else: "<pre>" & blk.filename.xmlEncode & "</pre>"
+        "<div class=\"nb-file\"><div class=\"nb-file-head\">" & head & "</div>"
         code
+        "</div>"
 
 func nbFileToMd(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbFile
   let name = if blk.title.len > 0: blk.title else: "`" & blk.filename & "`"
   let fence = "```" & blk.ext & "\n" & blk.content.strip(leading = false, chars = {'\n'}) & "\n```"
-  if blk.fold:
-    "<details><summary>" & name & " (" & linesLabel(blk.content) & ")</summary>\n\n" & fence & "\n\n</details>"
+  if blk.foldable or blk.folded:
+    let open = if blk.folded: "" else: " open"
+    "<details" & open & "><summary>" & name & " (" & linesLabel(blk.content, blk.firstLine, blk.lastLine) & ")</summary>\n\n" & fence & "\n\n</details>"
   else:
-    name & "\n\n" & fence
+    name & " (" & linesLabel(blk.content, blk.firstLine, blk.lastLine) & ")\n\n" & fence
 
 nbToMd.funcs["NbFile"] = nbFileToMd
 
@@ -197,23 +204,27 @@ func langOf(name: string): string =
   result = name.getExt
   if result == "nims": result = "nim"
 
-func codeSlice*(code, start, stop: string): string =
+func codeSlice*(code, start, stop: string): tuple[code: string, first, last: int] =
   ## The part of `code` from the first line that holds `start` up to the line before the next one
-  ## that holds `stop` (or to the end), dedented. Empty `start` means the whole code.
-  if start.len == 0: return code
+  ## that holds `stop` (or to the end), dedented, with its first and last line numbers (from 1).
+  ## Empty `start` means the whole code, and lines 0..0.
+  if start.len == 0: return (code, 0, 0)
   let i = code.find(start)
   if i < 0: raise newException(ValueError, "nbFile: no line holds " & start.escape)
-  result = code[code.rfind('\n', last = i) + 1 .. ^1]
+  let from0 = code.rfind('\n', last = i) + 1
+  var part = code[from0 .. ^1]
   if stop.len > 0:
-    let firstNl = result.find('\n')
-    let j = if firstNl < 0: -1 else: result.find(stop, start = firstNl + 1)
-    if j >= 0: result = result[0 ..< result.rfind('\n', last = j) + 1]
-  result = result.dedent
+    let firstNl = part.find('\n')
+    let j = if firstNl < 0: -1 else: part.find(stop, start = firstNl + 1)
+    if j >= 0: part = part[0 ..< part.rfind('\n', last = j) + 1]
+  let first = code[0 ..< from0].count('\n') + 1
+  let last = first + part.strip(leading = false, chars = {'\n'}).countLines - 1
+  (part.dedent, first, last)
 
-proc file*(nb: var Nb, name: string, content: string, fold = false, title = "") =
+proc file*(nb: var Nb, name: string, content: string, foldable = false, folded = false, title = "") =
   ## Writes `content` to the file `name` and shows it.
   name.writeFile content
-  let blk = newNbFile(filename=name, ext=langOf(name), content=content, fold=fold, title=title)
+  let blk = newNbFile(filename=name, ext=langOf(name), content=content, foldable=foldable, folded=folded, title=title)
   nb.add blk
 
 template file*(nb: Nb, name: string, body: untyped) =
@@ -223,17 +234,19 @@ template file*(nb: Nb, name: string, body: untyped) =
   let blk = newNbFile(filename=name, ext=langOf(name), content=content)
   nb.add blk
 
-proc file*(nb: var Nb, name: string, fold = false, start = "", stop = "", title = "", lang = "") =
-  ## Shows the file `name` (a path from the current directory, or from the document's folder).
-  ## `fold` shows it closed, under its name (or `title`, in Markdown) and its number of lines;
-  ## folded files one after the other make a list. With `start`, it shows only from the first
+proc file*(nb: var Nb, name: string, foldable = false, folded = false, start = "", stop = "",
+           title = "", lang = "") =
+  ## Shows the file `name` (a path from the current directory, or from the document's folder),
+  ## under its name (or `title`, in Markdown) and its number of lines. `foldable` lets a reader
+  ## close it; `folded` shows it closed (and foldable). Folded files one after the other make a list. With `start`, it shows only from the first
   ## line that holds `start`, up to the line before the next one that holds `stop` (or to the end).
   ## `lang` overrides the language given by the extension.
   let path = if fileExists(name) or not fileExists(nb.doc.thisDir.string / name): name
              else: nb.doc.thisDir.string / name
-  let content = readFile(path).codeSlice(start, stop)
+  let (content, firstLine, lastLine) = readFile(path).codeSlice(start, stop)
   let lang = if lang.len > 0: lang else: langOf(name)
-  let blk = newNbFile(filename=name, ext=lang, content=content, fold=fold, title=title)
+  let blk = newNbFile(filename=name, ext=lang, content=content, foldable=foldable, folded=folded, title=title,
+                      firstLine=firstLine, lastLine=lastLine)
   nb.add blk
 
 newNbBlock(NbVideo):
@@ -292,18 +305,20 @@ func audio*(nb: var Nb, url: string, filetype: string = "", autoplay = false, mu
 template nbAudio*(url: string, filetype: string = "", autoplay = false, muted = false, loop: bool = false) =
   nb.audio(url, filetype, autoplay, muted, loop)
 
-template nbFile*(name: string, content: string, fold = false, title = "") =
-  ## Writes `content` to the file `name` and shows it (folded with `fold`, see below).
-  nb.file(name, content, fold, title)
+template nbFile*(name: string, content: string, foldable = false, folded = false, title = "") =
+  ## Writes `content` to the file `name` and shows it (`foldable` and `folded`: see below).
+  nb.file(name, content, foldable, folded, title)
 
 template nbFile*(name: string, body: untyped) =
   nb.file(name, body)
 
-template nbFile*(name: string, fold = false, start = "", stop = "", title = "", lang = "") =
-  ## Shows the file `name`: `nbFile "src/main.nim"`. Folded under its name and its number of lines
-  ## with `fold = true`; only a part of it with `start` (and `stop`); `title` (Markdown) in place
-  ## of the name; `lang` in place of the extension.
-  nb.file(name, fold, start, stop, title, lang)
+template nbFile*(name: string, foldable = false, folded = false, start = "", stop = "", title = "",
+                 lang = "") =
+  ## Shows the file `name`: `nbFile "src/main.nim"`, under its name and its number of lines.
+  ## `foldable = true` lets a reader close it, `folded = true` shows it closed; `start` (and `stop`)
+  ## show only a part of it; `title` (Markdown) goes in place of the name, `lang` in place of the
+  ## extension.
+  nb.file(name, foldable, folded, start, stop, title, lang)
 
 when moduleAvailable(nimpy):
   newNbBlock(NbPython of NbCode):

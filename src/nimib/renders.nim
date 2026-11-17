@@ -60,8 +60,10 @@ func inlineMarkdown*(text: string): string =
   if result.startsWith("<p>") and result.endsWith("</p>"):
     result = result[3 ..< ^4]
 
-func linesLabel*(content: string): string =
-  ## "1 line", "12 lines": the length of a file, as `nbFile` shows it when folded.
+func linesLabel*(content: string, firstLine = 0, lastLine = 0): string =
+  ## "1 line", "12 lines", or, for a part of a file, "lines 5–20": what `nbFile` shows beside the name.
+  if firstLine > 0:
+    return if lastLine > firstLine: &"lines {firstLine}–{lastLine}" else: &"line {firstLine}"
   let n = content.strip(leading = false, chars = {'\n'}).countLines
   if n == 1: "1 line" else: &"{n} lines"
 

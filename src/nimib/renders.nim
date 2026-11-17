@@ -2,7 +2,6 @@ import std / [strutils, tables, sugar, os, strformat, sequtils, json]
 import ./types, markdown, ./jsutils, ./nimibSugars, ./themes, ./globals, ./jsons, ./logging
 
 import highlight
-from std/cgi import xmlEncode
 from std/jsonutils import nil
 
 func nbDocToHtml*(blk: NbBlock, nb: Nb): string =
@@ -66,27 +65,6 @@ func linesLabel*(content: string): string =
   let n = content.strip(leading = false, chars = {'\n'}).countLines
   if n == 1: "1 line" else: &"{n} lines"
 
-func nbFilePartial(blk: JsonNode, nb: Nb): string =
-  let filename = blk{"filename"}.getStr
-  let lang = blk{"ext"}.getStr
-  let content = blk{"content"}.getStr
-  let title = blk{"title"}.getStr
-  let code =
-    if lang == "nim": preCodeTag(lang = "nim", code = content.highlightNim, highlight = false)
-    else: preCodeTag(lang = lang, code = content.xmlEncode)
-  if blk{"fold"}.getBool:
-    let name = if title.len > 0: inlineMarkdown(title) else: &"<code>{filename.xmlEncode}</code>"
-    withNewlines:
-      &"""<details class="nb-file"><summary>{name} <span class="nb-small">{linesLabel(content)}</span></summary>"""
-      code
-      "</details>"
-  else:
-    withNewlines:
-      if title.len > 0: &"<p>{inlineMarkdown(title)}</p>"
-      else: &"<pre>{filename.xmlEncode}</pre>"
-      code
-
-nbToHtml.partials["nbFile"] = nbFilePartial
 
 
 proc useHtmlBackend*(nb: var Nb) =

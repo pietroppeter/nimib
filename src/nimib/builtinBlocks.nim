@@ -2,6 +2,8 @@ import std / [strformat, os, strutils, json]
 import std / jsonutils except toJson
 
 import ./types, ./blocks, ./capture, ./nimibSugars, ./globals, ./jsons, ./paths, ./docs, ./jsutils, ./renders
+from std/cgi import xmlEncode
+import ./highlight
 
 template moduleAvailable*(module: untyped): bool =
   (compiles do: import module)
@@ -164,7 +166,20 @@ newNbBlock(NbFile):
   fold: bool
   title: string
   toHtml:
-    nb.renderPartial("nbFile", jsonutils.toJson(blk))
+    let code =
+      if blk.ext == "nim": preCodeTag(lang = "nim", code = blk.content.highlightNim, highlight = false)
+      else: preCodeTag(lang = blk.ext, code = blk.content.xmlEncode)
+    if blk.fold:
+      let name = if blk.title.len > 0: inlineMarkdown(blk.title) else: "<code>" & blk.filename.xmlEncode & "</code>"
+      withNewlines:
+        "<details class=\"nb-file\"><summary>" & name & " <span class=\"nb-small\">" & linesLabel(blk.content) & "</span></summary>"
+        code
+        "</details>"
+    else:
+      withNewlines:
+        if blk.title.len > 0: "<p>" & inlineMarkdown(blk.title) & "</p>"
+        else: "<pre>" & blk.filename.xmlEncode & "</pre>"
+        code
 
 func nbFileToMd(blk: NbBlock, nb: Nb): string =
   let blk = blk.NbFile
